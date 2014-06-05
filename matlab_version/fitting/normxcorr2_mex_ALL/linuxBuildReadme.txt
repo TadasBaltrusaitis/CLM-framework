@@ -1,0 +1,1 @@
+Compiled with GCC version 3.3.3 on SuSE Linux (x86).
