@@ -1,6 +1,3 @@
-matlab runners/out_wild_clnf/
-Debug/
-Release/
 ipch/
 *.vsp
 CLM_framework.opensdf
@@ -9,9 +6,6 @@ CLM_framework.suo
 *.opensdf
 *.sdf
 *.ipch
-Debug/
-Release/
-*.vsp
 matlab runners/out_wild_clnf/
 matlab runners/out_wild_clnf_wild/
 matlab runners/out_wild_svr/
@@ -21,3 +15,10 @@ matlab_runners/out_wild_svr/
 matlab_runners/out_wild_clnf/
 matlab_runners/out_wild_clnf_wild/
 matlab_runners/out_wild_svr_wild/
+Release/CLM.lib
+Release/model/
+Release/classifiers/
+exe/MultiTrackCLM/Debug/
+exe/MultiTrackCLM/Release/
+lib/local/CLM/Debug/
+lib/local/CLM/Release/
