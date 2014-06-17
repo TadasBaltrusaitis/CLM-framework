@@ -315,7 +315,7 @@ void Patch_experts::Read(vector<string> intensity_svr_expert_locations, vector<s
 
 	// Have these to confirm that depth patch experts have the same number of views and scales and have the same visibilities
 	vector<vector<cv::Vec3d> > centers_depth(num_depth_scales);
-	vector<vector<cv::Mat> > visibilities_depth(num_depth_scales);
+	vector<vector<cv::Mat_<int> > > visibilities_depth(num_depth_scales);
 	vector<double> patch_scaling_depth(num_depth_scales);
 	
 	svr_expert_depth.resize(num_depth_scales);	
@@ -359,7 +359,7 @@ void Patch_experts::Read(vector<string> intensity_svr_expert_locations, vector<s
 
 }
 //======================= Reading the SVR patch experts =========================================//
-void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat>& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale)
+void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale)
 {
 
 	ifstream patchesFile(expert_location.c_str());
@@ -426,7 +426,7 @@ void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<c
 }
 
 //======================= Reading the CCNF patch experts =========================================//
-void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat>& visibility, std::vector<std::vector<CCNF_patch_expert> >& patches, double& patchScaling)
+void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<CCNF_patch_expert> >& patches, double& patchScaling)
 {
 
 	ifstream patchesFile(patchesFileLocation.c_str());

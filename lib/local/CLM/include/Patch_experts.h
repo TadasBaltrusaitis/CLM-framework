@@ -79,7 +79,7 @@ public:
 	vector<vector<cv::Vec3d> >               centers;
 
 	// Landmark visibilities for each scale and view
-    vector<vector<cv::Mat> >               visibilities;
+    vector<vector<cv::Mat_<int> > >          visibilities;
 
 	// A default constructor
 	Patch_experts(){;}
@@ -135,8 +135,8 @@ public:
    
 
 private:
-	void Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat>& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale);
-	void Read_CCNF_patch_experts(string patchesFileLocation, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat>& visibility, std::vector<std::vector<CCNF_patch_expert> >& patches, double& patchScaling);
+	void Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale);
+	void Read_CCNF_patch_experts(string patchesFileLocation, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<CCNF_patch_expert> >& patches, double& patchScaling);
 	
 
 };

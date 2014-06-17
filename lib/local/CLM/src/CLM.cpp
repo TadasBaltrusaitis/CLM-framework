@@ -359,7 +359,6 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
-		
 		// Get the current landmark locations
 		pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -500,6 +499,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 		out_mean_shifts.at<double>(i+n,0) = msy;
 
 	}
+
 }
 
 void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
@@ -600,7 +600,9 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		{
 			// if the shape hasn't changed terminate
 			if(norm(current_shape, previous_shape) < 0.01)
+			{				
 				break;
+			}
 		}
 
 		current_shape.copyTo(previous_shape);

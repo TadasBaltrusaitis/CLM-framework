@@ -104,7 +104,8 @@ namespace CLMTracker
 	void Project(Mat_<double>& dest, const Mat_<double>& mesh, double fx, double fy, double cx, double cy);
 	void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float fy, float cx, float cy);
 
-	void Draw(cv::Mat img, const Mat& shape2D, Mat& visibilities);
+	void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities);
+	void Draw(cv::Mat img, const Mat_<double>& shape2D);
 	void Draw(cv::Mat img, CLM& clm_model);
 
 	//===========================================================================

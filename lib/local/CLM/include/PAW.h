@@ -52,12 +52,6 @@
 
 using namespace cv;
 
-void parsecolour(cv::Mat image);
-void ParseToPAW(cv::Mat shape,cv::Mat localshape, cv::Mat global);
-void sendAvatarFile(string filename);
-void sendAvatar(cv::Mat avatarHead, cv::Mat avatarShape);
-
-
 namespace CLMTracker
 {
   //===========================================================================
@@ -145,17 +139,6 @@ public:
     inline int Width(){return pixel_mask.cols;}
     inline int Height(){return pixel_mask.rows;}
     
-/*********************START Needed for avatar reconstruction:*********************/
-// Written by Leonardo Impett
-	//also triangulation is used
-	cv::Mat snew;
-	cv::Mat _neutralshape;
-	void WarpToNeutral(cv::Mat &image, cv::Mat &shape, cv::Mat &neutralshape);
-    void unCalcCoeff(cv::Mat &s, cv::Mat &snew);
-    void unWarpRegion(cv::Mat &mapx,cv::Mat &mapy);
-
-/*********************END   Needed for avatar reconstruction:**********************/
-
   };
   //===========================================================================
 }

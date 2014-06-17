@@ -826,7 +826,8 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 
 }
 
-void Draw(cv::Mat img, const Mat& shape2D, Mat& visibilities)
+// Drawing landmarks on a face image
+void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
 
@@ -847,6 +848,27 @@ void Draw(cv::Mat img, const Mat& shape2D, Mat& visibilities)
 	
 }
 
+// Drawing landmarks on a face image
+void Draw(cv::Mat img, const Mat_<double>& shape2D)
+{
+	int n = shape2D.rows/2;
+
+	for( int i = 0; i < n; ++i)
+	{		
+		Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+		// A rough heuristic for drawn point size
+		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
+		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+
+		cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
+		cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+
+	}
+	
+}
+
+// Drawing detected landmarks on a face image
 void Draw(cv::Mat img, CLM& clm_model)
 {
 

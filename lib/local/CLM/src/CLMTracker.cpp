@@ -309,8 +309,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 	}
 
-	// If haven't managet to escape till now - failed
-	return false;
+	return clm_model.detection_success;
 	
 }
 

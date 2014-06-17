@@ -114,9 +114,7 @@ public:
 
 	// Reading in the model
 	void Read(string location);
-
-private:
-		
+			
 	// Getting the closest view center based on orientation
 	int GetViewId(const cv::Vec3d& orientation);
 

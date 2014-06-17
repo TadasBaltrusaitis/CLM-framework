@@ -129,6 +129,7 @@ public:
 	{
 		this->width = other.width;
 		this->height = other.height;
+		this->patch_confidence = other.patch_confidence;
 
 		// Copy the Sigmas in a deep way
 		for(std::vector<Mat_<float> >::const_iterator it = other.Sigmas.begin(); it!= other.Sigmas.end(); it++)
