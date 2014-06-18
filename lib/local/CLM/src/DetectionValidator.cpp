@@ -191,7 +191,7 @@ double DetectionValidator::Check(const Vec3d& orientation, const Mat_<uchar>& in
 }
 
 // Getting the closest view center based on orientation
-int DetectionValidator::GetViewId(const cv::Vec3d& orientation)
+int DetectionValidator::GetViewId(const cv::Vec3d& orientation) const
 {
 	int id = 0;
 

@@ -116,7 +116,7 @@ public:
 	void Read(string location);
 			
 	// Getting the closest view center based on orientation
-	int GetViewId(const cv::Vec3d& orientation);
+	int GetViewId(const cv::Vec3d& orientation) const;
 
 };
 
