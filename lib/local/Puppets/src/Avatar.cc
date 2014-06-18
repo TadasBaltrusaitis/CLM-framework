@@ -18,12 +18,6 @@
 #include <highgui.h>
 #include <imgproc.hpp>
 
-int outputWidth, outputHeight;
-
-VideoWriter myvideo;
-
-Mat oldFace, oldFaceLeft, oldFaceRight, ratioFace, avatarFace,newFace, newWarpedFace, newWarpedFaceFloat,ratioFaceFloat;
-
 bool DISPLAYHISTOGRAMS = false;			//set to 'true' to display three histograms from the CompensateColour operation
 bool KIOSKMODE = false;
 
@@ -45,15 +39,8 @@ GLuint framebuffer = 0;
 GLuint renderbuffer;
 GLenum status;
 
-// TODO rem
-//GLuint	avatar_texture, background_texture, underlayer_texture;
-
 int framesTick = 1;				//How often (every N frames) the openGL textures are re-calculated 
 bool INIT = false;				
-
-// TODO rem
-//Mat scopy, scopyleft, scopycentre, scopyright, scopysmile, seyes;	//the shape matrixes for various poses
-//Mat warped_avatar_imageCopy;
 
 float widthavat, heightavat;		//height and width of the avatar
 // Frame counting and limiting
