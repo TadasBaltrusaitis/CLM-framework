@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseIPPTBB|Win32'">
+    <LocalDebuggerCommandArguments>-f C:\BU\uniform-light\jim2.avi -ov C:\BU\uniform-light\jim2out.avi -op C:\code\GAVAM\Sequences\outputSequences\ictDB\easy\seq26\out.txt -fx 500 -fy 500 -cx 160 -cy 120</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>-f "C:\Users\li222\Downloads\testvideo.mp4" -mloc "../model/main_svr_ml.txt"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)$(Configuration)\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>PATH=%PATH%;C:\GTK+\bin</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseTBB|Win32'">
+    <LocalDebuggerCommandArguments>-f "C:/Users/tb346/Documents/datasets/mind-reader avi labeled/angry/angry/angry0.avi" -fx 517 -fy 517 -cx 160 -cy 120</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>-f "C:\Users\li222\Downloads\Video1.wmv" -mloc "../model/main_svr_ml.txt"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)$(Configuration)\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>PATH=%PATH%;C:\GTK+\bin</LocalDebuggerEnvironment>
+  </PropertyGroup>
+</Project>

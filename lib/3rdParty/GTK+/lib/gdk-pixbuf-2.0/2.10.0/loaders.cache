@@ -1,0 +1,13 @@
+# Note: After adding a new separate gdk-pixbuf loader (for instance the svg one)
+# run gdk-pixbuf-query-loaders.exe redirecting its output into this file.
+
+# Note that the LoaderDir folder below does not name a folder that is
+# expected to exist. It was just a temporary directory used at build time.
+
+# GdkPixbuf Image Loader Modules file
+# Automatically generated file, do not edit
+# Created by gdk-pixbuf-query-loaders.exe from gdk-pixbuf-2.24.0
+#
+# LoaderDir = C:\MinGW\msys\1.0\devel\target\d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders
+#
+

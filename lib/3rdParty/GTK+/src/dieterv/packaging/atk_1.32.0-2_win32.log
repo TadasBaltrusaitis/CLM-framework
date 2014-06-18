@@ -1,0 +1,740 @@
+++ patch --verbose -p0 --fuzz=0
+Hmm...  Looks like a unified diff to me...
+The text leading up to this was:
+--------------------------
+|--- atk/atk.symbols
+|+++ atk/atk.symbols
+--------------------------
+Patching file atk/atk.symbols using Plan A...
+Hunk #1 succeeded at 70.
+Hunk #2 succeeded at 179.
+done
++++ latest --arch=win32 zlib gettext-runtime glib
+++ DEPS='zlib-1.2.5-2 gettext-runtime-0.18.1.1-2 glib-2.28.8-1'
++++ latest --arch=win32 gettext-runtime
+++ GETTEXT_RUNTIME=gettext-runtime-0.18.1.1-2
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/dummy
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mtune=pentium3 -mthreads'
+++ CPPFLAGS=-I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include
+++ LDFLAGS='-L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base'
+++ CFLAGS=-O2
+++ ./configure --disable-gtk-doc --disable-static --prefix=/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc -mtune=pentium3 -mthreads
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mtune=pentium3 -mthreads accepts -g... yes
+checking for gcc -mtune=pentium3 -mthreads option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mtune=pentium3 -mthreads... gcc3
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for as... as
+checking for dlltool... dlltool
+checking for objdump... objdump
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mtune=pentium3 -mthreads... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /mingw/bin/nm
+checking the name lister (/mingw/bin/nm) interface... BSD nm
+checking whether ln -s works... no, using cp -p
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... (cached) objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /mingw/bin/nm output from gcc -mtune=pentium3 -mthreads object... ok
+checking how to run the C preprocessor... gcc -mtune=pentium3 -mthreads -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking if gcc -mtune=pentium3 -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mtune=pentium3 -mthreads option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mtune=pentium3 -mthreads PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mtune=pentium3 -mthreads static flag -static works... yes
+checking if gcc -mtune=pentium3 -mthreads supports -c -o file.o... yes
+checking if gcc -mtune=pentium3 -mthreads supports -c -o file.o... (cached) yes
+checking whether the gcc -mtune=pentium3 -mthreads linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for some Win32 platform... yes
+checking for native Win32 platform... yes
+checking for windres... windres
+checking for lib.exe... yes
+checking for aclocal flags... -I /usr/share/aclocal
+checking pkg-config is at least version 0.16... yes
+checking for GLIB - version >= 2.0.0... yes (version 2.28.8)
+checking for DEP... yes
+checking locale.h usability... yes
+checking locale.h presence... yes
+checking for locale.h... yes
+checking for LC_MESSAGES... no
+checking libintl.h usability... yes
+checking libintl.h presence... yes
+checking for libintl.h... yes
+checking for ngettext in libc... no
+checking for bindtextdomain in -lintl... yes
+checking for ngettext in -lintl... yes
+checking for dgettext in -lintl... yes
+checking for bind_textdomain_codeset... yes
+checking for msgfmt... /mingw/bin/msgfmt
+checking for dcgettext... yes
+checking if msgfmt accepts -c... yes
+checking for gmsgfmt... /mingw/bin/msgfmt
+checking for xgettext... /mingw/bin/xgettext
+checking for catalogs to be installed...  af am ar as ast az be be@latin bg bn bn_IN bs ca ca@valencia cs cy da de dz el en_CA en_GB en@shaw eo es et eu fa fi fr ga gl gu he hi hr hu hy id is it ja ka kk kn ko ku li lt lv mai mk ml mn mr ms nb ne nl nn oc or pa pl ps pt pt_BR ro ru rw si sk sl sq sr sr@latin sr@ije sv ta te th tk tr tt ug uk vi wa xh yi zh_CN zh_HK zh_TW
+checking for bind_textdomain_codeset... (cached) yes
+checking for gobject-introspection... no
+checking for gtkdoc-check... no
+checking for gtkdoc-rebase... no
+checking for gtkdoc-mkpdf... no
+checking whether to build gtk-doc documentation... no
+checking for gawk... (cached) gawk
+checking for perl5... no
+checking for perl... perl
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating po/Makefile.in
+config.status: creating atk.pc
+config.status: creating atk-uninstalled.pc
+config.status: creating atk/Makefile
+config.status: creating atk/atk.rc
+config.status: creating tests/Makefile
+config.status: creating docs/Makefile
+config.status: creating docs/version.xml
+config.status: creating atk.spec
+config.status: creating atk-zip.sh
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing default-1 commands
+++ cd atk
+++ make atkmarshal.h atkmarshal.c
+glib-genmarshal --prefix=atk_marshal ./atkmarshal.list --header >> xgen-gmh \
+	&& (cmp -s xgen-gmh atkmarshal.h || cp xgen-gmh atkmarshal.h) \
+	&& rm -f xgen-gmh xgen-gmh~					\
+	&& echo timestamp > stamp-atkmarshal.h
+glib-genmarshal --prefix=atk_marshal ./atkmarshal.list --body >> xgen-gmc \
+	&& (cmp -s xgen-gmc atkmarshal.c || cp xgen-gmc atkmarshal.c) \
+	&& rm -f xgen-gmc xgen-gmc~					\
+	&& echo timestamp > stamp-atkmarshal.c
+++ PATH=/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/bin:.libs:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ make install
+Making install in atk
+make[1]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+( cd . && glib-mkenums \
+			--fhead "#if defined(ATK_DISABLE_SINGLE_INCLUDES) && !defined (__ATK_H_INSIDE__) && !defined (ATK_COMPILATION)\n#error \"Only <atk/atk.h> can be included directly.\"\n#endif\n\n#ifndef __ATK_ENUM_TYPES_H__\n#define __ATK_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+			--fprod "/* enumerations from \"@filename@\" */\n" \
+			--vhead "GType @enum_name@_get_type (void);\n#define ATK_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+			--ftail "G_END_DECLS\n\n#endif /* __ATK_ENUM_TYPES_H__ */" \
+		atk.h atkaction.h atkcomponent.h atkdocument.h atkeditabletext.h atkgobjectaccessible.h atkhyperlink.h atkhyperlinkimpl.h atkhypertext.h atknoopobject.h atknoopobjectfactory.h atkobject.h atkobjectfactory.h atkplug.h atkimage.h atkregistry.h atkrelation.h atkrelationtype.h atkrelationset.h atkselection.h atksocket.h atkstate.h atkstateset.h atkstreamablecontent.h atktable.h atktext.h atkutil.h atkmisc.h atkvalue.h ) > tmp-atk-enum-types.h \
+	&& (cmp -s tmp-atk-enum-types.h atk-enum-types.h || cp tmp-atk-enum-types.h atk-enum-types.h ) \
+	&& rm -f tmp-atk-enum-types.h \
+	&& echo timestamp > s-enum-types-h
+( cd . && glib-mkenums \
+			--fhead "#include <atk.h>" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"     \
+			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+		atk.h atkaction.h atkcomponent.h atkdocument.h atkeditabletext.h atkgobjectaccessible.h atkhyperlink.h atkhyperlinkimpl.h atkhypertext.h atknoopobject.h atknoopobjectfactory.h atkobject.h atkobjectfactory.h atkplug.h atkimage.h atkregistry.h atkrelation.h atkrelationtype.h atkrelationset.h atkselection.h atksocket.h atkstate.h atkstateset.h atkstreamablecontent.h atktable.h atktext.h atkutil.h atkmisc.h atkvalue.h ) > tmp-atk-enum-types.c \
+	&& (cmp -s tmp-atk-enum-types.c atk-enum-types.c || cp tmp-atk-enum-types.c atk-enum-types.c ) \
+	&& rm -f tmp-atk-enum-types.c \
+	&& echo timestamp > s-enum-types-c
+make  install-am
+make[2]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkaction.lo -MD -MP -MF .deps/atkaction.Tpo -c -o atkaction.lo atkaction.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkaction.lo -MD -MP -MF .deps/atkaction.Tpo -c atkaction.c  -DDLL_EXPORT -DPIC -o .libs/atkaction.o
+mv -f .deps/atkaction.Tpo .deps/atkaction.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkcomponent.lo -MD -MP -MF .deps/atkcomponent.Tpo -c -o atkcomponent.lo atkcomponent.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkcomponent.lo -MD -MP -MF .deps/atkcomponent.Tpo -c atkcomponent.c  -DDLL_EXPORT -DPIC -o .libs/atkcomponent.o
+atkcomponent.c:594:1: warning: 'atk_component_real_get_alpha' defined but not used
+mv -f .deps/atkcomponent.Tpo .deps/atkcomponent.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkdocument.lo -MD -MP -MF .deps/atkdocument.Tpo -c -o atkdocument.lo atkdocument.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkdocument.lo -MD -MP -MF .deps/atkdocument.Tpo -c atkdocument.c  -DDLL_EXPORT -DPIC -o .libs/atkdocument.o
+mv -f .deps/atkdocument.Tpo .deps/atkdocument.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkeditabletext.lo -MD -MP -MF .deps/atkeditabletext.Tpo -c -o atkeditabletext.lo atkeditabletext.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkeditabletext.lo -MD -MP -MF .deps/atkeditabletext.Tpo -c atkeditabletext.c  -DDLL_EXPORT -DPIC -o .libs/atkeditabletext.o
+mv -f .deps/atkeditabletext.Tpo .deps/atkeditabletext.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkgobjectaccessible.lo -MD -MP -MF .deps/atkgobjectaccessible.Tpo -c -o atkgobjectaccessible.lo atkgobjectaccessible.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkgobjectaccessible.lo -MD -MP -MF .deps/atkgobjectaccessible.Tpo -c atkgobjectaccessible.c  -DDLL_EXPORT -DPIC -o .libs/atkgobjectaccessible.o
+mv -f .deps/atkgobjectaccessible.Tpo .deps/atkgobjectaccessible.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkhyperlink.lo -MD -MP -MF .deps/atkhyperlink.Tpo -c -o atkhyperlink.lo atkhyperlink.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkhyperlink.lo -MD -MP -MF .deps/atkhyperlink.Tpo -c atkhyperlink.c  -DDLL_EXPORT -DPIC -o .libs/atkhyperlink.o
+atkhyperlink.c: In function 'atk_hyperlink_real_get_property':
+atkhyperlink.c:165:7: warning: implicit declaration of function 'atk_hyperlink_is_selected_link'
+mv -f .deps/atkhyperlink.Tpo .deps/atkhyperlink.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkhyperlinkimpl.lo -MD -MP -MF .deps/atkhyperlinkimpl.Tpo -c -o atkhyperlinkimpl.lo atkhyperlinkimpl.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkhyperlinkimpl.lo -MD -MP -MF .deps/atkhyperlinkimpl.Tpo -c atkhyperlinkimpl.c  -DDLL_EXPORT -DPIC -o .libs/atkhyperlinkimpl.o
+mv -f .deps/atkhyperlinkimpl.Tpo .deps/atkhyperlinkimpl.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkhypertext.lo -MD -MP -MF .deps/atkhypertext.Tpo -c -o atkhypertext.lo atkhypertext.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkhypertext.lo -MD -MP -MF .deps/atkhypertext.Tpo -c atkhypertext.c  -DDLL_EXPORT -DPIC -o .libs/atkhypertext.o
+mv -f .deps/atkhypertext.Tpo .deps/atkhypertext.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkimage.lo -MD -MP -MF .deps/atkimage.Tpo -c -o atkimage.lo atkimage.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkimage.lo -MD -MP -MF .deps/atkimage.Tpo -c atkimage.c  -DDLL_EXPORT -DPIC -o .libs/atkimage.o
+mv -f .deps/atkimage.Tpo .deps/atkimage.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atknoopobject.lo -MD -MP -MF .deps/atknoopobject.Tpo -c -o atknoopobject.lo atknoopobject.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atknoopobject.lo -MD -MP -MF .deps/atknoopobject.Tpo -c atknoopobject.c  -DDLL_EXPORT -DPIC -o .libs/atknoopobject.o
+mv -f .deps/atknoopobject.Tpo .deps/atknoopobject.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atknoopobjectfactory.lo -MD -MP -MF .deps/atknoopobjectfactory.Tpo -c -o atknoopobjectfactory.lo atknoopobjectfactory.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atknoopobjectfactory.lo -MD -MP -MF .deps/atknoopobjectfactory.Tpo -c atknoopobjectfactory.c  -DDLL_EXPORT -DPIC -o .libs/atknoopobjectfactory.o
+mv -f .deps/atknoopobjectfactory.Tpo .deps/atknoopobjectfactory.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkobject.lo -MD -MP -MF .deps/atkobject.Tpo -c -o atkobject.lo atkobject.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkobject.lo -MD -MP -MF .deps/atkobject.Tpo -c atkobject.c  -DDLL_EXPORT -DPIC -o .libs/atkobject.o
+mv -f .deps/atkobject.Tpo .deps/atkobject.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkobjectfactory.lo -MD -MP -MF .deps/atkobjectfactory.Tpo -c -o atkobjectfactory.lo atkobjectfactory.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkobjectfactory.lo -MD -MP -MF .deps/atkobjectfactory.Tpo -c atkobjectfactory.c  -DDLL_EXPORT -DPIC -o .libs/atkobjectfactory.o
+mv -f .deps/atkobjectfactory.Tpo .deps/atkobjectfactory.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkplug.lo -MD -MP -MF .deps/atkplug.Tpo -c -o atkplug.lo atkplug.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkplug.lo -MD -MP -MF .deps/atkplug.Tpo -c atkplug.c  -DDLL_EXPORT -DPIC -o .libs/atkplug.o
+mv -f .deps/atkplug.Tpo .deps/atkplug.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkregistry.lo -MD -MP -MF .deps/atkregistry.Tpo -c -o atkregistry.lo atkregistry.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkregistry.lo -MD -MP -MF .deps/atkregistry.Tpo -c atkregistry.c  -DDLL_EXPORT -DPIC -o .libs/atkregistry.o
+mv -f .deps/atkregistry.Tpo .deps/atkregistry.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkrelation.lo -MD -MP -MF .deps/atkrelation.Tpo -c -o atkrelation.lo atkrelation.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkrelation.lo -MD -MP -MF .deps/atkrelation.Tpo -c atkrelation.c  -DDLL_EXPORT -DPIC -o .libs/atkrelation.o
+mv -f .deps/atkrelation.Tpo .deps/atkrelation.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkrelationset.lo -MD -MP -MF .deps/atkrelationset.Tpo -c -o atkrelationset.lo atkrelationset.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkrelationset.lo -MD -MP -MF .deps/atkrelationset.Tpo -c atkrelationset.c  -DDLL_EXPORT -DPIC -o .libs/atkrelationset.o
+mv -f .deps/atkrelationset.Tpo .deps/atkrelationset.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkselection.lo -MD -MP -MF .deps/atkselection.Tpo -c -o atkselection.lo atkselection.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkselection.lo -MD -MP -MF .deps/atkselection.Tpo -c atkselection.c  -DDLL_EXPORT -DPIC -o .libs/atkselection.o
+mv -f .deps/atkselection.Tpo .deps/atkselection.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atksocket.lo -MD -MP -MF .deps/atksocket.Tpo -c -o atksocket.lo atksocket.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atksocket.lo -MD -MP -MF .deps/atksocket.Tpo -c atksocket.c  -DDLL_EXPORT -DPIC -o .libs/atksocket.o
+mv -f .deps/atksocket.Tpo .deps/atksocket.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkstate.lo -MD -MP -MF .deps/atkstate.Tpo -c -o atkstate.lo atkstate.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkstate.lo -MD -MP -MF .deps/atkstate.Tpo -c atkstate.c  -DDLL_EXPORT -DPIC -o .libs/atkstate.o
+mv -f .deps/atkstate.Tpo .deps/atkstate.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkstateset.lo -MD -MP -MF .deps/atkstateset.Tpo -c -o atkstateset.lo atkstateset.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkstateset.lo -MD -MP -MF .deps/atkstateset.Tpo -c atkstateset.c  -DDLL_EXPORT -DPIC -o .libs/atkstateset.o
+mv -f .deps/atkstateset.Tpo .deps/atkstateset.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkstreamablecontent.lo -MD -MP -MF .deps/atkstreamablecontent.Tpo -c -o atkstreamablecontent.lo atkstreamablecontent.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkstreamablecontent.lo -MD -MP -MF .deps/atkstreamablecontent.Tpo -c atkstreamablecontent.c  -DDLL_EXPORT -DPIC -o .libs/atkstreamablecontent.o
+atkstreamablecontent.c: In function 'atk_streamable_content_get_uri':
+atkstreamablecontent.c:152:5: warning: return discards qualifiers from pointer target type
+mv -f .deps/atkstreamablecontent.Tpo .deps/atkstreamablecontent.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atktable.lo -MD -MP -MF .deps/atktable.Tpo -c -o atktable.lo atktable.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atktable.lo -MD -MP -MF .deps/atktable.Tpo -c atktable.c  -DDLL_EXPORT -DPIC -o .libs/atktable.o
+mv -f .deps/atktable.Tpo .deps/atktable.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atktext.lo -MD -MP -MF .deps/atktext.Tpo -c -o atktext.lo atktext.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atktext.lo -MD -MP -MF .deps/atktext.Tpo -c atktext.c  -DDLL_EXPORT -DPIC -o .libs/atktext.o
+atktext.c: In function 'atk_text_free_ranges':
+atktext.c:1368:11: warning: value computed is not used
+mv -f .deps/atktext.Tpo .deps/atktext.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkutil.lo -MD -MP -MF .deps/atkutil.Tpo -c -o atkutil.lo atkutil.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkutil.lo -MD -MP -MF .deps/atkutil.Tpo -c atkutil.c  -DDLL_EXPORT -DPIC -o .libs/atkutil.o
+mv -f .deps/atkutil.Tpo .deps/atkutil.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkmisc.lo -MD -MP -MF .deps/atkmisc.Tpo -c -o atkmisc.lo atkmisc.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkmisc.lo -MD -MP -MF .deps/atkmisc.Tpo -c atkmisc.c  -DDLL_EXPORT -DPIC -o .libs/atkmisc.o
+mv -f .deps/atkmisc.Tpo .deps/atkmisc.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atkvalue.lo -MD -MP -MF .deps/atkvalue.Tpo -c -o atkvalue.lo atkvalue.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atkvalue.lo -MD -MP -MF .deps/atkvalue.Tpo -c atkvalue.c  -DDLL_EXPORT -DPIC -o .libs/atkvalue.o
+mv -f .deps/atkvalue.Tpo .deps/atkvalue.Plo
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR="\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\"" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT atk-enum-types.lo -MD -MP -MF .deps/atk-enum-types.Tpo -c -o atk-enum-types.lo atk-enum-types.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -DATK_DISABLE_DEPRECATED -DATK_COMPILATION -DATK_LOCALEDIR=\"/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale\" -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT atk-enum-types.lo -MD -MP -MF .deps/atk-enum-types.Tpo -c atk-enum-types.c  -DDLL_EXPORT -DPIC -o .libs/atk-enum-types.o
+mv -f .deps/atk-enum-types.Tpo .deps/atk-enum-types.Plo
+windres atk.rc atk-win32-res.o
+(echo -e EXPORTS; gcc -mtune=pentium3 -mthreads -E -P -DINCLUDE_VARIABLES -DG_OS_WIN32 -DALL_FILES - <./atk.symbols | sed -e '/^$/d' -e 's/^/	/' -e 's/G_GNUC_[^ ]*//g') > atk.def
+/bin/sh ../libtool --tag=CC   --mode=link gcc -mtune=pentium3 -mthreads  -O2 -Wall -version-info 3209:1:3209 -no-undefined -export-symbols ./atk.def -no-undefined -Wl,atk-win32-res.o -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libatk-1.0.la -rpath /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib atkaction.lo atkcomponent.lo atkdocument.lo atkeditabletext.lo atkgobjectaccessible.lo atkhyperlink.lo atkhyperlinkimpl.lo atkhypertext.lo atkimage.lo atknoopobject.lo atknoopobjectfactory.lo atkobject.lo atkobjectfactory.lo atkplug.lo atkregistry.lo atkrelation.lo atkrelationset.lo atkselection.lo atksocket.lo atkstate.lo atkstateset.lo atkstreamablecontent.lo atktable.lo atktext.lo atkutil.lo atkmisc.lo atkvalue.lo atk-enum-types.lo -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl   -lintl  
+libtool: link: if test "x`/bin/sed 1q ./atk.def`" = xEXPORTS; then cp ./atk.def .libs/libatk-1.0-0.dll.def; else echo EXPORTS > .libs/libatk-1.0-0.dll.def; cat ./atk.def >> .libs/libatk-1.0-0.dll.def; fi
+libtool: link:  gcc -mtune=pentium3 -mthreads -shared .libs/libatk-1.0-0.dll.def  .libs/atkaction.o .libs/atkcomponent.o .libs/atkdocument.o .libs/atkeditabletext.o .libs/atkgobjectaccessible.o .libs/atkhyperlink.o .libs/atkhyperlinkimpl.o .libs/atkhypertext.o .libs/atkimage.o .libs/atknoopobject.o .libs/atknoopobjectfactory.o .libs/atkobject.o .libs/atkobjectfactory.o .libs/atkplug.o .libs/atkregistry.o .libs/atkrelation.o .libs/atkrelationset.o .libs/atkselection.o .libs/atksocket.o .libs/atkstate.o .libs/atkstateset.o .libs/atkstreamablecontent.o .libs/atktable.o .libs/atktext.o .libs/atkutil.o .libs/atkmisc.o .libs/atkvalue.o .libs/atk-enum-types.o   -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl  -mtune=pentium3 -mthreads -Wl,atk-win32-res.o -Wl,--enable-auto-image-base   -mthreads -o .libs/libatk-1.0-0.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libatk-1.0.dll.a
+Creating library file: .libs/libatk-1.0.dll.a
+libtool: link: ( cd ".libs" && rm -f "libatk-1.0.la" && cp -p "../libatk-1.0.la" "libatk-1.0.la" )
+lib -machine:X86 -name:libatk-1.0-0.dll -def:atk.def -out:atk-1.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library atk-1.0.lib and object atk-1.0.exp
+make[3]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+test -z "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib" || /bin/mkdir -p "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libatk-1.0.la '/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib'
+libtool: install: /bin/install -c .libs/libatk-1.0.dll.a /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/libatk-1.0.dll.a
+libtool: install: base_file=`basename libatk-1.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libatk-1.0.la'i; echo libatk-1.0-0.dll'`
+libtool: install:  dldir=/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/`dirname ../bin/libatk-1.0-0.dll`
+libtool: install:  test -d /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/../bin || mkdir -p /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/../bin
+libtool: install:  /bin/install -c .libs/libatk-1.0-0.dll /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/../bin/libatk-1.0-0.dll
+libtool: install:  chmod a+x /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/../bin/libatk-1.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/../bin/libatk-1.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libatk-1.0.lai /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/libatk-1.0.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+/bin/install -c atk-1.0.lib /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib
+/bin/install -c ./atk.def /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/atk-1.0.def
+test -z "" || /bin/mkdir -p ""
+test -z "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/include/atk-1.0/atk" || /bin/mkdir -p "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/include/atk-1.0/atk"
+ /bin/install -c -m 644 atk.h atkaction.h atkcomponent.h atkdocument.h atkeditabletext.h atkgobjectaccessible.h atkhyperlink.h atkhyperlinkimpl.h atkhypertext.h atknoopobject.h atknoopobjectfactory.h atkobject.h atkobjectfactory.h atkplug.h atkimage.h atkregistry.h atkrelation.h atkrelationtype.h atkrelationset.h atkselection.h atksocket.h atkstate.h atkstateset.h atkstreamablecontent.h atktable.h atktext.h atkutil.h atkmisc.h atkvalue.h atk-enum-types.h '/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/include/atk-1.0/atk'
+test -z "" || /bin/mkdir -p ""
+make[3]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+make[2]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+make[1]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/atk'
+Making install in tests
+make[1]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/tests'
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT teststateset.lo -MD -MP -MF .deps/teststateset.Tpo -c -o teststateset.lo teststateset.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT teststateset.lo -MD -MP -MF .deps/teststateset.Tpo -c teststateset.c  -DDLL_EXPORT -DPIC -o .libs/teststateset.o
+mv -f .deps/teststateset.Tpo .deps/teststateset.Plo
+/bin/sh ../libtool --tag=CC   --mode=link gcc -mtune=pentium3 -mthreads  -O2 -Wall -rpath /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/gtk-2.0/modules -no-undefined -avoid-version -module -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libteststateset.la  teststateset.lo ../atk/libatk-1.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl   
+libtool: link: gcc -mtune=pentium3 -mthreads -shared  .libs/teststateset.o   -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../atk/.libs/libatk-1.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl  -mtune=pentium3 -mthreads -Wl,--enable-auto-image-base   -mthreads -o .libs/libteststateset.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libteststateset.dll.a
+Creating library file: .libs/libteststateset.dll.a
+libtool: link: ( cd ".libs" && rm -f "libteststateset.la" && cp -p "../libteststateset.la" "libteststateset.la" )
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES  -O2 -Wall -MT testrelation.lo -MD -MP -MF .deps/testrelation.Tpo -c -o testrelation.lo testrelation.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -DG_DISABLE_DEPRECATED -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DATK_DISABLE_SINGLE_INCLUDES -O2 -Wall -MT testrelation.lo -MD -MP -MF .deps/testrelation.Tpo -c testrelation.c  -DDLL_EXPORT -DPIC -o .libs/testrelation.o
+mv -f .deps/testrelation.Tpo .deps/testrelation.Plo
+/bin/sh ../libtool --tag=CC   --mode=link gcc -mtune=pentium3 -mthreads  -O2 -Wall -rpath /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/gtk-2.0/modules -no-undefined -avoid-version -module -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libtestrelation.la  testrelation.lo ../atk/libatk-1.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl   
+libtool: link: gcc -mtune=pentium3 -mthreads -shared  .libs/testrelation.o   -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../atk/.libs/libatk-1.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgthread-2.0 -lglib-2.0 -lintl  -mtune=pentium3 -mthreads -Wl,--enable-auto-image-base   -mthreads -o .libs/libtestrelation.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libtestrelation.dll.a
+Creating library file: .libs/libtestrelation.dll.a
+libtool: link: ( cd ".libs" && rm -f "libtestrelation.la" && cp -p "../libtestrelation.la" "libtestrelation.la" )
+make[2]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/tests'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/tests'
+make[1]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/tests'
+Making install in docs
+make[1]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/docs'
+make[2]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/docs'
+make[2]: Nothing to be done for `install-exec-am'.
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/gtk-doc/html/atk
+-- Installing ./html/AtkAction.html
+-- Installing ./html/AtkComponent.html
+-- Installing ./html/AtkDocument.html
+-- Installing ./html/AtkEditableText.html
+-- Installing ./html/AtkGObjectAccessible.html
+-- Installing ./html/AtkHyperlink.html
+-- Installing ./html/AtkHypertext.html
+-- Installing ./html/AtkImage.html
+-- Installing ./html/AtkNoOpObject.html
+-- Installing ./html/AtkNoOpObjectFactory.html
+-- Installing ./html/AtkObject.html
+-- Installing ./html/AtkObjectFactory.html
+-- Installing ./html/AtkRegistry.html
+-- Installing ./html/AtkRelation.html
+-- Installing ./html/AtkRelationSet.html
+-- Installing ./html/AtkSelection.html
+-- Installing ./html/AtkStateSet.html
+-- Installing ./html/AtkStreamableContent.html
+-- Installing ./html/AtkTable.html
+-- Installing ./html/AtkText.html
+-- Installing ./html/AtkUtil.html
+-- Installing ./html/AtkValue.html
+-- Installing ./html/atk-AtkHyperlinkImpl.html
+-- Installing ./html/atk-AtkState.html
+-- Installing ./html/atk.devhelp
+-- Installing ./html/atk.devhelp2
+-- Installing ./html/atk.html
+-- Installing ./html/home.png
+-- Installing ./html/index.html
+-- Installing ./html/index.sgml
+-- Installing ./html/ix01.html
+-- Installing ./html/ix02.html
+-- Installing ./html/ix03.html
+-- Installing ./html/ix04.html
+-- Installing ./html/ix05.html
+-- Installing ./html/ix06.html
+-- Installing ./html/ix07.html
+-- Installing ./html/left.png
+-- Installing ./html/right.png
+-- Installing ./html/style.css
+-- Installing ./html/up.png
+make[2]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/docs'
+make[1]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/docs'
+Making install in po
+make[1]: Entering directory `/devel/src/gnome/atk/atk-1.32.0/po'
+if test -r ".././mkinstalldirs"; then \
+	  .././mkinstalldirs /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share; \
+	else \
+	  /bin/sh ../mkinstalldirs /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share; \
+	fi
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/af/LC_MESSAGES
+installing af.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/af/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/am/LC_MESSAGES
+installing am.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/am/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ar/LC_MESSAGES
+installing ar.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ar/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/as/LC_MESSAGES
+installing as.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/as/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ast/LC_MESSAGES
+installing ast.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ast/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/az/LC_MESSAGES
+installing az.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/az/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/be/LC_MESSAGES
+installing be.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/be/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/be@latin/LC_MESSAGES
+installing be@latin.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/be@latin/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bg/LC_MESSAGES
+installing bg.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bg/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bn/LC_MESSAGES
+installing bn.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bn/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bn_IN/LC_MESSAGES
+installing bn_IN.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bn_IN/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bs/LC_MESSAGES
+installing bs.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/bs/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ca/LC_MESSAGES
+installing ca.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ca/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ca@valencia/LC_MESSAGES
+installing ca@valencia.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ca@valencia/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/cs/LC_MESSAGES
+installing cs.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/cs/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/cy/LC_MESSAGES
+installing cy.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/cy/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/da/LC_MESSAGES
+installing da.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/da/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/de/LC_MESSAGES
+installing de.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/de/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/dz/LC_MESSAGES
+installing dz.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/dz/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/el/LC_MESSAGES
+installing el.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/el/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en_CA/LC_MESSAGES
+installing en_CA.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en_CA/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en_GB/LC_MESSAGES
+installing en_GB.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en_GB/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en@shaw/LC_MESSAGES
+installing en@shaw.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/en@shaw/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/eo/LC_MESSAGES
+installing eo.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/eo/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/es/LC_MESSAGES
+installing es.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/es/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/et/LC_MESSAGES
+installing et.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/et/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/eu/LC_MESSAGES
+installing eu.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/eu/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fa/LC_MESSAGES
+installing fa.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fa/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fi/LC_MESSAGES
+installing fi.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fi/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fr/LC_MESSAGES
+installing fr.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/fr/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ga/LC_MESSAGES
+installing ga.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ga/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/gl/LC_MESSAGES
+installing gl.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/gl/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/gu/LC_MESSAGES
+installing gu.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/gu/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/he/LC_MESSAGES
+installing he.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/he/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hi/LC_MESSAGES
+installing hi.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hi/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hr/LC_MESSAGES
+installing hr.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hr/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hu/LC_MESSAGES
+installing hu.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hu/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hy/LC_MESSAGES
+installing hy.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/hy/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/id/LC_MESSAGES
+installing id.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/id/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/is/LC_MESSAGES
+installing is.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/is/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/it/LC_MESSAGES
+installing it.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/it/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ja/LC_MESSAGES
+installing ja.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ja/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ka/LC_MESSAGES
+installing ka.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ka/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/kk/LC_MESSAGES
+installing kk.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/kk/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/kn/LC_MESSAGES
+installing kn.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/kn/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ko/LC_MESSAGES
+installing ko.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ko/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ku/LC_MESSAGES
+installing ku.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ku/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/li/LC_MESSAGES
+installing li.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/li/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/lt/LC_MESSAGES
+installing lt.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/lt/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/lv/LC_MESSAGES
+installing lv.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/lv/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mai/LC_MESSAGES
+installing mai.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mai/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mk/LC_MESSAGES
+installing mk.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mk/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ml/LC_MESSAGES
+installing ml.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ml/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mn/LC_MESSAGES
+installing mn.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mn/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mr/LC_MESSAGES
+installing mr.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/mr/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ms/LC_MESSAGES
+installing ms.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ms/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nb/LC_MESSAGES
+installing nb.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nb/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ne/LC_MESSAGES
+installing ne.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ne/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nl/LC_MESSAGES
+installing nl.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nl/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nn/LC_MESSAGES
+installing nn.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/nn/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/oc/LC_MESSAGES
+installing oc.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/oc/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/or/LC_MESSAGES
+installing or.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/or/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pa/LC_MESSAGES
+installing pa.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pa/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pl/LC_MESSAGES
+installing pl.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pl/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ps/LC_MESSAGES
+installing ps.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ps/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pt/LC_MESSAGES
+installing pt.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pt/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pt_BR/LC_MESSAGES
+installing pt_BR.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/pt_BR/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ro/LC_MESSAGES
+installing ro.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ro/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ru/LC_MESSAGES
+installing ru.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ru/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/rw/LC_MESSAGES
+installing rw.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/rw/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/si/LC_MESSAGES
+installing si.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/si/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sk/LC_MESSAGES
+installing sk.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sk/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sl/LC_MESSAGES
+installing sl.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sl/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sq/LC_MESSAGES
+installing sq.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sq/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr/LC_MESSAGES
+installing sr.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr@latin/LC_MESSAGES
+installing sr@latin.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr@latin/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr@ije/LC_MESSAGES
+installing sr@ije.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sr@ije/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sv/LC_MESSAGES
+installing sv.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/sv/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ta/LC_MESSAGES
+installing ta.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ta/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/te/LC_MESSAGES
+installing te.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/te/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/th/LC_MESSAGES
+installing th.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/th/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tk/LC_MESSAGES
+installing tk.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tk/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tr/LC_MESSAGES
+installing tr.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tr/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tt/LC_MESSAGES
+installing tt.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/tt/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ug/LC_MESSAGES
+installing ug.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/ug/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/uk/LC_MESSAGES
+installing uk.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/uk/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/vi/LC_MESSAGES
+installing vi.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/vi/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/wa/LC_MESSAGES
+installing wa.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/wa/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/xh/LC_MESSAGES
+installing xh.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/xh/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/yi/LC_MESSAGES
+installing yi.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/yi/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_CN/LC_MESSAGES
+installing zh_CN.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_CN/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_HK/LC_MESSAGES
+installing zh_HK.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_HK/LC_MESSAGES/atk10.mo
+mkdir -p -- /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_TW/LC_MESSAGES
+installing zh_TW.gmo as /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/locale/zh_TW/LC_MESSAGES/atk10.mo
+if test "atk" = "glib"; then \
+	  if test -r ".././mkinstalldirs"; then \
+	    .././mkinstalldirs /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/glib-2.0/gettext/po; \
+	  else \
+	    /bin/sh ../mkinstalldirs /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/glib-2.0/gettext/po; \
+	  fi; \
+	  /bin/install -c -m 644 ./Makefile.in.in \
+			  /devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/share/glib-2.0/gettext/po/Makefile.in.in; \
+	else \
+	  : ; \
+	fi
+make[1]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0/po'
+make[1]: Entering directory `/devel/src/gnome/atk/atk-1.32.0'
+make[2]: Entering directory `/devel/src/gnome/atk/atk-1.32.0'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/pkgconfig" || /bin/mkdir -p "/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/pkgconfig"
+ /bin/install -c -m 644 atk.pc '/devel/target/2b4acd63a3ff1c3662e3b9b0910e896f/lib/pkgconfig'
+make[2]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0'
+make[1]: Leaving directory `/devel/src/gnome/atk/atk-1.32.0'
+++ ./atk-zip.sh
+rm: cannot lstat `/tmp/atk-1.32.0.zip': No such file or directory
+  adding: bin/libatk-1.0-0.dll (deflated 69%)
+  adding: share/locale/af/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/am/LC_MESSAGES/atk10.mo (deflated 40%)
+  adding: share/locale/ar/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/as/LC_MESSAGES/atk10.mo (deflated 67%)
+  adding: share/locale/ast/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/az/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/be/LC_MESSAGES/atk10.mo (deflated 64%)
+  adding: share/locale/be@latin/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/bg/LC_MESSAGES/atk10.mo (deflated 65%)
+  adding: share/locale/bn/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/bn_IN/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/bs/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/ca/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/ca@valencia/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/cs/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/cy/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/da/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/de/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/dz/LC_MESSAGES/atk10.mo (deflated 74%)
+  adding: share/locale/el/LC_MESSAGES/atk10.mo (deflated 65%)
+  adding: share/locale/en@shaw/LC_MESSAGES/atk10.mo (deflated 70%)
+  adding: share/locale/en_CA/LC_MESSAGES/atk10.mo (deflated 68%)
+  adding: share/locale/en_GB/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/eo/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/es/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/et/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/eu/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/fa/LC_MESSAGES/atk10.mo (deflated 63%)
+  adding: share/locale/fi/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/fr/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/ga/LC_MESSAGES/atk10.mo (deflated 41%)
+  adding: share/locale/gl/LC_MESSAGES/atk10.mo (deflated 61%)
+  adding: share/locale/gu/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/he/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/hi/LC_MESSAGES/atk10.mo (deflated 68%)
+  adding: share/locale/hr/LC_MESSAGES/atk10.mo (deflated 58%)
+  adding: share/locale/hu/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/hy/LC_MESSAGES/atk10.mo (deflated 66%)
+  adding: share/locale/id/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/is/LC_MESSAGES/atk10.mo (deflated 42%)
+  adding: share/locale/it/LC_MESSAGES/atk10.mo (deflated 61%)
+  adding: share/locale/ja/LC_MESSAGES/atk10.mo (deflated 61%)
+  adding: share/locale/ka/LC_MESSAGES/atk10.mo (deflated 71%)
+  adding: share/locale/kk/LC_MESSAGES/atk10.mo (deflated 44%)
+  adding: share/locale/kn/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/ko/LC_MESSAGES/atk10.mo (deflated 57%)
+  adding: share/locale/ku/LC_MESSAGES/atk10.mo (deflated 58%)
+  adding: share/locale/li/LC_MESSAGES/atk10.mo (deflated 43%)
+  adding: share/locale/lt/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/lv/LC_MESSAGES/atk10.mo (deflated 58%)
+  adding: share/locale/mai/LC_MESSAGES/atk10.mo (deflated 68%)
+  adding: share/locale/mk/LC_MESSAGES/atk10.mo (deflated 65%)
+  adding: share/locale/ml/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/mn/LC_MESSAGES/atk10.mo (deflated 63%)
+  adding: share/locale/mr/LC_MESSAGES/atk10.mo (deflated 67%)
+  adding: share/locale/ms/LC_MESSAGES/atk10.mo (deflated 51%)
+  adding: share/locale/nb/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/ne/LC_MESSAGES/atk10.mo (deflated 69%)
+  adding: share/locale/nl/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/nn/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/oc/LC_MESSAGES/atk10.mo (deflated 45%)
+  adding: share/locale/or/LC_MESSAGES/atk10.mo (deflated 67%)
+  adding: share/locale/pa/LC_MESSAGES/atk10.mo (deflated 66%)
+  adding: share/locale/pl/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/ps/LC_MESSAGES/atk10.mo (deflated 62%)
+  adding: share/locale/pt/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/pt_BR/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/ro/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/ru/LC_MESSAGES/atk10.mo (deflated 64%)
+  adding: share/locale/rw/LC_MESSAGES/atk10.mo (deflated 30%)
+  adding: share/locale/si/LC_MESSAGES/atk10.mo (deflated 46%)
+  adding: share/locale/sk/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/sl/LC_MESSAGES/atk10.mo (deflated 58%)
+  adding: share/locale/sq/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/sr/LC_MESSAGES/atk10.mo (deflated 64%)
+  adding: share/locale/sr@ije/LC_MESSAGES/atk10.mo (deflated 64%)
+  adding: share/locale/sr@latin/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/sv/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/ta/LC_MESSAGES/atk10.mo (deflated 70%)
+  adding: share/locale/te/LC_MESSAGES/atk10.mo (deflated 66%)
+  adding: share/locale/th/LC_MESSAGES/atk10.mo (deflated 70%)
+  adding: share/locale/tk/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/tr/LC_MESSAGES/atk10.mo (deflated 59%)
+  adding: share/locale/tt/LC_MESSAGES/atk10.mo (deflated 61%)
+  adding: share/locale/ug/LC_MESSAGES/atk10.mo (deflated 63%)
+  adding: share/locale/uk/LC_MESSAGES/atk10.mo (deflated 64%)
+  adding: share/locale/vi/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/wa/LC_MESSAGES/atk10.mo (deflated 52%)
+  adding: share/locale/xh/LC_MESSAGES/atk10.mo (deflated 60%)
+  adding: share/locale/yi/LC_MESSAGES/atk10.mo (deflated 45%)
+  adding: share/locale/zh_CN/LC_MESSAGES/atk10.mo (deflated 56%)
+  adding: share/locale/zh_HK/LC_MESSAGES/atk10.mo (deflated 56%)
+  adding: share/locale/zh_TW/LC_MESSAGES/atk10.mo (deflated 56%)
+rm: cannot lstat `/tmp/atk-dev-1.32.0.zip': No such file or directory
+  adding: include/atk-1.0/ (stored 0%)
+  adding: include/atk-1.0/atk/ (stored 0%)
+  adding: include/atk-1.0/atk/atk-enum-types.h (deflated 68%)
+  adding: include/atk-1.0/atk/atk.h (deflated 61%)
+  adding: include/atk-1.0/atk/atkaction.h (deflated 68%)
+  adding: include/atk-1.0/atk/atkcomponent.h (deflated 82%)
+  adding: include/atk-1.0/atk/atkdocument.h (deflated 67%)
+  adding: include/atk-1.0/atk/atkeditabletext.h (deflated 74%)
+  adding: include/atk-1.0/atk/atkgobjectaccessible.h (deflated 61%)
+  adding: include/atk-1.0/atk/atkhyperlink.h (deflated 69%)
+  adding: include/atk-1.0/atk/atkhyperlinkimpl.h (deflated 56%)
+  adding: include/atk-1.0/atk/atkhypertext.h (deflated 64%)
+  adding: include/atk-1.0/atk/atkimage.h (deflated 66%)
+  adding: include/atk-1.0/atk/atkmisc.h (deflated 60%)
+  adding: include/atk-1.0/atk/atknoopobject.h (deflated 59%)
+  adding: include/atk-1.0/atk/atknoopobjectfactory.h (deflated 62%)
+  adding: include/atk-1.0/atk/atkobject.h (deflated 74%)
+  adding: include/atk-1.0/atk/atkobjectfactory.h (deflated 62%)
+  adding: include/atk-1.0/atk/atkplug.h (deflated 55%)
+  adding: include/atk-1.0/atk/atkregistry.h (deflated 62%)
+  adding: include/atk-1.0/atk/atkrelation.h (deflated 65%)
+  adding: include/atk-1.0/atk/atkrelationset.h (deflated 69%)
+  adding: include/atk-1.0/atk/atkrelationtype.h (deflated 64%)
+  adding: include/atk-1.0/atk/atkselection.h (deflated 69%)
+  adding: include/atk-1.0/atk/atksocket.h (deflated 56%)
+  adding: include/atk-1.0/atk/atkstate.h (deflated 63%)
+  adding: include/atk-1.0/atk/atkstateset.h (deflated 71%)
+  adding: include/atk-1.0/atk/atkstreamablecontent.h (deflated 66%)
+  adding: include/atk-1.0/atk/atktable.h (deflated 86%)
+  adding: include/atk-1.0/atk/atktext.h (deflated 79%)
+  adding: include/atk-1.0/atk/atkutil.h (deflated 67%)
+  adding: include/atk-1.0/atk/atkvalue.h (deflated 64%)
+  adding: lib/libatk-1.0.dll.a (deflated 94%)
+  adding: lib/atk-1.0.lib (deflated 88%)
+  adding: lib/atk-1.0.def (deflated 80%)
+  adding: lib/pkgconfig/atk.pc (deflated 30%)
+++ mv /tmp/atk-1.32.0.zip /tmp/atk_1.32.0-2_win32.zip
+++ mv /tmp/atk-dev-1.32.0.zip /tmp/atk-dev_1.32.0-2_win32.zip

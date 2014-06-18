@@ -1,0 +1,29 @@
+This is a bundle containing the GTK+ stack and its dependencies
+for Windows.  As such it is nothing more than a combination of the
+individual packages it consists of. For a list, see
+share/doc/gtk+-bundle_2.24.10-20120208_win32/components.lst.
+
+Both run-time and developer packages are included.
+
+This bundle is intended for software developers and packagers. You are
+expected to know what to do with it, more or less.
+
+To use it, create some empty folder like c:\opt\gtk . Using either
+Windows Explorer's built-in zip file management, or the command-line
+unzip.exe, available for instance at
+ftp://tug.ctan.org/tex-archive/tools/zip/info-zip/WIN32/unz552xN.exe
+unzip this bundle. Avoid Winzip! It is known to behave oddly.
+
+(But you presumably already did extract the files, as you are reading
+this file.)
+
+Then add the bin folder to your PATH. Make sure you have no other
+versions of GTK+ in PATH. Run:
+    pkg-config --cflags gtk+-2.0
+and verify that it prints out something reasonable. Run:
+    gtk-demo
+and verify that it works.
+
+To use the MS-Windows theme engine, create a file etc/gtk-2.0/gtkrc
+containing the line:
+    gtk-theme-name = "MS-Windows"

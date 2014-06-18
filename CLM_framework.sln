@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiTrackCLM", "exe\MultiTrackCLM\MultiTrackCLM.vcxproj", "{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puppets", "lib\local\Puppets\Puppets.vcxproj", "{FF1E8D3E-467C-47AC-B586-A3CB462003CF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimplePuppets", "exe\SimplePuppets\SimplePuppets.vcxproj", "{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +43,14 @@ Global
 		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Debug|Win32.Build.0 = Debug|Win32
 		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Release|Win32.ActiveCfg = Release|Win32
 		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Release|Win32.Build.0 = Release|Win32
+		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Debug|Win32.Build.0 = Debug|Win32
+		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Release|Win32.ActiveCfg = Release|Win32
+		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Release|Win32.Build.0 = Release|Win32
+		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Debug|Win32.Build.0 = Debug|Win32
+		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Release|Win32.ActiveCfg = Release|Win32
+		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

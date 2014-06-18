@@ -1,0 +1,11 @@
+prefix=/devel/target/6d8f37c07dcd9df52e2d31a4ca013477
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Pixman
+Description: The pixman library (version 1)
+Version: 0.24.0
+Cflags: -I${includedir}/pixman-1 
+Libs: -L${libdir} -lpixman-1 
+

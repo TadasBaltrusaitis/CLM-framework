@@ -1,0 +1,806 @@
++++ latest --arch=win32 gettext-runtime gettext-tools glib pkg-config zlib libpng pixman cairo expat fontconfig freetype
+++ DEPS='gettext-runtime-0.18.1.1-2 gettext-tools-0.18.1.1-2 glib-2.28.8-1 pkg-config-0.26-1 zlib-1.2.5-2 libpng-1.4.3-1 pixman-0.20.0-1 cairo-1.10.2-1 expat-2.0.1-1 fontconfig-2.8.0-2 freetype-2.4.4-1'
++++ latest --arch=win32 gettext-runtime
+++ GETTEXT_RUNTIME=gettext-runtime-0.18.1.1-2
+++ PKG_CONFIG_PATH=/dummy
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/pixman-0.20.0-1/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/cairo-1.10.2-1/lib/pkgconfig:/devel/dist/win32/pixman-0.20.0-1/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/cairo-1.10.2-1/bin:/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/expat-2.0.1-1/lib/pkgconfig:/devel/dist/win32/cairo-1.10.2-1/lib/pkgconfig:/devel/dist/win32/pixman-0.20.0-1/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/expat-2.0.1-1/bin:/devel/dist/win32/cairo-1.10.2-1/bin:/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/fontconfig-2.8.0-2/lib/pkgconfig:/devel/dist/win32/expat-2.0.1-1/lib/pkgconfig:/devel/dist/win32/cairo-1.10.2-1/lib/pkgconfig:/devel/dist/win32/pixman-0.20.0-1/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/fontconfig-2.8.0-2/bin:/devel/dist/win32/expat-2.0.1-1/bin:/devel/dist/win32/cairo-1.10.2-1/bin:/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$DEPS'
+++ PKG_CONFIG_PATH=/devel/dist/win32/freetype-2.4.4-1/lib/pkgconfig:/devel/dist/win32/fontconfig-2.8.0-2/lib/pkgconfig:/devel/dist/win32/expat-2.0.1-1/lib/pkgconfig:/devel/dist/win32/cairo-1.10.2-1/lib/pkgconfig:/devel/dist/win32/pixman-0.20.0-1/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ PATH=/devel/dist/win32/freetype-2.4.4-1/bin:/devel/dist/win32/fontconfig-2.8.0-2/bin:/devel/dist/win32/expat-2.0.1-1/bin:/devel/dist/win32/cairo-1.10.2-1/bin:/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mthreads'
+++ LDFLAGS='-L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base'
+++ CFLAGS=-O2
+++ ./configure --enable-debug=yes --disable-gtk-doc --without-x --prefix=/devel/target/e7ccdb85e6820e4560d75f6316aa481d --enable-explicit-deps=no --with-included-modules=yes
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for native Win32... yes
+checking for gcc... gcc -mthreads
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mthreads accepts -g... yes
+checking for gcc -mthreads option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mthreads... gcc3
+checking for c++... c++
+checking whether we are using the GNU C++ compiler... yes
+checking whether c++ accepts -g... yes
+checking dependency style of c++... gcc3
+checking whether we are using the GNU C++ compiler... (cached) yes
+checking whether c++ accepts -g... (cached) yes
+checking dependency style of c++... (cached) gcc3
+checking for mprotect... yes
+checking for sysconf... no
+checking for getpagesize... yes
+checking how to run the C preprocessor... gcc -mthreads -E
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for unistd.h... (cached) yes
+checking sys/mman.h usability... no
+checking sys/mman.h presence... no
+checking for sys/mman.h... no
+checking for as... as
+checking for dlltool... dlltool
+checking for objdump... objdump
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mthreads... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /mingw/bin/nm
+checking the name lister (/mingw/bin/nm) interface... BSD nm
+checking whether ln -s works... no, using cp -p
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert i686-pc-mingw32 file names to i686-pc-mingw32 format... func_convert_file_msys_to_w32
+checking how to convert i686-pc-mingw32 file names to toolchain format... func_convert_file_msys_to_w32
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... (cached) objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for dlltool... (cached) dlltool
+checking how to associate runtime and link libraries... func_cygming_dll_for_implib
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /mingw/bin/nm output from gcc -mthreads object... ok
+checking for sysroot... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking if gcc -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mthreads option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mthreads PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mthreads static flag -static works... yes
+checking if gcc -mthreads supports -c -o file.o... yes
+checking if gcc -mthreads supports -c -o file.o... (cached) yes
+checking whether the gcc -mthreads linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking how to run the C++ preprocessor... c++ -E
+checking for ld used by c++... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking whether the c++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking for c++ option to produce PIC... -DDLL_EXPORT -DPIC
+checking if c++ PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if c++ static flag -static works... yes
+checking if c++ supports -c -o file.o... yes
+checking if c++ supports -c -o file.o... (cached) yes
+checking whether the c++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+configure: creating ./config.lt
+config.lt: creating libtool
+checking for some Win32 platform... yes
+checking for windres... windres
+checking for lib.exe... yes
+checking pkg-config is at least version 0.9.0... yes
+checking for FONTCONFIG... yes
+checking for FREETYPE... yes
+checking how to get MSVC-compatible struct packing... -mms-bitfields
+checking Carbon/Carbon.h usability... no
+checking Carbon/Carbon.h presence... no
+checking for Carbon/Carbon.h... no
+checking for CoreText availability... no
+checking for CAIRO... yes
+checking which cairo font backends could be used... win32 freetype 
+checking for GLIB... yes
+checking for LIBTHAI... no
+no
+checking for gobject-introspection... no
+checking modules to link statically... arabic-fc,arabic-lang,basic-fc,basic-win32,basic-x,basic-atsui,basic-coretext,hangul-fc,hebrew-fc,indic-fc,indic-lang,khmer-fc,syriac-fc,thai-fc,tibetan-fc
+checking dynamic modules to build... arabic-fc,arabic-lang,basic-fc,basic-win32,basic-x,basic-atsui,basic-coretext,hangul-fc,hebrew-fc,indic-fc,indic-lang,khmer-fc,syriac-fc,thai-fc,tibetan-fc (those built into Pango will be excluded)
+checking for flockfile... no
+checking for strtok_r... no
+checking for gtkdoc-check... no
+checking for gtkdoc-rebase... no
+checking for gtkdoc-mkpdf... no
+checking whether to build gtk-doc documentation... no
+checking Whether to write dependencies into .pc files... no
+checking for dirent.h that defines DIR... yes
+checking for library containing opendir... none required
+checking for unistd.h... (cached) yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating pango/Makefile
+config.status: creating pango/mini-fribidi/Makefile
+config.status: creating pango/opentype/Makefile
+config.status: creating pango/pango.rc
+config.status: creating pango/pangoft2.rc
+config.status: creating pango/pangowin32.rc
+config.status: creating pango/pangocairo.rc
+config.status: creating pango/pangox.rc
+config.status: creating pango/pangoxft.rc
+config.status: creating pango-view/Makefile
+config.status: creating modules/Makefile
+config.status: creating modules/arabic/Makefile
+config.status: creating modules/basic/Makefile
+config.status: creating modules/hangul/Makefile
+config.status: creating modules/hebrew/Makefile
+config.status: creating modules/indic/Makefile
+config.status: creating modules/khmer/Makefile
+config.status: creating modules/syriac/Makefile
+config.status: creating modules/thai/Makefile
+config.status: creating modules/tibetan/Makefile
+config.status: creating examples/Makefile
+config.status: creating docs/Makefile
+config.status: creating docs/version.xml
+config.status: creating tools/Makefile
+config.status: creating tests/Makefile
+config.status: creating build/Makefile
+config.status: creating build/win32/Makefile
+config.status: creating build/win32/vs9/Makefile
+config.status: creating pango.pc
+config.status: creating pangox.pc
+config.status: creating pangowin32.pc
+config.status: creating pangoft2.pc
+config.status: creating pangoxft.pc
+config.status: creating pangocairo.pc
+config.status: creating pango-uninstalled.pc
+config.status: creating pangox-uninstalled.pc
+config.status: creating pangowin32-uninstalled.pc
+config.status: creating pangoft2-uninstalled.pc
+config.status: creating pangoxft-uninstalled.pc
+config.status: creating pangocairo-uninstalled.pc
+config.status: creating pango-zip.sh
+config.status: creating config.h.win32
+config.status: creating tests/runtests.sh
+config.status: creating config.h
+config.status: config.h is unchanged
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing pango/module-defs.h commands
+config.status: executing pango/module-defs-x.c commands
+config.status: executing pango/module-defs-fc.c commands
+config.status: executing pango/module-defs-win32.c commands
+config.status: executing pango/module-defs-atsui.c commands
+config.status: executing pango/module-defs-coretext.c commands
+config.status: executing pango/module-defs-lang.c commands
+config.status: executing pango/pango-features.h commands
+config.status: creating pango/pango-features.h
+config.status: pango/pango-features.h is unchanged
+configuration:
+	backends: Cairo Win32 FreeType
+++ PATH=/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin:.libs:/devel/dist/win32/freetype-2.4.4-1/bin:/devel/dist/win32/fontconfig-2.8.0-2/bin:/devel/dist/win32/expat-2.0.1-1/bin:/devel/dist/win32/cairo-1.10.2-1/bin:/devel/dist/win32/pixman-0.20.0-1/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ make install
+Making install in pango
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+make  install-recursive
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+Making install in opentype
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango/opentype'
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango/opentype'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango/opentype'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango/opentype'
+Making install in mini-fribidi
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango/mini-fribidi'
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango/mini-fribidi'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango/mini-fribidi'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango/mini-fribidi'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+  CC     module-defs-lang.lo
+  GEN    included-modules
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[5]: Nothing to be done for `included-modules'.
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+  GEN    ../modules/arabic/libpango-arabic-lang.la
+  GEN    ../modules/indic/libpango-indic-lang.la
+  GEN    pango-win32-res.o
+  CCLD   libpango-1.0.la
+Creating library file: .libs/libpango-1.0.dll.a
+  CC     module-defs-fc.lo
+  GEN    ../modules/arabic/libpango-arabic-fc.la
+  GEN    ../modules/basic/libpango-basic-fc.la
+  GEN    ../modules/hangul/libpango-hangul-fc.la
+  GEN    ../modules/hebrew/libpango-hebrew-fc.la
+  GEN    ../modules/indic/libpango-indic-fc.la
+  GEN    ../modules/khmer/libpango-khmer-fc.la
+  GEN    ../modules/syriac/libpango-syriac-fc.la
+  GEN    ../modules/thai/libpango-thai-fc.la
+  GEN    ../modules/tibetan/libpango-tibetan-fc.la
+  GEN    pangoft2-win32-res.o
+  CCLD   libpangoft2-1.0.la
+Creating library file: .libs/libpangoft2-1.0.dll.a
+  GEN    pangocairo-win32-res.o
+  CC     module-defs-win32.lo
+  GEN    ../modules/basic/libpango-basic-win32.la
+  GEN    pangowin32-win32-res.o
+  CCLD   libpangowin32-1.0.la
+Creating library file: .libs/libpangowin32-1.0.dll.a
+  CCLD   libpangocairo-1.0.la
+libtool: link: warning: `c:/mingw/bin/../lib/gcc/mingw32/4.5.2/libstdc++.la' seems to be moved
+Creating library file: .libs/libpangocairo-1.0.dll.a
+  CCLD   pango-querymodules.exe
+  GEN    pango-1.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library pango-1.0.lib and object pango-1.0.exp
+  GEN    pangowin32-1.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library pangowin32-1.0.lib and object pangowin32-1.0.exp
+  GEN    pangocairo-1.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library pangocairo-1.0.lib and object pangocairo-1.0.exp
+  GEN    pangoft2-1.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library pangoft2-1.0.lib and object pangoft2-1.0.exp
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+  GEN    included-modules
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[6]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[6]: Nothing to be done for `included-modules'.
+make[6]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+  GEN    ../modules/arabic/libpango-arabic-lang.la
+  GEN    ../modules/indic/libpango-indic-lang.la
+  GEN    ../modules/arabic/libpango-arabic-fc.la
+  GEN    ../modules/basic/libpango-basic-fc.la
+  GEN    ../modules/hangul/libpango-hangul-fc.la
+  GEN    ../modules/hebrew/libpango-hebrew-fc.la
+  GEN    ../modules/indic/libpango-indic-fc.la
+  GEN    ../modules/khmer/libpango-khmer-fc.la
+  GEN    ../modules/syriac/libpango-syriac-fc.la
+  GEN    ../modules/thai/libpango-thai-fc.la
+  GEN    ../modules/tibetan/libpango-tibetan-fc.la
+  GEN    ../modules/basic/libpango-basic-win32.la
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libpango-1.0.la libpangoft2-1.0.la libpangocairo-1.0.la libpangowin32-1.0.la '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib'
+libtool: install: /bin/install -c .libs/libpango-1.0.dll.a /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpango-1.0.dll.a
+libtool: install: base_file=`basename libpango-1.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libpango-1.0.la'i; echo libpango-1.0-0.dll'`
+libtool: install:  dldir=/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/`dirname ../bin/libpango-1.0-0.dll`
+libtool: install:  test -d /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin || mkdir -p /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin
+libtool: install:  /bin/install -c .libs/libpango-1.0-0.dll /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpango-1.0-0.dll
+libtool: install:  chmod a+x /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpango-1.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpango-1.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libpango-1.0.lai /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpango-1.0.la
+libtool: install: /bin/install -c .libs/libpangoft2-1.0.dll.a /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangoft2-1.0.dll.a
+libtool: install: base_file=`basename libpangoft2-1.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libpangoft2-1.0.la'i; echo libpangoft2-1.0-0.dll'`
+libtool: install:  dldir=/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/`dirname ../bin/libpangoft2-1.0-0.dll`
+libtool: install:  test -d /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin || mkdir -p /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin
+libtool: install:  /bin/install -c .libs/libpangoft2-1.0-0.dll /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangoft2-1.0-0.dll
+libtool: install:  chmod a+x /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangoft2-1.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangoft2-1.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libpangoft2-1.0.lai /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangoft2-1.0.la
+libtool: install: /bin/install -c .libs/libpangocairo-1.0.dll.a /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangocairo-1.0.dll.a
+libtool: install: base_file=`basename libpangocairo-1.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libpangocairo-1.0.la'i; echo libpangocairo-1.0-0.dll'`
+libtool: install:  dldir=/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/`dirname ../bin/libpangocairo-1.0-0.dll`
+libtool: install:  test -d /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin || mkdir -p /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin
+libtool: install:  /bin/install -c .libs/libpangocairo-1.0-0.dll /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangocairo-1.0-0.dll
+libtool: install:  chmod a+x /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangocairo-1.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangocairo-1.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libpangocairo-1.0.lai /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangocairo-1.0.la
+libtool: install: /bin/install -c .libs/libpangowin32-1.0.dll.a /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangowin32-1.0.dll.a
+libtool: install: base_file=`basename libpangowin32-1.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libpangowin32-1.0.la'i; echo libpangowin32-1.0-0.dll'`
+libtool: install:  dldir=/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/`dirname ../bin/libpangowin32-1.0-0.dll`
+libtool: install:  test -d /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin || mkdir -p /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin
+libtool: install:  /bin/install -c .libs/libpangowin32-1.0-0.dll /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangowin32-1.0-0.dll
+libtool: install:  chmod a+x /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangowin32-1.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/../bin/libpangowin32-1.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libpangowin32-1.0.lai /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/libpangowin32-1.0.la
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin"
+  /bin/sh ../libtool   --mode=install /bin/install -c pango-querymodules.exe '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin'
+libtool: install: /bin/install -c .libs/pango-querymodules.exe /devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin/pango-querymodules.exe
+make  install-exec-hook
+make[5]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+for i in libpangoft2-1.0.la libpangoxft-1.0.la libpangox-1.0.la libpangowin32-1.0.la; do \
+	  test -f /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/$i && /bin/sh ../sanitize-la.sh /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/$i ; \
+	done
+make[5]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+test -z "" || /bin/mkdir -p ""
+/bin/install -c pango-1.0.lib /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib
+/bin/install -c pangoft2-1.0.lib /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib
+/bin/install -c pangowin32-1.0.lib /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib
+/bin/install -c pangocairo-1.0.lib /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib
+  GEN    install-def-files
+/bin/install -c ./pangoft2.def /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pangoft2-1.0.def
+/bin/install -c ./pangowin32.def /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pangowin32-1.0.def
+/bin/install -c ./pangocairo.def /devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pangocairo-1.0.def
+test -z "" || /bin/mkdir -p ""
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/include/pango-1.0/pango" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/include/pango-1.0/pango"
+ /bin/install -c -m 644 pango.h pango-attributes.h pango-bidi-type.h pango-break.h pango-context.h pango-coverage.h pango-engine.h pango-font.h pango-fontmap.h pango-fontset.h pango-glyph.h pango-glyph-item.h pango-gravity.h pango-item.h pango-language.h pango-layout.h pango-matrix.h pango-modules.h pango-renderer.h pango-script.h pango-tabs.h pango-types.h pango-utils.h pango-features.h pango-enum-types.h pango-ot.h pangofc-font.h pangofc-fontmap.h pangofc-decoder.h pangoft2.h pangocairo.h pangowin32.h '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/include/pango-1.0/pango'
+test -z "" || /bin/mkdir -p ""
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango'
+Making install in modules
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+Making install in arabic
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/arabic'
+Making install in basic
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/basic'
+Making install in hangul
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hangul'
+Making install in hebrew
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/hebrew'
+Making install in indic
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/indic'
+Making install in khmer
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/khmer'
+Making install in syriac
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/syriac'
+Making install in thai
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/thai'
+Making install in tibetan
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[3]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pango/1.6.0/modules"
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules/tibetan'
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+  GEN    pango.modules
+***
+*** No dynamic modules found, or cross-compiling
+*** Will use only static modules for tests and examples.
+***
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+make[3]: Nothing to be done for `install-exec-am'.
+/bin/sh /devel/src/gnome/pango/pango-1.29.4/install-sh -d /devel/target/e7ccdb85e6820e4560d75f6316aa481d/etc/pango && ../pango/pango-querymodules.exe > /devel/target/e7ccdb85e6820e4560d75f6316aa481d/etc/pango/pango.modules
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/modules'
+Making install in pango-view
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+make  install-am
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+  CCLD   pango-view.exe
+  GEN    pango-view.1
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+make[3]: `pango-view.1.in' is up to date.
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin"
+  /bin/sh ../libtool   --mode=install /bin/install -c pango-view.exe '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin'
+libtool: install: /bin/install -c .libs/pango-view.exe /devel/target/e7ccdb85e6820e4560d75f6316aa481d/bin/pango-view.exe
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1"
+ /bin/install -c -m 644 pango-view.1 '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/pango-view'
+Making install in examples
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/examples'
+  CCLD   cairosimple.exe
+  CCLD   cairotwisted.exe
+  CCLD   cairoshape.exe
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/examples'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/examples'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/examples'
+Making install in docs
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+make  install-am
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+make[3]: Nothing to be done for `install-exec-am'.
+ /bin/install -c -m 644 ./html/PangoEngineLang.html
+ /bin/install -c -m 644 ./html/PangoEngineShape.html
+ /bin/install -c -m 644 ./html/PangoFcDecoder.html
+ /bin/install -c -m 644 ./html/PangoFcFont.html
+ /bin/install -c -m 644 ./html/PangoFcFontMap.html
+ /bin/install -c -m 644 ./html/PangoMarkupFormat.html
+ /bin/install -c -m 644 ./html/home.png
+ /bin/install -c -m 644 ./html/index-1.10.html
+ /bin/install -c -m 644 ./html/index-1.12.html
+ /bin/install -c -m 644 ./html/index-1.14.html
+ /bin/install -c -m 644 ./html/index-1.16.html
+ /bin/install -c -m 644 ./html/index-1.18.html
+ /bin/install -c -m 644 ./html/index-1.2.html
+ /bin/install -c -m 644 ./html/index-1.20.html
+ /bin/install -c -m 644 ./html/index-1.22.html
+ /bin/install -c -m 644 ./html/index-1.24.html
+ /bin/install -c -m 644 ./html/index-1.26.html
+ /bin/install -c -m 644 ./html/index-1.28.html
+ /bin/install -c -m 644 ./html/index-1.30.html
+ /bin/install -c -m 644 ./html/index-1.4.html
+ /bin/install -c -m 644 ./html/index-1.6.html
+ /bin/install -c -m 644 ./html/index-1.8.html
+ /bin/install -c -m 644 ./html/index-all.html
+ /bin/install -c -m 644 ./html/index-deprecated.html
+ /bin/install -c -m 644 ./html/index.html
+ /bin/install -c -m 644 ./html/index.sgml
+ /bin/install -c -m 644 ./html/layout.gif
+ /bin/install -c -m 644 ./html/left.png
+ /bin/install -c -m 644 ./html/lowlevel.html
+ /bin/install -c -m 644 ./html/pango-ATSUI-Fonts.html
+ /bin/install -c -m 644 ./html/pango-Bidirectional-Text.html
+ /bin/install -c -m 644 ./html/pango-Cairo-Rendering.html
+ /bin/install -c -m 644 ./html/pango-Coverage-Maps.html
+ /bin/install -c -m 644 ./html/pango-Engines.html
+ /bin/install -c -m 644 ./html/pango-Fonts.html
+ /bin/install -c -m 644 ./html/pango-FreeType-Fonts-and-Rendering.html
+ /bin/install -c -m 644 ./html/pango-Glyph-Storage.html
+ /bin/install -c -m 644 ./html/pango-Layout-Objects.html
+ /bin/install -c -m 644 ./html/pango-Miscellaneous-Utilities.html
+ /bin/install -c -m 644 ./html/pango-Modules.html
+ /bin/install -c -m 644 ./html/pango-OpenType-Font-Handling.html
+ /bin/install -c -m 644 ./html/pango-Scripts-and-Languages.html
+ /bin/install -c -m 644 ./html/pango-Tab-Stops.html
+ /bin/install -c -m 644 ./html/pango-Text-Attributes.html
+ /bin/install -c -m 644 ./html/pango-Text-Processing.html
+ /bin/install -c -m 644 ./html/pango-Version-Checking.html
+ /bin/install -c -m 644 ./html/pango-Vertical-Text.html
+ /bin/install -c -m 644 ./html/pango-Win32-Fonts-and-Rendering.html
+ /bin/install -c -m 644 ./html/pango-X-Fonts-and-Rendering.html
+ /bin/install -c -m 644 ./html/pango-Xft-Fonts-and-Rendering.html
+ /bin/install -c -m 644 ./html/pango-hierarchy.html
+ /bin/install -c -m 644 ./html/pango-pango-renderer.html
+ /bin/install -c -m 644 ./html/pango-querymodules.html
+ /bin/install -c -m 644 ./html/pango.devhelp2
+ /bin/install -c -m 644 ./html/pango.html
+ /bin/install -c -m 644 ./html/rendering.html
+ /bin/install -c -m 644 ./html/right.png
+ /bin/install -c -m 644 ./html/rotated-text.png
+ /bin/install -c -m 644 ./html/style.css
+ /bin/install -c -m 644 ./html/tools.html
+ /bin/install -c -m 644 ./html/up.png
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1"
+ /bin/install -c -m 644 pango-querymodules.1 '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/share/man/man1'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/docs'
+Making install in tools
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/tools'
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/tools'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/tools'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/tools'
+Making install in tests
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/tests'
+  CCLD   dump-boundaries.exe
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/tests'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/tests'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/tests'
+Making install in build
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build'
+Making install in win32
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+Making install in vs9
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build/win32/vs9'
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build/win32/vs9'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build/win32/vs9'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build/win32/vs9'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+make[4]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build/win32'
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build'
+make[3]: Entering directory `/devel/src/gnome/pango/pango-1.29.4/build'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4/build'
+make[1]: Entering directory `/devel/src/gnome/pango/pango-1.29.4'
+make[2]: Entering directory `/devel/src/gnome/pango/pango-1.29.4'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pkgconfig" || /bin/mkdir -p "/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pkgconfig"
+ /bin/install -c -m 644 pango.pc pangocairo.pc pangoft2.pc pangowin32.pc '/devel/target/e7ccdb85e6820e4560d75f6316aa481d/lib/pkgconfig'
+make[2]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4'
+make[1]: Leaving directory `/devel/src/gnome/pango/pango-1.29.4'
+++ ./pango-zip.sh
+rm: cannot lstat `/tmp/pango-1.29.4.zip': No such file or directory
+  adding: bin/pango-querymodules.exe (deflated 72%)
+  adding: etc/pango/pango.modules (deflated 16%)
+  adding: bin/libpango-1.0-0.dll (deflated 62%)
+  adding: bin/libpangoft2-1.0-0.dll (deflated 67%)
+  adding: bin/libpangowin32-1.0-0.dll (deflated 65%)
+  adding: bin/libpangocairo-1.0-0.dll (deflated 70%)
+	zip warning: name not matched: lib/pango/1.6.0/modules/*.dll
+
+zip error: Nothing to do! (/tmp/pango-1.29.4.zip)
+  adding: share/doc/pango-1.29.4/ (stored 0%)
+  adding: share/doc/pango-1.29.4/COPYING (deflated 64%)
+rm: cannot lstat `/tmp/pango-dev-1.29.4.zip': No such file or directory
+  adding: include/pango-1.0/ (stored 0%)
+  adding: include/pango-1.0/pango/ (stored 0%)
+  adding: include/pango-1.0/pango/pango-attributes.h (deflated 75%)
+  adding: include/pango-1.0/pango/pango-bidi-type.h (deflated 64%)
+  adding: include/pango-1.0/pango/pango-break.h (deflated 59%)
+  adding: include/pango-1.0/pango/pango-context.h (deflated 73%)
+  adding: include/pango-1.0/pango/pango-coverage.h (deflated 61%)
+  adding: include/pango-1.0/pango/pango-engine.h (deflated 72%)
+  adding: include/pango-1.0/pango/pango-enum-types.h (deflated 75%)
+  adding: include/pango-1.0/pango/pango-features.h (deflated 43%)
+  adding: include/pango-1.0/pango/pango-font.h (deflated 80%)
+  adding: include/pango-1.0/pango/pango-fontmap.h (deflated 67%)
+  adding: include/pango-1.0/pango/pango-fontset.h (deflated 67%)
+  adding: include/pango-1.0/pango/pango-glyph-item.h (deflated 67%)
+  adding: include/pango-1.0/pango/pango-glyph.h (deflated 66%)
+  adding: include/pango-1.0/pango/pango-gravity.h (deflated 60%)
+  adding: include/pango-1.0/pango/pango-item.h (deflated 51%)
+  adding: include/pango-1.0/pango/pango-language.h (deflated 57%)
+  adding: include/pango-1.0/pango/pango-layout.h (deflated 79%)
+  adding: include/pango-1.0/pango/pango-matrix.h (deflated 64%)
+  adding: include/pango-1.0/pango/pango-modules.h (deflated 56%)
+  adding: include/pango-1.0/pango/pango-ot.h (deflated 76%)
+  adding: include/pango-1.0/pango/pango-renderer.h (deflated 72%)
+  adding: include/pango-1.0/pango/pango-script.h (deflated 70%)
+  adding: include/pango-1.0/pango/pango-tabs.h (deflated 65%)
+  adding: include/pango-1.0/pango/pango-types.h (deflated 54%)
+  adding: include/pango-1.0/pango/pango-utils.h (deflated 63%)
+  adding: include/pango-1.0/pango/pango.h (deflated 60%)
+  adding: include/pango-1.0/pango/pangocairo.h (deflated 73%)
+  adding: include/pango-1.0/pango/pangofc-decoder.h (deflated 61%)
+  adding: include/pango-1.0/pango/pangofc-font.h (deflated 64%)
+  adding: include/pango-1.0/pango/pangofc-fontmap.h (deflated 71%)
+  adding: include/pango-1.0/pango/pangoft2.h (deflated 68%)
+  adding: include/pango-1.0/pango/pangowin32.h (deflated 68%)
+  adding: lib/libpango-1.0.dll.a (deflated 94%)
+  adding: lib/pango-1.0.lib (deflated 87%)
+  adding: lib/pango-1.0.def (deflated 81%)
+  adding: lib/libpangoft2-1.0.dll.a (deflated 93%)
+  adding: lib/pangoft2-1.0.lib (deflated 87%)
+  adding: lib/pangoft2-1.0.def (deflated 78%)
+  adding: lib/libpangowin32-1.0.dll.a (deflated 91%)
+  adding: lib/pangowin32-1.0.lib (deflated 84%)
+  adding: lib/pangowin32-1.0.def (deflated 72%)
+  adding: lib/libpangocairo-1.0.dll.a (deflated 92%)
+  adding: lib/pangocairo-1.0.lib (deflated 86%)
+  adding: lib/pangocairo-1.0.def (deflated 78%)
+  adding: lib/pkgconfig/pango.pc (deflated 32%)
+  adding: lib/pkgconfig/pangoft2.pc (deflated 34%)
+  adding: lib/pkgconfig/pangowin32.pc (deflated 30%)
+  adding: lib/pkgconfig/pangocairo.pc (deflated 32%)
+  adding: share/gtk-doc/html/pango/ (stored 0%)
+  adding: share/gtk-doc/html/pango/home.png (stored 0%)
+  adding: share/gtk-doc/html/pango/index-1.10.html (deflated 78%)
+  adding: share/gtk-doc/html/pango/index-1.12.html (deflated 60%)
+  adding: share/gtk-doc/html/pango/index-1.14.html (deflated 65%)
+  adding: share/gtk-doc/html/pango/index-1.16.html (deflated 79%)
+  adding: share/gtk-doc/html/pango/index-1.18.html (deflated 79%)
+  adding: share/gtk-doc/html/pango/index-1.2.html (deflated 75%)
+  adding: share/gtk-doc/html/pango/index-1.20.html (deflated 69%)
+  adding: share/gtk-doc/html/pango/index-1.22.html (deflated 73%)
+  adding: share/gtk-doc/html/pango/index-1.24.html (deflated 73%)
+  adding: share/gtk-doc/html/pango/index-1.26.html (deflated 60%)
+  adding: share/gtk-doc/html/pango/index-1.28.html (deflated 58%)
+  adding: share/gtk-doc/html/pango/index-1.30.html (deflated 58%)
+  adding: share/gtk-doc/html/pango/index-1.4.html (deflated 78%)
+  adding: share/gtk-doc/html/pango/index-1.6.html (deflated 77%)
+  adding: share/gtk-doc/html/pango/index-1.8.html (deflated 80%)
+  adding: share/gtk-doc/html/pango/index-all.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/index-deprecated.html (deflated 82%)
+  adding: share/gtk-doc/html/pango/index.html (deflated 79%)
+  adding: share/gtk-doc/html/pango/index.sgml (deflated 90%)
+  adding: share/gtk-doc/html/pango/layout.gif (stored 0%)
+  adding: share/gtk-doc/html/pango/left.png (stored 0%)
+  adding: share/gtk-doc/html/pango/lowlevel.html (deflated 69%)
+  adding: share/gtk-doc/html/pango/pango-ATSUI-Fonts.html (deflated 62%)
+  adding: share/gtk-doc/html/pango/pango-Bidirectional-Text.html (deflated 83%)
+  adding: share/gtk-doc/html/pango/pango-Cairo-Rendering.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango-Coverage-Maps.html (deflated 87%)
+  adding: share/gtk-doc/html/pango/pango-Engines.html (deflated 79%)
+  adding: share/gtk-doc/html/pango/pango-Fonts.html (deflated 90%)
+  adding: share/gtk-doc/html/pango/pango-FreeType-Fonts-and-Rendering.html (deflated 90%)
+  adding: share/gtk-doc/html/pango/pango-Glyph-Storage.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango-hierarchy.html (deflated 78%)
+  adding: share/gtk-doc/html/pango/pango-Layout-Objects.html (deflated 91%)
+  adding: share/gtk-doc/html/pango/pango-Miscellaneous-Utilities.html (deflated 88%)
+  adding: share/gtk-doc/html/pango/pango-Modules.html (deflated 82%)
+  adding: share/gtk-doc/html/pango/pango-OpenType-Font-Handling.html (deflated 91%)
+  adding: share/gtk-doc/html/pango/pango-pango-renderer.html (deflated 90%)
+  adding: share/gtk-doc/html/pango/pango-querymodules.html (deflated 61%)
+  adding: share/gtk-doc/html/pango/pango-Scripts-and-Languages.html (deflated 85%)
+  adding: share/gtk-doc/html/pango/pango-Tab-Stops.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango-Text-Attributes.html (deflated 90%)
+  adding: share/gtk-doc/html/pango/pango-Text-Processing.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango-Version-Checking.html (deflated 82%)
+  adding: share/gtk-doc/html/pango/pango-Vertical-Text.html (deflated 83%)
+  adding: share/gtk-doc/html/pango/pango-Win32-Fonts-and-Rendering.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango-X-Fonts-and-Rendering.html (deflated 90%)
+  adding: share/gtk-doc/html/pango/pango-Xft-Fonts-and-Rendering.html (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango.devhelp2 (deflated 89%)
+  adding: share/gtk-doc/html/pango/pango.html (deflated 68%)
+  adding: share/gtk-doc/html/pango/PangoEngineLang.html (deflated 75%)
+  adding: share/gtk-doc/html/pango/PangoEngineShape.html (deflated 73%)
+  adding: share/gtk-doc/html/pango/PangoFcDecoder.html (deflated 78%)
+  adding: share/gtk-doc/html/pango/PangoFcFont.html (deflated 83%)
+  adding: share/gtk-doc/html/pango/PangoFcFontMap.html (deflated 87%)
+  adding: share/gtk-doc/html/pango/PangoMarkupFormat.html (deflated 72%)
+  adding: share/gtk-doc/html/pango/rendering.html (deflated 68%)
+  adding: share/gtk-doc/html/pango/right.png (stored 0%)
+  adding: share/gtk-doc/html/pango/rotated-text.png (deflated 1%)
+  adding: share/gtk-doc/html/pango/style.css (deflated 71%)
+  adding: share/gtk-doc/html/pango/tools.html (deflated 58%)
+  adding: share/gtk-doc/html/pango/up.png (stored 0%)
+  adding: share/doc/pango-dev-1.29.4/ (stored 0%)
+  adding: share/doc/pango-dev-1.29.4/COPYING (deflated 64%)
+++ cd /devel/target/e7ccdb85e6820e4560d75f6316aa481d
+++ zip /tmp/pango-dev-1.29.4.zip bin/pango-view.exe
+  adding: bin/pango-view.exe (deflated 71%)
+++ zip /tmp/pango-dev-1.29.4.zip share/man/man1/pango-querymodules.1 share/man/man1/pango-view.1
+  adding: share/man/man1/pango-querymodules.1 (deflated 60%)
+  adding: share/man/man1/pango-view.1 (deflated 57%)
+++ mv /tmp/pango-1.29.4.zip /tmp/pango_1.29.4-1_win32.zip
+++ mv /tmp/pango-dev-1.29.4.zip /tmp/pango-dev_1.29.4-1_win32.zip
+++ :

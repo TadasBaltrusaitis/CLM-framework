@@ -1,0 +1,272 @@
+++ sed -e 's/need_relink=yes/need_relink=no # no way --tml/'
+++ mv ltmain.temp ltmain.sh
+++ sed -e 's/grep version-script/grep no-thanks-version-script/'
+++ mv configure.temp configure
+++ patch -p0
+patching file Makefile.in
+Hunk #1 succeeded at 1242 (offset -43 lines).
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mtune=pentium3 -mthreads -mms-bitfields'
+++ CPPFLAGS='-I /devel/dist/win32/zlib-1.2.5-1/include'
+++ LDFLAGS='-L/devel/dist/win32/zlib-1.2.5-1/lib -Wl,--enable-auto-image-base'
+++ CFLAGS=-O2
+++ ./configure --disable-static --without-binconfigs --prefix=c:/devel/target/c01378aafb50980950f7e58bcd36fc40
+checking for a BSD-compatible install... /opt/local/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking for gcc... gcc -mtune=pentium3 -mthreads -mms-bitfields
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mtune=pentium3 -mthreads -mms-bitfields accepts -g... yes
+checking for gcc -mtune=pentium3 -mthreads -mms-bitfields option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mtune=pentium3 -mthreads -mms-bitfields... gcc3
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mtune=pentium3 -mthreads -mms-bitfields... c:/opt/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/opt/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking how to run the C preprocessor... gcc -mtune=pentium3 -mthreads -mms-bitfields -E
+checking for sed... /bin/sed
+checking for as... as
+checking for dlltool... dlltool
+checking for objdump... objdump
+checking whether ln -s works... yes
+checking whether make sets $(MAKE)... (cached) yes
+checking for BSD- or MS-compatible name lister (nm)... /opt/mingw/bin/nm
+checking the name lister (/opt/mingw/bin/nm) interface... BSD nm
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for c:/opt/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... (cached) objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /opt/mingw/bin/nm output from gcc -mtune=pentium3 -mthreads -mms-bitfields object... ok
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking if gcc -mtune=pentium3 -mthreads -mms-bitfields supports -fno-rtti -fno-exceptions... no
+checking for gcc -mtune=pentium3 -mthreads -mms-bitfields option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mtune=pentium3 -mthreads -mms-bitfields PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mtune=pentium3 -mthreads -mms-bitfields static flag -static works... yes
+checking if gcc -mtune=pentium3 -mthreads -mms-bitfields supports -c -o file.o... yes
+checking if gcc -mtune=pentium3 -mthreads -mms-bitfields supports -c -o file.o... (cached) yes
+checking whether the gcc -mtune=pentium3 -mthreads -mms-bitfields linker (c:/opt/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for ANSI C header files... (cached) yes
+checking malloc.h usability... yes
+checking malloc.h presence... yes
+checking for malloc.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for strings.h... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking for size_t... yes
+checking whether struct tm is in sys/time.h or time.h... time.h
+checking for working strtod... yes
+checking for memset... yes
+checking for pow... yes
+checking for zlibVersion in -lz... yes
+checking if libraries can be versioned... no
+configure: WARNING: *** You have not enabled versioned symbols.
+configure: pkgconfig directory is ${libdir}/pkgconfig
+configure: libpng-config scripts will not be built
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating libpng.pc
+config.status: creating libpng-config
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+++ make install
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-png.lo -MD -MP -MF .deps/libpng14_la-png.Tpo -c -o libpng14_la-png.lo `test -f 'png.c' || echo './'`png.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-png.lo -MD -MP -MF .deps/libpng14_la-png.Tpo -c png.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-png.o
+mv -f .deps/libpng14_la-png.Tpo .deps/libpng14_la-png.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngset.lo -MD -MP -MF .deps/libpng14_la-pngset.Tpo -c -o libpng14_la-pngset.lo `test -f 'pngset.c' || echo './'`pngset.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngset.lo -MD -MP -MF .deps/libpng14_la-pngset.Tpo -c pngset.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngset.o
+mv -f .deps/libpng14_la-pngset.Tpo .deps/libpng14_la-pngset.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngget.lo -MD -MP -MF .deps/libpng14_la-pngget.Tpo -c -o libpng14_la-pngget.lo `test -f 'pngget.c' || echo './'`pngget.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngget.lo -MD -MP -MF .deps/libpng14_la-pngget.Tpo -c pngget.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngget.o
+mv -f .deps/libpng14_la-pngget.Tpo .deps/libpng14_la-pngget.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngrutil.lo -MD -MP -MF .deps/libpng14_la-pngrutil.Tpo -c -o libpng14_la-pngrutil.lo `test -f 'pngrutil.c' || echo './'`pngrutil.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngrutil.lo -MD -MP -MF .deps/libpng14_la-pngrutil.Tpo -c pngrutil.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngrutil.o
+mv -f .deps/libpng14_la-pngrutil.Tpo .deps/libpng14_la-pngrutil.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngtrans.lo -MD -MP -MF .deps/libpng14_la-pngtrans.Tpo -c -o libpng14_la-pngtrans.lo `test -f 'pngtrans.c' || echo './'`pngtrans.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngtrans.lo -MD -MP -MF .deps/libpng14_la-pngtrans.Tpo -c pngtrans.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngtrans.o
+mv -f .deps/libpng14_la-pngtrans.Tpo .deps/libpng14_la-pngtrans.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngwutil.lo -MD -MP -MF .deps/libpng14_la-pngwutil.Tpo -c -o libpng14_la-pngwutil.lo `test -f 'pngwutil.c' || echo './'`pngwutil.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngwutil.lo -MD -MP -MF .deps/libpng14_la-pngwutil.Tpo -c pngwutil.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngwutil.o
+mv -f .deps/libpng14_la-pngwutil.Tpo .deps/libpng14_la-pngwutil.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngread.lo -MD -MP -MF .deps/libpng14_la-pngread.Tpo -c -o libpng14_la-pngread.lo `test -f 'pngread.c' || echo './'`pngread.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngread.lo -MD -MP -MF .deps/libpng14_la-pngread.Tpo -c pngread.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngread.o
+mv -f .deps/libpng14_la-pngread.Tpo .deps/libpng14_la-pngread.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngrio.lo -MD -MP -MF .deps/libpng14_la-pngrio.Tpo -c -o libpng14_la-pngrio.lo `test -f 'pngrio.c' || echo './'`pngrio.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngrio.lo -MD -MP -MF .deps/libpng14_la-pngrio.Tpo -c pngrio.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngrio.o
+mv -f .deps/libpng14_la-pngrio.Tpo .deps/libpng14_la-pngrio.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngwio.lo -MD -MP -MF .deps/libpng14_la-pngwio.Tpo -c -o libpng14_la-pngwio.lo `test -f 'pngwio.c' || echo './'`pngwio.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngwio.lo -MD -MP -MF .deps/libpng14_la-pngwio.Tpo -c pngwio.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngwio.o
+mv -f .deps/libpng14_la-pngwio.Tpo .deps/libpng14_la-pngwio.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngwrite.lo -MD -MP -MF .deps/libpng14_la-pngwrite.Tpo -c -o libpng14_la-pngwrite.lo `test -f 'pngwrite.c' || echo './'`pngwrite.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngwrite.lo -MD -MP -MF .deps/libpng14_la-pngwrite.Tpo -c pngwrite.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngwrite.o
+mv -f .deps/libpng14_la-pngwrite.Tpo .deps/libpng14_la-pngwrite.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngrtran.lo -MD -MP -MF .deps/libpng14_la-pngrtran.Tpo -c -o libpng14_la-pngrtran.lo `test -f 'pngrtran.c' || echo './'`pngrtran.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngrtran.lo -MD -MP -MF .deps/libpng14_la-pngrtran.Tpo -c pngrtran.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngrtran.o
+mv -f .deps/libpng14_la-pngrtran.Tpo .deps/libpng14_la-pngrtran.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngwtran.lo -MD -MP -MF .deps/libpng14_la-pngwtran.Tpo -c -o libpng14_la-pngwtran.lo `test -f 'pngwtran.c' || echo './'`pngwtran.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngwtran.lo -MD -MP -MF .deps/libpng14_la-pngwtran.Tpo -c pngwtran.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngwtran.o
+mv -f .deps/libpng14_la-pngwtran.Tpo .deps/libpng14_la-pngwtran.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngmem.lo -MD -MP -MF .deps/libpng14_la-pngmem.Tpo -c -o libpng14_la-pngmem.lo `test -f 'pngmem.c' || echo './'`pngmem.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngmem.lo -MD -MP -MF .deps/libpng14_la-pngmem.Tpo -c pngmem.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngmem.o
+mv -f .deps/libpng14_la-pngmem.Tpo .deps/libpng14_la-pngmem.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngerror.lo -MD -MP -MF .deps/libpng14_la-pngerror.Tpo -c -o libpng14_la-pngerror.lo `test -f 'pngerror.c' || echo './'`pngerror.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngerror.lo -MD -MP -MF .deps/libpng14_la-pngerror.Tpo -c pngerror.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngerror.o
+mv -f .deps/libpng14_la-pngerror.Tpo .deps/libpng14_la-pngerror.Plo
+/bin/sh ./libtool  --tag=CC   --mode=compile gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I.  -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include  -O2 -MT libpng14_la-pngpread.lo -MD -MP -MF .deps/libpng14_la-pngpread.Tpo -c -o libpng14_la-pngpread.lo `test -f 'pngpread.c' || echo './'`pngpread.c
+libtool: compile:  gcc -mtune=pentium3 -mthreads -mms-bitfields -DHAVE_CONFIG_H -I. -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -O2 -MT libpng14_la-pngpread.lo -MD -MP -MF .deps/libpng14_la-pngpread.Tpo -c pngpread.c  -DDLL_EXPORT -DPIC -o .libs/libpng14_la-pngpread.o
+mv -f .deps/libpng14_la-pngpread.Tpo .deps/libpng14_la-pngpread.Plo
+rm -f libpng.sym libpng.sym.new
+gcc -mtune=pentium3 -mthreads -mms-bitfields -E -DPNG_CONFIGURE_LIBPNG -I /devel/dist/win32/zlib-1.2.5-1/include -DPNG_BUILDSYMS ./png.h | \
+		/bin/sed -n -e \
+		's|^.*PNG_FUNCTION_EXPORT[ 	]*\(['_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789']*\).*$|\1|p' \
+		-e 's|^.*PNG_DATA_EXPORT[ 	]*\(['_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789']*\).*$|\1|p' \
+			>libpng.sym.new
+mv libpng.sym.new libpng.sym
+/bin/sh ./libtool --tag=CC   --mode=link gcc -mtune=pentium3 -mthreads -mms-bitfields  -O2 -no-undefined -export-dynamic -version-number 14:3:0  -export-symbols libpng.sym -L/devel/dist/win32/zlib-1.2.5-1/lib -Wl,--enable-auto-image-base -o libpng14.la -rpath c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib libpng14_la-png.lo libpng14_la-pngset.lo libpng14_la-pngget.lo libpng14_la-pngrutil.lo libpng14_la-pngtrans.lo libpng14_la-pngwutil.lo libpng14_la-pngread.lo libpng14_la-pngrio.lo libpng14_la-pngwio.lo libpng14_la-pngwrite.lo libpng14_la-pngrtran.lo libpng14_la-pngwtran.lo libpng14_la-pngmem.lo libpng14_la-pngerror.lo libpng14_la-pngpread.lo  -lz 
+libtool: link: /opt/mingw/bin/nm  .libs/libpng14_la-png.o .libs/libpng14_la-pngset.o .libs/libpng14_la-pngget.o .libs/libpng14_la-pngrutil.o .libs/libpng14_la-pngtrans.o .libs/libpng14_la-pngwutil.o .libs/libpng14_la-pngread.o .libs/libpng14_la-pngrio.o .libs/libpng14_la-pngwio.o .libs/libpng14_la-pngwrite.o .libs/libpng14_la-pngrtran.o .libs/libpng14_la-pngwtran.o .libs/libpng14_la-pngmem.o .libs/libpng14_la-pngerror.o .libs/libpng14_la-pngpread.o   | sed -n -e 's/^.*[	 ]\([ABCDGIRSTW][ABCDGIRSTW]*\)[	 ][	 ]*_\([_A-Za-z][_A-Za-z0-9]*\)\{0,1\}$/\1 _\2 \2/p' | /bin/sed -e '/^[BCDGRS][ ]/s/.*[ ]\([^ ]*\)/\1 DATA/' | /bin/sed -e '/^[AITW][ ]/s/.*[ ]//' | sort | uniq > .libs/libpng14.exp
+libtool: link: if test "x`/bin/sed 1q .libs/libpng14.def`" = xEXPORTS; then cp .libs/libpng14.def .libs/libpng14-14.dll.def; else echo EXPORTS > .libs/libpng14-14.dll.def; cat .libs/libpng14.def >> .libs/libpng14-14.dll.def; fi
+libtool: link:  gcc -mtune=pentium3 -mthreads -mms-bitfields -shared .libs/libpng14-14.dll.def  .libs/libpng14_la-png.o .libs/libpng14_la-pngset.o .libs/libpng14_la-pngget.o .libs/libpng14_la-pngrutil.o .libs/libpng14_la-pngtrans.o .libs/libpng14_la-pngwutil.o .libs/libpng14_la-pngread.o .libs/libpng14_la-pngrio.o .libs/libpng14_la-pngwio.o .libs/libpng14_la-pngwrite.o .libs/libpng14_la-pngrtran.o .libs/libpng14_la-pngwtran.o .libs/libpng14_la-pngmem.o .libs/libpng14_la-pngerror.o .libs/libpng14_la-pngpread.o   -L/devel/dist/win32/zlib-1.2.5-1/lib -lz  -mtune=pentium3 -mthreads -mms-bitfields -Wl,--enable-auto-image-base   -mthreads -o .libs/libpng14-14.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libpng14.dll.a
+Creating library file: .libs/libpng14.dll.a
+libtool: link: rm -f .libs/libpng14.exp .libs/libpng14.filter
+libtool: link: ( cd ".libs" && rm -f "libpng14.la" && ln -s "../libpng14.la" "libpng14.la" )
+cp libpng.pc libpng14.pc
+make[1]: Entering directory `/devel/src/libpng/1.4.3-1_win32'
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/bin" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/bin"
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib"
+ /bin/sh ./libtool   --mode=install /opt/local/bin/install -c   libpng14.la 'c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib'
+libtool: install: /opt/local/bin/install -c .libs/libpng14.dll.a c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/libpng14.dll.a
+libtool: install: base_file=`basename libpng14.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libpng14.la'i; echo libpng14-14.dll'`
+libtool: install:  dldir=c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/`dirname ../bin/libpng14-14.dll`
+libtool: install:  test -d c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/../bin || mkdir -p c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/../bin
+libtool: install:  /opt/local/bin/install -c .libs/libpng14-14.dll c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/../bin/libpng14-14.dll
+libtool: install:  chmod a+x c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/../bin/libpng14-14.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/../bin/libpng14-14.dll' || exit 0; fi
+libtool: install: /opt/local/bin/install -c .libs/libpng14.lai c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/libpng14.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make  install-exec-hook
+make[2]: Entering directory `/devel/src/libpng/1.4.3-1_win32'
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/bin; rm -f libpng-config
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/bin; ln -s libpng14-config libpng-config
+ln: creating symbolic link `libpng-config' to `libpng14-config': No such file or directory
+make[2]: [install-exec-hook] Error 1 (ignored)
++ cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.a
++ test -f libpng14.a
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.la
++ test -f libpng14.la
++ ln -s libpng14.la libpng.la
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.so
++ test -f libpng14.so
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.so.14.3
++ test -f libpng14.so.14.3
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.sl
++ test -f libpng14.sl
++ for ext in a la so so.14.3 sl dylib
++ rm -f libpng.dylib
++ test -f libpng14.dylib
+make[2]: Leaving directory `/devel/src/libpng/1.4.3-1_win32'
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man3" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man3"
+ /opt/local/bin/install -c -m 644 libpng.3 libpngpf.3 'c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man3'
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man5" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man5"
+ /opt/local/bin/install -c -m 644 png.5 'c:/devel/target/c01378aafb50980950f7e58bcd36fc40/share/man/man5'
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/pkgconfig" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/pkgconfig"
+ /opt/local/bin/install -c -m 644 libpng14.pc 'c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/pkgconfig'
+test -z "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include/libpng14" || /bin/mkdir -p "c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include/libpng14"
+ /opt/local/bin/install -c -m 644 png.h pngconf.h 'c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include/libpng14'
+make  install-data-hook
+make[2]: Entering directory `/devel/src/libpng/1.4.3-1_win32'
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include; rm -f png.h pngconf.h
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include; ln -s libpng14/png.h png.h
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/include; ln -s libpng14/pngconf.h \
+		pngconf.h
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/pkgconfig; rm -f libpng.pc
+cd c:/devel/target/c01378aafb50980950f7e58bcd36fc40/lib/pkgconfig; ln -s libpng14.pc libpng.pc
+make[2]: Leaving directory `/devel/src/libpng/1.4.3-1_win32'
+make[1]: Leaving directory `/devel/src/libpng/1.4.3-1_win32'
+++ rm -f /tmp/libpng_1.4.3-1_win32.zip /tmp/libpng-dev_1.4.3-1_win32.zip
+++ cd /devel/target/c01378aafb50980950f7e58bcd36fc40
+++ zip /tmp/libpng_1.4.3-1_win32.zip bin/libpng14-14.dll
+  adding: bin/libpng14-14.dll (200 bytes security) (deflated 54%)
+++ zip -r -D /tmp/libpng-dev_1.4.3-1_win32.zip include
+  adding: include/libpng14/png.h (200 bytes security) (deflated 77%)
+  adding: include/libpng14/pngconf.h (200 bytes security) (deflated 73%)
+  adding: include/png.h (200 bytes security) (deflated 77%)
+  adding: include/pngconf.h (200 bytes security) (deflated 73%)
+++ zip /tmp/libpng-dev_1.4.3-1_win32.zip lib/libpng14.dll.a
+  adding: lib/libpng14.dll.a (200 bytes security) (deflated 93%)
+++ pexports bin/libpng14-14.dll
+++ lib -machine:X86 -def:lib/libpng.def -name:libpng14-14.dll -out:lib/libpng.lib
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+   Creating library lib/libpng.lib and object lib/libpng.exp
+++ zip /tmp/libpng-dev_1.4.3-1_win32.zip lib/libpng.def lib/libpng.lib
+  adding: lib/libpng.def (200 bytes security) (deflated 71%)
+  adding: lib/libpng.lib (200 bytes security) (deflated 86%)
+++ zip /tmp/libpng-dev_1.4.3-1_win32.zip lib/pkgconfig/libpng.pc lib/pkgconfig/libpng14.pc
+  adding: lib/pkgconfig/libpng.pc (200 bytes security) (deflated 29%)
+  adding: lib/pkgconfig/libpng14.pc (200 bytes security) (deflated 29%)
+++ zip -r -D /tmp/libpng-dev_1.4.3-1_win32.zip share/man
+  adding: share/man/man3/libpng.3 (200 bytes security) (deflated 71%)
+  adding: share/man/man3/libpngpf.3 (200 bytes security) (deflated 87%)
+  adding: share/man/man5/png.5 (200 bytes security) (deflated 53%)
+++ :

@@ -1,0 +1,326 @@
++++ latest --arch=win32 glib pkg-config gettext-runtime
+++ BUILDDEPS='glib-2.28.8-1 pkg-config-0.26-1 gettext-runtime-0.18.1.1-2'
+++ for D in '$BUILDDEPS'
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$BUILDDEPS'
+++ PATH=/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ for D in '$BUILDDEPS'
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ CC='gcc -mms-bitfields'
+++ CFLAGS=-O2
+++ ./configure --disable-shared --prefix=/devel/target/6d8f37c07dcd9df52e2d31a4ca013477
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for gcc... gcc -mms-bitfields
+checking for C compiler default output file name... a.exe
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... .exe
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mms-bitfields accepts -g... yes
+checking for gcc -mms-bitfields option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mms-bitfields... gcc3
+checking dependency style of gcc -mms-bitfields... gcc3
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ld used by gcc -mms-bitfields... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for BSD-compatible nm... /mingw/bin/nm
+checking whether ln -s works... no, using cp -p
+checking how to recognize dependent libraries... file_magic ^x86 archive import|^x86 DLL
+checking how to run the C preprocessor... gcc -mms-bitfields -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... no
+checking dlfcn.h presence... no
+checking for dlfcn.h... no
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking how to run the C++ preprocessor... g++ -E
+checking for g77... no
+checking for xlf... no
+checking for f77... no
+checking for frt... no
+checking for pgf77... no
+checking for cf77... no
+checking for fort77... no
+checking for fl32... no
+checking for af77... no
+checking for xlf90... no
+checking for f90... no
+checking for pgf90... no
+checking for pghpf... no
+checking for epcf90... no
+checking for gfortran... gfortran
+checking whether we are using the GNU Fortran 77 compiler... yes
+checking whether gfortran accepts -g... yes
+checking the maximum length of command line arguments... 8192
+checking command to parse /mingw/bin/nm output from gcc -mms-bitfields object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if gcc -mms-bitfields supports -fno-rtti -fno-exceptions... no
+checking for gcc -mms-bitfields option to produce PIC... -DDLL_EXPORT
+checking if gcc -mms-bitfields PIC flag -DDLL_EXPORT works... yes
+checking if gcc -mms-bitfields static flag -static works... yes
+checking if gcc -mms-bitfields supports -c -o file.o... yes
+checking whether the gcc -mms-bitfields linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+configure: creating libtool
+appending configuration tag "CXX" to libtool
+checking for ld used by g++... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking whether the g++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking for g++ option to produce PIC... -DDLL_EXPORT
+checking if g++ PIC flag -DDLL_EXPORT works... yes
+checking if g++ static flag -static works... yes
+checking if g++ supports -c -o file.o... yes
+checking whether the g++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+(cached) (cached) checking how to hardcode library paths into programs... immediate
+appending configuration tag "F77" to libtool
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking for gfortran option to produce PIC... -DDLL_EXPORT
+checking if gfortran PIC flag -DDLL_EXPORT works... yes
+checking if gfortran static flag -static works... yes
+checking if gfortran supports -c -o file.o... yes
+checking whether the gfortran linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+(cached) (cached) checking how to hardcode library paths into programs... immediate
+checking for getisax... no
+checking whether byte ordering is bigendian... no
+checking for inline... inline
+checking whether the compiler supports -Werror... yes
+checking size of long... 4
+checking whether __SUNPRO_C is declared... no
+checking whether __amd64 is declared... no
+checking whether the compiler supports -Wall... yes
+checking whether the compiler supports -fno-strict-aliasing... yes
+checking for perl... /bin/perl
+checking for gcc -mms-bitfields option to support OpenMP... -fopenmp
+checking whether the compiler supports -fvisibility=hidden... no
+checking whether the compiler supports -xldscope=hidden... no
+checking whether to use MMX intrinsics... yes
+checking whether to use SSE2 intrinsics... yes
+checking whether to use VMX/Altivec intrinsics... no
+checking whether to use ARM SIMD assembler... no
+checking whether to use ARM NEON assembler... no
+checking whether to use ARM IWMMXT intrinsics... no
+checking whether to use GNU-style inline assembler... yes
+checking pkg-config is at least version 0.9.0... yes
+checking for pixman_version_string in -lpixman-1... no
+checking for posix_memalign... no
+checking for sigaction... no
+checking for alarm... no
+checking sys/mman.h usability... no
+checking sys/mman.h presence... no
+checking for sys/mman.h... no
+checking for mmap... no
+checking for mprotect... yes
+checking for getpagesize... yes
+checking fenv.h usability... yes
+checking fenv.h presence... yes
+checking for fenv.h... yes
+checking for feenableexcept in -lm... no
+checking for gettimeofday... yes
+checking sys/time.h usability... yes
+checking sys/time.h presence... yes
+checking for sys/time.h... yes
+checking for __thread... yes
+checking for __attribute__((constructor))... yes
+checking for PNG... no
+configure: creating ./config.status
+config.status: creating pixman-1.pc
+config.status: creating pixman-1-uninstalled.pc
+config.status: creating Makefile
+config.status: creating pixman/Makefile
+config.status: creating pixman/pixman-version.h
+config.status: creating demos/Makefile
+config.status: creating test/Makefile
+config.status: creating config.h
+config.status: config.h is unchanged
+config.status: executing depfiles commands
+++ make
+make  all-recursive
+make[1]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+Making all in pixman
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make  all-am
+make[3]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+  CC     pixman.lo
+  CC     pixman-access.lo
+  CC     pixman-access-accessors.lo
+  CC     pixman-bits-image.lo
+  CC     pixman-combine32.lo
+  CC     pixman-combine64.lo
+  CC     pixman-conical-gradient.lo
+  CC     pixman-cpu.lo
+  CC     pixman-edge.lo
+  CC     pixman-edge-accessors.lo
+  CC     pixman-fast-path.lo
+  CC     pixman-general.lo
+  CC     pixman-gradient-walker.lo
+  CC     pixman-image.lo
+  CC     pixman-implementation.lo
+  CC     pixman-linear-gradient.lo
+  CC     pixman-matrix.lo
+  CC     pixman-noop.lo
+  CC     pixman-radial-gradient.lo
+  CC     pixman-region16.lo
+  CC     pixman-region32.lo
+  CC     pixman-solid-fill.lo
+  CC     pixman-timer.lo
+  CC     pixman-trap.lo
+  CC     pixman-utils.lo
+  CC     libpixman_mmx_la-pixman-mmx.lo
+  CCLD   libpixman-mmx.la
+  CC     libpixman_sse2_la-pixman-sse2.lo
+  CCLD   libpixman-sse2.la
+  CCLD   libpixman-1.la
+make[3]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+Making all in demos
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+Making all in test
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+  CC     utils.lo
+utils.c:590:1: warning: 'on_alarm' defined but not used
+  CCLD   libutils.la
+  CC     a1-trap-test.o
+  CCLD   a1-trap-test.exe
+  CC     pdf-op-test.o
+  CCLD   pdf-op-test.exe
+  CC     region-test.o
+  CCLD   region-test.exe
+  CC     region-translate-test.o
+  CCLD   region-translate-test.exe
+  CC     fetch-test.o
+  CCLD   fetch-test.exe
+  CC     oob-test.o
+  CCLD   oob-test.exe
+  CC     trap-crasher.o
+  CCLD   trap-crasher.exe
+  CC     alpha-loop.o
+  CCLD   alpha-loop.exe
+  CC     scaling-crash-test.o
+  CCLD   scaling-crash-test.exe
+  CC     scaling-helpers-test.o
+  CCLD   scaling-helpers-test.exe
+  CC     gradient-crash-test.o
+  CCLD   gradient-crash-test.exe
+  CC     region-contains-test.o
+  CCLD   region-contains-test.exe
+  CC     alphamap.o
+  CCLD   alphamap.exe
+  CC     stress-test.o
+  CCLD   stress-test.exe
+  CC     composite-traps-test.o
+  CCLD   composite-traps-test.exe
+  CC     blitters-test.o
+  CCLD   blitters-test.exe
+  CC     scaling-test.o
+  CCLD   scaling-test.exe
+  CC     affine-test.o
+  CCLD   affine-test.exe
+  CC     composite.o
+  CCLD   composite.exe
+  CC     lowlevel-blt-bench.o
+  CCLD   lowlevel-blt-bench.exe
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+make[1]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+++ make install
+Making install in pixman
+make[1]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make[3]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+test -z "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib" || /bin/mkdir -p "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libpixman-1.la '/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib'
+/bin/install -c .libs/libpixman-1.lai /devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/libpixman-1.la
+/bin/install -c .libs/libpixman-1.a /devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/libpixman-1.a
+chmod 644 /devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/libpixman-1.a
+ranlib /devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/libpixman-1.a
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+test -z "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/include/pixman-1" || /bin/mkdir -p "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/include/pixman-1"
+ /bin/install -c -m 644 pixman.h pixman-version.h '/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/include/pixman-1'
+make[3]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+make[1]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/pixman'
+Making install in demos
+make[1]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+make[1]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/demos'
+Making install in test
+make[1]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+make[1]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0/test'
+make[1]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+make[2]: Entering directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/pkgconfig" || /bin/mkdir -p "/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/pkgconfig"
+ /bin/install -c -m 644 pixman-1.pc '/devel/target/6d8f37c07dcd9df52e2d31a4ca013477/lib/pkgconfig'
+make[2]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+make[1]: Leaving directory `/devel/src/freedesktop/pixman/pixman-0.24.0'
+++ rm -f /tmp/pixman_0.24.0-1_win32.zip /tmp/pixman-dev_0.24.0-1_win32.zip
+++ cd /devel/target/6d8f37c07dcd9df52e2d31a4ca013477
+++ zip -r -D /tmp/pixman-dev_0.24.0-1_win32.zip include/pixman-1
+  adding: include/pixman-1/pixman-version.h (deflated 49%)
+  adding: include/pixman-1/pixman.h (deflated 81%)
+++ zip -r -D /tmp/pixman-dev_0.24.0-1_win32.zip lib/libpixman-1.a
+  adding: lib/libpixman-1.a (deflated 63%)
+++ zip -r -D /tmp/pixman-dev_0.24.0-1_win32.zip lib/pkgconfig
+  adding: lib/pkgconfig/pixman-1.pc (deflated 30%)
+++ :

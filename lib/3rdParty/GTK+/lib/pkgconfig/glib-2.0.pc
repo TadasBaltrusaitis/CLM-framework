@@ -1,0 +1,15 @@
+prefix=/devel/target/9af0ed5b9823f125da25c47653b9c863
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+glib_genmarshal=glib-genmarshal
+gobject_query=gobject-query
+glib_mkenums=glib-mkenums
+
+Name: GLib
+Description: C Utility Library
+Version: 2.28.8
+Libs: -L${libdir} -lglib-2.0 -lintl 
+Libs.private: 
+Cflags: -I${includedir}/glib-2.0 -I${libdir}/glib-2.0/include -mms-bitfields

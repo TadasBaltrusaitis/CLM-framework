@@ -1,0 +1,188 @@
+++ sed -e 's/need_relink=yes/need_relink=no # no way --tml/'
+++ mv conftools/ltmain.temp conftools/ltmain.sh
+++ patch -p0
+patching file `Makefile.in'
+++ CC='gcc -mthreads'
+++ LDFLAGS=-Wl,--enable-auto-image-base
+++ CFLAGS=-O2
+++ ./configure --prefix=c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed --disable-static
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for gcc... gcc -mthreads
+checking for C compiler default output file name... a.exe
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... .exe
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mthreads accepts -g... yes
+checking for gcc -mthreads option to accept ANSI C... none needed
+checking for a sed that does not truncate output... /bin/sed
+checking for egrep... grep -E
+checking for ld used by gcc -mthreads... c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe
+checking if the linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) is GNU ld... yes
+checking for c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe option to reload object files... -r
+checking for BSD-compatible nm... /opt/mingw/bin/nm
+checking whether ln -s works... yes
+checking how to recognise dependent libraries... file_magic file format pei*-i386(.*architecture: i386)?
+checking for dlltool... dlltool
+checking for as... as
+checking for objdump... objdump
+checking how to run the C preprocessor... gcc -mthreads -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... no
+checking dlfcn.h presence... no
+checking for dlfcn.h... no
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking how to run the C++ preprocessor... g++ -E
+checking for g77... g77
+checking whether we are using the GNU Fortran 77 compiler... yes
+checking whether g77 accepts -g... yes
+checking the maximum length of command line arguments... 8192
+checking command to parse /opt/mingw/bin/nm output from gcc -mthreads object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if gcc -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mthreads option to produce PIC... -DDLL_EXPORT
+checking if gcc -mthreads PIC flag -DDLL_EXPORT works... yes
+checking if gcc -mthreads static flag -static works... yes
+checking if gcc -mthreads supports -c -o file.o... yes
+checking whether the gcc -mthreads linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+configure: creating libtool
+appending configuration tag "CXX" to libtool
+checking for ld used by g++... c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe
+checking if the linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) is GNU ld... yes
+checking whether the g++ linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) supports shared libraries... yes
+checking for g++ option to produce PIC... -DDLL_EXPORT
+checking if g++ PIC flag -DDLL_EXPORT works... yes
+checking if g++ static flag -static works... yes
+checking if g++ supports -c -o file.o... yes
+checking whether the g++ linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+appending configuration tag "F77" to libtool
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for g77 option to produce PIC... -DDLL_EXPORT
+checking if g77 PIC flag -DDLL_EXPORT works... yes
+checking if g77 static flag -static works... yes
+checking if g77 supports -c -o file.o... yes
+checking whether the g77 linker (c:/opt/mingw/bin/../lib/gcc/mingw32/3.4.5/../../../../mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking for gcc... (cached) gcc -mthreads
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc -mthreads accepts -g... (cached) yes
+checking for gcc -mthreads option to accept ANSI C... (cached) none needed
+checking for a BSD-compatible install... /opt/local/bin/install -c
+checking whether gcc -mthreads accepts -fexceptions... yes
+checking for ANSI C header files... (cached) yes
+checking whether byte ordering is bigendian... no
+checking for an ANSI C-conforming const... yes
+checking for size_t... yes
+checking for memmove... yes
+checking for bcopy... no
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking for unistd.h... (cached) yes
+checking for off_t... yes
+checking for stdlib.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for getpagesize... yes
+checking for working mmap... no
+checking for an ANSI C99-conforming __func__... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating expat_config.h
+++ make install
+gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o xmlwf/xmlwf.o -c xmlwf/xmlwf.c
+gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o xmlwf/xmlfile.o -c xmlwf/xmlfile.c
+gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o xmlwf/codepage.o -c xmlwf/codepage.c
+gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o xmlwf/readfilemap.o -c xmlwf/readfilemap.c
+/bin/sh ./libtool --silent --mode=compile gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o lib/xmlparse.lo -c lib/xmlparse.c
+/bin/sh ./libtool --silent --mode=compile gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o lib/xmltok.lo -c lib/xmltok.c
+/bin/sh ./libtool --silent --mode=compile gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -o lib/xmlrole.lo -c lib/xmlrole.c
+/bin/sh ./libtool --silent --mode=link gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -no-undefined -version-info 6:2:5 -rpath c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib -Wl,--enable-auto-image-base -o libexpat.la -export-symbols lib/libexpat.def lib/xmlparse.lo lib/xmltok.lo lib/xmlrole.lo
+Creating library file: .libs/libexpat.dll.a
+/bin/sh ./libtool --silent --mode=link gcc -mthreads -I./lib -I. -O2 -Wall -Wmissing-prototypes -Wstrict-prototypes -fexceptions  -DHAVE_EXPAT_CONFIG_H -Wl,--enable-auto-image-base -o xmlwf/xmlwf xmlwf/xmlwf.o xmlwf/xmlfile.o xmlwf/codepage.o xmlwf/readfilemap.o libexpat.la
+/bin/sh ./conftools/mkinstalldirs c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/include
+mkdir c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed
+mkdir c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib
+mkdir c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/include
+/bin/sh ./libtool --mode=install /opt/local/bin/install -c libexpat.la c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib/libexpat.la
+/opt/local/bin/install -c .libs/libexpat.dll.a c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib/libexpat.dll.a
+base_file=`basename ${file}`
+ dlpath=`/bin/sh 2>&1 -c '. .libs/'${base_file}'i;echo $dlname'`
+ dldir=c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib/`dirname $dlpath`
+ test -d $dldir || mkdir -p $dldir
+ /opt/local/bin/install -c .libs/libexpat-1.dll $dldir/libexpat-1.dll
+ chmod a+x $dldir/libexpat-1.dll
+/opt/local/bin/install -c .libs/libexpat.lai c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib/libexpat.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+for FN in ./lib/expat.h ./lib/expat_external.h ; do /opt/local/bin/install -c -m 644 $FN c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/include ; done
+/bin/sh ./conftools/mkinstalldirs c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/bin c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/man/man1
+mkdir c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/man
+mkdir c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/man/man1
+/bin/sh ./libtool --mode=install /opt/local/bin/install -c xmlwf/xmlwf c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/bin/xmlwf
+/opt/local/bin/install -c xmlwf/xmlwf c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/bin/xmlwf
+/opt/local/bin/install -c -m 644 ./doc/xmlwf.1 c:/devel/target/f028e0acd588ff6a2ab37ae0703821ed/man/man1
+++ cp lib/libexpat.def /devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib
+++ cd /devel/target/f028e0acd588ff6a2ab37ae0703821ed/lib
+++ lib.exe -machine:IX86 -def:libexpat.def -out:expat.lib
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+   Creating library expat.lib and object expat.exp
+++ rm -f /tmp/expat_2.0.1-1_win32.zip /tmp/expat-dev_2.0.1-1_win32.zip
+++ cd /devel/target/f028e0acd588ff6a2ab37ae0703821ed
+++ zip /tmp/expat_2.0.1-1_win32.zip bin/libexpat-1.dll
+  adding: bin/libexpat-1.dll (224 bytes security) (deflated 60%)
+++ zip /tmp/expat-dev_2.0.1-1_win32.zip bin/xmlwf.exe
+  adding: bin/xmlwf.exe (224 bytes security) (deflated 69%)
+++ zip -r -D /tmp/expat-dev_2.0.1-1_win32.zip include
+  adding: include/expat.h (224 bytes security) (deflated 74%)
+  adding: include/expat_external.h (224 bytes security) (deflated 58%)
+++ zip /tmp/expat-dev_2.0.1-1_win32.zip lib/libexpat.dll.a lib/libexpat.def lib/expat.lib
+  adding: lib/libexpat.dll.a (224 bytes security) (deflated 92%)
+  adding: lib/libexpat.def (224 bytes security) (deflated 66%)
+  adding: lib/expat.lib (224 bytes security) (deflated 85%)
+++ zip -r -D /tmp/expat-dev_2.0.1-1_win32.zip man
+  adding: man/man1/xmlwf.1 (224 bytes security) (deflated 57%)

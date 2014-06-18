@@ -1,0 +1,42 @@
+++ UPSTREAM_ZIP=/c/tmp/downloads/zlib125-dll.zip
+++ T=/tmp/zlib-2800
+++ rm -rf /tmp/zlib-2800
+++ mkdir -p c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/bin c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/include c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/lib /tmp/zlib-2800
+++ cd /tmp/zlib-2800
+++ unzip /c/tmp/downloads/zlib125-dll.zip
+Archive:  c:/tmp/downloads/zlib125-dll.zip
+  inflating: DLL_FAQ.txt             
+   creating: include/              
+  inflating: include/zconf.h         
+  inflating: include/zlib.h          
+   creating: lib/                  
+  inflating: lib/zdll.lib            
+  inflating: lib/zlib.def            
+  inflating: README.txt              
+   creating: test/                 
+  inflating: test/example_d.exe      
+  inflating: test/minigzip_d.exe     
+  inflating: USAGE.txt               
+  inflating: zlib1.dll               
+++ dos2unix include/zlib.h
+include/zlib.h: done.
+++ dos2unix include/zconf.h
+include/zconf.h: done.
+++ patch -p0
+patching file include/zlib.h
+patching file include/zconf.h
+++ pexports zlib1.dll
+++ dlltool --input-def zlib.def --dllname zlib1.dll --output-lib libz.dll.a
+++ cp zlib1.dll c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/bin
+++ cp lib/zdll.lib libz.dll.a zlib.def c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/lib
+++ cp include/zlib.h include/zconf.h c:/devel/target/ee1c4ab00601277bb705856f12c8e5e0/include
+++ rm -f /tmp/zlib_1.2.5-2_win32.zip /tmp/zlib-dev_1.2.5-2_win32.zip
+++ cd /devel/target/ee1c4ab00601277bb705856f12c8e5e0
+++ zip /tmp/zlib_1.2.5-2_win32.zip bin/zlib1.dll
+  adding: bin/zlib1.dll (200 bytes security) (deflated 44%)
+++ zip -r -D /tmp/zlib-dev_1.2.5-2_win32.zip lib include
+  adding: lib/libz.dll.a (200 bytes security) (deflated 93%)
+  adding: lib/zdll.lib (200 bytes security) (deflated 92%)
+  adding: lib/zlib.def (200 bytes security) (deflated 59%)
+  adding: include/zconf.h (200 bytes security) (deflated 70%)
+  adding: include/zlib.h (200 bytes security) (deflated 72%)

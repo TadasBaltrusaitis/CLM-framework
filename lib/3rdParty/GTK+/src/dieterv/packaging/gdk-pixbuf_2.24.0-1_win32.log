@@ -1,0 +1,956 @@
++++ latest --arch=win32 zlib glib gettext-runtime pkg-config libpng
+++ DEPS='zlib-1.2.5-2 glib-2.28.8-1 gettext-runtime-0.18.1.1-2 pkg-config-0.26-1 libpng-1.4.3-1'
++++ latest --arch=win32 gettext-runtime
+++ GETTEXT_RUNTIME=gettext-runtime-0.18.1.1-2
+++ PKG_CONFIG_PATH=
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/zlib-1.2.5-2/lib/pkgconfig ']'
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/glib-2.28.8-1/lib/pkgconfig ']'
+++ PKG_CONFIG_PATH=/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig ']'
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig ']'
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig ']'
+++ PKG_CONFIG_PATH=/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:
++++ latest --arch=win32 libpng
+++ LIBPNG=libpng-1.4.3-1
++++ latest --arch=win32 zlib
+++ ZLIB=zlib-1.2.5-2
+++ sed -e 's/need_relink=yes/need_relink=no # no way --tml/' -e 's/wrappers_required=yes/wrappers_required=no # no thanks --tml/'
+++ mv ltmain.temp ltmain.sh
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mthreads'
+++ CPPFLAGS='-I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include'
+++ LDFLAGS='-L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base'
+++ LIBS=-lintl
++++ pkg-config --libs libpng
+++ LIBPNG='-LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14  '
+++ CFLAGS=-O2
+++ ./configure --with-gdiplus --with-included-loaders --without-libjasper --enable-debug=yes --enable-explicit-deps=no --disable-gtk-doc --disable-static --prefix=/devel/target/d5694c066a2520504d46fdfa00a43b40
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking how to create a ustar tar archive... gnutar
+checking whether to disable maintainer-specific portions of Makefiles... yes
+checking for gcc... gcc -mthreads
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mthreads accepts -g... yes
+checking for gcc -mthreads option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mthreads... gcc3
+checking whether gcc -mthreads and cc understand -c and -o together... yes
+checking for gcc -mthreads option to accept ISO C99... -std=gnu99
+checking for gcc -mthreads -std=gnu99 option to accept ISO Standard C... (cached) -std=gnu99
+checking whether make sets $(MAKE)... (cached) yes
+checking pkg-config is at least version 0.9.0... yes
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for native Win32... yes
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mthreads -std=gnu99... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /mingw/bin/nm
+checking the name lister (/mingw/bin/nm) interface... BSD nm
+checking whether ln -s works... no, using cp -p
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert i686-pc-mingw32 file names to i686-pc-mingw32 format... func_convert_file_msys_to_w32
+checking how to convert i686-pc-mingw32 file names to toolchain format... func_convert_file_msys_to_w32
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for dlltool... dlltool
+checking how to associate runtime and link libraries... func_cygming_dll_for_implib
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /mingw/bin/nm output from gcc -mthreads -std=gnu99 object... ok
+checking for sysroot... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking how to run the C preprocessor... gcc -mthreads -std=gnu99 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... no
+checking for as... as
+checking for dlltool... (cached) dlltool
+checking for objdump... (cached) objdump
+checking for objdir... .libs
+checking if gcc -mthreads -std=gnu99 supports -fno-rtti -fno-exceptions... no
+checking for gcc -mthreads -std=gnu99 option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mthreads -std=gnu99 PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mthreads -std=gnu99 static flag -static works... yes
+checking if gcc -mthreads -std=gnu99 supports -c -o file.o... yes
+checking if gcc -mthreads -std=gnu99 supports -c -o file.o... (cached) yes
+checking whether the gcc -mthreads -std=gnu99 linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+configure: creating ./config.lt
+config.lt: creating libtool
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... unknown
+checking for _LARGE_FILES value needed for large files... unknown
+checking dependency style of gcc -mthreads -std=gnu99... gcc3
+checking for nm... /mingw/bin/nm
+checking for some Win32 platform... yes
+checking for windres... windres
+checking for lib.exe... yes
+checking whether build environment is sane... yes
+checking how to get MSVC-compatible struct packing... -mms-bitfields
+checking for BASE_DEPENDENCIES... yes
+checking Whether to write dependencies into .pc files... no
+checking for perl5... no
+checking for perl... /bin/perl
+checking for sigsetjmp... no
+checking whether NLS is requested... yes
+checking for msgfmt... /mingw/bin/msgfmt
+checking for gmsgfmt... /mingw/bin/msgfmt
+checking for xgettext... /mingw/bin/xgettext
+checking for msgmerge... /mingw/bin/msgmerge
+checking for ld used by GCC... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for shared library run path origin... done
+checking for CFPreferencesCopyAppValue... no
+checking for CFLocaleCopyCurrent... no
+checking for GNU gettext in libc... no
+checking for iconv... yes
+checking for working iconv... yes
+checking how to link with libiconv... -liconv
+checking for GNU gettext in libintl... yes
+checking whether to use NLS... yes
+checking where the gettext function comes from... external libintl
+checking how to link with libintl... /devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/libintl.dll.a -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib
+checking for extra flags to get ANSI library prototypes... none needed
+checking for the BeOS... no
+checking for HP-UX... no
+checking for extra flags for POSIX compliance... none needed
+checking pkg-config is at least version 0.16... yes
+checking for GLIB - version >= 2.27.2... yes (version 2.28.8)
+checking for bind_textdomain_codeset... yes
+checking for unistd.h... (cached) yes
+checking for ANSI C header files... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking whether to build gmodulized gdk-pixbuf... yes
+checking whether dynamic modules work... yes
+checking pixbuf loaders to build... ani,icns,pcx,ras,tga,png,pnm,wbmp,xbm,xpm,qtif,gdip-bmp,gdip-emf,gdip-gif,gdip-ico,gdip-jpeg,gdip-tiff,gdip-wmf
+checking sys/systeminfo.h usability... no
+checking sys/systeminfo.h presence... no
+checking for sys/systeminfo.h... no
+checking sys/sysinfo.h usability... no
+checking sys/sysinfo.h presence... no
+checking for sys/sysinfo.h... no
+checking for mediaLib 2.3... checking for mlib_ImageSetStruct in -lmlib... no
+checking for x86 platform... yes
+checking compiler support for MMX... yes
+checking for gobject-introspection... no
+checking for gtkdoc-check... no
+checking for gtkdoc-rebase... no
+checking for gtkdoc-mkpdf... no
+checking whether to build gtk-doc documentation... no
+checking for db2html... false
+checking for -Bsymbolic-functions linker flag... no
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating gdk-pixbuf-2.0.pc
+config.status: creating gdk-pixbuf-2.0-uninstalled.pc
+config.status: creating gdk-pixbuf/Makefile
+config.status: creating gdk-pixbuf/gdk_pixbuf.rc
+config.status: creating gdk-pixbuf/gdk-pixbuf-features.h
+config.status: creating gdk-pixbuf/pixops/Makefile
+config.status: creating build/Makefile
+config.status: creating build/win32/Makefile
+config.status: creating build/win32/vs9/Makefile
+config.status: creating build/win32/vs10/Makefile
+config.status: creating docs/Makefile
+config.status: creating docs/reference/Makefile
+config.status: creating docs/reference/gdk-pixbuf/Makefile
+config.status: creating docs/reference/gdk-pixbuf/version.xml
+config.status: creating po/Makefile.in
+config.status: creating tests/Makefile
+config.status: creating contrib/Makefile
+config.status: creating contrib/gdk-pixbuf-xlib/Makefile
+config.status: creating contrib/gdk-pixbuf-xlib/gdk-pixbuf-xlib-2.0.pc
+config.status: creating config.h.win32
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing po-directories commands
+config.status: creating po/POTFILES
+config.status: creating po/Makefile
+++ PATH=/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs:/devel/target/d5694c066a2520504d46fdfa00a43b40/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ make -j4 install
+Making install in gdk-pixbuf
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+( cd . && glib-mkenums --template gdk-pixbuf-enum-types.h.template \
+		gdk-pixbuf.h gdk-pixbuf-core.h gdk-pixbuf-transform.h gdk-pixbuf-io.h gdk-pixbuf-animation.h gdk-pixbuf-simple-anim.h gdk-pixbuf-loader.h ) > tmp-gdk-pixbuf-enum-types.h \
+	&& (cmp -s tmp-gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.h || cp tmp-gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.h ) \
+	&& rm -f tmp-gdk-pixbuf-enum-types.h \
+	&& echo timestamp > s-enum-types-h
+echo "#if !defined(GDK_PIXBUF_DISABLE_DEPRECATED) || defined(GDK_PIXBUF_COMPILATION)" > xgen-gmh \
+	&& glib-genmarshal --prefix=_gdk_pixbuf_marshal ./gdk-pixbuf-marshal.list --header >> xgen-gmh \
+	&& echo "#endif /* !GDK_PIXBUF_DISABLE_DEPRECATED || GDK_PIXBUF_COMPILATION */" >> xgen-gmh \
+	&& (cmp -s xgen-gmh gdk-pixbuf-marshal.h || cp xgen-gmh gdk-pixbuf-marshal.h) \
+	&& rm -f xgen-gmh xgen-gmh~ \
+	&& echo timestamp > stamp-gdk-pixbuf-marshal.h
+make  install-recursive
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+Making install in pixops
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/pixops'
+/bin/sh ../../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixops.lo -MD -MP -MF .deps/pixops.Tpo -c -o pixops.lo pixops.c
+/bin/sh ../../libtool    --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -O2 -MT have_mmx.lo -MD -MP -MF .deps/have_mmx.Tpo -c -o have_mmx.lo have_mmx.S
+/bin/sh ../../libtool    --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -O2 -MT scale_line_22_33_mmx.lo -MD -MP -MF .deps/scale_line_22_33_mmx.Tpo -c -o scale_line_22_33_mmx.lo scale_line_22_33_mmx.S
+/bin/sh ../../libtool    --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -O2 -MT composite_line_22_4a4_mmx.lo -MD -MP -MF .deps/composite_line_22_4a4_mmx.Tpo -c -o composite_line_22_4a4_mmx.lo composite_line_22_4a4_mmx.S
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../.. -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixops.lo -MD -MP -MF .deps/pixops.Tpo -c pixops.c  -DDLL_EXPORT -DPIC -o .libs/pixops.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../.. -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -O2 -MT have_mmx.lo -MD -MP -MF .deps/have_mmx.Tpo -c have_mmx.S  -DDLL_EXPORT -DPIC -o .libs/have_mmx.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../.. -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -O2 -MT composite_line_22_4a4_mmx.lo -MD -MP -MF .deps/composite_line_22_4a4_mmx.Tpo -c composite_line_22_4a4_mmx.S  -DDLL_EXPORT -DPIC -o .libs/composite_line_22_4a4_mmx.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../.. -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -O2 -MT scale_line_22_33_mmx.lo -MD -MP -MF .deps/scale_line_22_33_mmx.Tpo -c scale_line_22_33_mmx.S  -DDLL_EXPORT -DPIC -o .libs/scale_line_22_33_mmx.o
+mv -f .deps/have_mmx.Tpo .deps/have_mmx.Plo
+/bin/sh ../../libtool    --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -O2 -MT composite_line_color_22_4a4_mmx.lo -MD -MP -MF .deps/composite_line_color_22_4a4_mmx.Tpo -c -o composite_line_color_22_4a4_mmx.lo composite_line_color_22_4a4_mmx.S
+mv -f .deps/composite_line_22_4a4_mmx.Tpo .deps/composite_line_22_4a4_mmx.Plo
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../..  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT timescale.o -MD -MP -MF .deps/timescale.Tpo -c -o timescale.o timescale.c
+mv -f .deps/scale_line_22_33_mmx.Tpo .deps/scale_line_22_33_mmx.Plo
+mv -f .deps/timescale.Tpo .deps/timescale.Po
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I../.. -I../.. -I../.. -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -O2 -MT composite_line_color_22_4a4_mmx.lo -MD -MP -MF .deps/composite_line_color_22_4a4_mmx.Tpo -c composite_line_color_22_4a4_mmx.S  -DDLL_EXPORT -DPIC -o .libs/composite_line_color_22_4a4_mmx.o
+mv -f .deps/composite_line_color_22_4a4_mmx.Tpo .deps/composite_line_color_22_4a4_mmx.Plo
+mv -f .deps/pixops.Tpo .deps/pixops.Plo
+/bin/sh ../../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libpixops.la  pixops.lo have_mmx.lo scale_line_22_33_mmx.lo composite_line_22_4a4_mmx.lo composite_line_color_22_4a4_mmx.lo  -lintl
+libtool: link: ar cru .libs/libpixops.a .libs/pixops.o .libs/have_mmx.o .libs/scale_line_22_33_mmx.o .libs/composite_line_22_4a4_mmx.o .libs/composite_line_color_22_4a4_mmx.o 
+libtool: link: ranlib .libs/libpixops.a
+libtool: link: ( cd ".libs" && rm -f "libpixops.la" && cp -p "../libpixops.la" "libpixops.la" )
+/bin/sh ../../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o timescale.exe timescale.o libpixops.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl   -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o timescale.exe timescale.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ./.libs/libpixops.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl -mthreads
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/pixops'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/pixops'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/pixops'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf.lo -MD -MP -MF .deps/gdk-pixbuf.Tpo -c -o gdk-pixbuf.lo gdk-pixbuf.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-animation.lo -MD -MP -MF .deps/gdk-pixbuf-animation.Tpo -c -o gdk-pixbuf-animation.lo gdk-pixbuf-animation.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-data.lo -MD -MP -MF .deps/gdk-pixbuf-data.Tpo -c -o gdk-pixbuf-data.lo gdk-pixbuf-data.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-io.lo -MD -MP -MF .deps/gdk-pixbuf-io.Tpo -c -o gdk-pixbuf-io.lo gdk-pixbuf-io.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-data.lo -MD -MP -MF .deps/gdk-pixbuf-data.Tpo -c gdk-pixbuf-data.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-data.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-animation.lo -MD -MP -MF .deps/gdk-pixbuf-animation.Tpo -c gdk-pixbuf-animation.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-animation.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf.lo -MD -MP -MF .deps/gdk-pixbuf.Tpo -c gdk-pixbuf.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-io.lo -MD -MP -MF .deps/gdk-pixbuf-io.Tpo -c gdk-pixbuf-io.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-io.o
+mv -f .deps/gdk-pixbuf-data.Tpo .deps/gdk-pixbuf-data.Plo
+mv -f .deps/gdk-pixbuf-animation.Tpo .deps/gdk-pixbuf-animation.Plo
+mv -f .deps/gdk-pixbuf.Tpo .deps/gdk-pixbuf.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-loader.lo -MD -MP -MF .deps/gdk-pixbuf-loader.Tpo -c -o gdk-pixbuf-loader.lo gdk-pixbuf-loader.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-scale.lo -MD -MP -MF .deps/gdk-pixbuf-scale.Tpo -c -o gdk-pixbuf-scale.lo gdk-pixbuf-scale.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-simple-anim.lo -MD -MP -MF .deps/gdk-pixbuf-simple-anim.Tpo -c -o gdk-pixbuf-simple-anim.lo gdk-pixbuf-simple-anim.c
+mv -f .deps/gdk-pixbuf-io.Tpo .deps/gdk-pixbuf-io.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-scaled-anim.lo -MD -MP -MF .deps/gdk-pixbuf-scaled-anim.Tpo -c -o gdk-pixbuf-scaled-anim.lo gdk-pixbuf-scaled-anim.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-simple-anim.lo -MD -MP -MF .deps/gdk-pixbuf-simple-anim.Tpo -c gdk-pixbuf-simple-anim.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-simple-anim.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-scale.lo -MD -MP -MF .deps/gdk-pixbuf-scale.Tpo -c gdk-pixbuf-scale.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-scale.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-loader.lo -MD -MP -MF .deps/gdk-pixbuf-loader.Tpo -c gdk-pixbuf-loader.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-loader.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-scaled-anim.lo -MD -MP -MF .deps/gdk-pixbuf-scaled-anim.Tpo -c gdk-pixbuf-scaled-anim.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-scaled-anim.o
+mv -f .deps/gdk-pixbuf-simple-anim.Tpo .deps/gdk-pixbuf-simple-anim.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-util.lo -MD -MP -MF .deps/gdk-pixbuf-util.Tpo -c -o gdk-pixbuf-util.lo gdk-pixbuf-util.c
+mv -f .deps/gdk-pixbuf-scale.Tpo .deps/gdk-pixbuf-scale.Plo
+mv -f .deps/gdk-pixbuf-loader.Tpo .deps/gdk-pixbuf-loader.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixdata.lo -MD -MP -MF .deps/gdk-pixdata.Tpo -c -o gdk-pixdata.lo gdk-pixdata.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-enum-types.lo -MD -MP -MF .deps/gdk-pixbuf-enum-types.Tpo -c -o gdk-pixbuf-enum-types.lo gdk-pixbuf-enum-types.c
+mv -f .deps/gdk-pixbuf-scaled-anim.Tpo .deps/gdk-pixbuf-scaled-anim.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ani.lo -MD -MP -MF .deps/io-ani.Tpo -c -o io-ani.lo io-ani.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-util.lo -MD -MP -MF .deps/gdk-pixbuf-util.Tpo -c gdk-pixbuf-util.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-util.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixdata.lo -MD -MP -MF .deps/gdk-pixdata.Tpo -c gdk-pixdata.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixdata.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ani.lo -MD -MP -MF .deps/io-ani.Tpo -c io-ani.c  -DDLL_EXPORT -DPIC -o .libs/io-ani.o
+mv -f .deps/gdk-pixbuf-util.Tpo .deps/gdk-pixbuf-util.Plo
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-enum-types.lo -MD -MP -MF .deps/gdk-pixbuf-enum-types.Tpo -c gdk-pixbuf-enum-types.c  -DDLL_EXPORT -DPIC -o .libs/gdk-pixbuf-enum-types.o
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ani-animation.lo -MD -MP -MF .deps/io-ani-animation.Tpo -c -o io-ani-animation.lo io-ani-animation.c
+mv -f .deps/io-ani.Tpo .deps/io-ani.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-icns.lo -MD -MP -MF .deps/io-icns.Tpo -c -o io-icns.lo io-icns.c
+mv -f .deps/gdk-pixdata.Tpo .deps/gdk-pixdata.Plo
+mv -f .deps/gdk-pixbuf-enum-types.Tpo .deps/gdk-pixbuf-enum-types.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-pcx.lo -MD -MP -MF .deps/io-pcx.Tpo -c -o io-pcx.lo io-pcx.c
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ras.lo -MD -MP -MF .deps/io-ras.Tpo -c -o io-ras.lo io-ras.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ani-animation.lo -MD -MP -MF .deps/io-ani-animation.Tpo -c io-ani-animation.c  -DDLL_EXPORT -DPIC -o .libs/io-ani-animation.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-icns.lo -MD -MP -MF .deps/io-icns.Tpo -c io-icns.c  -DDLL_EXPORT -DPIC -o .libs/io-icns.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-ras.lo -MD -MP -MF .deps/io-ras.Tpo -c io-ras.c  -DDLL_EXPORT -DPIC -o .libs/io-ras.o
+mv -f .deps/io-ani-animation.Tpo .deps/io-ani-animation.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-tga.lo -MD -MP -MF .deps/io-tga.Tpo -c -o io-tga.lo io-tga.c
+mv -f .deps/io-icns.Tpo .deps/io-icns.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-png.lo -MD -MP -MF .deps/io-png.Tpo -c -o io-png.lo io-png.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-pcx.lo -MD -MP -MF .deps/io-pcx.Tpo -c io-pcx.c  -DDLL_EXPORT -DPIC -o .libs/io-pcx.o
+mv -f .deps/io-ras.Tpo .deps/io-ras.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-pnm.lo -MD -MP -MF .deps/io-pnm.Tpo -c -o io-pnm.lo io-pnm.c
+mv -f .deps/io-pcx.Tpo .deps/io-pcx.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-wbmp.lo -MD -MP -MF .deps/io-wbmp.Tpo -c -o io-wbmp.lo io-wbmp.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-png.lo -MD -MP -MF .deps/io-png.Tpo -c io-png.c  -DDLL_EXPORT -DPIC -o .libs/io-png.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-tga.lo -MD -MP -MF .deps/io-tga.Tpo -c io-tga.c  -DDLL_EXPORT -DPIC -o .libs/io-tga.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-pnm.lo -MD -MP -MF .deps/io-pnm.Tpo -c io-pnm.c  -DDLL_EXPORT -DPIC -o .libs/io-pnm.o
+io-png.c: In function 'png_info_callback':
+io-png.c:657:38: warning: format '%ld' expects type 'long int', but argument 5 has type 'png_uint_32'
+io-png.c:657:38: warning: format '%ld' expects type 'long int', but argument 6 has type 'png_uint_32'
+mv -f .deps/io-tga.Tpo .deps/io-tga.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-xbm.lo -MD -MP -MF .deps/io-xbm.Tpo -c -o io-xbm.lo io-xbm.c
+mv -f .deps/io-png.Tpo .deps/io-png.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-xpm.lo -MD -MP -MF .deps/io-xpm.Tpo -c -o io-xpm.lo io-xpm.c
+mv -f .deps/io-pnm.Tpo .deps/io-pnm.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-qtif.lo -MD -MP -MF .deps/io-qtif.Tpo -c -o io-qtif.lo io-qtif.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-wbmp.lo -MD -MP -MF .deps/io-wbmp.Tpo -c io-wbmp.c  -DDLL_EXPORT -DPIC -o .libs/io-wbmp.o
+mv -f .deps/io-wbmp.Tpo .deps/io-wbmp.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-bmp.lo -MD -MP -MF .deps/io-gdip-bmp.Tpo -c -o io-gdip-bmp.lo io-gdip-bmp.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-xpm.lo -MD -MP -MF .deps/io-xpm.Tpo -c io-xpm.c  -DDLL_EXPORT -DPIC -o .libs/io-xpm.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-xbm.lo -MD -MP -MF .deps/io-xbm.Tpo -c io-xbm.c  -DDLL_EXPORT -DPIC -o .libs/io-xbm.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-qtif.lo -MD -MP -MF .deps/io-qtif.Tpo -c io-qtif.c  -DDLL_EXPORT -DPIC -o .libs/io-qtif.o
+mv -f .deps/io-xpm.Tpo .deps/io-xpm.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-emf.lo -MD -MP -MF .deps/io-gdip-emf.Tpo -c -o io-gdip-emf.lo io-gdip-emf.c
+mv -f .deps/io-qtif.Tpo .deps/io-qtif.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-gif.lo -MD -MP -MF .deps/io-gdip-gif.Tpo -c -o io-gdip-gif.lo io-gdip-gif.c
+mv -f .deps/io-xbm.Tpo .deps/io-xbm.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-utils.lo -MD -MP -MF .deps/io-gdip-utils.Tpo -c -o io-gdip-utils.lo io-gdip-utils.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-bmp.lo -MD -MP -MF .deps/io-gdip-bmp.Tpo -c io-gdip-bmp.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-bmp.o
+io-gdip-bmp.c: In function '_gdk_pixbuf__gdip_bmp_fill_info':
+io-gdip-bmp.c:82:21: warning: assignment discards qualifiers from pointer target type
+mv -f .deps/io-gdip-bmp.Tpo .deps/io-gdip-bmp.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-animation.lo -MD -MP -MF .deps/io-gdip-animation.Tpo -c -o io-gdip-animation.lo io-gdip-animation.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-emf.lo -MD -MP -MF .deps/io-gdip-emf.Tpo -c io-gdip-emf.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-emf.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-gif.lo -MD -MP -MF .deps/io-gdip-gif.Tpo -c io-gdip-gif.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-gif.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-utils.lo -MD -MP -MF .deps/io-gdip-utils.Tpo -c io-gdip-utils.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-utils.o
+io-gdip-emf.c: In function '_gdk_pixbuf__gdip_emf_fill_info':
+io-gdip-emf.c:59:21: warning: assignment discards qualifiers from pointer target type
+io-gdip-utils.c: In function 'gdip_buffer_to_bitmap':
+io-gdip-utils.c:285:3: warning: pointer targets in passing argument 1 of 'gdip_buffer_to_hglobal' differ in signedness
+io-gdip-utils.c:147:1: note: expected 'const gchar *' but argument is of type 'guint8 *'
+io-gdip-utils.c: In function 'gdip_buffer_to_image':
+io-gdip-utils.c:325:3: warning: pointer targets in passing argument 1 of 'gdip_buffer_to_hglobal' differ in signedness
+io-gdip-utils.c:147:1: note: expected 'const gchar *' but argument is of type 'guint8 *'
+io-gdip-utils.c: In function 'gdk_pixbuf__gdip_image_load_animation':
+io-gdip-utils.c:847:7: warning: pointer targets in passing argument 2 of 'gdk_pixbuf__gdip_image_load_increment' differ in signedness
+io-gdip-utils.c:586:1: note: expected 'const guchar *' but argument is of type 'char *'
+io-gdip-gif.c: In function '_gdk_pixbuf__gdip_gif_fill_info':
+io-gdip-gif.c:80:21: warning: assignment discards qualifiers from pointer target type
+mv -f .deps/io-gdip-emf.Tpo .deps/io-gdip-emf.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-ico.lo -MD -MP -MF .deps/io-gdip-ico.Tpo -c -o io-gdip-ico.lo io-gdip-ico.c
+mv -f .deps/io-gdip-gif.Tpo .deps/io-gdip-gif.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-jpeg.lo -MD -MP -MF .deps/io-gdip-jpeg.Tpo -c -o io-gdip-jpeg.lo io-gdip-jpeg.c
+mv -f .deps/io-gdip-utils.Tpo .deps/io-gdip-utils.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-tiff.lo -MD -MP -MF .deps/io-gdip-tiff.Tpo -c -o io-gdip-tiff.lo io-gdip-tiff.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-animation.lo -MD -MP -MF .deps/io-gdip-animation.Tpo -c io-gdip-animation.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-animation.o
+mv -f .deps/io-gdip-animation.Tpo .deps/io-gdip-animation.Plo
+/bin/sh ../libtool  --tag=CC   --mode=compile gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-wmf.lo -MD -MP -MF .deps/io-gdip-wmf.Tpo -c -o io-gdip-wmf.lo io-gdip-wmf.c
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-ico.lo -MD -MP -MF .deps/io-gdip-ico.Tpo -c io-gdip-ico.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-ico.o
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-jpeg.lo -MD -MP -MF .deps/io-gdip-jpeg.Tpo -c io-gdip-jpeg.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-jpeg.o
+io-gdip-ico.c: In function '_gdk_pixbuf__gdip_ico_fill_info':
+io-gdip-ico.c:59:21: warning: assignment discards qualifiers from pointer target type
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-tiff.lo -MD -MP -MF .deps/io-gdip-tiff.Tpo -c io-gdip-tiff.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-tiff.o
+mv -f .deps/io-gdip-ico.Tpo .deps/io-gdip-ico.Plo
+io-gdip-jpeg.c: In function '_gdk_pixbuf__gdip_jpeg_fill_info':
+io-gdip-jpeg.c:136:21: warning: assignment discards qualifiers from pointer target type
+windres gdk_pixbuf.rc gdk_pixbuf-win32-res.o
+mv -f .deps/io-gdip-jpeg.Tpo .deps/io-gdip-jpeg.Plo
+dlltool --kill-at --dllname gdiplus.dll --input-def gdiplus.def --output-lib libgdiplus.dll.a
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT gdk-pixbuf-csource.o -MD -MP -MF .deps/gdk-pixbuf-csource.Tpo -c -o gdk-pixbuf-csource.o gdk-pixbuf-csource.c
+mv -f .deps/io-gdip-tiff.Tpo .deps/io-gdip-tiff.Plo
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT queryloaders.o -MD -MP -MF .deps/queryloaders.Tpo -c -o queryloaders.o queryloaders.c
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include    -DGDK_PIXBUF_ENABLE_BACKEND "-DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\"" "-DBUILT_MODULES_DIR=\"./.libs\"" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT test-gdk-pixbuf.o -MD -MP -MF .deps/test-gdk-pixbuf.Tpo -c -o test-gdk-pixbuf.o test-gdk-pixbuf.c
+mv -f .deps/gdk-pixbuf-csource.Tpo .deps/gdk-pixbuf-csource.Po
+libtool: compile:  gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DG_LOG_DOMAIN=\"GdkPixbuf\" -DGDK_PIXBUF_COMPILATION -I.. -I.. -I../gdk-pixbuf -I../gdk-pixbuf -DGDK_PIXBUF_LOCALEDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale\" -DGDK_PIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib\" -DGDK_PIXBUF_BINARY_VERSION=\"2.10.0\" -DGDK_PIXBUF_PREFIX=\"/devel/target/d5694c066a2520504d46fdfa00a43b40\" -DINCLUDE_ani -DINCLUDE_icns -DINCLUDE_pcx -DINCLUDE_ras -DINCLUDE_tga -DINCLUDE_png -DINCLUDE_pnm -DINCLUDE_wbmp -DINCLUDE_xbm -DINCLUDE_xpm -DINCLUDE_qtif -DINCLUDE_gdiplus -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include -DGDK_PIXBUF_ENABLE_BACKEND -DPIXBUF_LIBDIR=\"/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders\" -DBUILT_MODULES_DIR=\"./.libs\" -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT io-gdip-wmf.lo -MD -MP -MF .deps/io-gdip-wmf.Tpo -c io-gdip-wmf.c  -DDLL_EXPORT -DPIC -o .libs/io-gdip-wmf.o
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-ani.la  io-ani.lo io-ani-animation.lo  -lintl
+mv -f .deps/test-gdk-pixbuf.Tpo .deps/test-gdk-pixbuf.Po
+io-gdip-wmf.c: In function '_gdk_pixbuf__gdip_wmf_fill_info':
+io-gdip-wmf.c:58:21: warning: assignment discards qualifiers from pointer target type
+mv -f .deps/queryloaders.Tpo .deps/queryloaders.Po
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-icns.la  io-icns.lo  -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-pcx.la  io-pcx.lo  -lintl
+mv -f .deps/io-gdip-wmf.Tpo .deps/io-gdip-wmf.Plo
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-ras.la  io-ras.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-icns.a .libs/io-icns.o 
+libtool: link: ar cru .libs/libstatic-pixbufloader-ani.a .libs/io-ani.o .libs/io-ani-animation.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-icns.a
+libtool: link: ranlib .libs/libstatic-pixbufloader-ani.a
+libtool: link: ar cru .libs/libstatic-pixbufloader-pcx.a .libs/io-pcx.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-pcx.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-ani.la" && cp -p "../libstatic-pixbufloader-ani.la" "libstatic-pixbufloader-ani.la" )
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-icns.la" && cp -p "../libstatic-pixbufloader-icns.la" "libstatic-pixbufloader-icns.la" )
+libtool: link: ar cru .libs/libstatic-pixbufloader-ras.a .libs/io-ras.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-ras.a
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-tga.la  io-tga.lo  -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-png.la  io-png.lo  -lintl
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-pcx.la" && cp -p "../libstatic-pixbufloader-pcx.la" "libstatic-pixbufloader-pcx.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-pnm.la  io-pnm.lo  -lintl
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-ras.la" && cp -p "../libstatic-pixbufloader-ras.la" "libstatic-pixbufloader-ras.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-wbmp.la  io-wbmp.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-tga.a .libs/io-tga.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-tga.a
+libtool: link: ar cru .libs/libstatic-pixbufloader-png.a .libs/io-png.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-png.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-tga.la" && cp -p "../libstatic-pixbufloader-tga.la" "libstatic-pixbufloader-tga.la" )
+libtool: link: ar cru .libs/libstatic-pixbufloader-pnm.a .libs/io-pnm.o 
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-xbm.la  io-xbm.lo  -lintl
+libtool: link: ranlib .libs/libstatic-pixbufloader-pnm.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-png.la" && cp -p "../libstatic-pixbufloader-png.la" "libstatic-pixbufloader-png.la" )
+libtool: link: ar cru .libs/libstatic-pixbufloader-wbmp.a .libs/io-wbmp.o 
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-xpm.la  io-xpm.lo  -lintl
+libtool: link: ranlib .libs/libstatic-pixbufloader-wbmp.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-pnm.la" && cp -p "../libstatic-pixbufloader-pnm.la" "libstatic-pixbufloader-pnm.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-qtif.la  io-qtif.lo  -lintl
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-wbmp.la" && cp -p "../libstatic-pixbufloader-wbmp.la" "libstatic-pixbufloader-wbmp.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-bmp.la  io-gdip-bmp.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-xbm.a .libs/io-xbm.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-xbm.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-xbm.la" && cp -p "../libstatic-pixbufloader-xbm.la" "libstatic-pixbufloader-xbm.la" )
+libtool: link: ar cru .libs/libstatic-pixbufloader-xpm.a .libs/io-xpm.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-xpm.a
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-emf.la  io-gdip-emf.lo  -lintl
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-xpm.la" && cp -p "../libstatic-pixbufloader-xpm.la" "libstatic-pixbufloader-xpm.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-gif.la  io-gdip-gif.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-qtif.a .libs/io-qtif.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-qtif.a
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-bmp.a .libs/io-gdip-bmp.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-bmp.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-qtif.la" && cp -p "../libstatic-pixbufloader-qtif.la" "libstatic-pixbufloader-qtif.la" )
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-bmp.la" && cp -p "../libstatic-pixbufloader-gdip-bmp.la" "libstatic-pixbufloader-gdip-bmp.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-ico.la  io-gdip-utils.lo io-gdip-animation.lo io-gdip-ico.lo  -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-jpeg.la  io-gdip-jpeg.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-emf.a .libs/io-gdip-emf.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-emf.a
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-gif.a .libs/io-gdip-gif.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-gif.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-emf.la" && cp -p "../libstatic-pixbufloader-gdip-emf.la" "libstatic-pixbufloader-gdip-emf.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-tiff.la  io-gdip-tiff.lo  -lintl
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-gif.la" && cp -p "../libstatic-pixbufloader-gdip-gif.la" "libstatic-pixbufloader-gdip-gif.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libstatic-pixbufloader-gdip-wmf.la  io-gdip-wmf.lo  -lintl
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-ico.a .libs/io-gdip-utils.o .libs/io-gdip-animation.o .libs/io-gdip-ico.o 
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-jpeg.a .libs/io-gdip-jpeg.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-ico.a
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-jpeg.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-ico.la" && cp -p "../libstatic-pixbufloader-gdip-ico.la" "libstatic-pixbufloader-gdip-ico.la" )
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-jpeg.la" && cp -p "../libstatic-pixbufloader-gdip-jpeg.la" "libstatic-pixbufloader-gdip-jpeg.la" )
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-tiff.a .libs/io-gdip-tiff.o 
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-tiff.a
+libtool: link: ar cru .libs/libstatic-pixbufloader-gdip-wmf.a .libs/io-gdip-wmf.o 
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-tiff.la" && cp -p "../libstatic-pixbufloader-gdip-tiff.la" "libstatic-pixbufloader-gdip-tiff.la" )
+libtool: link: ranlib .libs/libstatic-pixbufloader-gdip-wmf.a
+libtool: link: ( cd ".libs" && rm -f "libstatic-pixbufloader-gdip-wmf.la" && cp -p "../libstatic-pixbufloader-gdip-wmf.la" "libstatic-pixbufloader-gdip-wmf.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -Wl,gdk_pixbuf-win32-res.o -version-info 2400:0:2400  -no-undefined -export-symbols ./gdk_pixbuf.def -Wl,libgdiplus.dll.a -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o libgdk_pixbuf-2.0.la -rpath /devel/target/d5694c066a2520504d46fdfa00a43b40/lib gdk-pixbuf.lo gdk-pixbuf-animation.lo gdk-pixbuf-data.lo gdk-pixbuf-io.lo gdk-pixbuf-loader.lo gdk-pixbuf-scale.lo gdk-pixbuf-simple-anim.lo gdk-pixbuf-scaled-anim.lo gdk-pixbuf-util.lo gdk-pixdata.lo gdk-pixbuf-enum-types.lo pixops/libpixops.la libstatic-pixbufloader-ani.la libstatic-pixbufloader-icns.la libstatic-pixbufloader-pcx.la libstatic-pixbufloader-ras.la libstatic-pixbufloader-tga.la libstatic-pixbufloader-png.la libstatic-pixbufloader-pnm.la libstatic-pixbufloader-wbmp.la libstatic-pixbufloader-xbm.la libstatic-pixbufloader-xpm.la libstatic-pixbufloader-qtif.la libstatic-pixbufloader-gdip-bmp.la libstatic-pixbufloader-gdip-emf.la libstatic-pixbufloader-gdip-gif.la libstatic-pixbufloader-gdip-ico.la libstatic-pixbufloader-gdip-jpeg.la libstatic-pixbufloader-gdip-tiff.la libstatic-pixbufloader-gdip-wmf.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lole32 -lintl
+libtool: link: if test "x`/bin/sed 1q ./gdk_pixbuf.def`" = xEXPORTS; then cp ./gdk_pixbuf.def .libs/libgdk_pixbuf-2.0-0.dll.def; else echo EXPORTS > .libs/libgdk_pixbuf-2.0-0.dll.def; cat ./gdk_pixbuf.def >> .libs/libgdk_pixbuf-2.0-0.dll.def; fi
+libtool: link:  gcc -mthreads -std=gnu99 -shared .libs/libgdk_pixbuf-2.0-0.dll.def  .libs/gdk-pixbuf.o .libs/gdk-pixbuf-animation.o .libs/gdk-pixbuf-data.o .libs/gdk-pixbuf-io.o .libs/gdk-pixbuf-loader.o .libs/gdk-pixbuf-scale.o .libs/gdk-pixbuf-simple-anim.o .libs/gdk-pixbuf-scaled-anim.o .libs/gdk-pixbuf-util.o .libs/gdk-pixdata.o .libs/gdk-pixbuf-enum-types.o  -Wl,--whole-archive pixops/.libs/libpixops.a ./.libs/libstatic-pixbufloader-ani.a ./.libs/libstatic-pixbufloader-icns.a ./.libs/libstatic-pixbufloader-pcx.a ./.libs/libstatic-pixbufloader-ras.a ./.libs/libstatic-pixbufloader-tga.a ./.libs/libstatic-pixbufloader-png.a ./.libs/libstatic-pixbufloader-pnm.a ./.libs/libstatic-pixbufloader-wbmp.a ./.libs/libstatic-pixbufloader-xbm.a ./.libs/libstatic-pixbufloader-xpm.a ./.libs/libstatic-pixbufloader-qtif.a ./.libs/libstatic-pixbufloader-gdip-bmp.a ./.libs/libstatic-pixbufloader-gdip-emf.a ./.libs/libstatic-pixbufloader-gdip-gif.a ./.libs/libstatic-pixbufloader-gdip-ico.a ./.libs/libstatic-pixbufloader-gdip-jpeg.a ./.libs/libstatic-pixbufloader-gdip-tiff.a ./.libs/libstatic-pixbufloader-gdip-wmf.a -Wl,--no-whole-archive  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lole32 -lintl  -mthreads -O2 -mms-bitfields -Wl,gdk_pixbuf-win32-res.o -Wl,libgdiplus.dll.a -Wl,--enable-auto-image-base   -mthreads -o .libs/libgdk_pixbuf-2.0-0.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libgdk_pixbuf-2.0.dll.a
+Creating library file: .libs/libgdk_pixbuf-2.0.dll.a
+libtool: link: ( cd ".libs" && rm -f "libgdk_pixbuf-2.0.la" && cp -p "../libgdk_pixbuf-2.0.la" "libgdk_pixbuf-2.0.la" )
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o gdk-pixbuf-csource.exe gdk-pixbuf-csource.o libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o gdk-pixbuf-query-loaders.exe queryloaders.o libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o test-gdk-pixbuf.exe test-gdk-pixbuf.o libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+lib -machine:X86 -name:libgdk_pixbuf-2.0-0.dll -def:gdk_pixbuf.def -out:gdk_pixbuf-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library gdk_pixbuf-2.0.lib and object gdk_pixbuf-2.0.exp
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o gdk-pixbuf-query-loaders.exe queryloaders.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ./.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+LOADERS=`echo libpixbufloader-*.la` ; \
+	if test "x$LOADERS" != 'xlibpixbufloader-*.la' ; then \
+          echo "Writing a loaders.cache file to use when running examples before installing gdk-pixbuf."; \
+	  ../gdk-pixbuf/gdk-pixbuf-query-loaders $LOADERS > ./loaders.cache ;\
+	else \
+          echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
+	  touch loaders.cache; \
+	fi
+No dynamic modules found; will use only static modules for uninstalled example programs.
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o gdk-pixbuf-csource.exe gdk-pixbuf-csource.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ./.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o test-gdk-pixbuf.exe test-gdk-pixbuf.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ./.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+test -z "" || /bin/mkdir -p ""
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/include/gdk-pixbuf-2.0/gdk-pixbuf" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/include/gdk-pixbuf-2.0/gdk-pixbuf"
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders"
+test -z "" || /bin/mkdir -p ""
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib"
+ /bin/install -c -m 644 gdk-pixbuf.h gdk-pixbuf-core.h gdk-pixbuf-transform.h gdk-pixbuf-io.h gdk-pixbuf-animation.h gdk-pixbuf-simple-anim.h gdk-pixbuf-loader.h gdk-pixbuf-enum-types.h gdk-pixbuf-marshal.h gdk-pixbuf-features.h gdk-pixdata.h '/devel/target/d5694c066a2520504d46fdfa00a43b40/include/gdk-pixbuf-2.0/gdk-pixbuf'
+ /bin/sh ../libtool   --mode=install /bin/install -c   libgdk_pixbuf-2.0.la '/devel/target/d5694c066a2520504d46fdfa00a43b40/lib'
+make  install-data-hook
+libtool: install: /bin/install -c .libs/libgdk_pixbuf-2.0.dll.a /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/libgdk_pixbuf-2.0.dll.a
+make[5]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+/bin/install -c gdk_pixbuf-2.0.lib /devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+/bin/install -c ./gdk_pixbuf.def /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk_pixbuf-2.0.def
+libtool: install: base_file=`basename libgdk_pixbuf-2.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgdk_pixbuf-2.0.la'i; echo libgdk_pixbuf-2.0-0.dll'`
+make[5]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+libtool: install:  dldir=/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/`dirname ../bin/libgdk_pixbuf-2.0-0.dll`
+libtool: install:  test -d /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/../bin || mkdir -p /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/../bin
+libtool: install:  /bin/install -c .libs/libgdk_pixbuf-2.0-0.dll /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/../bin/libgdk_pixbuf-2.0-0.dll
+libtool: install:  chmod a+x /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/../bin/libgdk_pixbuf-2.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/../bin/libgdk_pixbuf-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libgdk_pixbuf-2.0.lai /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/libgdk_pixbuf-2.0.la
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/bin" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/bin"
+  /bin/sh ../libtool   --mode=install /bin/install -c gdk-pixbuf-csource.exe gdk-pixbuf-query-loaders.exe '/devel/target/d5694c066a2520504d46fdfa00a43b40/bin'
+libtool: install: /bin/install -c gdk-pixbuf-csource.exe /devel/target/d5694c066a2520504d46fdfa00a43b40/bin/gdk-pixbuf-csource.exe
+libtool: install: /bin/install -c gdk-pixbuf-query-loaders.exe /devel/target/d5694c066a2520504d46fdfa00a43b40/bin/gdk-pixbuf-query-loaders.exe
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf'
+Making install in po
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/po'
+/bin/mkdir -p /devel/target/d5694c066a2520504d46fdfa00a43b40/share
+installing af.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/af/LC_MESSAGES/gdk-pixbuf.mo
+installing ang.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ang/LC_MESSAGES/gdk-pixbuf.mo
+installing ar.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ar/LC_MESSAGES/gdk-pixbuf.mo
+installing as.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/as/LC_MESSAGES/gdk-pixbuf.mo
+installing ast.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ast/LC_MESSAGES/gdk-pixbuf.mo
+installing az.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/az/LC_MESSAGES/gdk-pixbuf.mo
+installing be.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/be/LC_MESSAGES/gdk-pixbuf.mo
+installing be@latin.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/be@latin/LC_MESSAGES/gdk-pixbuf.mo
+installing bg.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/bg/LC_MESSAGES/gdk-pixbuf.mo
+installing bn.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/bn/LC_MESSAGES/gdk-pixbuf.mo
+installing bn_IN.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/bn_IN/LC_MESSAGES/gdk-pixbuf.mo
+installing br.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/br/LC_MESSAGES/gdk-pixbuf.mo
+installing bs.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/bs/LC_MESSAGES/gdk-pixbuf.mo
+installing ca.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ca/LC_MESSAGES/gdk-pixbuf.mo
+installing ca@valencia.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ca@valencia/LC_MESSAGES/gdk-pixbuf.mo
+installing crh.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/crh/LC_MESSAGES/gdk-pixbuf.mo
+installing cs.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/cs/LC_MESSAGES/gdk-pixbuf.mo
+installing cy.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/cy/LC_MESSAGES/gdk-pixbuf.mo
+installing da.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/da/LC_MESSAGES/gdk-pixbuf.mo
+installing de.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/de/LC_MESSAGES/gdk-pixbuf.mo
+installing dz.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/dz/LC_MESSAGES/gdk-pixbuf.mo
+installing el.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/el/LC_MESSAGES/gdk-pixbuf.mo
+installing en_CA.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/en_CA/LC_MESSAGES/gdk-pixbuf.mo
+installing en_GB.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/en_GB/LC_MESSAGES/gdk-pixbuf.mo
+installing en@shaw.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/en@shaw/LC_MESSAGES/gdk-pixbuf.mo
+installing eo.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/eo/LC_MESSAGES/gdk-pixbuf.mo
+installing es.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/es/LC_MESSAGES/gdk-pixbuf.mo
+installing et.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/et/LC_MESSAGES/gdk-pixbuf.mo
+installing eu.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/eu/LC_MESSAGES/gdk-pixbuf.mo
+installing fa.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/fa/LC_MESSAGES/gdk-pixbuf.mo
+installing fi.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/fi/LC_MESSAGES/gdk-pixbuf.mo
+installing fr.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/fr/LC_MESSAGES/gdk-pixbuf.mo
+installing ga.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ga/LC_MESSAGES/gdk-pixbuf.mo
+installing gl.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/gl/LC_MESSAGES/gdk-pixbuf.mo
+installing gu.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/gu/LC_MESSAGES/gdk-pixbuf.mo
+installing he.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/he/LC_MESSAGES/gdk-pixbuf.mo
+installing hi.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/hi/LC_MESSAGES/gdk-pixbuf.mo
+installing hr.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/hr/LC_MESSAGES/gdk-pixbuf.mo
+installing hu.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/hu/LC_MESSAGES/gdk-pixbuf.mo
+installing hy.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/hy/LC_MESSAGES/gdk-pixbuf.mo
+installing ia.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ia/LC_MESSAGES/gdk-pixbuf.mo
+installing id.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/id/LC_MESSAGES/gdk-pixbuf.mo
+installing io.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/io/LC_MESSAGES/gdk-pixbuf.mo
+installing is.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/is/LC_MESSAGES/gdk-pixbuf.mo
+installing it.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/it/LC_MESSAGES/gdk-pixbuf.mo
+installing ja.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ja/LC_MESSAGES/gdk-pixbuf.mo
+installing ka.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ka/LC_MESSAGES/gdk-pixbuf.mo
+installing kn.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/kn/LC_MESSAGES/gdk-pixbuf.mo
+installing ko.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ko/LC_MESSAGES/gdk-pixbuf.mo
+installing ku.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ku/LC_MESSAGES/gdk-pixbuf.mo
+installing li.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/li/LC_MESSAGES/gdk-pixbuf.mo
+installing lt.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/lt/LC_MESSAGES/gdk-pixbuf.mo
+installing lv.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/lv/LC_MESSAGES/gdk-pixbuf.mo
+installing mai.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/mai/LC_MESSAGES/gdk-pixbuf.mo
+installing mi.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/mi/LC_MESSAGES/gdk-pixbuf.mo
+installing mk.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/mk/LC_MESSAGES/gdk-pixbuf.mo
+installing ml.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ml/LC_MESSAGES/gdk-pixbuf.mo
+installing mn.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/mn/LC_MESSAGES/gdk-pixbuf.mo
+installing mr.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/mr/LC_MESSAGES/gdk-pixbuf.mo
+installing ms.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ms/LC_MESSAGES/gdk-pixbuf.mo
+installing my.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/my/LC_MESSAGES/gdk-pixbuf.mo
+installing nb.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/nb/LC_MESSAGES/gdk-pixbuf.mo
+installing nds.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/nds/LC_MESSAGES/gdk-pixbuf.mo
+installing ne.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ne/LC_MESSAGES/gdk-pixbuf.mo
+installing nl.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/nl/LC_MESSAGES/gdk-pixbuf.mo
+installing nn.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/nn/LC_MESSAGES/gdk-pixbuf.mo
+installing nso.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/nso/LC_MESSAGES/gdk-pixbuf.mo
+installing oc.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/oc/LC_MESSAGES/gdk-pixbuf.mo
+installing or.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/or/LC_MESSAGES/gdk-pixbuf.mo
+installing pa.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/pa/LC_MESSAGES/gdk-pixbuf.mo
+installing pl.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/pl/LC_MESSAGES/gdk-pixbuf.mo
+installing ps.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ps/LC_MESSAGES/gdk-pixbuf.mo
+installing pt.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/pt/LC_MESSAGES/gdk-pixbuf.mo
+installing pt_BR.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/pt_BR/LC_MESSAGES/gdk-pixbuf.mo
+installing ro.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ro/LC_MESSAGES/gdk-pixbuf.mo
+installing ru.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ru/LC_MESSAGES/gdk-pixbuf.mo
+installing si.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/si/LC_MESSAGES/gdk-pixbuf.mo
+installing sk.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sk/LC_MESSAGES/gdk-pixbuf.mo
+installing sl.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sl/LC_MESSAGES/gdk-pixbuf.mo
+installing sq.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sq/LC_MESSAGES/gdk-pixbuf.mo
+installing sr.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sr/LC_MESSAGES/gdk-pixbuf.mo
+installing sr@ije.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sr@ije/LC_MESSAGES/gdk-pixbuf.mo
+installing sr@latin.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sr@latin/LC_MESSAGES/gdk-pixbuf.mo
+installing sv.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/sv/LC_MESSAGES/gdk-pixbuf.mo
+installing ta.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ta/LC_MESSAGES/gdk-pixbuf.mo
+installing te.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/te/LC_MESSAGES/gdk-pixbuf.mo
+installing th.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/th/LC_MESSAGES/gdk-pixbuf.mo
+installing tk.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/tk/LC_MESSAGES/gdk-pixbuf.mo
+installing tr.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/tr/LC_MESSAGES/gdk-pixbuf.mo
+installing tt.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/tt/LC_MESSAGES/gdk-pixbuf.mo
+installing ug.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/ug/LC_MESSAGES/gdk-pixbuf.mo
+installing uk.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/uk/LC_MESSAGES/gdk-pixbuf.mo
+installing uz.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/uz/LC_MESSAGES/gdk-pixbuf.mo
+installing uz@cyrillic.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/uz@cyrillic/LC_MESSAGES/gdk-pixbuf.mo
+installing vi.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/vi/LC_MESSAGES/gdk-pixbuf.mo
+installing wa.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/wa/LC_MESSAGES/gdk-pixbuf.mo
+installing xh.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/xh/LC_MESSAGES/gdk-pixbuf.mo
+installing yi.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/yi/LC_MESSAGES/gdk-pixbuf.mo
+installing zh_CN.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/zh_CN/LC_MESSAGES/gdk-pixbuf.mo
+installing zh_HK.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/zh_HK/LC_MESSAGES/gdk-pixbuf.mo
+installing zh_TW.gmo as /devel/target/d5694c066a2520504d46fdfa00a43b40/share/locale/zh_TW/LC_MESSAGES/gdk-pixbuf.mo
+if test "gdk-pixbuf" = "gettext-tools"; then \
+	  /bin/mkdir -p /devel/target/d5694c066a2520504d46fdfa00a43b40/share/gettext/po; \
+	  for file in Makefile.in.in remove-potcdate.sin quot.sed boldquot.sed en@quot.header en@boldquot.header insert-header.sin Rules-quot   Makevars.template; do \
+	    /bin/install -c -m 644 ./$file \
+			    /devel/target/d5694c066a2520504d46fdfa00a43b40/share/gettext/po/$file; \
+	  done; \
+	  for file in Makevars; do \
+	    rm -f /devel/target/d5694c066a2520504d46fdfa00a43b40/share/gettext/po/$file; \
+	  done; \
+	else \
+	  : ; \
+	fi
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/po'
+Making install in docs
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+Making install in reference
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+Making install in gdk-pixbuf
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference/gdk-pixbuf'
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference/gdk-pixbuf'
+make[4]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/share/man/man1" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/share/man/man1"
+ /bin/install -c -m 644 gdk-pixbuf-csource.1 gdk-pixbuf-query-loaders.1 '/devel/target/d5694c066a2520504d46fdfa00a43b40/share/man/man1'
+ /bin/install -c -m 644 ./html/GdkPixbufLoader.html
+ /bin/install -c -m 644 ./html/annotation-glossary.html
+ /bin/install -c -m 644 ./html/api-index-2-10.html
+ /bin/install -c -m 644 ./html/api-index-2-12.html
+ /bin/install -c -m 644 ./html/api-index-2-14.html
+ /bin/install -c -m 644 ./html/api-index-2-2.html
+ /bin/install -c -m 644 ./html/api-index-2-4.html
+ /bin/install -c -m 644 ./html/api-index-2-6.html
+ /bin/install -c -m 644 ./html/api-index-2-8.html
+ /bin/install -c -m 644 ./html/api-index-deprecated.html
+ /bin/install -c -m 644 ./html/api-index-full.html
+ /bin/install -c -m 644 ./html/composite.png
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Animations.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-File-Loading.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-File-saving.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Image-Data-in-Memory.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Inline-data.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Module-Interface.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Reference-Counting-and-Memory-Mangement.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Scaling.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-The-GdkPixbuf-Structure.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Utilities.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-Versioning.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-csource.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-gdk-pixbuf-from-drawables.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-gdk-pixbuf-rendering.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf-query-loaders.html
+ /bin/install -c -m 644 ./html/gdk-pixbuf.devhelp2
+ /bin/install -c -m 644 ./html/home.png
+ /bin/install -c -m 644 ./html/index.html
+ /bin/install -c -m 644 ./html/index.sgml
+ /bin/install -c -m 644 ./html/left.png
+ /bin/install -c -m 644 ./html/license.html
+ /bin/install -c -m 644 ./html/right.png
+ /bin/install -c -m 644 ./html/rn01.html
+ /bin/install -c -m 644 ./html/rn02.html
+ /bin/install -c -m 644 ./html/style.css
+ /bin/install -c -m 644 ./html/up.png
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference/gdk-pixbuf'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference/gdk-pixbuf'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs/reference'
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/docs'
+Making install in tests
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/tests'
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -I.. -I../gdk-pixbuf  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixbuf-read.o -MD -MP -MF .deps/pixbuf-read.Tpo -c -o pixbuf-read.o pixbuf-read.c
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -I.. -I../gdk-pixbuf  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixbuf-lowmem.o -MD -MP -MF .deps/pixbuf-lowmem.Tpo -c -o pixbuf-lowmem.o pixbuf-lowmem.c
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -I.. -I../gdk-pixbuf  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixbuf-randomly-modified.o -MD -MP -MF .deps/pixbuf-randomly-modified.Tpo -c -o pixbuf-randomly-modified.o pixbuf-randomly-modified.c
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -I.. -I../gdk-pixbuf  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixbuf-random.o -MD -MP -MF .deps/pixbuf-random.Tpo -c -o pixbuf-random.o pixbuf-random.c
+mv -f .deps/pixbuf-read.Tpo .deps/pixbuf-read.Po
+gcc -mthreads -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -I.. -I../gdk-pixbuf  -mms-bitfields -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/include/glib-2.0 -IC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib/glib-2.0/include     -I/devel/dist/win32/libpng-1.4.3-1/include -I/devel/dist/win32/zlib-1.2.5-2/include -I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -DG_DISABLE_SINGLE_INCLUDES  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -MT pixbuf-threads.o -MD -MP -MF .deps/pixbuf-threads.Tpo -c -o pixbuf-threads.o pixbuf-threads.c
+mv -f .deps/pixbuf-lowmem.Tpo .deps/pixbuf-lowmem.Po
+mv -f .deps/pixbuf-random.Tpo .deps/pixbuf-random.Po
+mv -f .deps/pixbuf-randomly-modified.Tpo .deps/pixbuf-randomly-modified.Po
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o pixbuf-read.exe pixbuf-read.o ../gdk-pixbuf/libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o pixbuf-randomly-modified.exe pixbuf-randomly-modified.o ../gdk-pixbuf/libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o pixbuf-lowmem.exe pixbuf-lowmem.o ../gdk-pixbuf/libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+mv -f .deps/pixbuf-threads.Tpo .deps/pixbuf-threads.Po
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o pixbuf-random.exe pixbuf-random.o ../gdk-pixbuf/libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -lintl
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o pixbuf-read.exe pixbuf-read.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../gdk-pixbuf/.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o pixbuf-randomly-modified.exe pixbuf-randomly-modified.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../gdk-pixbuf/.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+/bin/sh ../libtool  --tag=CC   --mode=link gcc -mthreads -std=gnu99  -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -o pixbuf-threads.exe pixbuf-threads.o ../gdk-pixbuf/libgdk_pixbuf-2.0.la -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lpng14 -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl   -lintl
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o pixbuf-lowmem.exe pixbuf-lowmem.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../gdk-pixbuf/.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o pixbuf-random.exe pixbuf-random.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../gdk-pixbuf/.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpng14 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+libtool: link: gcc -mthreads -std=gnu99 -DGDK_PIXBUF_DISABLE_DEPRECATED -O2 -Wall -mms-bitfields -Wl,--enable-auto-image-base -o pixbuf-threads.exe pixbuf-threads.o  -L/devel/dist/win32/libpng-1.4.3-1/lib -L/devel/dist/win32/zlib-1.2.5-2/lib -L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib ../gdk-pixbuf/.libs/libgdk_pixbuf-2.0.dll.a -LC:/MinGW/msys/1.0/devel/dist/win32/glib-2.28.8-1/lib -LC:/MinGW/msys/1.0/devel/dist/win32/libpng-1.4.3-1/lib -lole32 -lgio-2.0 -lpng14 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lintl -mthreads -L/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/gdk-pixbuf/.libs -L/devel/target/d5694c066a2520504d46fdfa00a43b40/lib
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/tests'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/tests'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/tests'
+Making install in contrib
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/contrib'
+Making install in build
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+Making install in win32
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+Making install in vs9
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs9'
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs9'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs9'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs9'
+Making install in vs10
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs10'
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs10'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs10'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32/vs10'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+make[4]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build/win32'
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+make[3]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0/build'
+make[1]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0'
+make[2]: Entering directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/pkgconfig" || /bin/mkdir -p "/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/pkgconfig"
+ /bin/install -c -m 644 gdk-pixbuf-2.0.pc '/devel/target/d5694c066a2520504d46fdfa00a43b40/lib/pkgconfig'
+make[2]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0'
+make[1]: Leaving directory `/devel/src/gnome/gdk-pixbuf/gdk-pixbuf-2.24.0'
+++ PATH=/devel/target/d5694c066a2520504d46fdfa00a43b40/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/zlib-1.2.5-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ gdk-pixbuf-query-loaders
+++ echo '# Note: After adding a new separate gdk-pixbuf loader (for instance the svg one)'
+++ echo '# run gdk-pixbuf-query-loaders.exe redirecting its output into this file.'
+++ echo
+++ echo '# Note that the LoaderDir folder below does not name a folder that is'
+++ echo '# expected to exist. It was just a temporary directory used at build time.'
+++ echo
+++ cat /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+++ mv /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.temp /devel/target/d5694c066a2520504d46fdfa00a43b40/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+++ rm -f /tmp/gdk-pixbuf_2.24.0-1_win32.zip /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip
+++ cd /devel/target/d5694c066a2520504d46fdfa00a43b40
+++ zip /tmp/gdk-pixbuf_2.24.0-1_win32.zip bin/libgdk_pixbuf-2.0-0.dll
+  adding: bin/libgdk_pixbuf-2.0-0.dll (deflated 62%)
+++ zip /tmp/gdk-pixbuf_2.24.0-1_win32.zip bin/gdk-pixbuf-query-loaders.exe
+  adding: bin/gdk-pixbuf-query-loaders.exe (deflated 71%)
+++ zip /tmp/gdk-pixbuf_2.24.0-1_win32.zip 'lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll' lib/gdk-pixbuf-2.0/2.10.0/loaders.cache lib/gdk-pixbuf-2.0/2.10.0/loaders
+	zip warning: name not matched: lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll
+  adding: lib/gdk-pixbuf-2.0/2.10.0/loaders.cache (deflated 39%)
+  adding: lib/gdk-pixbuf-2.0/2.10.0/loaders/ (stored 0%)
+++ zip -r -D /tmp/gdk-pixbuf_2.24.0-1_win32.zip share/locale
+  adding: share/locale/af/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/ang/LC_MESSAGES/gdk-pixbuf.mo (deflated 58%)
+  adding: share/locale/ar/LC_MESSAGES/gdk-pixbuf.mo (deflated 68%)
+  adding: share/locale/as/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/ast/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/az/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/be/LC_MESSAGES/gdk-pixbuf.mo (deflated 70%)
+  adding: share/locale/be@latin/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/bg/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/bn/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/bn_IN/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/br/LC_MESSAGES/gdk-pixbuf.mo (deflated 61%)
+  adding: share/locale/bs/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/ca/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/ca@valencia/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/crh/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/cs/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/cy/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/da/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/de/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/dz/LC_MESSAGES/gdk-pixbuf.mo (deflated 80%)
+  adding: share/locale/el/LC_MESSAGES/gdk-pixbuf.mo (deflated 73%)
+  adding: share/locale/en@shaw/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/en_CA/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/en_GB/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/eo/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/es/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/et/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/eu/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/fa/LC_MESSAGES/gdk-pixbuf.mo (deflated 69%)
+  adding: share/locale/fi/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/fr/LC_MESSAGES/gdk-pixbuf.mo (deflated 68%)
+  adding: share/locale/ga/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/gl/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/gu/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/he/LC_MESSAGES/gdk-pixbuf.mo (deflated 69%)
+  adding: share/locale/hi/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/hr/LC_MESSAGES/gdk-pixbuf.mo (deflated 64%)
+  adding: share/locale/hu/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/hy/LC_MESSAGES/gdk-pixbuf.mo (deflated 72%)
+  adding: share/locale/ia/LC_MESSAGES/gdk-pixbuf.mo (deflated 40%)
+  adding: share/locale/id/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/io/LC_MESSAGES/gdk-pixbuf.mo (deflated 61%)
+  adding: share/locale/is/LC_MESSAGES/gdk-pixbuf.mo (deflated 62%)
+  adding: share/locale/it/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/ja/LC_MESSAGES/gdk-pixbuf.mo (deflated 69%)
+  adding: share/locale/ka/LC_MESSAGES/gdk-pixbuf.mo (deflated 77%)
+  adding: share/locale/kn/LC_MESSAGES/gdk-pixbuf.mo (deflated 76%)
+  adding: share/locale/ko/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/ku/LC_MESSAGES/gdk-pixbuf.mo (deflated 64%)
+  adding: share/locale/li/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/lt/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/lv/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/mai/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/mi/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/mk/LC_MESSAGES/gdk-pixbuf.mo (deflated 71%)
+  adding: share/locale/ml/LC_MESSAGES/gdk-pixbuf.mo (deflated 78%)
+  adding: share/locale/mn/LC_MESSAGES/gdk-pixbuf.mo (deflated 68%)
+  adding: share/locale/mr/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/ms/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/my/LC_MESSAGES/gdk-pixbuf.mo (deflated 78%)
+  adding: share/locale/nb/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/nds/LC_MESSAGES/gdk-pixbuf.mo (deflated 56%)
+  adding: share/locale/ne/LC_MESSAGES/gdk-pixbuf.mo (deflated 73%)
+  adding: share/locale/nl/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/nn/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/nso/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/oc/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/or/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/pa/LC_MESSAGES/gdk-pixbuf.mo (deflated 74%)
+  adding: share/locale/pl/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/ps/LC_MESSAGES/gdk-pixbuf.mo (deflated 55%)
+  adding: share/locale/pt/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/pt_BR/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/ro/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/ru/LC_MESSAGES/gdk-pixbuf.mo (deflated 73%)
+  adding: share/locale/si/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/sk/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/sl/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/sq/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/sr/LC_MESSAGES/gdk-pixbuf.mo (deflated 70%)
+  adding: share/locale/sr@ije/LC_MESSAGES/gdk-pixbuf.mo (deflated 68%)
+  adding: share/locale/sr@latin/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/sv/LC_MESSAGES/gdk-pixbuf.mo (deflated 66%)
+  adding: share/locale/ta/LC_MESSAGES/gdk-pixbuf.mo (deflated 76%)
+  adding: share/locale/te/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/th/LC_MESSAGES/gdk-pixbuf.mo (deflated 75%)
+  adding: share/locale/tk/LC_MESSAGES/gdk-pixbuf.mo (deflated 45%)
+  adding: share/locale/tr/LC_MESSAGES/gdk-pixbuf.mo (deflated 65%)
+  adding: share/locale/tt/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/ug/LC_MESSAGES/gdk-pixbuf.mo (deflated 70%)
+  adding: share/locale/uk/LC_MESSAGES/gdk-pixbuf.mo (deflated 73%)
+  adding: share/locale/uz/LC_MESSAGES/gdk-pixbuf.mo (deflated 55%)
+  adding: share/locale/uz@cyrillic/LC_MESSAGES/gdk-pixbuf.mo (deflated 59%)
+  adding: share/locale/vi/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/wa/LC_MESSAGES/gdk-pixbuf.mo (deflated 67%)
+  adding: share/locale/xh/LC_MESSAGES/gdk-pixbuf.mo (deflated 64%)
+  adding: share/locale/yi/LC_MESSAGES/gdk-pixbuf.mo (deflated 69%)
+  adding: share/locale/zh_CN/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/zh_HK/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+  adding: share/locale/zh_TW/LC_MESSAGES/gdk-pixbuf.mo (deflated 63%)
+++ zip -r -D /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip include/gdk-pixbuf-2.0
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-animation.h (deflated 74%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-core.h (deflated 70%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h (deflated 61%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-features.h (deflated 72%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-io.h (deflated 68%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-loader.h (deflated 67%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-marshal.h (deflated 76%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-simple-anim.h (deflated 65%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-transform.h (deflated 66%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf.h (deflated 54%)
+  adding: include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixdata.h (deflated 64%)
+++ zip -r -D /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip lib/libgdk_pixbuf-2.0.dll.a lib/gdk_pixbuf-2.0.lib
+  adding: lib/libgdk_pixbuf-2.0.dll.a (deflated 93%)
+  adding: lib/gdk_pixbuf-2.0.lib (deflated 87%)
+++ zip -r -D /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip lib/pkgconfig
+  adding: lib/pkgconfig/gdk-pixbuf-2.0.pc (deflated 46%)
+++ zip /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip bin/gdk-pixbuf-csource.exe
+  adding: bin/gdk-pixbuf-csource.exe (deflated 70%)
+++ zip -r -D /tmp/gdk-pixbuf-dev_2.24.0-1_win32.zip share/man share/gtk-doc
+  adding: share/man/man1/gdk-pixbuf-csource.1 (deflated 61%)
+  adding: share/man/man1/gdk-pixbuf-query-loaders.1 (deflated 61%)
+  adding: share/gtk-doc/html/gdk-pixbuf/annotation-glossary.html (deflated 71%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-10.html (deflated 59%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-12.html (deflated 59%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-14.html (deflated 65%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-2.html (deflated 82%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-4.html (deflated 74%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-6.html (deflated 73%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-2-8.html (deflated 63%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-deprecated.html (deflated 70%)
+  adding: share/gtk-doc/html/gdk-pixbuf/api-index-full.html (deflated 86%)
+  adding: share/gtk-doc/html/gdk-pixbuf/composite.png (deflated 3%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Animations.html (deflated 86%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-csource.html (deflated 70%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-File-Loading.html (deflated 86%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-File-saving.html (deflated 89%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf-from-drawables.html (deflated 59%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-gdk-pixbuf-rendering.html (deflated 59%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Image-Data-in-Memory.html (deflated 85%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Inline-data.html (deflated 84%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Module-Interface.html (deflated 86%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-query-loaders.html (deflated 64%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Reference-Counting-and-Memory-Mangement.html (deflated 78%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Scaling.html (deflated 88%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-The-GdkPixbuf-Structure.html (deflated 82%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Utilities.html (deflated 83%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf-Versioning.html (deflated 77%)
+  adding: share/gtk-doc/html/gdk-pixbuf/gdk-pixbuf.devhelp2 (deflated 87%)
+  adding: share/gtk-doc/html/gdk-pixbuf/GdkPixbufLoader.html (deflated 85%)
+  adding: share/gtk-doc/html/gdk-pixbuf/home.png (stored 0%)
+  adding: share/gtk-doc/html/gdk-pixbuf/index.html (deflated 70%)
+  adding: share/gtk-doc/html/gdk-pixbuf/index.sgml (deflated 90%)
+  adding: share/gtk-doc/html/gdk-pixbuf/left.png (stored 0%)
+  adding: share/gtk-doc/html/gdk-pixbuf/license.html (deflated 56%)
+  adding: share/gtk-doc/html/gdk-pixbuf/right.png (stored 0%)
+  adding: share/gtk-doc/html/gdk-pixbuf/rn01.html (deflated 70%)
+  adding: share/gtk-doc/html/gdk-pixbuf/rn02.html (deflated 59%)
+  adding: share/gtk-doc/html/gdk-pixbuf/style.css (deflated 71%)
+  adding: share/gtk-doc/html/gdk-pixbuf/up.png (stored 0%)
+++ :
+++ :

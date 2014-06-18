@@ -1,0 +1,1315 @@
+++ patch --verbose -p1 --fuzz=0
+Hmm...  Looks like a unified diff to me...
+The text leading up to this was:
+--------------------------
+|diff --git a/src/cairo-win32-surface.c b/src/cairo-win32-surface.c
+|index 660aaba..8ebd185 100644
+|--- a/src/cairo-win32-surface.c
+|+++ b/src/cairo-win32-surface.c
+--------------------------
+Patching file src/cairo-win32-surface.c using Plan A...
+Hunk #1 succeeded at 545.
+Hunk #2 succeeded at 627.
+Hunk #3 succeeded at 639.
+Hunk #4 succeeded at 668.
+Hunk #5 succeeded at 686.
+Hunk #6 succeeded at 707.
+Hunk #7 succeeded at 1392.
+done
+++ patch --verbose -p1 --fuzz=0
+Hmm...  Looks like a unified diff to me...
+The text leading up to this was:
+--------------------------
+|commit a02dd8ddc7dde30ba71e87ab5e90bf910b68da2b
+|Author: Alexander Larsson <alexl@redhat.com>
+|Date:   Fri Nov 11 16:15:31 2011 +0100
+|
+|    win32: Reset clip in _cairo_win32_surface_release_dest_image
+|    
+|    Without this we were using leftover clip regions from e.g. show_glyphs
+|    which made the fallback drawing results disappear.
+|
+|diff --git a/src/cairo-win32-surface.c b/src/cairo-win32-surface.c
+|index 660aaba..59305f1 100644
+|--- a/src/cairo-win32-surface.c
+|+++ b/src/cairo-win32-surface.c
+--------------------------
+Patching file src/cairo-win32-surface.c using Plan A...
+Hunk #1 succeeded at 707.
+done
+++ sed -e 's/need_relink=yes/need_relink=no # no way --tml/'
+++ mv build/ltmain.temp build/ltmain.sh
+++ sed -e 's!file /!dont-want-to-use-file!'
+++ mv configure.temp configure
++++ latest --arch=win32 gettext-runtime glib pkg-config pixman libpng fontconfig freetype
+++ DEPS='gettext-runtime-0.18.1.1-2 glib-2.28.8-1 pkg-config-0.26-1 pixman-0.24.0-1 libpng-1.4.3-1 fontconfig-2.8.0-2 freetype-2.4.4-1'
+++ PKG_CONFIG_PATH=/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/pixman-0.24.0-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/pixman-0.24.0-1/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pixman-0.24.0-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/pixman-0.24.0-1/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/fontconfig-2.8.0-2/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pixman-0.24.0-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/fontconfig-2.8.0-2/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/pixman-0.24.0-1/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/freetype-2.4.4-1/bin:/devel/dist/win32/fontconfig-2.8.0-2/bin:/devel/dist/win32/libpng-1.4.3-1/bin:/devel/dist/win32/pixman-0.24.0-1/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ PKG_CONFIG_PATH=/devel/dist/win32/freetype-2.4.4-1/lib/pkgconfig:/devel/dist/win32/fontconfig-2.8.0-2/lib/pkgconfig:/devel/dist/win32/libpng-1.4.3-1/lib/pkgconfig:/devel/dist/win32/pixman-0.24.0-1/lib/pkgconfig:/devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig:/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig:/dummy
++++ latest --arch=win32 gettext-runtime
+++ GETTEXT_RUNTIME=gettext-runtime-0.18.1.1-2
++++ latest --arch=win32 zlib
+++ ZLIB=zlib-1.2.5-2
+++ png_REQUIRES=libpng
+++ CC='gcc -mms-bitfields -mthreads'
+++ CPPFLAGS=-I/devel/dist/win32/zlib-1.2.5-2/include
+++ LDFLAGS='-L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -L/devel/dist/win32/zlib-1.2.5-2/lib'
+++ CFLAGS=-O2
+++ ./configure --disable-static --enable-ft=yes --prefix=/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2
+checking for gcc... gcc -mms-bitfields -mthreads
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mms-bitfields -mthreads accepts -g... yes
+checking for gcc -mms-bitfields -mthreads option to accept ISO C89... none needed
+checking how to run the C preprocessor... gcc -mms-bitfields -mthreads -E
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking minix/config.h usability... no
+checking minix/config.h presence... no
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for style of include used by make... GNU
+checking dependency style of gcc -mms-bitfields -mthreads... gcc3
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for as... as
+checking for dlltool... dlltool
+checking for objdump... objdump
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mms-bitfields -mthreads... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /mingw/bin/nm
+checking the name lister (/mingw/bin/nm) interface... BSD nm
+checking whether ln -s works... no, using cp -p
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... (cached) objdump
+checking how to recognize dependent libraries... file_magic file format pei*-i386(.*architecture: i386)?
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /mingw/bin/nm output from gcc -mms-bitfields -mthreads object... ok
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking if gcc -mms-bitfields -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mms-bitfields -mthreads option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mms-bitfields -mthreads PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mms-bitfields -mthreads static flag -static works... yes
+checking if gcc -mms-bitfields -mthreads supports -c -o file.o... yes
+checking if gcc -mms-bitfields -mthreads supports -c -o file.o... (cached) yes
+checking whether the gcc -mms-bitfields -mthreads linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking pkg-config is at least version 0.9.0... yes
+checking whether to build gtk-doc documentation... no
+checking for gtkdoc-check... no
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... unknown
+checking for _LARGE_FILES value needed for large files... unknown
+checking for find... /bin/find
+checking for xargs... /bin/xargs
+checking for gcc... (cached) gcc -mms-bitfields -mthreads
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc -mms-bitfields -mthreads accepts -g... (cached) yes
+checking for gcc -mms-bitfields -mthreads option to accept ISO C89... (cached) none needed
+checking how to run the C preprocessor... gcc -mms-bitfields -mthreads -E
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking whether we are using the GNU C++ compiler... (cached) yes
+checking whether g++ accepts -g... (cached) yes
+checking dependency style of g++... (cached) gcc3
+checking how to run the C++ preprocessor... g++ -E
+checking for ld used by g++... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking whether the g++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking for g++ option to produce PIC... -DDLL_EXPORT -DPIC
+checking if g++ PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if g++ static flag -static works... yes
+checking if g++ supports -c -o file.o... yes
+checking if g++ supports -c -o file.o... (cached) yes
+checking whether the g++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether gcc -mms-bitfields -mthreads and cc understand -c and -o together... yes
+checking for inline... inline
+checking pkg-config is at least version 0.9.0... yes
+checking for supported warning flags... 
+checking whether gcc -mms-bitfields -mthreads supports -Werror... yes
+checking whether gcc -mms-bitfields -mthreads supports -errwarn... no
+checking whether gcc -mms-bitfields -mthreads supports -Wall... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wextra... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wold-style-definition... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wdeclaration-after-statement... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wmissing-declarations... yes
+checking whether gcc -mms-bitfields -mthreads supports -Werror-implicit-function-declaration... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wnested-externs... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wpointer-arith... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wwrite-strings... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wsign-compare... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wstrict-prototypes... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wmissing-prototypes... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wpacked... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wswitch-enum... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wmissing-format-attribute... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wbad-function-cast... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wvolatile-register-var... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wstrict-aliasing=2... yes
+checking whether gcc -mms-bitfields -mthreads supports -Winit-self... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wunsafe-loop-optimizations... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wno-missing-field-initializers... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wno-unused-parameter... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wno-attributes... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wno-long-long... yes
+checking whether gcc -mms-bitfields -mthreads supports -Winline... yes
+checking whether gcc -mms-bitfields -mthreads supports -Wlogical-op... yes
+checking whether gcc -mms-bitfields -mthreads supports -erroff=E_ENUM_TYPE_MISMATCH_ARG... no
+checking whether gcc -mms-bitfields -mthreads supports -erroff=E_ENUM_TYPE_MISMATCH_OP... no
+checking whether gcc -mms-bitfields -mthreads supports -fno-strict-aliasing... yes
+checking whether gcc -mms-bitfields -mthreads supports -fno-common... yes
+checking whether gcc -mms-bitfields -mthreads supports -flto... no
+checking whether gcc -mms-bitfields -mthreads supports -Wp,-D_FORTIFY_SOURCE=2... yes
+checking which warning flags were supported...  -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-declarations -Werror-implicit-function-declaration -Wnested-externs -Wpointer-arith -Wwrite-strings -Wsign-compare -Wstrict-prototypes -Wmissing-prototypes -Wpacked -Wswitch-enum -Wmissing-format-attribute -Wbad-function-cast -Wvolatile-register-var -Wstrict-aliasing=2 -Winit-self -Wunsafe-loop-optimizations -Wno-missing-field-initializers -Wno-unused-parameter -Wno-attributes -Wno-long-long -Winline -Wlogical-op -fno-strict-aliasing -fno-common -Wp,-D_FORTIFY_SOURCE=2
+checking how to enable unused result warnings... __attribute__((__warn_unused_result__))
+checking how to allow undefined symbols in shared libraries used by test suite... checking whether gcc -mms-bitfields -mthreads supports -Wl,--allow-shlib-undefined... yes
+-Wl,--allow-shlib-undefined
+checking whether byte ordering is bigendian... no
+checking whether float word ordering is bigendian... no
+checking for native atomic primitives... checking atomic_ops.h usability... no
+checking atomic_ops.h presence... no
+checking for atomic_ops.h... no
+checking libkern/OSAtomic.h usability... no
+checking libkern/OSAtomic.h presence... no
+checking for libkern/OSAtomic.h... no
+none
+checking whether atomic ops require a memory barrier... no
+checking size of void *... 4
+checking size of int... 4
+checking size of long... 4
+checking size of long long... 8
+checking size of size_t... 4
+checking for native Win32... yes
+checking for Sun Solaris (non-POSIX ctime_r)... no
+checking for cos in -lm... yes
+checking for sched_yield in -lrt... no
+checking for shm_open in -lrt... no
+checking for connect in -lsocket... no
+checking for __builtin_return_address(0)... yes
+checking for stdint.h... (cached) yes
+checking for inttypes.h... (cached) yes
+checking sys/int_types.h usability... no
+checking sys/int_types.h presence... no
+checking for sys/int_types.h... no
+checking for uint64_t... yes
+checking for uint128_t... no
+checking for __uint128_t... no
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking for unistd.h... (cached) yes
+checking signal.h usability... yes
+checking signal.h presence... yes
+checking for signal.h... yes
+checking for sys/stat.h... (cached) yes
+checking sys/socket.h usability... no
+checking sys/socket.h presence... no
+checking for sys/socket.h... no
+checking sys/poll.h usability... no
+checking sys/poll.h presence... no
+checking for sys/poll.h... no
+checking sys/un.h usability... no
+checking sys/un.h presence... no
+checking for sys/un.h... no
+checking for alarm... no
+checking sched.h usability... yes
+checking sched.h presence... yes
+checking for sched.h... yes
+checking for sched_getaffinity... no
+checking sys/mman.h usability... no
+checking sys/mman.h presence... no
+checking for sys/mman.h... no
+checking time.h usability... yes
+checking time.h presence... yes
+checking for time.h... yes
+checking for clock_gettime... no
+checking fenv.h usability... yes
+checking fenv.h presence... yes
+checking for fenv.h... yes
+checking for feenableexcept... no
+checking for fedisableexcept... no
+checking for feclearexcept... yes
+checking libgen.h usability... yes
+checking libgen.h presence... yes
+checking for libgen.h... yes
+checking byteswap.h usability... no
+checking byteswap.h presence... no
+checking for byteswap.h... no
+checking for signal.h... (cached) yes
+checking setjmp.h usability... yes
+checking setjmp.h presence... yes
+checking for setjmp.h... yes
+checking for fenv.h... (cached) yes
+checking for vasnprintf... no
+checking for link... no
+checking for ctime_r... no
+checking for drand48... no
+checking for flockfile... no
+checking for ffs... no
+checking windows.h usability... yes
+checking windows.h presence... yes
+checking for windows.h... yes
+checking for sys/stat.h... (cached) yes
+checking io.h usability... yes
+checking io.h presence... yes
+checking for io.h... yes
+checking for mkdir... yes
+checking mkdir variant... mkdir(path)
+checking for fork... no
+checking for waitpid... no
+checking for raise... yes
+checking for VALGRIND... no
+no
+checking for compress in -lz... yes
+checking zlib.h usability... yes
+checking zlib.h presence... yes
+checking for zlib.h... yes
+checking for dlsym in -ldl... no
+checking for dlsym... no
+checking for dlfcn.h... (cached) no
+checking for X... no
+checking for cairo's Xlib surface backend feature... 
+checking for xlib... no
+no
+checking whether cairo's Xlib surface backend feature could be enabled... no (requires X development libraries)
+checking for cairo's Xlib Xrender surface backend feature... 
+checking whether cairo's Xlib Xrender surface backend feature could be enabled... no (requires --enable-xlib)
+checking for cairo's XCB/SHM functions feature... 
+checking whether cairo's XCB/SHM functions feature could be enabled... no (requires --enable-xcb)
+checking for cairo's Quartz surface backend feature... 
+checking ApplicationServices/ApplicationServices.h usability... no
+checking ApplicationServices/ApplicationServices.h presence... no
+checking for ApplicationServices/ApplicationServices.h... no
+checking CoreGraphics/CoreGraphics.h usability... no
+checking CoreGraphics/CoreGraphics.h presence... no
+checking for CoreGraphics/CoreGraphics.h... no
+checking whether cairo's Quartz surface backend feature could be enabled... no (requires CoreGraphics framework)
+checking for cairo's Quartz font backend feature... 
+checking whether cairo's Quartz font backend feature could be enabled... no (requires CoreGraphics framework)
+checking for cairo's Microsoft Windows surface backend feature... 
+checking whether cairo's Microsoft Windows surface backend feature could be enabled... yes
+checking for cairo's Microsoft Windows font backend feature... 
+checking whether cairo's Microsoft Windows font backend feature could be enabled... yes
+checking for gs... no
+configure: WARNING: Win32 Printing backend will not be tested since ghostscript is not available
+checking for cairo's PNG functions feature... 
+checking for png... yes
+checking whether cairo's PNG functions feature could be enabled... yes
+checking for cairo's EGL functions feature... 
+checking whether cairo's EGL functions feature could be enabled... no (not required by any backend)
+checking for cairo's GLX functions feature... 
+checking whether cairo's GLX functions feature could be enabled... no (not required by any backend)
+checking for cairo's WGL functions feature... 
+checking whether cairo's WGL functions feature could be enabled... no (not required by any backend)
+checking for cairo's FreeType font backend feature... 
+checking for FREETYPE... yes
+checking whether cairo's FreeType font backend feature could be enabled... yes
+checking for cairo's Fontconfig font backend feature... 
+checking for FONTCONFIG... yes
+checking whether cairo's Fontconfig font backend feature could be enabled... yes
+checking for FT_Bitmap_Size.y_ppem... yes
+checking for FT_GlyphSlot_Embolden... yes
+checking for FT_Load_Sfnt_Table... yes
+checking for FT_Library_SetLcdFilter... yes
+checking for FcInit... yes
+checking for FcFini... yes
+checking for cairo's PostScript surface backend feature... 
+checking whether cairo's PostScript surface backend feature could be enabled... yes
+checking for gs... no
+configure: WARNING: PS backend will not be tested since ghostscript is not available
+checking for LIBSPECTRE... no
+checking for cairo's PDF surface backend feature... 
+checking whether cairo's PDF surface backend feature could be enabled... yes
+checking for POPPLER... no
+configure: WARNING: PDF backend will not be tested since poppler >= 0.13.3 is not available
+checking for cairo's SVG surface backend feature... 
+checking whether cairo's SVG surface backend feature could be enabled... yes
+checking for LIBRSVG... no
+configure: WARNING: SVG backend will not be tested since librsvg >= 2.15.0 is not available
+checking for cairo's image surface backend feature... 
+checking for pixman... yes
+checking whether cairo's image surface backend feature could be enabled... yes
+checking for cairo's recording surface backend feature... 
+checking whether cairo's recording surface backend feature could be enabled... yes
+checking for cairo's user font backend feature... 
+checking whether cairo's user font backend feature could be enabled... yes
+checking for cairo's pthread feature... 
+checking whether cairo's pthread feature could be enabled... yes
+checking for cairo's gobject functions feature... 
+checking for GOBJECT... yes
+checking whether cairo's gobject functions feature could be enabled... yes
+checking for GOBJECT... yes
+checking for cairo's cairo-trace feature... 
+checking whether cairo's cairo-trace feature could be enabled... no (requires dynamic linker and zlib and real pthreads)
+checking for cairo's cairo-script-interpreter feature... 
+checking whether cairo's cairo-script-interpreter feature could be enabled... yes
+checking for bfd_openr in -lbfd... no
+checking libiberty.h usability... no
+checking libiberty.h presence... no
+checking for libiberty.h... no
+checking for cairo's symbol-lookup feature... 
+checking whether cairo's symbol-lookup feature could be enabled... no (requires bfd)
+checking for glib... yes
+checking for shm_open in -lrt... (cached) no
+checking for gtk... no
+configure: creating ./config.status
+config.status: creating src/cairo.pc
+config.status: creating cairo-uninstalled.pc
+config.status: creating src/cairo-win32.pc
+config.status: creating cairo-win32-uninstalled.pc
+config.status: creating src/cairo-win32-font.pc
+config.status: creating cairo-win32-font-uninstalled.pc
+config.status: creating src/cairo-png.pc
+config.status: creating cairo-png-uninstalled.pc
+config.status: creating src/cairo-ft.pc
+config.status: creating cairo-ft-uninstalled.pc
+config.status: creating src/cairo-fc.pc
+config.status: creating cairo-fc-uninstalled.pc
+config.status: creating src/cairo-ps.pc
+config.status: creating cairo-ps-uninstalled.pc
+config.status: creating src/cairo-pdf.pc
+config.status: creating cairo-pdf-uninstalled.pc
+config.status: creating src/cairo-svg.pc
+config.status: creating cairo-svg-uninstalled.pc
+config.status: creating src/cairo-gobject.pc
+config.status: creating cairo-gobject-uninstalled.pc
+config.status: creating Makefile
+config.status: creating boilerplate/Makefile
+config.status: creating src/Makefile
+config.status: creating test/Makefile
+config.status: creating test/pdiff/Makefile
+config.status: creating perf/Makefile
+config.status: creating util/Makefile
+config.status: creating util/cairo-fdr/Makefile
+config.status: creating util/cairo-gobject/Makefile
+config.status: creating util/cairo-script/Makefile
+config.status: creating util/cairo-script/examples/Makefile
+config.status: creating util/cairo-sphinx/Makefile
+config.status: creating util/cairo-trace/Makefile
+config.status: creating util/cairo-trace/cairo-trace
+config.status: creating doc/Makefile
+config.status: creating doc/public/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing ./build/Makefile.win32.features commands
+config.status: creating ./build/Makefile.win32.features
+config.status: ./build/Makefile.win32.features is unchanged
+config.status: executing ./src/Makefile.am.features commands
+config.status: creating ./src/Makefile.am.features
+config.status: ./src/Makefile.am.features is unchanged
+config.status: executing ./src/Makefile.win32.features commands
+config.status: creating ./src/Makefile.win32.features
+config.status: ./src/Makefile.win32.features is unchanged
+config.status: executing ./boilerplate/Makefile.am.features commands
+config.status: creating ./boilerplate/Makefile.am.features
+config.status: ./boilerplate/Makefile.am.features is unchanged
+config.status: executing ./boilerplate/Makefile.win32.features commands
+config.status: creating ./boilerplate/Makefile.win32.features
+config.status: ./boilerplate/Makefile.win32.features is unchanged
+config.status: executing src/cairo-features.h commands
+config.status: creating src/cairo-features.h
+config.status: executing src/cairo-supported-features.h commands
+config.status: creating src/cairo-supported-features.h
+config.status: executing ./build/Makefile.win32.features-h commands
+config.status: creating ./build/Makefile.win32.features-h
+config.status: ./build/Makefile.win32.features-h is unchanged
+
+cairo (version 1.10.2 [release]) will be compiled with:
+
+The following surface backends:
+  Image:         yes (always builtin)
+  Recording:     yes (always builtin)
+  Tee:           no (disabled, use --enable-tee to enable)
+  XML:           no (disabled, use --enable-xml to enable)
+  Skia:          no (disabled, use --enable-skia to enable)
+  Xlib:          no (requires X development libraries)
+  Xlib Xrender:  no (requires --enable-xlib)
+  Qt:            no (disabled, use --enable-qt to enable)
+  Quartz:        no (requires CoreGraphics framework)
+  Quartz-image:  no (disabled, use --enable-quartz-image to enable)
+  XCB:           no (disabled, use --enable-xcb to enable)
+  Win32:         yes
+  OS2:           no (disabled, use --enable-os2 to enable)
+  CairoScript:   no (disabled, use --enable-script to enable)
+  PostScript:    yes
+  PDF:           yes
+  SVG:           yes
+  OpenGL:        no (disabled, use --enable-gl to enable)
+  BeOS:          no (disabled, use --enable-beos to enable)
+  DirectFB:      no (disabled, use --enable-directfb to enable)
+  OpenVG:        no (disabled, use --enable-vg to enable)
+  DRM:           no (disabled, use --enable-drm to enable)
+
+The following font backends:
+  User:          yes (always builtin)
+  FreeType:      yes
+  Fontconfig:    yes
+  Win32:         yes
+  Quartz:        no (requires CoreGraphics framework)
+
+The following functions:
+  PNG functions:   yes
+  GLEW functions:  no (not required by any backend)
+  GLX functions:   no (not required by any backend)
+  WGL functions:   no (not required by any backend)
+  EGL functions:   no (not required by any backend)
+  X11-xcb functions: no (disabled, use --enable-xlib-xcb to enable)
+  XCB-drm functions: no (disabled, use --enable-xcb-drm to enable)
+  XCB-shm functions: no (requires --enable-xcb)
+  DRM-Xr functions: no (disabled, use --enable-drm-xr to enable)
+
+The following features and utilities:
+  cairo-trace:                no (requires dynamic linker and zlib and real pthreads)
+  cairo-script-interpreter:   yes
+
+And the following internal features:
+  pthread:       yes
+  gtk-doc:       no
+  gcov support:  no
+  symbol-lookup: no (requires bfd)
+  test surfaces: no (disabled, use --enable-test-surfaces to enable)
+  ps testing:    no (requires libspectre)
+  pdf testing:   no (requires poppler-glib >= 0.13.3)
+  svg testing:   no (requires librsvg-2.0 >= 2.15.0)
+  win32 printing testing:    no (requires ghostscript)
+
+
+++ make -j3 zips
+make  install-recursive
+make[1]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+Making install in src
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+make  install-am
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+  CC     cairo-analysis-surface.lo
+  CC     cairo-arc.lo
+  CC     cairo-array.lo
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_merge_status':
+cairo-analysis-surface.c:69:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:69:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:70:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:70:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:90:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:90:5: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c: In function '_add_operation':
+cairo-analysis-surface.c:146:21: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:174:22: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:222:24: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:243:16: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_paint':
+cairo-analysis-surface.c:326:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_mask':
+cairo-analysis-surface.c:354:6: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:354:6: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:367:7: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:367:7: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:377:7: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c:377:7: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_stroke':
+cairo-analysis-surface.c:432:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_fill':
+cairo-analysis-surface.c:483:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_show_glyphs':
+cairo-analysis-surface.c:548:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-analysis-surface.c: In function '_cairo_analysis_surface_show_text_glyphs':
+cairo-analysis-surface.c:612:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-analysis-surface.c:632:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-atomic.lo
+  CC     cairo-base64-stream.lo
+  CC     cairo-base85-stream.lo
+  CC     cairo-bentley-ottmann.lo
+  CC     cairo-bentley-ottmann-rectangular.lo
+  CC     cairo-bentley-ottmann-rectilinear.lo
+  CC     cairo-botor-scan-converter.lo
+  CC     cairo-boxes.lo
+  CC     cairo.lo
+cairo-botor-scan-converter.c: In function 'edges_compare_x_for_y':
+cairo-botor-scan-converter.c:459:13: warning: 'ax' may be used uninitialized in this function
+cairo-botor-scan-converter.c:459:17: warning: 'bx' may be used uninitialized in this function
+  CC     cairo-cache.lo
+  CC     cairo-clip.lo
+  CC     cairo-color.lo
+cairo-clip.c: In function '_cairo_clip_path_to_region_geometric':
+cairo-clip.c:595:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-clip.c:626:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-composite-rectangles.lo
+  CC     cairo-debug.lo
+  CC     cairo-device.lo
+  CC     cairo-fixed.lo
+  CC     cairo-font-face.lo
+cairo-device.c: In function '_cairo_device_set_error':
+cairo-device.c:451:50: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-font-face-twin.lo
+  CC     cairo-font-face-twin-data.lo
+  CC     cairo-font-options.lo
+  CC     cairo-freelist.lo
+  CC     cairo-freed-pool.lo
+  CC     cairo-gstate.lo
+  CC     cairo-hash.lo
+  CC     cairo-hull.lo
+cairo-gstate.c: In function '_cairo_gstate_copy_clip_rectangle_list':
+cairo-gstate.c:1565:31: warning: ignoring return value of '_cairo_clip_rectangle', declared with attribute warn_unused_result
+  CC     cairo-image-info.lo
+  CC     cairo-image-surface.lo
+  CC     cairo-lzw.lo
+cairo-image-surface.c: In function '_cairo_format_from_pixman_format':
+cairo-image-surface.c:101:5: warning: enumeration value 'PIXMAN_r8g8b8a8' not handled in switch
+cairo-image-surface.c:101:5: warning: enumeration value 'PIXMAN_r8g8b8x8' not handled in switch
+cairo-image-surface.c:101:5: warning: enumeration value 'PIXMAN_x14r6g6b6' not handled in switch
+cairo-image-surface.c: In function '_pixman_image_for_surface':
+cairo-image-surface.c:1393:33: warning: comparison between 'cairo_surface_type_t' and 'enum _cairo_internal_surface_type'
+cairo-image-surface.c: In function '_create_composite_mask_pattern':
+cairo-image-surface.c:1930:2: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c:1932:29: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c: In function '_clip_and_composite':
+cairo-image-surface.c:2259:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c:2264:29: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c: In function '_composite_boxes':
+cairo-image-surface.c:2908:26: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c: In function '_clip_and_composite_boxes':
+cairo-image-surface.c:3048:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c: In function '_clip_and_composite_trapezoids':
+cairo-image-surface.c:3178:29: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-image-surface.c: In function '_cairo_image_surface_stroke':
+cairo-image-surface.c:3657:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-matrix.lo
+  CC     cairo-recording-surface.lo
+  CC     cairo-misc.lo
+cairo-recording-surface.c: In function '_cairo_recording_surface_get_path':
+cairo-recording-surface.c:775:17: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-recording-surface.c: In function '_cairo_recording_surface_replay_internal':
+cairo-recording-surface.c:969:17: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-recording-surface.c:975:3: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-recording-surface.c:975:3: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+  CC     cairo-mutex.lo
+cairo-misc.c:44:1: warning: comparison between 'enum _cairo_status' and 'enum _cairo_int_status'
+  CC     cairo-observer.lo
+  CC     cairo-output-stream.lo
+  CC     cairo-paginated-surface.lo
+  CC     cairo-path-bounds.lo
+  CC     cairo-path.lo
+cairo-paginated-surface.c: In function '_paint_page':
+cairo-paginated-surface.c:395:2: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-path-fill.lo
+  CC     cairo-path-fixed.lo
+  CC     cairo-path-in-fill.lo
+  CC     cairo-path-stroke.lo
+cairo-path-stroke.c: In function '_cairo_stroker_add_caps':
+cairo-path-stroke.c:860:29: warning: comparison between 'cairo_line_cap_t' and 'enum _cairo_line_join'
+cairo-path-stroke.c: In function '_cairo_path_fixed_stroke_to_traps':
+cairo-path-stroke.c:1407:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-pattern.lo
+  CC     cairo-pen.lo
+  CC     cairo-polygon.lo
+  CC     cairo-rectangle.lo
+  CC     cairo-rectangular-scan-converter.lo
+  CC     cairo-region.lo
+  CC     cairo-rtree.lo
+  CC     cairo-scaled-font.lo
+  CC     cairo-slope.lo
+  CC     cairo-spans.lo
+cairo-scaled-font.c: In function 'cairo_scaled_font_text_to_glyphs':
+cairo-scaled-font.c:1941:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-scaled-font.c: In function '_cairo_scaled_font_show_glyphs':
+cairo-scaled-font.c:2219:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-scaled-font.c: In function '_cairo_scaled_font_glyph_path':
+cairo-scaled-font.c:2494:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-scaled-font.c: In function '_cairo_scaled_glyph_lookup':
+cairo-scaled-font.c:2848:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-spline.lo
+  CC     cairo-stroke-style.lo
+  CC     cairo-surface.lo
+cairo-stroke-style.c: In function '_cairo_stroke_style_dash_stroked':
+cairo-stroke-style.c:194:2: warning: cannot optimize loop, the loop counter may overflow
+  CC     cairo-surface-fallback.lo
+  CC     cairo-surface-clipper.lo
+cairo-surface.c: In function '_cairo_surface_set_error':
+cairo-surface.c:171:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c:174:50: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_clone_similar':
+cairo-surface.c:1690:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c:1721:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_paint':
+cairo-surface.c:2023:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_mask':
+cairo-surface.c:2078:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_fill_stroke':
+cairo-surface.c:2146:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_stroke':
+cairo-surface.c:2211:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_fill':
+cairo-surface.c:2266:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c: In function '_cairo_surface_show_text_glyphs':
+cairo-surface.c:2621:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c:2633:17: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c:2648:17: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface.c:2669:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-surface-offset.lo
+cairo-surface-fallback.c: In function '_create_composite_mask_pattern':
+cairo-surface-fallback.c:136:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:142:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c: In function '_clip_and_composite_source':
+cairo-surface-fallback.c:351:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c: In function '_clip_and_composite':
+cairo-surface-fallback.c:450:10: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:456:28: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c: In function '_clip_and_composite_trapezoids':
+cairo-surface-fallback.c:792:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:795:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:809:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:813:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c:852:10: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-surface-fallback.c: In function '_cairo_surface_old_show_glyphs_draw_func':
+cairo-surface-fallback.c:1282:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-surface-snapshot.lo
+  CC     cairo-surface-subsurface.lo
+  CC     cairo-surface-wrapper.lo
+  CC     cairo-system.lo
+  CC     cairo-tor-scan-converter.lo
+cairo-surface-wrapper.c: In function '_cairo_surface_wrapper_get_extents':
+cairo-surface-wrapper.c:659:33: warning: ignoring return value of '_cairo_rectangle_intersect', declared with attribute warn_unused_result
+  CC     cairo-toy-font-face.lo
+  CC     cairo-traps.lo
+  CC     cairo-unicode.lo
+  CC     cairo-user-font.lo
+  CC     cairo-version.lo
+cairo-user-font.c: In function '_cairo_user_scaled_glyph_init':
+cairo-user-font.c:161:17: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-user-font.c: In function '_cairo_user_text_to_glyphs':
+cairo-user-font.c:331:13: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-user-font.c:332:13: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-user-font.c:335:13: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+  CC     cairo-cff-subset.lo
+  CC     cairo-wideint.lo
+  CC     cairo-scaled-font-subsets.lo
+cairo-cff-subset.c: In function 'cairo_cff_font_write_fdselect':
+cairo-cff-subset.c:1407:9: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-cff-subset.c:1411:9: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-cff-subset.c:1415:9: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-cff-subset.c:1419:9: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-cff-subset.c:1423:9: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-scaled-font-subsets.c: In function '_cairo_sub_font_map_glyph':
+cairo-scaled-font-subsets.c:485:2: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-scaled-font-subsets.c: In function '_cairo_scaled_font_subsets_map_glyph':
+cairo-scaled-font-subsets.c:702:17: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-scaled-font-subsets.c:717:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-truetype-subset.lo
+  CC     cairo-type1-fallback.lo
+  CC     cairo-type1-subset.lo
+cairo-truetype-subset.c: In function '_cairo_truetype_font_set_error':
+cairo-truetype-subset.c:125:50: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-truetype-subset.c: In function 'cairo_truetype_font_create_truetype_table_list':
+cairo-truetype-subset.c:1003:46: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-truetype-subset.c:1009:46: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-truetype-subset.c:1015:46: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-truetype-subset.c: In function '_cairo_truetype_index_to_ucs4':
+cairo-truetype-subset.c:1314:24: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-type1-fallback.c: In function 'cairo_type1_font_write_private_dict':
+cairo-type1-fallback.c:615:16: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+  CC     cairo-type3-glyph-surface.lo
+  CC     cairo-pdf-operators.lo
+  CC     cairo-deflate-stream.lo
+cairo-type3-glyph-surface.c: In function '_cairo_type3_glyph_surface_analyze_glyph':
+cairo-type3-glyph-surface.c:439:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-type3-glyph-surface.c:450:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-type3-glyph-surface.c: In function '_cairo_type3_glyph_surface_emit_glyph':
+cairo-type3-glyph-surface.c:487:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-type3-glyph-surface.c:554:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-win32-surface.lo
+cairo-pdf-operators.c: In function '_cairo_pdf_operators_emit_stroke':
+cairo-pdf-operators.c:770:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-win32-printing-surface.lo
+  CC     cairo-win32-font.lo
+cairo-win32-surface.c: In function '_create_dc_and_bitmap':
+cairo-win32-surface.c:202:5: warning: enumeration value 'CAIRO_FORMAT_RGB16_565' not handled in switch
+cairo-win32-surface.c:236:5: warning: enumeration value 'CAIRO_FORMAT_INVALID' not handled in switch
+cairo-win32-surface.c:236:5: warning: enumeration value 'CAIRO_FORMAT_RGB16_565' not handled in switch
+cairo-win32-surface.c:312:2: warning: enumeration value 'CAIRO_FORMAT_INVALID' not handled in switch
+cairo-win32-surface.c:312:2: warning: enumeration value 'CAIRO_FORMAT_RGB16_565' not handled in switch
+cairo-win32-surface.c: In function 'mirror_a1_bits':
+cairo-win32-surface.c:586:9: warning: unused variable 'w'
+cairo-win32-surface.c: In function '_cairo_win32_surface_composite':
+cairo-win32-surface.c:1338:23: warning: comparison between signed and unsigned integer expressions
+cairo-win32-surface.c:1344:45: warning: comparison between signed and unsigned integer expressions
+cairo-win32-surface.c:1348:19: warning: comparison between signed and unsigned integer expressions
+cairo-win32-surface.c:1354:40: warning: comparison between signed and unsigned integer expressions
+cairo-win32-surface.c:1370:14: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-win32-surface.c:1391:16: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-win32-surface.c: In function 'categorize_solid_dest_operator':
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_MULTIPLY' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_SCREEN' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_OVERLAY' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_DARKEN' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_LIGHTEN' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_COLOR_DODGE' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_COLOR_BURN' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_HARD_LIGHT' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_SOFT_LIGHT' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_DIFFERENCE' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_EXCLUSION' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_HSL_HUE' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_HSL_SATURATION' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_HSL_COLOR' not handled in switch
+cairo-win32-surface.c:1430:5: warning: enumeration value 'CAIRO_OPERATOR_HSL_LUMINOSITY' not handled in switch
+cairo-win32-surface.c: In function '_cairo_win32_surface_show_glyphs':
+cairo-win32-surface.c:1630:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-win32-surface.c: In function 'cairo_win32_surface_create':
+cairo-win32-surface.c:1767:55: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-win32-surface.c: At top level:
+cairo-win32-surface.c:615:1: warning: '_cairo_win32_surface_convert_to_gdi_format' defined but not used
+cairo-win32-surface.c: In function '_cairo_win32_surface_create_for_dc':
+cairo-win32-surface.c:365:9: warning: 'rowstride' may be used uninitialized in this function
+cairo-win32-surface.c:364:20: warning: 'bits' may be used uninitialized in this function
+cairo-win32-printing-surface.c: In function '_cairo_win32_printing_surface_paint_recording_pattern':
+cairo-win32-printing-surface.c:503:6: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-win32-printing-surface.c: In function '_cairo_win32_printing_surface_paint_image_pattern':
+cairo-win32-printing-surface.c:653:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-png.lo
+cairo-win32-printing-surface.c: In function 'cairo_win32_printing_surface_create':
+cairo-win32-printing-surface.c:1767:55: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+cairo-win32-font.c:712:1: warning: '_cairo_win32_scaled_font_text_to_glyphs' defined but not used
+cairo-win32-font.c: In function '_cairo_win32_scaled_font_select_unscaled_font':
+cairo-win32-font.c:492:11: warning: 'hfont' may be used uninitialized in this function
+cairo-win32-printing-surface.c: In function '_cairo_win32_printing_surface_paint_image_pattern':
+cairo-win32-printing-surface.c:614:19: warning: 'mime_size' may be used uninitialized in this function
+cairo-win32-printing-surface.c:613:26: warning: 'mime_data' may be used uninitialized in this function
+  CC     cairo-ft-font.lo
+  CC     cairo-ps-surface.lo
+cairo-png.c: In function 'write_png':
+cairo-png.c:179:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-pdf-surface.lo
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_header':
+cairo-ps-surface.c:166:10: warning: unused variable 'ctime_buf'
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_unscaled_font_subset':
+cairo-ps-surface.c:677:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c:682:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c:686:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_scaled_font_subset':
+cairo-ps-surface.c:705:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_recording_surface':
+cairo-ps-surface.c:2475:5: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_recording_subsurface':
+cairo-ps-surface.c:2547:5: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-ps-surface.c: In function '_cairo_ps_surface_emit_surface':
+cairo-ps-surface.c:2730:17: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_get_source_surface_size':
+cairo-pdf-surface.c:1112:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:1119:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_emit_image_surface':
+cairo-pdf-surface.c:2118:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:2122:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_emit_recording_surface':
+cairo-pdf-surface.c:2288:5: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_emit_recording_subsurface':
+cairo-pdf-surface.c:2346:5: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_emit_unscaled_font_subset':
+cairo-pdf-surface.c:4673:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:4677:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:4681:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:4686:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:4691:20: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_emit_scaled_font_subset':
+cairo-pdf-surface.c:4708:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_paint':
+cairo-pdf-surface.c:5427:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:5473:9: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_mask':
+cairo-pdf-surface.c:5542:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_stroke':
+cairo-pdf-surface.c:5654:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:5687:9: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_fill':
+cairo-pdf-surface.c:5782:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:5845:9: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c: In function '_cairo_pdf_surface_show_text_glyphs':
+cairo-pdf-surface.c:6065:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-pdf-surface.c:6085:9: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+  CC     cairo-svg-surface.lo
+Generating cairo.def
+cairo-svg-surface.c: In function '_cairo_svg_document_emit_glyph':
+cairo-svg-surface.c:834:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-svg-surface.c: In function '_cairo_surface_base64_encode':
+cairo-svg-surface.c:1167:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-svg-surface.c:1171:16: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-svg-surface.c: In function '_cairo_svg_surface_show_glyphs':
+cairo-svg-surface.c:2523:13: warning: comparison between 'cairo_status_t' and 'enum _cairo_int_status'
+cairo-svg-surface.c: In function '_cairo_svg_surface_supports_fine_grained_fallbacks':
+cairo-svg-surface.c:2838:19: warning: comparison between 'cairo_int_status_t' and 'enum _cairo_status'
+  CCLD   libcairo.la
+Creating library file: .libs/libcairo.dll.a
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib"
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo"
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libcairo.la '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib'
+ /bin/install -c -m 644 cairo-features.h '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo'
+ /bin/install -c -m 644 cairo.h cairo-deprecated.h cairo-win32.h cairo-ft.h cairo-ps.h cairo-pdf.h cairo-svg.h ../cairo-version.h '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo'
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/pkgconfig" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/pkgconfig"
+ /bin/install -c -m 644 cairo.pc cairo-win32.pc cairo-win32-font.pc cairo-png.pc cairo-ft.pc cairo-fc.pc cairo-ps.pc cairo-pdf.pc cairo-svg.pc cairo-gobject.pc '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/pkgconfig'
+libtool: install: /bin/install -c .libs/libcairo.dll.a /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo.dll.a
+libtool: install: base_file=`basename libcairo.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libcairo.la'i; echo libcairo-2.dll'`
+libtool: install:  dldir=/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/`dirname ../bin/libcairo-2.dll`
+libtool: install:  test -d /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin || mkdir -p /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin
+libtool: install:  /bin/install -c .libs/libcairo-2.dll /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-2.dll
+libtool: install:  chmod a+x /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-2.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-2.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libcairo.lai /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/src'
+Making install in doc
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make  install-recursive
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+Making install in public
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make  install-am
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make[6]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make[6]: Nothing to be done for `install-exec-am'.
+installfiles=`echo ./html/*`; \
+	if test "$installfiles" = './html/*'; \
+	then echo '-- Nothing to install' ; \
+	else \
+	  /bin/sh /devel/src/freedesktop/cairo/cairo-1.10.2/build/install-sh -d /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/gtk-doc/html/cairo; \
+	  for i in $installfiles; do \
+	    echo '-- Installing '$i ; \
+	    /bin/install -c -m 644 $i /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/gtk-doc/html/cairo; \
+	  done; \
+	  echo '-- Installing ./html/index.sgml' ; \
+	  /bin/install -c -m 644 ./html/index.sgml /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/gtk-doc/html/cairo || :; \
+	  which gtkdoc-rebase >/dev/null && \
+	    gtkdoc-rebase --relative --dest-dir= --html-dir=/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/gtk-doc/html/cairo ; \
+	fi
+-- Installing ./html/bindings-errors.html
+-- Installing ./html/bindings-fonts.html
+-- Installing ./html/bindings-memory.html
+-- Installing ./html/bindings-overloading.html
+-- Installing ./html/bindings-path.html
+-- Installing ./html/bindings-patterns.html
+-- Installing ./html/bindings-return-values.html
+-- Installing ./html/bindings-streams.html
+-- Installing ./html/bindings-surfaces.html
+-- Installing ./html/cairo-Error-handling.html
+-- Installing ./html/cairo-FreeType-Fonts.html
+-- Installing ./html/cairo-Image-Surfaces.html
+-- Installing ./html/cairo-PDF-Surfaces.html
+-- Installing ./html/cairo-PNG-Support.html
+-- Installing ./html/cairo-Paths.html
+-- Installing ./html/cairo-PostScript-Surfaces.html
+-- Installing ./html/cairo-Quartz-(CGFont)-Fonts.html
+-- Installing ./html/cairo-Quartz-Surfaces.html
+-- Installing ./html/cairo-Recording-Surfaces.html
+-- Installing ./html/cairo-Regions.html
+-- Installing ./html/cairo-SVG-Surfaces.html
+-- Installing ./html/cairo-Transformations.html
+-- Installing ./html/cairo-Types.html
+-- Installing ./html/cairo-User-Fonts.html
+-- Installing ./html/cairo-Version-Information.html
+-- Installing ./html/cairo-Win32-Fonts.html
+-- Installing ./html/cairo-Win32-Surfaces.html
+-- Installing ./html/cairo-XLib-Surfaces.html
+-- Installing ./html/cairo-cairo-device-t.html
+-- Installing ./html/cairo-cairo-font-face-t.html
+-- Installing ./html/cairo-cairo-font-options-t.html
+-- Installing ./html/cairo-cairo-matrix-t.html
+-- Installing ./html/cairo-cairo-pattern-t.html
+-- Installing ./html/cairo-cairo-scaled-font-t.html
+-- Installing ./html/cairo-cairo-surface-t.html
+-- Installing ./html/cairo-cairo-t.html
+-- Installing ./html/cairo-drawing.html
+-- Installing ./html/cairo-fonts.html
+-- Installing ./html/cairo-support.html
+-- Installing ./html/cairo-surfaces.html
+-- Installing ./html/cairo-text.html
+-- Installing ./html/cairo.devhelp
+-- Installing ./html/cairo.devhelp2
+-- Installing ./html/home.png
+-- Installing ./html/index-1.10.html
+-- Installing ./html/index-1.2.html
+-- Installing ./html/index-1.4.html
+-- Installing ./html/index-1.6.html
+-- Installing ./html/index-1.8.html
+-- Installing ./html/index-all.html
+-- Installing ./html/index.html
+-- Installing ./html/index.sgml
+-- Installing ./html/language-bindings.html
+-- Installing ./html/left.png
+-- Installing ./html/right.png
+-- Installing ./html/style.css
+-- Installing ./html/up.png
+-- Installing ./html/index.sgml
+which: gtkdoc-rebase: unknown command
+make[6]: [install-data-local] Error 1 (ignored)
+make[6]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc/public'
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make[5]: Nothing to be done for `install-exec-am'.
+make[5]: Nothing to be done for `install-data-am'.
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/doc'
+Making install in util
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+make  install-recursive
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+Making install in .
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+make[5]: Nothing to be done for `install-exec-am'.
+make[5]: Nothing to be done for `install-data-am'.
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+Making install in cairo-gobject
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-gobject'
+  CC     libcairo_gobject_la-cairo-gobject-enums.lo
+  CC     libcairo_gobject_la-cairo-gobject-structs.lo
+  CCLD   libcairo-gobject.la
+Creating library file: .libs/libcairo-gobject.dll.a
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-gobject'
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib"
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo"
+ /bin/sh ../../libtool   --mode=install /bin/install -c   libcairo-gobject.la '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib'
+ /bin/install -c -m 644 cairo-gobject.h '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo'
+libtool: install: /bin/install -c .libs/libcairo-gobject.dll.a /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo-gobject.dll.a
+libtool: install: base_file=`basename libcairo-gobject.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libcairo-gobject.la'i; echo libcairo-gobject-2.dll'`
+libtool: install:  dldir=/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/`dirname ../bin/libcairo-gobject-2.dll`
+libtool: install:  test -d /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin || mkdir -p /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin
+libtool: install:  /bin/install -c .libs/libcairo-gobject-2.dll /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-gobject-2.dll
+libtool: install:  chmod a+x /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-gobject-2.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-gobject-2.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libcairo-gobject.lai /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo-gobject.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-gobject'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-gobject'
+Making install in cairo-script
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+Making install in examples
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script/examples'
+make[6]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script/examples'
+make[6]: Nothing to be done for `install-exec-am'.
+make[6]: Nothing to be done for `install-data-am'.
+make[6]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script/examples'
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script/examples'
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+  CC     libcairo_script_interpreter_la-cairo-script-file.lo
+  CC     libcairo_script_interpreter_la-cairo-script-interpreter.lo
+  CC     libcairo_script_interpreter_la-cairo-script-hash.lo
+cairo-script-interpreter.c: In function 'cairo_script_interpreter_finish':
+cairo-script-interpreter.c:636:23: warning: comparison between 'csi_status_t' and 'enum _cairo_status'
+  CC     libcairo_script_interpreter_la-cairo-script-objects.lo
+  CC     libcairo_script_interpreter_la-cairo-script-operators.lo
+  CC     libcairo_script_interpreter_la-cairo-script-scanner.lo
+cairo-script-operators.c: In function '_ft_create_for_pattern':
+cairo-script-operators.c:1863:21: warning: unused variable 'vec'
+  CC     libcairo_script_interpreter_la-cairo-script-stack.lo
+cairo-script-operators.c: In function 'end_array_construction':
+cairo-script-operators.c:600:2: warning: cannot optimize possibly infinite loops
+  CCLD   libcairo-script-interpreter.la
+Creating library file: .libs/libcairo-script-interpreter.dll.a
+make[6]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib"
+test -z "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo" || /bin/mkdir -p "/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo"
+ /bin/sh ../../libtool   --mode=install /bin/install -c   libcairo-script-interpreter.la '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib'
+ /bin/install -c -m 644 cairo-script-interpreter.h '/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/include/cairo'
+libtool: install: /bin/install -c .libs/libcairo-script-interpreter.dll.a /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo-script-interpreter.dll.a
+libtool: install: base_file=`basename libcairo-script-interpreter.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libcairo-script-interpreter.la'i; echo libcairo-script-interpreter-2.dll'`
+libtool: install:  dldir=/devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/`dirname ../bin/libcairo-script-interpreter-2.dll`
+libtool: install:  test -d /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin || mkdir -p /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin
+libtool: install:  /bin/install -c .libs/libcairo-script-interpreter-2.dll /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-script-interpreter-2.dll
+libtool: install:  chmod a+x /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-script-interpreter-2.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/../bin/libcairo-script-interpreter-2.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libcairo-script-interpreter.lai /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib/libcairo-script-interpreter.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[6]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util/cairo-script'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/util'
+Making install in boilerplate
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+(cd . && sh ./make-cairo-boilerplate-constructors.sh cairo-boilerplate-getopt.c cairo-boilerplate-system.c cairo-boilerplate.c           cairo-boilerplate-win32.c cairo-boilerplate-win32-printing.c                   cairo-boilerplate-ps.c cairo-boilerplate-pdf.c cairo-boilerplate-svg.c                                                      ) > cairo-boilerplate-constructors.c
+make  install-am
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/boilerplate'
+Making install in test
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+(cd . && sh ./make-cairo-test-constructors.sh a1-bug.c a1-image-sample.c a1-mask.c a1-mask-sample.c a1-traps-sample.c a1-rasterisation.c a8-clear.c a8-mask.c aliasing.c alpha-similar.c api-special-cases.c big-line.c big-trap.c bilevel-image.c bug-bo-rectangular.c bug-extents.c bug-seams.c caps.c caps-joins.c caps-joins-alpha.c caps-joins-curve.c caps-sub-paths.c clear.c clear-source.c clip-all.c clip-contexts.c clip-disjoint.c clip-device-offset.c clip-draw-unbounded.c clip-empty.c clip-empty-group.c clip-empty-save.c clip-fill.c clip-fill-no-op.c clip-fill-rule.c clip-fill-rule-pixel-aligned.c clip-group-shapes.c clip-image.c clip-nesting.c clip-operator.c clip-push-group.c clip-shape.c clip-stroke.c clip-stroke-no-op.c clip-text.c clip-twice.c clip-twice-rectangle.c clip-unbounded.c clip-zero.c clipped-group.c clipped-surface.c close-path.c close-path-current-point.c composite-integer-translate-source.c composite-integer-translate-over.c composite-integer-translate-over-repeat.c copy-path.c coverage.c create-for-stream.c create-from-png.c create-from-png-stream.c culled-glyphs.c curve-to-as-line-to.c dash-caps-joins.c dash-curve.c dash-infinite-loop.c dash-no-dash.c dash-offset.c dash-offset-negative.c dash-scale.c dash-state.c dash-zero-length.c degenerate-arc.c degenerate-arcs.c degenerate-curve-to.c degenerate-dash.c degenerate-linear-gradient.c degenerate-path.c degenerate-pen.c degenerate-radial-gradient.c degenerate-rel-curve-to.c device-offset.c device-offset-fractional.c device-offset-positive.c device-offset-scale.c error-setters.c extend-pad.c extend-pad-border.c extend-pad-similar.c extend-reflect.c extend-reflect-similar.c extend-repeat.c extend-repeat-similar.c extended-blend.c extended-blend-alpha.c fill-alpha.c fill-alpha-pattern.c fill-and-stroke.c fill-and-stroke-alpha.c fill-and-stroke-alpha-add.c fill-degenerate-sort-order.c fill-empty.c fill-image.c fill-missed-stop.c fill-rule.c filter-bilinear-extents.c filter-nearest-offset.c filter-nearest-transformed.c finer-grained-fallbacks.c font-face-get-type.c font-matrix-translation.c font-options.c glyph-cache-pressure.c get-and-set.c get-clip.c get-group-target.c get-path-extents.c gradient-alpha.c gradient-constant-alpha.c gradient-zero-stops.c gradient-zero-stops-mask.c group-clip.c group-paint.c group-unaligned.c half-coverage.c halo.c huge-linear.c huge-radial.c image-surface-source.c implicit-close.c infinite-join.c in-fill-empty-trapezoid.c in-fill-trapezoid.c invalid-matrix.c inverse-text.c joins.c large-clip.c large-font.c large-source.c large-source-roi.c large-twin-antialias-mixed.c leaky-dash.c leaky-dashed-rectangle.c leaky-dashed-stroke.c leaky-polygon.c line-width.c line-width-scale.c line-width-zero.c linear-gradient.c linear-gradient-extend.c linear-gradient-large.c linear-gradient-one-stop.c linear-gradient-reflect.c linear-gradient-subset.c linear-step-function.c linear-uniform.c long-dashed-lines.c long-lines.c mask.c mask-alpha.c mask-ctm.c mask-glyphs.c mask-surface-ctm.c mask-transformed-image.c mask-transformed-similar.c recording-surface-pattern.c mime-data.c miter-precision.c move-to-show-surface.c new-sub-path.c nil-surface.c operator.c operator-alpha.c operator-alpha-alpha.c operator-clear.c operator-source.c over-above-source.c over-around-source.c over-below-source.c over-between-source.c overlapping-glyphs.c paint.c paint-repeat.c paint-source-alpha.c paint-with-alpha.c partial-clip-text.c partial-coverage.c path-append.c path-stroke-twice.c path-precision.c pattern-get-type.c pattern-getters.c pixman-rotate.c png.c push-group.c push-group-color.c push-group-path-offset.c radial-gradient.c radial-gradient-extend.c radial-gradient-mask.c radial-gradient-mask-source.c radial-gradient-one-stop.c radial-gradient-source.c random-intersections-eo.c random-intersections-nonzero.c random-intersections-curves-eo.c random-intersections-curves-nz.c rectangle-rounding-error.c rectilinear-fill.c rectilinear-grid.c rectilinear-miter-limit.c rectilinear-dash.c rectilinear-stroke.c reflected-stroke.c rel-path.c rgb24-ignore-alpha.c rotate-image-surface-paint.c rotated-clip.c rounded-rectangle-fill.c rounded-rectangle-stroke.c scale-down-source-surface-paint.c scale-offset-image.c scale-offset-similar.c scale-source-surface-paint.c scaled-font-zero-matrix.c stroke-ctm-caps.c stroke-image.c select-font-face.c select-font-no-show-text.c self-copy.c self-copy-overlap.c self-intersecting.c set-source.c show-glyphs-many.c show-text-current-point.c skew-extreme.c smask.c smask-fill.c smask-image-mask.c smask-mask.c smask-paint.c smask-stroke.c smask-text.c solid-pattern-cache-stress.c source-clip.c source-clip-scale.c source-surface-scale-paint.c spline-decomposition.c subsurface.c subsurface-image-repeat.c subsurface-repeat.c subsurface-reflect.c subsurface-pad.c subsurface-modify-child.c subsurface-modify-parent.c subsurface-outside-target.c subsurface-similar-repeat.c surface-finish-twice.c surface-pattern.c surface-pattern-big-scale-down.c surface-pattern-operator.c surface-pattern-scale-down.c surface-pattern-scale-down-extend.c surface-pattern-scale-up.c text-antialias-gray.c text-antialias-none.c text-antialias-subpixel.c text-cache-crash.c text-glyph-range.c text-pattern.c text-rotate.c text-transform.c text-zero-len.c toy-font-face.c transforms.c translate-show-surface.c trap-clip.c twin.c twin-antialias-gray.c twin-antialias-mixed.c twin-antialias-none.c twin-antialias-subpixel.c unantialiased-shapes.c unbounded-operator.c user-data.c user-font.c user-font-mask.c user-font-proxy.c user-font-rescale.c xcomposite-projection.c xlib-expose-event.c zero-alpha.c zero-mask.c pthread-same-source.c pthread-show-text.c pthread-similar.c  bitmap-font.c ft-font-create-for-ft-face.c ft-show-glyphs-positioning.c ft-show-glyphs-table.c ft-text-vertical-layout-type1.c ft-text-vertical-layout-type3.c ft-text-antialias-none.c   pdf-features.c pdf-mime-data.c pdf-surface-source.c ps-eps.c ps-features.c ps-surface-source.c svg-surface.c svg-clip.c svg-surface-source.c     multi-page.c ) > cairo-test-constructors.c
+make  install-recursive
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+Making install in pdiff
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+make  install-am
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+  CC     lpyramid.lo
+  CC     pdiff.lo
+  CCLD   libpdiff.la
+make[6]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+make[6]: Nothing to be done for `install-exec-am'.
+make[6]: Nothing to be done for `install-data-am'.
+make[6]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test/pdiff'
+Making install in .
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+make[5]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+make[5]: Nothing to be done for `install-exec-am'.
+make[5]: Nothing to be done for `install-data-am'.
+make[5]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/test'
+Making install in perf
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make  install-am
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make[4]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2/perf'
+make[2]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+make[3]: Entering directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+make[2]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+make[1]: Leaving directory `/devel/src/freedesktop/cairo/cairo-1.10.2'
+rm -f cairo-1.10.2.zip
+rm -f cairo-dev-1.10.2.zip
+pwd=`pwd`; cd /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2; \
+	zip "$pwd"/cairo-1.10.2.zip bin/libcairo-2.dll
+pwd=`pwd`; cd /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2; \
+	zip -r "$pwd"/cairo-dev-1.10.2.zip include/cairo lib/libcairo.dll.a lib/cairo.lib lib/pkgconfig/cairo.pc lib/pkgconfig/cairo-*.pc share/gtk-doc/html/cairo
+  adding: bin/libcairo-2.dll	zip warning: name not matched: lib/cairo.lib
+  adding: include/cairo/ (stored 0%)
+  adding: include/cairo/cairo-deprecated.h (deflated 74%)
+  adding: include/cairo/cairo-features.h (deflated 70%)
+  adding: include/cairo/cairo-ft.h (deflated 56%)
+  adding: include/cairo/cairo-gobject.h (deflated 75%)
+  adding: include/cairo/cairo-pdf.h (deflated 59%)
+  adding: include/cairo/cairo-ps.h (deflated 62%)
+  adding: include/cairo/cairo-script-interpreter.h (deflated 66%)
+  adding: include/cairo/cairo-svg.h (deflated 57%)
+  adding: include/cairo/cairo-version.h (deflated 56%)
+  adding: include/cairo/cairo-win32.h (deflated 65%)
+  adding: include/cairo/cairo.h (deflated 59%)
+ (deflated 77%)
+  adding: lib/libcairo.dll.a (deflated 94%)
+  adding: lib/pkgconfig/cairo.pc (deflated 33%)
+  adding: lib/pkgconfig/cairo-fc.pc (deflated 31%)
+  adding: lib/pkgconfig/cairo-ft.pc (deflated 29%)
+  adding: lib/pkgconfig/cairo-gobject.pc (deflated 35%)
+  adding: lib/pkgconfig/cairo-pdf.pc (deflated 29%)
+  adding: lib/pkgconfig/cairo-png.pc (deflated 30%)
+  adding: lib/pkgconfig/cairo-ps.pc (deflated 30%)
+  adding: lib/pkgconfig/cairo-svg.pc (deflated 29%)
+  adding: lib/pkgconfig/cairo-win32-font.pc (deflated 30%)
+  adding: lib/pkgconfig/cairo-win32.pc (deflated 30%)
+  adding: share/gtk-doc/html/cairo/ (stored 0%)
+  adding: share/gtk-doc/html/cairo/bindings-errors.html (deflated 60%)
+  adding: share/gtk-doc/html/cairo/bindings-fonts.html (deflated 60%)
+  adding: share/gtk-doc/html/cairo/bindings-memory.html (deflated 63%)
+  adding: share/gtk-doc/html/cairo/bindings-overloading.html (deflated 65%)
+  adding: share/gtk-doc/html/cairo/bindings-path.html (deflated 64%)
+  adding: share/gtk-doc/html/cairo/bindings-patterns.html (deflated 72%)
+  adding: share/gtk-doc/html/cairo/bindings-return-values.html (deflated 63%)
+  adding: share/gtk-doc/html/cairo/bindings-streams.html (deflated 60%)
+  adding: share/gtk-doc/html/cairo/bindings-surfaces.html (deflated 62%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-device-t.html (deflated 86%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-font-face-t.html (deflated 86%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-font-options-t.html (deflated 89%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-matrix-t.html (deflated 90%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-pattern-t.html (deflated 91%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-scaled-font-t.html (deflated 89%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-surface-t.html (deflated 88%)
+  adding: share/gtk-doc/html/cairo/cairo-cairo-t.html (deflated 89%)
+  adding: share/gtk-doc/html/cairo/cairo-drawing.html (deflated 65%)
+  adding: share/gtk-doc/html/cairo/cairo-Error-handling.html (deflated 78%)
+  adding: share/gtk-doc/html/cairo/cairo-fonts.html (deflated 67%)
+  adding: share/gtk-doc/html/cairo/cairo-FreeType-Fonts.html (deflated 82%)
+  adding: share/gtk-doc/html/cairo/cairo-Image-Surfaces.html (deflated 83%)
+  adding: share/gtk-doc/html/cairo/cairo-Paths.html (deflated 88%)
+  adding: share/gtk-doc/html/cairo/cairo-PDF-Surfaces.html (deflated 85%)
+  adding: share/gtk-doc/html/cairo/cairo-PNG-Support.html (deflated 86%)
+  adding: share/gtk-doc/html/cairo/cairo-PostScript-Surfaces.html (deflated 86%)
+  adding: share/gtk-doc/html/cairo/cairo-Quartz-(CGFont)-Fonts.html (deflated 78%)
+  adding: share/gtk-doc/html/cairo/cairo-Quartz-Surfaces.html (deflated 79%)
+  adding: share/gtk-doc/html/cairo/cairo-Recording-Surfaces.html (deflated 76%)
+  adding: share/gtk-doc/html/cairo/cairo-Regions.html (deflated 93%)
+  adding: share/gtk-doc/html/cairo/cairo-support.html (deflated 62%)
+  adding: share/gtk-doc/html/cairo/cairo-surfaces.html (deflated 71%)
+  adding: share/gtk-doc/html/cairo/cairo-SVG-Surfaces.html (deflated 83%)
+  adding: share/gtk-doc/html/cairo/cairo-text.html (deflated 88%)
+  adding: share/gtk-doc/html/cairo/cairo-Transformations.html (deflated 89%)
+  adding: share/gtk-doc/html/cairo/cairo-Types.html (deflated 73%)
+  adding: share/gtk-doc/html/cairo/cairo-User-Fonts.html (deflated 88%)
+  adding: share/gtk-doc/html/cairo/cairo-Version-Information.html (deflated 78%)
+  adding: share/gtk-doc/html/cairo/cairo-Win32-Fonts.html (deflated 87%)
+  adding: share/gtk-doc/html/cairo/cairo-Win32-Surfaces.html (deflated 85%)
+  adding: share/gtk-doc/html/cairo/cairo-XLib-Surfaces.html (deflated 87%)
+  adding: share/gtk-doc/html/cairo/cairo.devhelp (deflated 88%)
+  adding: share/gtk-doc/html/cairo/cairo.devhelp2 (deflated 89%)
+  adding: share/gtk-doc/html/cairo/home.png (stored 0%)
+  adding: share/gtk-doc/html/cairo/index-1.10.html (deflated 82%)
+  adding: share/gtk-doc/html/cairo/index-1.2.html (deflated 82%)
+  adding: share/gtk-doc/html/cairo/index-1.4.html (deflated 80%)
+  adding: share/gtk-doc/html/cairo/index-1.6.html (deflated 73%)
+  adding: share/gtk-doc/html/cairo/index-1.8.html (deflated 81%)
+  adding: share/gtk-doc/html/cairo/index-all.html (deflated 89%)
+  adding: share/gtk-doc/html/cairo/index.html (deflated 78%)
+  adding: share/gtk-doc/html/cairo/index.sgml (deflated 90%)
+  adding: share/gtk-doc/html/cairo/language-bindings.html (deflated 60%)
+  adding: share/gtk-doc/html/cairo/left.png (stored 0%)
+  adding: share/gtk-doc/html/cairo/right.png (stored 0%)
+  adding: share/gtk-doc/html/cairo/style.css (deflated 71%)
+  adding: share/gtk-doc/html/cairo/up.png (stored 0%)
+++ cp cairo-1.10.2.zip /tmp/cairo_1.10.2-2_win32.zip
+++ cp cairo-dev-1.10.2.zip /tmp/cairo-dev_1.10.2-2_win32.zip
+++ cp -p src/cairo.def /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/lib
+++ mkdir -p /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/doc/cairo_1.10.2-2_win32
+++ cp -p COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1 /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2/share/doc/cairo_1.10.2-2_win32
+++ cd /devel/target/1315da81bb4f4a54ee1f3f8d6181abe2
+++ zip /tmp/cairo_1.10.2-2_win32.zip bin/libcairo-gobject-2.dll
+  adding: bin/libcairo-gobject-2.dll (deflated 68%)
+++ zip /tmp/cairo_1.10.2-2_win32.zip bin/libcairo-script-interpreter-2.dll
+  adding: bin/libcairo-script-interpreter-2.dll (deflated 62%)
+++ zip /tmp/cairo-dev_1.10.2-2_win32.zip lib/libcairo-gobject.dll.a
+  adding: lib/libcairo-gobject.dll.a (deflated 92%)
+++ zip /tmp/cairo-dev_1.10.2-2_win32.zip lib/libcairo-script-interpreter.dll.a
+  adding: lib/libcairo-script-interpreter.dll.a (deflated 93%)
+++ cd lib
+++ lib.exe -machine:X86 -def:cairo.def -out:cairo.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library cairo.lib and object cairo.exp
+++ zip /tmp/cairo-dev_1.10.2-2_win32.zip lib/cairo.def lib/cairo.lib
+  adding: lib/cairo.def (deflated 80%)
+  adding: lib/cairo.lib (deflated 88%)
+++ zip -r -D /tmp/cairo_1.10.2-2_win32.zip share/doc/cairo_1.10.2-2_win32
+  adding: share/doc/cairo_1.10.2-2_win32/COPYING (deflated 55%)
+  adding: share/doc/cairo_1.10.2-2_win32/COPYING-LGPL-2.1 (deflated 65%)
+  adding: share/doc/cairo_1.10.2-2_win32/COPYING-MPL-1.1 (deflated 68%)
+++ sed -e 's/ pixman-1 >= 0.18.4//'
+++ mv lib/pkgconfig/cairo.pc.temp lib/pkgconfig/cairo.pc
+++ zip /tmp/cairo-dev_1.10.2-2_win32.zip lib/pkgconfig/cairo.pc
+updating: lib/pkgconfig/cairo.pc (deflated 34%)

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SimpleGavamWithCLM</RootNamespace>
+    <ProjectName>SimplePuppets</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="..\..\lib\3rdParty\boost\boost _d.props" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\lib\3rdParty\OpenCV\openCVd.props" />
+    <Import Project="..\..\lib\3rdParty\freeglut\freeglut.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="..\..\lib\3rdParty\boost\boost.props" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\lib\3rdParty\OpenCV\openCV.props" />
+    <Import Project="..\..\lib\3rdParty\freeglut\freeglut.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\lib\3rdParty\GTK+\lib;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <ReferencePath>$(VCInstallDir)atlmfc\lib;$(VCInstallDir)lib;$(ReferencePath)</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\lib\3rdParty\GTK+\lib;$(IncludePath)</IncludePath>
+    <ReferencePath>$(VCInstallDir)atlmfc\lib;$(VCInstallDir)lib;$(ReferencePath)</ReferencePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\lib\3rdParty\boost\lib;$(SolutionDir)\lib\3rdParty\boost\boost;$(SolutionDir)\lib\3rdParty\boost;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0;$(SolutionDir)\lib\3rdParty\GTK+\bin;$(SolutionDir)\lib\3rdParty\GTK+;$(SolutionDir)\lib\3rdParty\GTK+\include\glib-2.0;$(SolutionDir)\lib\3rdParty\GTK+\lib\glib-2.0\include;$(SolutionDir)\lib\3rdParty\GTK+\include\cairo;$(SolutionDir)\lib\3rdParty\GTK+\include\pango-1.0;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0\gtk;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0\gdk;$(SolutionDir)\lib\3rdParty\GTK+\include\gail-1.0;$(SolutionDir)\lib\3rdParty\GTK+\include\freetype2;$(SolutionDir)\lib\3rdParty\GTK+\include\fontconfig;$(SolutionDir)\lib\3rdParty\GTK+\lib\gtk-2.0\include;$(SolutionDir)\lib\3rdParty\GTK+\include\gio-win32-2.0;$(SolutionDir)\lib\3rdParty\GTK+\include\gdk-pixbuf-2.0;$(SolutionDir)\lib\3rdParty\GTK+\include\atk-1.0;$(SolutionDir)\lib\3rdParty\freeglut\include;$(SolutionDir)\lib\local\Puppets\include;$(SolutionDir)\lib\local\CLM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gtk-win32-2.0.lib;gdk-win32-2.0.lib;atk-1.0.lib;gdk_pixbuf-2.0.lib;pangowin32-1.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;gthread-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\GTK+\bin;$(SolutionDir)lib\3rdParty\boost\lib;$(SolutionDir)lib\3rdParty\boost\boost;$(SolutionDir)lib\3rdParty\boost;$(SolutionDir)lib\3rdParty\GTK+\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\freeglut\freeglut.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\GTK+\bin" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)videos\default.wmv" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\lib\3rdParty\boost\lib;$(SolutionDir)\lib\3rdParty\boost\boost;$(SolutionDir)\lib\3rdParty\boost;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0;$(SolutionDir)\lib\3rdParty\GTK+\bin;$(SolutionDir)\lib\3rdParty\GTK+;$(SolutionDir)\lib\3rdParty\GTK+\include\glib-2.0;$(SolutionDir)\lib\3rdParty\GTK+\lib\glib-2.0\include;$(SolutionDir)\lib\3rdParty\GTK+\include\cairo;$(SolutionDir)\lib\3rdParty\GTK+\include\pango-1.0;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0\gtk;$(SolutionDir)\lib\3rdParty\GTK+\include\gtk-2.0\gdk;$(SolutionDir)\lib\3rdParty\GTK+\include\gail-1.0;$(SolutionDir)\lib\3rdParty\GTK+\include\freetype2;$(SolutionDir)\lib\3rdParty\GTK+\include\fontconfig;$(SolutionDir)\lib\3rdParty\GTK+\lib\gtk-2.0\include;$(SolutionDir)\lib\3rdParty\GTK+\include\gio-win32-2.0;$(SolutionDir)\lib\3rdParty\GTK+\include\gdk-pixbuf-2.0;$(SolutionDir)\lib\3rdParty\GTK+\include\atk-1.0;$(SolutionDir)\lib\3rdParty\freeglut\include;$(SolutionDir)\lib\local\Puppets\include;$(SolutionDir)\lib\local\CLM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gtk-win32-2.0.lib;gdk-win32-2.0.lib;atk-1.0.lib;gdk_pixbuf-2.0.lib;pangowin32-1.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;gthread-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\GTK+\bin;$(SolutionDir)lib\3rdParty\boost\lib;$(SolutionDir)lib\3rdParty\boost\boost;$(SolutionDir)lib\3rdParty\boost;$(SolutionDir)lib\3rdParty\OpenCV\lib\Release;$(SolutionDir)lib\3rdParty\GTK+\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
+    </Link>
+    <PostBuildEvent />
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\freeglut\freeglut.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\GTK+\bin" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)videos\default.wmv" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\local\CLM\CLM.vcxproj">
+      <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\lib\local\Puppets\Puppets.vcxproj">
+      <Project>{ff1e8d3e-467c-47ac-b586-a3cb462003cf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleCLM\SimpleCLM.vcxproj">
+      <Project>{34032cf2-1b99-4a25-9050-e9c13dd4cd0a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SimplePuppets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SimplePuppets.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

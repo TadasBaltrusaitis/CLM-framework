@@ -1,0 +1,15 @@
+prefix=/devel/target/c673a9dc11d42d4056e9c3eb34cbc5f6
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+target=win32
+
+gtk_binary_version=2.10.0
+gtk_host=i686-pc-mingw32
+
+Name: GTK+
+Description: GTK+ Graphical UI Library (${target} target)
+Version: 2.24.10
+Requires: gdk-${target}-2.0 atk cairo gdk-pixbuf-2.0 gio-2.0
+Libs: -L${libdir} -lgtk-${target}-2.0 
+Cflags: -I${includedir}/gtk-2.0 -mms-bitfields

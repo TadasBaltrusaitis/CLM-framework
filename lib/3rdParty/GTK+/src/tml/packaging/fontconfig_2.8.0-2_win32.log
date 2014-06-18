@@ -1,0 +1,999 @@
++++ latest --arch=win32 expat
+++ EXPAT=expat-2.0.1-1
++++ latest --arch=win32 freetype
+++ FREETYPE=freetype-2.3.11-1
+++ sed -e 's/need_relink=yes/need_relink=no # no way --tml/'
+++ mv ltmain.temp ltmain.sh
+++ patch -p0
+patching file src/Makefile.in
+Hunk #1 succeeded at 688 (offset 68 lines).
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mthreads'
+++ LDFLAGS=-Wl,--enable-auto-image-base
+++ CFLAGS=-O2
+++ ./configure --with-expat=/devel/dist/win32/expat-2.0.1-1 --with-freetype-config=/devel/dist/win32/freetype-2.3.11-1/bin/freetype-config --prefix=c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4 --with-confdir=c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts --disable-static
+checking for a BSD-compatible install... /opt/local/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking for gcc... gcc -mthreads
+checking for C compiler default output file name... a.exe
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... .exe
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mthreads accepts -g... yes
+checking for gcc -mthreads option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mthreads... gcc3
+checking for a BSD-compatible install... /opt/local/bin/install -c
+checking whether ln -s works... yes
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for as... as
+checking for dlltool... dlltool
+checking for objdump... objdump
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mthreads... c:/opt/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/opt/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /opt/mingw/bin/nm
+checking the name lister (/opt/mingw/bin/nm) interface... BSD nm
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for c:/opt/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... (cached) objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /opt/mingw/bin/nm output from gcc -mthreads object... ok
+checking how to run the C preprocessor... gcc -mthreads -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... no
+checking for objdir... .libs
+checking if gcc -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mthreads option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mthreads PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mthreads static flag -static works... yes
+checking if gcc -mthreads supports -c -o file.o... yes
+checking if gcc -mthreads supports -c -o file.o... (cached) yes
+checking whether the gcc -mthreads linker (c:/opt/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for bash... /bin/bash
+checking if dolt supports this host... no, falling back to libtool
+checking whether make sets $(MAKE)... (cached) yes
+checking for lib.exe... yes
+checking for a C compiler for build tools... gcc -mthreads
+checking for suffix of executable build tools... .exe
+checking for dirent.h that defines DIR... yes
+checking for library containing opendir... none required
+checking for ANSI C header files... (cached) yes
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking for pid_t... yes
+checking for vprintf... yes
+checking for _doprnt... no
+checking for stdlib.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for getpagesize... yes
+checking for working mmap... no
+checking for geteuid... no
+checking for getuid... no
+checking for link... no
+checking for memmove... yes
+checking for memset... yes
+checking for mkstemp... no
+checking for strchr... yes
+checking for strrchr... yes
+checking for strtol... yes
+checking for getopt... yes
+checking for getopt_long... yes
+checking for sysconf... no
+checking for ftruncate... yes
+checking for chsize... yes
+checking for rand... yes
+checking for random... no
+checking for lrand48... no
+checking for a usable iconv... no
+checking for FT_Get_Next_Char... yes
+checking for FT_Get_BDF_Property... yes
+checking for FT_Get_PS_Font_Info... yes
+checking for FT_Has_PS_Glyph_Names... yes
+checking for FT_Get_X11_Font_Format... yes
+checking for FT_Select_Size... yes
+checking for FT_Bitmap_Size.y_ppem... yes
+checking expat.h usability... yes
+checking expat.h presence... yes
+checking for expat.h... yes
+checking for XML_SetDoctypeDeclHandler... yes
+checking for pkg-config... /opt/misc/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for docbook2html... no
+DOCMAN3 FcAtomicCreate.3 FcAtomicLock.3 FcAtomicNewFile.3 FcAtomicOrigFile.3 FcAtomicReplaceOrig.3 FcAtomicDeleteNew.3 FcAtomicUnlock.3 FcAtomicDestroy.3 FcBlanksCreate.3 FcBlanksDestroy.3 FcBlanksAdd.3 FcBlanksIsMember.3 FcCacheDir.3 FcCacheCopySet.3 FcCacheSubdir.3 FcCacheNumSubdir.3 FcCacheNumFont.3 FcCharSetCreate.3 FcCharSetDestroy.3 FcCharSetAddChar.3 FcCharSetCopy.3 FcCharSetEqual.3 FcCharSetIntersect.3 FcCharSetUnion.3 FcCharSetSubtract.3 FcCharSetMerge.3 FcCharSetHasChar.3 FcCharSetCount.3 FcCharSetIntersectCount.3 FcCharSetSubtractCount.3 FcCharSetIsSubset.3 FcCharSetFirstPage.3 FcCharSetNextPage.3 FcCharSetCoverage.3 FcCharSetNew.3 FcConfigCreate.3 FcConfigReference.3 FcConfigDestroy.3 FcConfigSetCurrent.3 FcConfigGetCurrent.3 FcConfigUptoDate.3 FcConfigHome.3 FcConfigEnableHome.3 FcConfigBuildFonts.3 FcConfigGetConfigDirs.3 FcConfigGetFontDirs.3 FcConfigGetConfigFiles.3 FcConfigGetCache.3 FcConfigGetCacheDirs.3 FcConfigGetFonts.3 FcConfigGetBlanks.3 FcConfigGetRescanInterval.3 FcConfigSetRescanInterval.3 FcConfigAppFontAddFile.3 FcConfigAppFontAddDir.3 FcConfigAppFontClear.3 FcConfigSubstituteWithPat.3 FcConfigSubstitute.3 FcFontMatch.3 FcFontSort.3 FcFontRenderPrepare.3 FcFontList.3 FcConfigFilename.3 FcConfigParseAndLoad.3 FcNameRegisterConstants.3 FcNameUnregisterConstants.3 FcNameGetConstant.3 FcNameConstant.3 FcDirCacheUnlink.3 FcDirCacheValid.3 FcDirCacheLoad.3 FcDirCacheRead.3 FcDirCacheLoadFile.3 FcDirCacheUnload.3 FcFileScan.3 FcFileIsDir.3 FcDirScan.3 FcDirSave.3 FcFontSetCreate.3 FcFontSetDestroy.3 FcFontSetAdd.3 FcFontSetList.3 FcFontSetMatch.3 FcFontSetPrint.3 FcFontSetSort.3 FcFontSetSortDestroy.3 FcPatternFormat.3 FcFreeTypeCharIndex.3 FcFreeTypeCharSet.3 FcFreeTypeCharSetAndSpacing.3 FcFreeTypeQuery.3 FcFreeTypeQueryFace.3 FcInitLoadConfig.3 FcInitLoadConfigAndFonts.3 FcInit.3 FcFini.3 FcGetVersion.3 FcInitReinitialize.3 FcInitBringUptoDate.3 FcLangSetCreate.3 FcLangSetDestroy.3 FcLangSetCopy.3 FcLangSetAdd.3 FcLangSetCompare.3 FcLangSetContains.3 FcLangSetEqual.3 FcLangSetHash.3 FcLangSetHasLang.3 FcLangSetGetLangs.3 FcGetLangs.3 FcLangGetCharSet.3 FcMatrixInit.3 FcMatrixCopy.3 FcMatrixEqual.3 FcMatrixMultiply.3 FcMatrixRotate.3 FcMatrixScale.3 FcMatrixShear.3 FcObjectSetCreate.3 FcObjectSetAdd.3 FcObjectSetDestroy.3 FcObjectSetBuild.3 FcNameRegisterObjectTypes.3 FcNameUnregisterObjectTypes.3 FcNameGetObjectType.3 FcPatternCreate.3 FcPatternDuplicate.3 FcPatternReference.3 FcPatternDestroy.3 FcPatternEqual.3 FcPatternEqualSubset.3 FcPatternFilter.3 FcPatternHash.3 FcPatternAdd.3 FcPatternAddWeak.3 FcPatternAdd-Type.3 FcPatternGet.3 FcPatternGet-Type.3 FcPatternBuild.3 FcPatternDel.3 FcPatternRemove.3 FcPatternPrint.3 FcDefaultSubstitute.3 FcNameParse.3 FcNameUnparse.3 FcUtf8ToUcs4.3 FcUcs4ToUtf8.3 FcUtf8Len.3 FcUtf16ToUcs4.3 FcUtf16Len.3 FcIsLower.3 FcIsUpper.3 FcToLower.3 FcStrCopy.3 FcStrDowncase.3 FcStrCopyFilename.3 FcStrCmp.3 FcStrCmpIgnoreCase.3 FcStrStr.3 FcStrStrIgnoreCase.3 FcStrPlus.3 FcStrFree.3 FcStrDirname.3 FcStrBasename.3 FcStrSetCreate.3 FcStrSetMember.3 FcStrSetEqual.3 FcStrSetAdd.3 FcStrSetAddFilename.3 FcStrSetDel.3 FcStrSetDestroy.3 FcStrListCreate.3 FcStrListNext.3 FcStrListDone.3 FcValueDestroy.3 FcValueSave.3 FcValuePrint.3 FcValueEqual.3
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating fontconfig/Makefile
+config.status: creating fc-lang/Makefile
+config.status: creating fc-glyphname/Makefile
+config.status: creating fc-case/Makefile
+config.status: creating fc-arch/Makefile
+config.status: creating src/Makefile
+config.status: creating conf.d/Makefile
+config.status: creating fc-cache/Makefile
+config.status: creating fc-cat/Makefile
+config.status: creating fc-list/Makefile
+config.status: creating fc-match/Makefile
+config.status: creating fc-query/Makefile
+config.status: creating fc-scan/Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/version.sgml
+config.status: creating test/Makefile
+config.status: creating fontconfig.spec
+config.status: creating fontconfig.pc
+config.status: creating fontconfig-zip
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+++ PATH=/devel/dist/win32/expat-2.0.1-1/bin:/opt/MSVS6/VC98/Bin:/opt/MSVS6/Common/MSDev98/Bin:/opt/MSVS6/Common/Tools:/devel/target/stable/bin:/opt/misc/bin:/opt/gnu/bin:/opt/pthread/bin:/opt/mingw/bin:/opt/svn/bin:/opt/local/bin:/opt/ikvm/bin:/opt/ant/bin:/c/Windows/Microsoft.NET/Framework/v3.5:/c/Windows/Microsoft.NET/Framework/v2.0.50727:/opt/xemacs/XEmacs-21.4.22/i586-pc-win32:/opt/sysinternals/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/Windows/system32:/c/Windows:/c/Windows/System32/Wbem:/c/Windows/System32/WindowsPowerShell/v1.0/:.
+++ make install
+Making install in fontconfig
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fontconfig'
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fontconfig'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/include/fontconfig" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/include/fontconfig"
+ /opt/local/bin/install -c -m 644 fontconfig.h fcfreetype.h fcprivate.h 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/include/fontconfig'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fontconfig'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fontconfig'
+Making install in fc-case
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+touch fcalias.h fcaliastail.h
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+  CC     fc-case.o
+  CCLD   fc-case.exe
+  GEN    fccase.h
+make[3]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-case'
+Making install in fc-lang
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+touch fcalias.h fcaliastail.h
+  CC     fc-lang.o
+In file included from fc-lang.c:26:
+../src/fcstr.c: In function 'FcStrCanonFilename':
+../src/fcstr.c:1002: warning: pointer targets in passing argument 1 of 'GetFullPathNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1468: note: expected 'LPCSTR' but argument is of type 'const FcChar8 *'
+../src/fcstr.c:1002: warning: pointer targets in passing argument 3 of 'GetFullPathNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1468: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+../src/fcstr.c:1007: warning: pointer targets in passing argument 1 of 'FcConvertDosPath' differ in signedness
+../src/fcstr.c:963: note: expected 'char *' but argument is of type 'FcChar8 *'
+fc-lang.c: In function 'scan':
+fc-lang.c:152: warning: assignment discards qualifiers from pointer target type
+fc-lang.c:180: warning: assignment discards qualifiers from pointer target type
+fc-lang.c: In function 'compare':
+fc-lang.c:235: warning: pointer targets in passing argument 1 of 'FcStrCmpIgnoreCase' differ in signedness
+../src/fcstr.c:212: note: expected 'const FcChar8 *' but argument is of type 'char * const'
+fc-lang.c:235: warning: pointer targets in passing argument 2 of 'FcStrCmpIgnoreCase' differ in signedness
+../src/fcstr.c:212: note: expected 'const FcChar8 *' but argument is of type 'char * const'
+  CCLD   fc-lang.exe
+  GEN    fclang.h
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+make[3]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-lang'
+Making install in fc-glyphname
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+touch fcalias.h fcaliastail.h
+  CC     fc-glyphname.o
+  CCLD   fc-glyphname.exe
+  GEN    fcglyphname.h
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+make[3]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-glyphname'
+Making install in fc-arch
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+touch fcalias.h fcaliastail.h
+  CC     fc-arch.o
+  CCLD   fc-arch.exe
+  GEN    fcarch.h
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+make[3]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-arch'
+Making install in src
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+sh ../src/makealias "../src" fcalias.h fcaliastail.h ../fontconfig/fontconfig.h ../src/fcdeprecate.h ../fontconfig/fcprivate.h
+sh ../src/makealias "../src" fcftalias.h fcftaliastail.h ../fontconfig/fcfreetype.h
+make  install-am
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+  CC     fcatomic.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcatomic.lo -MD -MP -MF .deps/fcatomic.Tpo -c fcatomic.c  -DDLL_EXPORT -DPIC -o .libs/fcatomic.o
+fcatomic.c: In function 'FcAtomicLock':
+fcatomic.c:103: warning: unused variable 'f'
+fcatomic.c:102: warning: unused variable 'fd'
+fcatomic.c: In function 'FcAtomicReplaceOrig':
+fcatomic.c:181: warning: pointer targets in passing argument 1 of 'unlink' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/io.h:306: note: expected 'const char *' but argument is of type 'FcChar8 *'
+  CC     fcblanks.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcblanks.lo -MD -MP -MF .deps/fcblanks.Tpo -c fcblanks.c  -DDLL_EXPORT -DPIC -o .libs/fcblanks.o
+  CC     fccache.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fccache.lo -MD -MP -MF .deps/fccache.Tpo -c fccache.c  -DDLL_EXPORT -DPIC -o .libs/fccache.o
+fccache.c: In function 'FcStat':
+fccache.c:110: warning: pointer targets in passing argument 1 of 'FcStringHash' differ in signedness
+fcint.h:953: note: expected 'const FcChar8 *' but argument is of type 'char *'
+fccache.c: In function 'FcDirCacheOpenFile':
+fccache.c:202: warning: pointer targets in passing argument 1 of 'FcStat' differ in signedness
+fccache.c:89: note: expected 'const char *' but argument is of type 'const FcChar8 *'
+fccache.c: In function 'FcDirCacheWrite':
+fccache.c:943: warning: pointer targets in passing argument 1 of 'FcStat' differ in signedness
+fccache.c:89: note: expected 'const char *' but argument is of type 'FcChar8 *'
+  CC     fccfg.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fccfg.lo -MD -MP -MF .deps/fccfg.Tpo -c fccfg.c  -DDLL_EXPORT -DPIC -o .libs/fccfg.o
+fccfg.c:1598: warning: no previous prototype for 'DllMain'
+fccfg.c: In function 'DllMain':
+fccfg.c:1607: warning: pointer targets in passing argument 2 of 'GetModuleFileNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1483: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fccfg.c:1615: warning: pointer targets in passing argument 1 of 'strrchr' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:54: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fccfg.c:1615: warning: pointer targets in assignment differ in signedness
+fccfg.c:1619: warning: pointer targets in passing argument 1 of 'strrchr' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:54: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fccfg.c:1619: warning: pointer targets in assignment differ in signedness
+fccfg.c:1620: warning: pointer targets in passing argument 2 of 'FcStrCmpIgnoreCase' differ in signedness
+../fontconfig/fontconfig.h:865: note: expected 'const FcChar8 *' but argument is of type 'char *'
+fccfg.c:1621: warning: pointer targets in passing argument 2 of 'FcStrCmpIgnoreCase' differ in signedness
+../fontconfig/fontconfig.h:865: note: expected 'const FcChar8 *' but argument is of type 'char *'
+fccfg.c:1623: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fccfg.c: In function 'FcConfigGetPath':
+fccfg.c:1728: warning: pointer targets in passing argument 2 of 'GetModuleFileNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1483: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fccfg.c:1730: warning: pointer targets in passing argument 1 of 'strrchr' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:54: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fccfg.c:1732: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+  CC     fccharset.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fccharset.lo -MD -MP -MF .deps/fccharset.Tpo -c fccharset.c  -DDLL_EXPORT -DPIC -o .libs/fccharset.o
+  CC     fcdbg.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcdbg.lo -MD -MP -MF .deps/fcdbg.Tpo -c fcdbg.c  -DDLL_EXPORT -DPIC -o .libs/fcdbg.o
+  CC     fcdefault.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcdefault.lo -MD -MP -MF .deps/fcdefault.Tpo -c fcdefault.c  -DDLL_EXPORT -DPIC -o .libs/fcdefault.o
+  CC     fcdir.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcdir.lo -MD -MP -MF .deps/fcdir.Tpo -c fcdir.c  -DDLL_EXPORT -DPIC -o .libs/fcdir.o
+  CC     fcformat.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcformat.lo -MD -MP -MF .deps/fcformat.Tpo -c fcformat.c  -DDLL_EXPORT -DPIC -o .libs/fcformat.o
+  CC     fcfreetype.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcfreetype.lo -MD -MP -MF .deps/fcfreetype.Tpo -c fcfreetype.c  -DDLL_EXPORT -DPIC -o .libs/fcfreetype.o
+  CC     fcfs.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcfs.lo -MD -MP -MF .deps/fcfs.Tpo -c fcfs.c  -DDLL_EXPORT -DPIC -o .libs/fcfs.o
+  CC     fcinit.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcinit.lo -MD -MP -MF .deps/fcinit.Tpo -c fcinit.c  -DDLL_EXPORT -DPIC -o .libs/fcinit.o
+  CC     fclang.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fclang.lo -MD -MP -MF .deps/fclang.Tpo -c fclang.c  -DDLL_EXPORT -DPIC -o .libs/fclang.o
+  CC     fclist.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fclist.lo -MD -MP -MF .deps/fclist.Tpo -c fclist.c  -DDLL_EXPORT -DPIC -o .libs/fclist.o
+  CC     fcmatch.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcmatch.lo -MD -MP -MF .deps/fcmatch.Tpo -c fcmatch.c  -DDLL_EXPORT -DPIC -o .libs/fcmatch.o
+  CC     fcmatrix.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcmatrix.lo -MD -MP -MF .deps/fcmatrix.Tpo -c fcmatrix.c  -DDLL_EXPORT -DPIC -o .libs/fcmatrix.o
+  CC     fcname.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcname.lo -MD -MP -MF .deps/fcname.Tpo -c fcname.c  -DDLL_EXPORT -DPIC -o .libs/fcname.o
+  CC     fcpat.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcpat.lo -MD -MP -MF .deps/fcpat.Tpo -c fcpat.c  -DDLL_EXPORT -DPIC -o .libs/fcpat.o
+  CC     fcserialize.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcserialize.lo -MD -MP -MF .deps/fcserialize.Tpo -c fcserialize.c  -DDLL_EXPORT -DPIC -o .libs/fcserialize.o
+  CC     fcstr.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcstr.lo -MD -MP -MF .deps/fcstr.Tpo -c fcstr.c  -DDLL_EXPORT -DPIC -o .libs/fcstr.o
+fcstr.c: In function 'FcStrCanonFilename':
+fcstr.c:1002: warning: pointer targets in passing argument 1 of 'GetFullPathNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1468: note: expected 'LPCSTR' but argument is of type 'const FcChar8 *'
+fcstr.c:1002: warning: pointer targets in passing argument 3 of 'GetFullPathNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1468: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fcstr.c:1007: warning: pointer targets in passing argument 1 of 'FcConvertDosPath' differ in signedness
+fcstr.c:963: note: expected 'char *' but argument is of type 'FcChar8 *'
+  CC     fcxml.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT fcxml.lo -MD -MP -MF .deps/fcxml.Tpo -c fcxml.c  -DDLL_EXPORT -DPIC -o .libs/fcxml.o
+fcxml.c: In function 'FcExprCreateString':
+fcxml.c:107: warning: assignment discards qualifiers from pointer target type
+fcxml.c: In function 'FcExprCreateConst':
+fcxml.c:155: warning: assignment discards qualifiers from pointer target type
+fcxml.c: In function 'FcEndElement':
+fcxml.c:2042: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:43: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2046: warning: pointer targets in passing argument 2 of 'GetModuleFileNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1483: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fcxml.c:2057: warning: pointer targets in assignment differ in signedness
+fcxml.c:2059: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fcxml.c:2061: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:43: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2065: warning: pointer targets in passing argument 2 of 'GetModuleFileNameA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1483: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fcxml.c:2070: warning: pointer targets in assignment differ in signedness
+fcxml.c:2072: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fcxml.c:2074: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:43: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2079: warning: pointer targets in passing argument 1 of 'GetSystemWindowsDirectoryA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1573: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fcxml.c:2088: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:49: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2089: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fcxml.c:2090: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fcxml.c:2110: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:43: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2121: warning: pointer targets in passing argument 2 of 'GetTempPathA' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/winbase.h:1585: note: expected 'LPSTR' but argument is of type 'FcChar8 *'
+fcxml.c:2128: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:49: note: expected 'const char *' but argument is of type 'FcChar8 *'
+fcxml.c:2129: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+fcxml.c:2130: warning: pointer targets in passing argument 1 of 'strcat' differ in signedness
+c:\opt\mingw\bin\../lib/gcc/mingw32/4.4.0/../../../../include/string.h:41: note: expected 'char *' but argument is of type 'FcChar8 *'
+  CC     ftglue.lo
+libtool: compile:  gcc -mthreads -DHAVE_CONFIG_H -I. -I.. -I.. -I../src -I/devel/dist/win32/freetype-2.3.11-1/bin/../include/freetype2 -I/devel/dist/win32/freetype-2.3.11-1/bin/../include -I/devel/dist/win32/expat-2.0.1-1/include -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -fno-strict-aliasing -DFC_CACHEDIR=\"WINDOWSTEMPDIR_FONTCONFIG_CACHE\" -DFONTCONFIG_PATH=\"c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts\" -O2 -MT ftglue.lo -MD -MP -MF .deps/ftglue.Tpo -c ftglue.c  -DDLL_EXPORT -DPIC -o .libs/ftglue.o
+echo Generating fontconfig.def
+Generating fontconfig.def
+(echo EXPORTS; \
+	(cat ../fontconfig/fontconfig.h ../src/fcdeprecate.h ../fontconfig/fcprivate.h ../fontconfig/fcfreetype.h || echo 'FcERROR ()' ) | \
+ 	grep '^Fc[^ ]* *(' | sed -e 's/ *(.*$//' -e 's/^/	/' | \
+	sort; \
+	echo LIBRARY libfontconfig-1.dll; \
+	echo VERSION 5.4) >fontconfig.def
+  CCLD   libfontconfig.la
+Creating library file: .libs/libfontconfig.dll.a
+lib -name:libfontconfig-1.dll -def:fontconfig.def -out:fontconfig.lib
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+LIB : warning LNK4068: /MACHINE not specified; defaulting to IX86
+   Creating library fontconfig.lib and object fontconfig.exp
+make[3]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib"
+ /bin/sh ../libtool   --mode=install /opt/local/bin/install -c   libfontconfig.la 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib'
+libtool: install: /opt/local/bin/install -c .libs/libfontconfig.dll.a c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/libfontconfig.dll.a
+libtool: install: base_file=`basename libfontconfig.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libfontconfig.la'i; echo libfontconfig-1.dll'`
+libtool: install:  dldir=c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/`dirname ../bin/libfontconfig-1.dll`
+libtool: install:  test -d c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/../bin || mkdir -p c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/../bin
+libtool: install:  /opt/local/bin/install -c .libs/libfontconfig-1.dll c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/../bin/libfontconfig-1.dll
+libtool: install:  chmod a+x c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/../bin/libfontconfig-1.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/../bin/libfontconfig-1.dll' || exit 0; fi
+libtool: install: /opt/local/bin/install -c .libs/libfontconfig.lai c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/libfontconfig.la
+----------------------------------------------------------------------
+Libraries have been installed in:
+   c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-LLIBDIR' linker flag
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+/opt/local/bin/install -c fontconfig.lib c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib
+/bin/mkdir -p c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib
+/opt/local/bin/install -c .libs/libfontconfig.dll.a c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib
+/opt/local/bin/install -c fontconfig.def c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/fontconfig.def
+make[3]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/src'
+Making install in fc-cache
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cache'
+  CC     fc-cache.o
+  CCLD   fc-cache.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cache'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-cache.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-cache.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-cache.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-cache.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cache'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cache'
+Making install in fc-cat
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cat'
+  CC     fc-cat.o
+  CCLD   fc-cat.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cat'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-cat.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-cat.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-cat.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-cat.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cat'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-cat'
+Making install in fc-list
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-list'
+  CC     fc-list.o
+  CCLD   fc-list.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-list'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-list.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-list.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-list.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-list.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-list'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-list'
+Making install in fc-match
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-match'
+  CC     fc-match.o
+  CCLD   fc-match.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-match'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-match.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-match.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-match.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-match.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-match'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-match'
+Making install in fc-query
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-query'
+  CC     fc-query.o
+  CCLD   fc-query.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-query'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-query.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-query.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-query.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-query.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-query'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-query'
+Making install in fc-scan
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-scan'
+  CC     fc-scan.o
+  CCLD   fc-scan.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-scan'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin"
+  /bin/sh ../libtool   --mode=install /opt/local/bin/install -c fc-scan.exe 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin'
+libtool: install: /opt/local/bin/install -c .libs/fc-scan.exe c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-scan.exe
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1"
+ /opt/local/bin/install -c -m 644 fc-scan.1 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man1'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-scan'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/fc-scan'
+Making install in conf.d
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/conf.d'
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/conf.d'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.avail" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.avail"
+ /opt/local/bin/install -c -m 644 10-autohint.conf 10-no-sub-pixel.conf 10-sub-pixel-bgr.conf 10-sub-pixel-rgb.conf 10-sub-pixel-vbgr.conf 10-sub-pixel-vrgb.conf 10-unhinted.conf 20-fix-globaladvance.conf 20-unhint-small-vera.conf 25-unhint-nonlatin.conf 30-urw-aliases.conf 30-metric-aliases.conf 40-nonlatin.conf 45-latin.conf 49-sansserif.conf 50-user.conf 51-local.conf 60-latin.conf 65-fonts-persian.conf 65-khmer.conf 65-nonlatin.conf 69-unifont.conf 70-no-bitmaps.conf 70-yes-bitmaps.conf 80-delicious.conf 90-synthetic.conf 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.avail'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.d" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.d"
+ /opt/local/bin/install -c -m 644 README 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.d'
+mkdir -p c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.d
+cd c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/conf.d
+rm -f 20-fix-globaladvance.conf; ln -s ../conf.avail/20-fix-globaladvance.conf .
+rm -f 20-unhint-small-vera.conf; ln -s ../conf.avail/20-unhint-small-vera.conf .
+rm -f 30-urw-aliases.conf; ln -s ../conf.avail/30-urw-aliases.conf .
+rm -f 30-metric-aliases.conf; ln -s ../conf.avail/30-metric-aliases.conf .
+rm -f 40-nonlatin.conf; ln -s ../conf.avail/40-nonlatin.conf .
+rm -f 45-latin.conf; ln -s ../conf.avail/45-latin.conf .
+rm -f 49-sansserif.conf; ln -s ../conf.avail/49-sansserif.conf .
+rm -f 50-user.conf; ln -s ../conf.avail/50-user.conf .
+rm -f 51-local.conf; ln -s ../conf.avail/51-local.conf .
+rm -f 60-latin.conf; ln -s ../conf.avail/60-latin.conf .
+rm -f 65-fonts-persian.conf; ln -s ../conf.avail/65-fonts-persian.conf .
+rm -f 65-nonlatin.conf; ln -s ../conf.avail/65-nonlatin.conf .
+rm -f 69-unifont.conf; ln -s ../conf.avail/69-unifont.conf .
+rm -f 80-delicious.conf; ln -s ../conf.avail/80-delicious.conf .
+rm -f 90-synthetic.conf; ln -s ../conf.avail/90-synthetic.conf .
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/conf.d'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/conf.d'
+Making install in doc
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/doc'
+  CC     edit-sgml.o
+  CCLD   edit-sgml.exe
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/doc'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig"
+ /opt/local/bin/install -c -m 644 fontconfig-user.txt fontconfig-devel.txt fontconfig-user.pdf fontconfig-devel.pdf fontconfig-user.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel"
+ /opt/local/bin/install -c -m 644 ./fontconfig-devel/fcatomiccreate.html ./fontconfig-devel/fcatomicdeletenew.html ./fontconfig-devel/fcatomicdestroy.html ./fontconfig-devel/fcatomiclock.html ./fontconfig-devel/fcatomicnewfile.html ./fontconfig-devel/fcatomicorigfile.html ./fontconfig-devel/fcatomicreplaceorig.html ./fontconfig-devel/fcatomicunlock.html ./fontconfig-devel/fcblanksadd.html ./fontconfig-devel/fcblankscreate.html ./fontconfig-devel/fcblanksdestroy.html ./fontconfig-devel/fcblanksismember.html ./fontconfig-devel/fccachecopyset.html ./fontconfig-devel/fccachedir.html ./fontconfig-devel/fccachenumfont.html ./fontconfig-devel/fccachenumsubdir.html ./fontconfig-devel/fccachesubdir.html ./fontconfig-devel/fccharsetaddchar.html ./fontconfig-devel/fccharsetcopy.html ./fontconfig-devel/fccharsetcount.html ./fontconfig-devel/fccharsetcoverage.html ./fontconfig-devel/fccharsetcreate.html ./fontconfig-devel/fccharsetdestroy.html ./fontconfig-devel/fccharsetequal.html ./fontconfig-devel/fccharsetfirstpage.html ./fontconfig-devel/fccharsethaschar.html ./fontconfig-devel/fccharsetintersect.html ./fontconfig-devel/fccharsetintersectcount.html ./fontconfig-devel/fccharsetissubset.html ./fontconfig-devel/fccharsetmerge.html ./fontconfig-devel/fccharsetnew.html ./fontconfig-devel/fccharsetnextpage.html ./fontconfig-devel/fccharsetsubtract.html ./fontconfig-devel/fccharsetsubtractcount.html ./fontconfig-devel/fccharsetunion.html ./fontconfig-devel/fcconfigappfontadddir.html ./fontconfig-devel/fcconfigappfontaddfile.html ./fontconfig-devel/fcconfigappfontclear.html ./fontconfig-devel/fcconfigbuildfonts.html ./fontconfig-devel/fcconfigcreate.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel'
+ /opt/local/bin/install -c -m 644 ./fontconfig-devel/fcconfigdestroy.html ./fontconfig-devel/fcconfigenablehome.html ./fontconfig-devel/fcconfigfilename.html ./fontconfig-devel/fcconfiggetblanks.html ./fontconfig-devel/fcconfiggetcache.html ./fontconfig-devel/fcconfiggetcachedirs.html ./fontconfig-devel/fcconfiggetconfigdirs.html ./fontconfig-devel/fcconfiggetconfigfiles.html ./fontconfig-devel/fcconfiggetcurrent.html ./fontconfig-devel/fcconfiggetfontdirs.html ./fontconfig-devel/fcconfiggetfonts.html ./fontconfig-devel/fcconfiggetrescaninterval.html ./fontconfig-devel/fcconfighome.html ./fontconfig-devel/fcconfigparseandload.html ./fontconfig-devel/fcconfigreference.html ./fontconfig-devel/fcconfigsetcurrent.html ./fontconfig-devel/fcconfigsetrescaninterval.html ./fontconfig-devel/fcconfigsubstitute.html ./fontconfig-devel/fcconfigsubstitutewithpat.html ./fontconfig-devel/fcconfiguptodate.html ./fontconfig-devel/fcdefaultsubstitute.html ./fontconfig-devel/fcdircacheload.html ./fontconfig-devel/fcdircacheloadfile.html ./fontconfig-devel/fcdircacheread.html ./fontconfig-devel/fcdircacheunlink.html ./fontconfig-devel/fcdircacheunload.html ./fontconfig-devel/fcdircachevalid.html ./fontconfig-devel/fcdirsave.html ./fontconfig-devel/fcdirscan.html ./fontconfig-devel/fcfileisdir.html ./fontconfig-devel/fcfilescan.html ./fontconfig-devel/fcfini.html ./fontconfig-devel/fcfontlist.html ./fontconfig-devel/fcfontmatch.html ./fontconfig-devel/fcfontrenderprepare.html ./fontconfig-devel/fcfontsetadd.html ./fontconfig-devel/fcfontsetcreate.html ./fontconfig-devel/fcfontsetdestroy.html ./fontconfig-devel/fcfontsetlist.html ./fontconfig-devel/fcfontsetmatch.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel'
+ /opt/local/bin/install -c -m 644 ./fontconfig-devel/fcfontsetprint.html ./fontconfig-devel/fcfontsetsort.html ./fontconfig-devel/fcfontsetsortdestroy.html ./fontconfig-devel/fcfontsort.html ./fontconfig-devel/fcfreetypecharindex.html ./fontconfig-devel/fcfreetypecharset.html ./fontconfig-devel/fcfreetypecharsetandspacing.html ./fontconfig-devel/fcfreetypequery.html ./fontconfig-devel/fcfreetypequeryface.html ./fontconfig-devel/fcgetlangs.html ./fontconfig-devel/fcgetversion.html ./fontconfig-devel/fcinit.html ./fontconfig-devel/fcinitbringuptodate.html ./fontconfig-devel/fcinitloadconfig.html ./fontconfig-devel/fcinitloadconfigandfonts.html ./fontconfig-devel/fcinitreinitialize.html ./fontconfig-devel/fcislower.html ./fontconfig-devel/fcisupper.html ./fontconfig-devel/fclanggetcharset.html ./fontconfig-devel/fclangsetadd.html ./fontconfig-devel/fclangsetcompare.html ./fontconfig-devel/fclangsetcontains.html ./fontconfig-devel/fclangsetcopy.html ./fontconfig-devel/fclangsetcreate.html ./fontconfig-devel/fclangsetdestroy.html ./fontconfig-devel/fclangsetequal.html ./fontconfig-devel/fclangsetgetlangs.html ./fontconfig-devel/fclangsethash.html ./fontconfig-devel/fclangsethaslang.html ./fontconfig-devel/fcmatrixcopy.html ./fontconfig-devel/fcmatrixequal.html ./fontconfig-devel/fcmatrixinit.html ./fontconfig-devel/fcmatrixmultiply.html ./fontconfig-devel/fcmatrixrotate.html ./fontconfig-devel/fcmatrixscale.html ./fontconfig-devel/fcmatrixshear.html ./fontconfig-devel/fcnameconstant.html ./fontconfig-devel/fcnamegetconstant.html ./fontconfig-devel/fcnamegetobjecttype.html ./fontconfig-devel/fcnameparse.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel'
+ /opt/local/bin/install -c -m 644 ./fontconfig-devel/fcnameregisterconstants.html ./fontconfig-devel/fcnameregisterobjecttypes.html ./fontconfig-devel/fcnameunparse.html ./fontconfig-devel/fcnameunregisterconstants.html ./fontconfig-devel/fcnameunregisterobjecttypes.html ./fontconfig-devel/fcobjectsetadd.html ./fontconfig-devel/fcobjectsetbuild.html ./fontconfig-devel/fcobjectsetcreate.html ./fontconfig-devel/fcobjectsetdestroy.html ./fontconfig-devel/fcpatternadd-type.html ./fontconfig-devel/fcpatternadd.html ./fontconfig-devel/fcpatternaddweak.html ./fontconfig-devel/fcpatternbuild.html ./fontconfig-devel/fcpatterncreate.html ./fontconfig-devel/fcpatterndel.html ./fontconfig-devel/fcpatterndestroy.html ./fontconfig-devel/fcpatternduplicate.html ./fontconfig-devel/fcpatternequal.html ./fontconfig-devel/fcpatternequalsubset.html ./fontconfig-devel/fcpatternfilter.html ./fontconfig-devel/fcpatternformat.html ./fontconfig-devel/fcpatternget-type.html ./fontconfig-devel/fcpatternget.html ./fontconfig-devel/fcpatternhash.html ./fontconfig-devel/fcpatternprint.html ./fontconfig-devel/fcpatternreference.html ./fontconfig-devel/fcpatternremove.html ./fontconfig-devel/fcstrbasename.html ./fontconfig-devel/fcstrcmp.html ./fontconfig-devel/fcstrcmpignorecase.html ./fontconfig-devel/fcstrcopy.html ./fontconfig-devel/fcstrcopyfilename.html ./fontconfig-devel/fcstrdirname.html ./fontconfig-devel/fcstrdowncase.html ./fontconfig-devel/fcstrfree.html ./fontconfig-devel/fcstrlistcreate.html ./fontconfig-devel/fcstrlistdone.html ./fontconfig-devel/fcstrlistnext.html ./fontconfig-devel/fcstrplus.html ./fontconfig-devel/fcstrsetadd.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel'
+ /opt/local/bin/install -c -m 644 ./fontconfig-devel/fcstrsetaddfilename.html ./fontconfig-devel/fcstrsetcreate.html ./fontconfig-devel/fcstrsetdel.html ./fontconfig-devel/fcstrsetdestroy.html ./fontconfig-devel/fcstrsetequal.html ./fontconfig-devel/fcstrsetmember.html ./fontconfig-devel/fcstrstr.html ./fontconfig-devel/fcstrstrignorecase.html ./fontconfig-devel/fctolower.html ./fontconfig-devel/fcucs4toutf8.html ./fontconfig-devel/fcutf16len.html ./fontconfig-devel/fcutf16toucs4.html ./fontconfig-devel/fcutf8len.html ./fontconfig-devel/fcutf8toucs4.html ./fontconfig-devel/fcvaluedestroy.html ./fontconfig-devel/fcvalueequal.html ./fontconfig-devel/fcvalueprint.html ./fontconfig-devel/fcvaluesave.html ./fontconfig-devel/ln12.html ./fontconfig-devel/t1.html ./fontconfig-devel/x102.html ./fontconfig-devel/x19.html ./fontconfig-devel/x31.html 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/doc/fontconfig/fontconfig-devel'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3"
+ /opt/local/bin/install -c -m 644 FcAtomicCreate.3 FcAtomicLock.3 FcAtomicNewFile.3 FcAtomicOrigFile.3 FcAtomicReplaceOrig.3 FcAtomicDeleteNew.3 FcAtomicUnlock.3 FcAtomicDestroy.3 FcBlanksCreate.3 FcBlanksDestroy.3 FcBlanksAdd.3 FcBlanksIsMember.3 FcCacheDir.3 FcCacheCopySet.3 FcCacheSubdir.3 FcCacheNumSubdir.3 FcCacheNumFont.3 FcCharSetCreate.3 FcCharSetDestroy.3 FcCharSetAddChar.3 FcCharSetCopy.3 FcCharSetEqual.3 FcCharSetIntersect.3 FcCharSetUnion.3 FcCharSetSubtract.3 FcCharSetMerge.3 FcCharSetHasChar.3 FcCharSetCount.3 FcCharSetIntersectCount.3 FcCharSetSubtractCount.3 FcCharSetIsSubset.3 FcCharSetFirstPage.3 FcCharSetNextPage.3 FcCharSetCoverage.3 FcCharSetNew.3 FcConfigCreate.3 FcConfigReference.3 FcConfigDestroy.3 FcConfigSetCurrent.3 FcConfigGetCurrent.3 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3'
+ /opt/local/bin/install -c -m 644 FcConfigUptoDate.3 FcConfigHome.3 FcConfigEnableHome.3 FcConfigBuildFonts.3 FcConfigGetConfigDirs.3 FcConfigGetFontDirs.3 FcConfigGetConfigFiles.3 FcConfigGetCache.3 FcConfigGetCacheDirs.3 FcConfigGetFonts.3 FcConfigGetBlanks.3 FcConfigGetRescanInterval.3 FcConfigSetRescanInterval.3 FcConfigAppFontAddFile.3 FcConfigAppFontAddDir.3 FcConfigAppFontClear.3 FcConfigSubstituteWithPat.3 FcConfigSubstitute.3 FcFontMatch.3 FcFontSort.3 FcFontRenderPrepare.3 FcFontList.3 FcConfigFilename.3 FcConfigParseAndLoad.3 FcNameRegisterConstants.3 FcNameUnregisterConstants.3 FcNameGetConstant.3 FcNameConstant.3 FcDirCacheUnlink.3 FcDirCacheValid.3 FcDirCacheLoad.3 FcDirCacheRead.3 FcDirCacheLoadFile.3 FcDirCacheUnload.3 FcFileScan.3 FcFileIsDir.3 FcDirScan.3 FcDirSave.3 FcFontSetCreate.3 FcFontSetDestroy.3 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3'
+ /opt/local/bin/install -c -m 644 FcFontSetAdd.3 FcFontSetList.3 FcFontSetMatch.3 FcFontSetPrint.3 FcFontSetSort.3 FcFontSetSortDestroy.3 FcPatternFormat.3 FcFreeTypeCharIndex.3 FcFreeTypeCharSet.3 FcFreeTypeCharSetAndSpacing.3 FcFreeTypeQuery.3 FcFreeTypeQueryFace.3 FcInitLoadConfig.3 FcInitLoadConfigAndFonts.3 FcInit.3 FcFini.3 FcGetVersion.3 FcInitReinitialize.3 FcInitBringUptoDate.3 FcLangSetCreate.3 FcLangSetDestroy.3 FcLangSetCopy.3 FcLangSetAdd.3 FcLangSetCompare.3 FcLangSetContains.3 FcLangSetEqual.3 FcLangSetHash.3 FcLangSetHasLang.3 FcLangSetGetLangs.3 FcGetLangs.3 FcLangGetCharSet.3 FcMatrixInit.3 FcMatrixCopy.3 FcMatrixEqual.3 FcMatrixMultiply.3 FcMatrixRotate.3 FcMatrixScale.3 FcMatrixShear.3 FcObjectSetCreate.3 FcObjectSetAdd.3 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3'
+ /opt/local/bin/install -c -m 644 FcObjectSetDestroy.3 FcObjectSetBuild.3 FcNameRegisterObjectTypes.3 FcNameUnregisterObjectTypes.3 FcNameGetObjectType.3 FcPatternCreate.3 FcPatternDuplicate.3 FcPatternReference.3 FcPatternDestroy.3 FcPatternEqual.3 FcPatternEqualSubset.3 FcPatternFilter.3 FcPatternHash.3 FcPatternAdd.3 FcPatternAddWeak.3 FcPatternAdd-Type.3 FcPatternGet.3 FcPatternGet-Type.3 FcPatternBuild.3 FcPatternDel.3 FcPatternRemove.3 FcPatternPrint.3 FcDefaultSubstitute.3 FcNameParse.3 FcNameUnparse.3 FcUtf8ToUcs4.3 FcUcs4ToUtf8.3 FcUtf8Len.3 FcUtf16ToUcs4.3 FcUtf16Len.3 FcIsLower.3 FcIsUpper.3 FcToLower.3 FcStrCopy.3 FcStrDowncase.3 FcStrCopyFilename.3 FcStrCmp.3 FcStrCmpIgnoreCase.3 FcStrStr.3 FcStrStrIgnoreCase.3 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3'
+ /opt/local/bin/install -c -m 644 FcStrPlus.3 FcStrFree.3 FcStrDirname.3 FcStrBasename.3 FcStrSetCreate.3 FcStrSetMember.3 FcStrSetEqual.3 FcStrSetAdd.3 FcStrSetAddFilename.3 FcStrSetDel.3 FcStrSetDestroy.3 FcStrListCreate.3 FcStrListNext.3 FcStrListDone.3 FcValueDestroy.3 FcValueSave.3 FcValuePrint.3 FcValueEqual.3 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man3'
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man5" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man5"
+ /opt/local/bin/install -c -m 644 fonts-conf.5 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/share/man/man5'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/doc'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/doc'
+Making install in test
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/test'
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/test'
+make[2]: Nothing to be done for `install-exec-am'.
+make[2]: Nothing to be done for `install-data-am'.
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/test'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32/test'
+make[1]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32'
+make[2]: Entering directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts"
+ /opt/local/bin/install -c -m 644 fonts.dtd 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts'
+sed \
+		-e 's,@FC_CACHEDIR\@,WINDOWSTEMPDIR_FONTCONFIG_CACHE,g' \
+		-e 's,@FC_DEFAULT_FONTS\@,WINDOWSFONTDIR,g' \
+		-e 's,@FC_FONTPATH\@,,g' \
+		-e 's,@PACKAGE\@,fontconfig,g' \
+		-e 's,@VERSION\@,2.8.0,g' \
+		fonts.conf.in > fonts.conf.tmp && \
+	mv fonts.conf.tmp fonts.conf
+/bin/sh /devel/src/freedesktop/fontconfig/2.8.0-2_win32/install-sh -d c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts WINDOWSTEMPDIR_FONTCONFIG_CACHE
+if [ -f c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf ]; then \
+	  echo "backing up existing c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf"; \
+	  mv c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf.bak; \
+	fi
+if [ -f ./fonts.conf ]; then \
+	  echo " /opt/local/bin/install -c -m 644 ./fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf"; \
+	  /opt/local/bin/install -c -m 644 ./fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf; \
+	else if [ -f fonts.conf ]; then \
+	  echo " /opt/local/bin/install -c -m 644 fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf"; \
+	  /opt/local/bin/install -c -m 644 fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf; \
+	fi; fi
+ /opt/local/bin/install -c -m 644 ./fonts.conf c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/etc/fonts/fonts.conf
+ c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/bin/fc-cache -s -f -v
+C:/Windows/fonts: caching, new cache contents: 1027 fonts, 0 dirs
+C:/Users/tml/AppData/Local/Temp/fontconfig/cache: cleaning cache directory
+c:\devel\target\e1fce2466937a6fa6e065a0c7d689ba4\bin\fc-cache.exe: succeeded
+test -z "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/pkgconfig" || /bin/mkdir -p "c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/pkgconfig"
+ /opt/local/bin/install -c -m 644 fontconfig.pc 'c:/devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib/pkgconfig'
+make[2]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32'
+make[1]: Leaving directory `/devel/src/freedesktop/fontconfig/2.8.0-2_win32'
+++ cd /devel/target/e1fce2466937a6fa6e065a0c7d689ba4/lib
+++ lib.exe -machine:IX86 -def:fontconfig.def -out:fontconfig.lib
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+   Creating library fontconfig.lib and object fontconfig.exp
+++ sed -e s/@VERSION@/2.8.0/
+++ mv fontconfig-zip.in.tem fontconfig-zip.in
+++ ./config.status --file=fontconfig-zip
+config.status: creating fontconfig-zip
+++ ./fontconfig-zip
+  adding: bin/libfontconfig-1.dll (200 bytes security) (deflated 54%)
+  adding: etc/fonts/fonts.conf (200 bytes security) (deflated 67%)
+  adding: etc/fonts/fonts.dtd (200 bytes security) (deflated 70%)
+  adding: include/fontconfig/fcfreetype.h (200 bytes security) (deflated 51%)
+  adding: include/fontconfig/fcprivate.h (200 bytes security) (deflated 65%)
+  adding: include/fontconfig/fontconfig.h (200 bytes security) (deflated 74%)
+  adding: lib/libfontconfig.dll.a (200 bytes security) (deflated 93%)
+  adding: lib/fontconfig.lib (200 bytes security) (deflated 86%)
+  adding: lib/fontconfig.def (200 bytes security) (deflated 71%)
+  adding: lib/pkgconfig/fontconfig.pc (200 bytes security) (deflated 38%)
+  adding: bin/fc-list.exe (200 bytes security) (deflated 70%)
+  adding: bin/fc-cache.exe (200 bytes security) (deflated 69%)
+  adding: share/man/man1/fc-cache.1 (200 bytes security) (deflated 51%)
+  adding: share/man/man1/fc-cat.1 (200 bytes security) (deflated 46%)
+  adding: share/man/man1/fc-list.1 (200 bytes security) (deflated 51%)
+  adding: share/man/man1/fc-match.1 (200 bytes security) (deflated 54%)
+  adding: share/man/man1/fc-query.1 (200 bytes security) (deflated 49%)
+  adding: share/man/man1/fc-scan.1 (200 bytes security) (deflated 47%)
+  adding: share/man/man3/FcAtomicCreate.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcAtomicDeleteNew.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcAtomicDestroy.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcAtomicLock.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcAtomicNewFile.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcAtomicOrigFile.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcAtomicReplaceOrig.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcAtomicUnlock.3 (200 bytes security) (deflated 29%)
+  adding: share/man/man3/FcBlanksAdd.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcBlanksCreate.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcBlanksDestroy.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcBlanksIsMember.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcCacheCopySet.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcCacheDir.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcCacheNumFont.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcCacheNumSubdir.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcCacheSubdir.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcCharSetAddChar.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcCharSetCopy.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcCharSetCount.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcCharSetCoverage.3 (200 bytes security) (deflated 41%)
+  adding: share/man/man3/FcCharSetCreate.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcCharSetDestroy.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcCharSetEqual.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcCharSetFirstPage.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcCharSetHasChar.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcCharSetIntersect.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcCharSetIntersectCount.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcCharSetIsSubset.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcCharSetMerge.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcCharSetNew.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcCharSetNextPage.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcCharSetSubtract.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcCharSetSubtractCount.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcCharSetUnion.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcConfigAppFontAddDir.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcConfigAppFontAddFile.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcConfigAppFontClear.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcConfigBuildFonts.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcConfigCreate.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcConfigDestroy.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigEnableHome.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigFilename.3 (200 bytes security) (deflated 46%)
+  adding: share/man/man3/FcConfigGetBlanks.3 (200 bytes security) (deflated 41%)
+  adding: share/man/man3/FcConfigGetCache.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcConfigGetCacheDirs.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigGetConfigDirs.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigGetConfigFiles.3 (200 bytes security) (deflated 39%)
+  adding: share/man/man3/FcConfigGetCurrent.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcConfigGetFontDirs.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigGetFonts.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcConfigGetRescanInterval.3 (200 bytes security) (deflated 43%)
+  adding: share/man/man3/FcConfigHome.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcConfigParseAndLoad.3 (200 bytes security) (deflated 42%)
+  adding: share/man/man3/FcConfigReference.3 (200 bytes security) (deflated 42%)
+  adding: share/man/man3/FcConfigSetCurrent.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcConfigSetRescanInterval.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcConfigSubstitute.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcConfigSubstituteWithPat.3 (200 bytes security) (deflated 46%)
+  adding: share/man/man3/FcConfigUptoDate.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcDefaultSubstitute.3 (200 bytes security) (deflated 45%)
+  adding: share/man/man3/FcDirCacheLoad.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcDirCacheLoadFile.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcDirCacheRead.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcDirCacheUnlink.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcDirCacheUnload.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcDirCacheValid.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcDirSave.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcDirScan.3 (200 bytes security) (deflated 41%)
+  adding: share/man/man3/FcFileIsDir.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcFileScan.3 (200 bytes security) (deflated 44%)
+  adding: share/man/man3/FcFini.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcFontList.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcFontMatch.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcFontRenderPrepare.3 (200 bytes security) (deflated 43%)
+  adding: share/man/man3/FcFontSetAdd.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcFontSetCreate.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcFontSetDestroy.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcFontSetList.3 (200 bytes security) (deflated 42%)
+  adding: share/man/man3/FcFontSetMatch.3 (200 bytes security) (deflated 44%)
+  adding: share/man/man3/FcFontSetPrint.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcFontSetSort.3 (200 bytes security) (deflated 48%)
+  adding: share/man/man3/FcFontSetSortDestroy.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcFontSort.3 (200 bytes security) (deflated 47%)
+  adding: share/man/man3/FcFreeTypeCharIndex.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcFreeTypeCharSet.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcFreeTypeCharSetAndSpacing.3 (200 bytes security) (deflated 45%)
+  adding: share/man/man3/FcFreeTypeQuery.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcFreeTypeQueryFace.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcGetLangs.3 (200 bytes security) (deflated 27%)
+  adding: share/man/man3/FcGetVersion.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcInit.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcInitBringUptoDate.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcInitLoadConfig.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcInitLoadConfigAndFonts.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcInitReinitialize.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcIsLower.3 (200 bytes security) (deflated 29%)
+  adding: share/man/man3/FcIsUpper.3 (200 bytes security) (deflated 29%)
+  adding: share/man/man3/FcLangGetCharSet.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcLangSetAdd.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcLangSetCompare.3 (200 bytes security) (deflated 48%)
+  adding: share/man/man3/FcLangSetContains.3 (200 bytes security) (deflated 43%)
+  adding: share/man/man3/FcLangSetCopy.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcLangSetCreate.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcLangSetDestroy.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcLangSetEqual.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcLangSetGetLangs.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcLangSetHash.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcLangSetHasLang.3 (200 bytes security) (deflated 47%)
+  adding: share/man/man3/FcMatrixCopy.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcMatrixEqual.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcMatrixInit.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcMatrixMultiply.3 (200 bytes security) (deflated 42%)
+  adding: share/man/man3/FcMatrixRotate.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcMatrixScale.3 (200 bytes security) (deflated 39%)
+  adding: share/man/man3/FcMatrixShear.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcNameConstant.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcNameGetConstant.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcNameGetObjectType.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcNameParse.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcNameRegisterConstants.3 (200 bytes security) (deflated 40%)
+  adding: share/man/man3/FcNameRegisterObjectTypes.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcNameUnparse.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcNameUnregisterConstants.3 (200 bytes security) (deflated 41%)
+  adding: share/man/man3/FcNameUnregisterObjectTypes.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcObjectSetAdd.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcObjectSetBuild.3 (200 bytes security) (deflated 50%)
+  adding: share/man/man3/FcObjectSetCreate.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcObjectSetDestroy.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcPatternAdd-Type.3 (200 bytes security) (deflated 64%)
+  adding: share/man/man3/FcPatternAdd.3 (200 bytes security) (deflated 39%)
+  adding: share/man/man3/FcPatternAddWeak.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcPatternBuild.3 (200 bytes security) (deflated 52%)
+  adding: share/man/man3/FcPatternCreate.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcPatternDel.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcPatternDestroy.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcPatternDuplicate.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcPatternEqual.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcPatternEqualSubset.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcPatternFilter.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcPatternFormat.3 (200 bytes security) (deflated 66%)
+  adding: share/man/man3/FcPatternGet-Type.3 (200 bytes security) (deflated 65%)
+  adding: share/man/man3/FcPatternGet.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcPatternHash.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcPatternPrint.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcPatternReference.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcPatternRemove.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcStrBasename.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcStrCmp.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcStrCmpIgnoreCase.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcStrCopy.3 (200 bytes security) (deflated 29%)
+  adding: share/man/man3/FcStrCopyFilename.3 (200 bytes security) (deflated 43%)
+  adding: share/man/man3/FcStrDirname.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcStrDowncase.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcStrFree.3 (200 bytes security) (deflated 28%)
+  adding: share/man/man3/FcStrListCreate.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcStrListDone.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcStrListNext.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcStrPlus.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcStrSetAdd.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcStrSetAddFilename.3 (200 bytes security) (deflated 36%)
+  adding: share/man/man3/FcStrSetCreate.3 (200 bytes security) (deflated 29%)
+  adding: share/man/man3/FcStrSetDel.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcStrSetDestroy.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcStrSetEqual.3 (200 bytes security) (deflated 34%)
+  adding: share/man/man3/FcStrSetMember.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man3/FcStrStr.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcStrStrIgnoreCase.3 (200 bytes security) (deflated 38%)
+  adding: share/man/man3/FcToLower.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcUcs4ToUtf8.3 (200 bytes security) (deflated 30%)
+  adding: share/man/man3/FcUtf16Len.3 (200 bytes security) (deflated 41%)
+  adding: share/man/man3/FcUtf16ToUcs4.3 (200 bytes security) (deflated 37%)
+  adding: share/man/man3/FcUtf8Len.3 (200 bytes security) (deflated 39%)
+  adding: share/man/man3/FcUtf8ToUcs4.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcValueDestroy.3 (200 bytes security) (deflated 33%)
+  adding: share/man/man3/FcValueEqual.3 (200 bytes security) (deflated 35%)
+  adding: share/man/man3/FcValuePrint.3 (200 bytes security) (deflated 32%)
+  adding: share/man/man3/FcValueSave.3 (200 bytes security) (deflated 31%)
+  adding: share/man/man5/fonts-conf.5 (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomiccreate.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicdeletenew.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicdestroy.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomiclock.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicnewfile.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicorigfile.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicreplaceorig.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcatomicunlock.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcblanksadd.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcblankscreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcblanksdestroy.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcblanksismember.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccachecopyset.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccachedir.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccachenumfont.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccachenumsubdir.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccachesubdir.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetaddchar.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetcopy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetcount.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetcoverage.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetdestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetequal.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetfirstpage.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsethaschar.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetintersect.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetintersectcount.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetissubset.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetmerge.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetnew.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetnextpage.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetsubtract.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetsubtractcount.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fccharsetunion.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigappfontadddir.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigappfontaddfile.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigappfontclear.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigbuildfonts.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigdestroy.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigenablehome.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigfilename.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetblanks.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetcache.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetcachedirs.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetconfigdirs.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetconfigfiles.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetcurrent.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetfontdirs.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetfonts.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiggetrescaninterval.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfighome.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigparseandload.html (200 bytes security) (deflated 61%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigreference.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigsetcurrent.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigsetrescaninterval.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigsubstitute.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfigsubstitutewithpat.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcconfiguptodate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdefaultsubstitute.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircacheload.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircacheloadfile.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircacheread.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircacheunlink.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircacheunload.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdircachevalid.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdirsave.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcdirscan.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfileisdir.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfilescan.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfini.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontlist.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontmatch.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontrenderprepare.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetadd.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetdestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetlist.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetmatch.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetprint.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetsort.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsetsortdestroy.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfontsort.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfreetypecharindex.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfreetypecharset.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfreetypecharsetandspacing.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfreetypequery.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcfreetypequeryface.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcgetlangs.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcgetversion.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcinit.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcinitbringuptodate.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcinitloadconfig.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcinitloadconfigandfonts.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcinitreinitialize.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcislower.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcisupper.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclanggetcharset.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetadd.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetcompare.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetcontains.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetcopy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetdestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetequal.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsetgetlangs.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsethash.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fclangsethaslang.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixcopy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixequal.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixinit.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixmultiply.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixrotate.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixscale.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcmatrixshear.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameconstant.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnamegetconstant.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnamegetobjecttype.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameparse.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameregisterconstants.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameregisterobjecttypes.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameunparse.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameunregisterconstants.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcnameunregisterobjecttypes.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcobjectsetadd.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcobjectsetbuild.html (200 bytes security) (deflated 67%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcobjectsetcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcobjectsetdestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternadd-type.html (200 bytes security) (deflated 75%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternadd.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternaddweak.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternbuild.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatterncreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatterndel.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatterndestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternduplicate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternequal.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternequalsubset.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternfilter.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternformat.html (200 bytes security) (deflated 70%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternget-type.html (200 bytes security) (deflated 75%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternget.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternhash.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternprint.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternreference.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcpatternremove.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrbasename.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrcmp.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrcmpignorecase.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrcopy.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrcopyfilename.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrdirname.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrdowncase.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrfree.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrlistcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrlistdone.html (200 bytes security) (deflated 63%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrlistnext.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrplus.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetadd.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetaddfilename.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetcreate.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetdel.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetdestroy.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetequal.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrsetmember.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrstr.html (200 bytes security) (deflated 66%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcstrstrignorecase.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fctolower.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcucs4toutf8.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcutf16len.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcutf16toucs4.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcutf8len.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcutf8toucs4.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcvaluedestroy.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcvalueequal.html (200 bytes security) (deflated 62%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcvalueprint.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/fcvaluesave.html (200 bytes security) (deflated 64%)
+  adding: share/doc/fontconfig/fontconfig-devel/ln12.html (200 bytes security) (deflated 53%)
+  adding: share/doc/fontconfig/fontconfig-devel/t1.html (200 bytes security) (deflated 56%)
+  adding: share/doc/fontconfig/fontconfig-devel/x102.html (200 bytes security) (deflated 78%)
+  adding: share/doc/fontconfig/fontconfig-devel/x19.html (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel/x31.html (200 bytes security) (deflated 69%)
+  adding: share/doc/fontconfig/fontconfig-devel.pdf (200 bytes security) (deflated 65%)
+  adding: share/doc/fontconfig/fontconfig-devel.txt (200 bytes security) (deflated 79%)
+  adding: share/doc/fontconfig/fontconfig-user.html (200 bytes security) (deflated 72%)
+  adding: share/doc/fontconfig/fontconfig-user.pdf (200 bytes security) (deflated 25%)
+  adding: share/doc/fontconfig/fontconfig-user.txt (200 bytes security) (deflated 67%)
+++ mv /tmp/fontconfig-2.8.0.zip /tmp/fontconfig_2.8.0-2_win32.zip
+++ mv /tmp/fontconfig-dev-2.8.0.zip /tmp/fontconfig-dev_2.8.0-2_win32.zip
+++ cd /devel/target/e1fce2466937a6fa6e065a0c7d689ba4
+++ zip /tmp/fontconfig-dev_2.8.0-2_win32.zip bin/fc-cat.exe
+  adding: bin/fc-cat.exe (200 bytes security) (deflated 69%)
+++ zip /tmp/fontconfig-dev_2.8.0-2_win32.zip lib/fontconfig.lib
+updating: lib/fontconfig.lib (200 bytes security) (deflated 86%)

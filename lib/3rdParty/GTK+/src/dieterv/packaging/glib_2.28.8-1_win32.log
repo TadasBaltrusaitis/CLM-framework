@@ -1,0 +1,2919 @@
+++ patch --verbose -p1 --fuzz=0
+Hmm...  Looks like a unified diff to me...
+The text leading up to this was:
+--------------------------
+|commit 0ab806379fb1e3a344e714cf2b49d5cd2157a2d4
+|Author: Dieter Verfaillie <dieterv@optionexplicit.be>
+|Date:   Mon Jul 18 14:20:18 2011 +0200
+|
+|    Update glib-zip.in
+|
+|diff --git a/glib-zip.in b/glib-zip.in
+|index b8ceb09..e2f41de 100755
+|--- a/glib-zip.in
+|+++ b/glib-zip.in
+--------------------------
+Patching file glib-zip.in using Plan A...
+Hunk #1 succeeded at 24.
+Hunk #2 succeeded at 37.
+Hunk #3 succeeded at 58.
+done
++++ latest --arch=win32 gettext-runtime gettext-tools glib pkg-config
+++ DEPS='gettext-runtime-0.18.1.1-2 gettext-tools-0.18.1.1-2 glib-2.28.8-1 pkg-config-0.26-1'
++++ latest --arch=win32 gettext-runtime
+++ GETTEXT_RUNTIME=gettext-runtime-0.18.1.1-2
++++ latest --arch=win32 zlib
+++ ZLIB=zlib-1.2.5-2
+++ PKG_CONFIG_PATH=/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/gettext-runtime-0.18.1.1-2/lib/pkgconfig ']'
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/gettext-tools-0.18.1.1-2/lib/pkgconfig ']'
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/glib-2.28.8-1/lib/pkgconfig ']'
+++ PKG_CONFIG_PATH=/devel/dist/win32/glib-2.28.8-1/lib/pkgconfig:/dummy
+++ for D in '$DEPS'
+++ PATH=/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ '[' -d /devel/dist/win32/pkg-config-0.26-1/lib/pkgconfig ']'
+++ lt_cv_deplibs_check_method=pass_all
+++ CC='gcc -mthreads'
+++ CPPFLAGS='-I/devel/dist/win32/gettext-runtime-0.18.1.1-2/include -I/devel/dist/win32/zlib-1.2.5-2/include'
+++ LDFLAGS='-L/devel/dist/win32/gettext-runtime-0.18.1.1-2/lib -Wl,--enable-auto-image-base -L/devel/dist/win32/zlib-1.2.5-2/lib'
+++ CFLAGS=-O2
+++ ./configure --enable-silent-rules --disable-gtk-doc --prefix=/devel/target/9af0ed5b9823f125da25c47653b9c863
+checking for a BSD-compatible install... /bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking for gcc... gcc -mthreads
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.exe
+checking for suffix of executables... .exe
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc -mthreads accepts -g... yes
+checking for gcc -mthreads option to accept ISO C89... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc -mthreads... gcc3
+checking how to run the C preprocessor... gcc -mthreads -E
+checking build system type... i686-pc-mingw32
+checking host system type... i686-pc-mingw32
+checking for the BeOS... no
+checking for Win32... yes
+checking for Mac OS X Carbon support... no
+checking for windres... windres
+checking for nm... nm
+checking for ranlib... ranlib
+checking for lib.exe... yes
+checking whether to enable garbage collector friendliness... no
+checking whether to disable memory pools... no
+checking for c++... c++
+checking whether we are using the GNU C++ compiler... yes
+checking whether c++ accepts -g... yes
+checking dependency style of c++... gcc3
+checking for gcc... (cached) gcc -mthreads
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc -mthreads accepts -g... (cached) yes
+checking for gcc -mthreads option to accept ISO C89... (cached) none needed
+checking dependency style of gcc -mthreads... (cached) gcc3
+checking whether gcc -mthreads and cc understand -c and -o together... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... unknown
+checking for _LARGE_FILES value needed for large files... unknown
+checking pkg-config is at least version 0.16... yes
+checking how to get MSVC-compatible struct packing... -mms-bitfields
+checking for gawk... (cached) gawk
+checking for perl5... no
+checking for perl... perl
+checking for indent... no
+checking for perl... /bin/perl
+checking for a Python interpreter with version >= 2.4... none
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking whether we are using the GNU C Library 2.1 or newer... no
+checking Whether to cache iconv descriptors... yes
+checking for ZLIB... no
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for inflate in -lz... yes
+checking zlib.h usability... yes
+checking zlib.h presence... yes
+checking for zlib.h... yes
+checking locale.h usability... yes
+checking locale.h presence... yes
+checking for locale.h... yes
+checking for LC_MESSAGES... no
+checking libintl.h usability... yes
+checking libintl.h presence... yes
+checking for libintl.h... yes
+checking for ngettext in libc... no
+checking for bindtextdomain in -lintl... yes
+checking for ngettext in -lintl... yes
+checking for dgettext in -lintl... yes
+checking for bind_textdomain_codeset... yes
+checking for msgfmt... /devel/dist/win32/gettext-tools-0.18.1.1-2/bin/msgfmt
+checking for dcgettext... yes
+checking if msgfmt accepts -c... yes
+checking for gmsgfmt... /devel/dist/win32/gettext-tools-0.18.1.1-2/bin/msgfmt
+checking for xgettext... /devel/dist/win32/gettext-tools-0.18.1.1-2/bin/xgettext
+checking for catalogs to be installed...  af am ar as ast az be be@latin bg bn bn_IN bs ca ca@valencia cs cy da de dz el en_CA en_GB en@shaw eo es et eu fa fi fr ga gl gu he hi hr hu hy id is it ja ka kk kn ko ku lt lv mai mg mk ml mn mr ms nb nds ne nl nn oc or pa pl ps pt pt_BR ro ru rw si sk sl sq sr sr@latin sr@ije sv ta te th tl tr ug tt uk vi wa xh yi zh_CN zh_HK zh_TW
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc -mthreads... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... nm
+checking the name lister (nm) interface... BSD nm
+checking whether ln -s works... no, using cp -p
+checking the maximum length of command line arguments... 8192
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking how to convert i686-pc-mingw32 file names to i686-pc-mingw32 format... func_convert_file_msys_to_w32
+checking how to convert i686-pc-mingw32 file names to toolchain format... func_convert_file_msys_to_w32
+checking for c:/mingw/mingw32/bin/ld.exe option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... (cached) pass_all
+checking for dlltool... dlltool
+checking how to associate runtime and link libraries... func_cygming_dll_for_implib
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... (cached) ranlib
+checking command to parse nm output from gcc -mthreads object... ok
+checking for sysroot... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking for dlfcn.h... no
+checking for as... as
+checking for dlltool... (cached) dlltool
+checking for objdump... (cached) objdump
+checking for objdir... .libs
+checking if gcc -mthreads supports -fno-rtti -fno-exceptions... no
+checking for gcc -mthreads option to produce PIC... -DDLL_EXPORT -DPIC
+checking if gcc -mthreads PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if gcc -mthreads static flag -static works... yes
+checking if gcc -mthreads supports -c -o file.o... yes
+checking if gcc -mthreads supports -c -o file.o... (cached) yes
+checking whether the gcc -mthreads linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking how to run the C++ preprocessor... c++ -E
+checking for ld used by c++... c:/mingw/mingw32/bin/ld.exe
+checking if the linker (c:/mingw/mingw32/bin/ld.exe) is GNU ld... yes
+checking whether the c++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking for c++ option to produce PIC... -DDLL_EXPORT -DPIC
+checking if c++ PIC flag -DDLL_EXPORT -DPIC works... yes
+checking if c++ static flag -static works... yes
+checking if c++ supports -c -o file.o... yes
+checking if c++ supports -c -o file.o... (cached) yes
+checking whether the c++ linker (c:/mingw/mingw32/bin/ld.exe) supports shared libraries... yes
+checking dynamic linker characteristics... Win32 ld.exe
+checking how to hardcode library paths into programs... immediate
+configure: creating ./config.lt
+config.lt: creating libtool
+checking for extra flags to get ANSI library prototypes... none needed
+checking for extra flags for POSIX compliance... none needed
+checking for ANSI C header files... (cached) yes
+checking for vprintf... yes
+checking for _doprnt... no
+checking for size_t... yes
+checking for working alloca.h... no
+checking for alloca... yes
+checking for mmap... no
+checking for posix_memalign... no
+checking for memalign... no
+checking for valloc... no
+checking for fsync... no
+checking for pipe2... no
+checking for atexit... yes
+checking for on_exit... no
+checking for timegm... no
+checking for gmtime_r... no
+checking size of char... 1
+checking size of short... 2
+checking size of long... 4
+checking size of int... 4
+checking size of void *... 4
+checking size of long long... 8
+checking size of __int64... 8
+checking for format to printf and scanf a guint64... %I64u
+checking for an ANSI C-conforming const... yes
+checking if malloc() and friends prototypes are gmem.h compatible... yes
+checking for growing stack pointer... (cached) no
+checking for __inline... yes
+checking for __inline__... yes
+checking for inline... yes
+checking if inline functions in headers work... yes
+checking for working do while(0) macros... yes
+checking for ISO C99 varargs macros in C... yes
+checking for ISO C99 varargs macros in C++... yes
+checking for GNUC varargs macros... yes
+checking for GNUC visibility attribute... no
+checking whether using Sun Studio C compiler... no
+checking whether byte ordering is bigendian... no
+checking dirent.h usability... yes
+checking dirent.h presence... yes
+checking for dirent.h... yes
+checking float.h usability... yes
+checking float.h presence... yes
+checking for float.h... yes
+checking limits.h usability... yes
+checking limits.h presence... yes
+checking for limits.h... yes
+checking pwd.h usability... no
+checking pwd.h presence... no
+checking for pwd.h... no
+checking grp.h usability... no
+checking grp.h presence... no
+checking for grp.h... no
+checking sys/param.h usability... yes
+checking sys/param.h presence... yes
+checking for sys/param.h... yes
+checking sys/poll.h usability... no
+checking sys/poll.h presence... no
+checking for sys/poll.h... no
+checking sys/resource.h usability... no
+checking sys/resource.h presence... no
+checking for sys/resource.h... no
+checking sys/time.h usability... yes
+checking sys/time.h presence... yes
+checking for sys/time.h... yes
+checking sys/times.h usability... no
+checking sys/times.h presence... no
+checking for sys/times.h... no
+checking sys/wait.h usability... no
+checking sys/wait.h presence... no
+checking for sys/wait.h... no
+checking for unistd.h... (cached) yes
+checking values.h usability... yes
+checking values.h presence... yes
+checking for values.h... yes
+checking sys/select.h usability... no
+checking sys/select.h presence... no
+checking for sys/select.h... no
+checking for sys/types.h... (cached) yes
+checking for stdint.h... (cached) yes
+checking for inttypes.h... (cached) yes
+checking sched.h usability... yes
+checking sched.h presence... yes
+checking for sched.h... yes
+checking malloc.h usability... yes
+checking malloc.h presence... yes
+checking for malloc.h... yes
+checking sys/vfs.h usability... no
+checking sys/vfs.h presence... no
+checking for sys/vfs.h... no
+checking sys/mount.h usability... no
+checking sys/mount.h presence... no
+checking for sys/mount.h... no
+checking sys/vmount.h usability... no
+checking sys/vmount.h presence... no
+checking for sys/vmount.h... no
+checking sys/statfs.h usability... no
+checking sys/statfs.h presence... no
+checking for sys/statfs.h... no
+checking sys/statvfs.h usability... no
+checking sys/statvfs.h presence... no
+checking for sys/statvfs.h... no
+checking mntent.h usability... no
+checking mntent.h presence... no
+checking for mntent.h... no
+checking sys/mnttab.h usability... no
+checking sys/mnttab.h presence... no
+checking for sys/mnttab.h... no
+checking sys/vfstab.h usability... no
+checking sys/vfstab.h presence... no
+checking for sys/vfstab.h... no
+checking sys/mntctl.h usability... no
+checking sys/mntctl.h presence... no
+checking for sys/mntctl.h... no
+checking sys/sysctl.h usability... no
+checking sys/sysctl.h presence... no
+checking for sys/sysctl.h... no
+checking fstab.h usability... no
+checking fstab.h presence... no
+checking for fstab.h... no
+checking sys/uio.h usability... no
+checking sys/uio.h presence... no
+checking for sys/uio.h... no
+checking sys/mkdev.h usability... no
+checking sys/mkdev.h presence... no
+checking for sys/mkdev.h... no
+checking linux/magic.h usability... no
+checking linux/magic.h presence... no
+checking for linux/magic.h... no
+checking for struct stat.st_mtimensec... no
+checking for struct stat.st_mtim.tv_nsec... no
+checking for struct stat.st_atimensec... no
+checking for struct stat.st_atim.tv_nsec... no
+checking for struct stat.st_ctimensec... no
+checking for struct stat.st_ctim.tv_nsec... no
+checking for struct stat.st_blksize... no
+checking for struct stat.st_blocks... no
+checking for struct statfs.f_fstypename... no
+checking for struct statfs.f_bavail... no
+checking for struct statvfs.f_basetype... no
+checking for struct tm.tm_gmtoff... no
+checking for struct tm.__tm_gmtoff... no
+checking for nl_langinfo and CODESET... no
+checking whether we are using the GNU C Library 2.1 or newer... (cached) no
+checking stddef.h usability... yes
+checking stddef.h presence... yes
+checking for stddef.h... yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for setlocale... yes
+checking size of size_t... 4
+checking for the appropriate definition for size_t... unsigned int
+checking for lstat... no
+checking for strerror... yes
+checking for strsignal... no
+checking for memmove... yes
+checking for vsnprintf... yes
+checking for stpcpy... no
+checking for strcasecmp... yes
+checking for strncasecmp... yes
+checking for poll... no
+checking for getcwd... yes
+checking for vasprintf... no
+checking for setenv... no
+checking for unsetenv... no
+checking for getc_unlocked... no
+checking for readlink... no
+checking for symlink... no
+checking for fdwalk... no
+checking for memmem... no
+checking for chown... no
+checking for lchmod... no
+checking for lchown... no
+checking for fchmod... no
+checking for fchown... no
+checking for link... no
+checking for statvfs... no
+checking for statfs... no
+checking for utimes... no
+checking for getgrgid... no
+checking for getpwuid... no
+checking for getmntent_r... no
+checking for setmntent... no
+checking for endmntent... no
+checking for hasmntopt... no
+checking for getmntinfo... no
+checking for splice... no
+checking crt_externs.h usability... no
+checking crt_externs.h presence... no
+checking for crt_externs.h... no
+checking for _NSGetEnviron... no
+checking for C99 vsnprintf... (cached) no
+checking whether printf supports positional parameters... no
+checking value of AF_INET... 2
+checking value of AF_INET6... 23
+checking value of AF_UNIX... 1
+checking value of MSG_PEEK... 2
+checking value of MSG_OOB... 1
+checking value of MSG_DONTROUTE... 4
+checking for getprotobyname_r... no
+checking for endservent... no
+checking netdb.h usability... no
+checking netdb.h presence... no
+checking for netdb.h... no
+checking wspiapi.h usability... no
+checking wspiapi.h presence... no
+checking for wspiapi.h... no
+checking for signed... yes
+checking for long long... yes
+checking for long double... yes
+checking for wchar_t... yes
+checking for wint_t... yes
+checking for size_t... (cached) yes
+checking for ptrdiff_t... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for snprintf... yes
+checking for wcslen... yes
+checking for C99 snprintf... (cached) no
+checking for sys_errlist... no
+checking for sys_siglist... no
+checking for sys_siglist declaration... no
+checking for fd_set... no
+checking whether realloc (NULL,) will work... yes
+checking for nl_langinfo (CODESET)... no
+checking for a compliant posix_memalign() implementation... no
+checking for OpenBSD strlcpy/strlcat... no
+checking for an implementation of va_copy()... yes
+checking for an implementation of __va_copy()... yes
+checking whether va_lists can be copied by value... yes
+checking for the suffix of module shared libraries... .dll
+checking for gspawn implementation... gspawn-win32.lo
+checking for GIOChannel implementation... giowin32.lo
+checking for is_selinux_enabled in -lselinux... no
+checking sys/inotify.h usability... no
+checking sys/inotify.h presence... no
+checking for sys/inotify.h... no
+checking for FAMOpen in -lfam... no
+configure: WARNING: *** FAM support will not be built (FAM library not found) ***
+checking for getxattr in -lc... no
+checking for getxattr in -lattr... no
+checking for platform-dependent source... gwin32.lo
+checking whether to compile timeloop... no
+checking if building for some Win32 platform... yes
+checking for thread implementation... win32
+configure: WARNING: I can't find the MACRO to enable thread safety on your
+                platform (normally it's _REENTRANT). I'll not use any flag on
+                compilation now, but then your programs might not work.
+                Please provide information on how it is done on your system.
+checking thread related cflags... 
+checking thread related libraries... 
+checking for localtime_r... no
+checking for gmtime_r... (cached) no
+checking size of struct _GThreadData *... 4
+configure: WARNING: the 'g_get_(user_name|real_name|home_dir|tmp_dir)'
+		functions will not be MT-safe during their first call because
+		there is no working 'getpwuid_r' on your system.
+configure: WARNING: the 'g_date_set_time' function will not be MT-safe
+		because there is no 'localtime_r' on your system.
+checking for clock_gettime... no
+checking for clock_gettime in -lrt... no
+checking for monotonic clocks... no
+checking whether to use assembler code for atomic operations... checking whether GCC supports build-in atomic intrinsics... no
+i486
+checking for futex(2) system call... no
+checking for broken poll... yes
+checking whether compiler understands -Wno-pointer-sign... yes
+checking for EILSEQ... yes
+checking for gtkdoc-check... no
+checking for gtkdoc-rebase... no
+checking for gtkdoc-mkpdf... no
+checking whether to build gtk-doc documentation... no
+checking whether to include dtrace tracing support... yes
+checking for dtrace... no
+checking whether to include systemtap tracing support... no
+checking for DBUS1... no
+checking for -Bsymbolic-functions linker flag... no
+configure: creating ./config.status
+config.status: creating glib-2.0.pc
+config.status: creating glib-2.0-uninstalled.pc
+config.status: creating gmodule-2.0.pc
+config.status: creating gmodule-export-2.0.pc
+config.status: creating gmodule-no-export-2.0.pc
+config.status: creating gmodule-2.0-uninstalled.pc
+config.status: creating gmodule-no-export-2.0-uninstalled.pc
+config.status: creating gthread-2.0.pc
+config.status: creating gthread-2.0-uninstalled.pc
+config.status: creating gobject-2.0.pc
+config.status: creating gobject-2.0-uninstalled.pc
+config.status: creating gio-2.0.pc
+config.status: creating gio-unix-2.0.pc
+config.status: creating gio-windows-2.0.pc
+config.status: creating gio-2.0-uninstalled.pc
+config.status: creating gio-unix-2.0-uninstalled.pc
+config.status: creating glib-zip
+config.status: creating glib-gettextize
+config.status: creating Makefile
+config.status: creating build/Makefile
+config.status: creating build/win32/Makefile
+config.status: creating build/win32/dirent/Makefile
+config.status: creating build/win32/vs9/Makefile
+config.status: creating build/win32/vs10/Makefile
+config.status: creating glib/Makefile
+config.status: creating glib/glib.stp
+config.status: creating glib/libcharset/Makefile
+config.status: creating glib/gnulib/Makefile
+config.status: creating glib/pcre/Makefile
+config.status: creating glib/update-pcre/Makefile
+config.status: creating glib/tests/Makefile
+config.status: creating gmodule/Makefile
+config.status: creating gmodule/gmoduleconf.h
+config.status: creating gobject/Makefile
+config.status: creating gobject/gobject.stp
+config.status: creating gobject/glib-mkenums
+config.status: creating gobject/tests/Makefile
+config.status: creating gthread/Makefile
+config.status: creating gthread/tests/Makefile
+config.status: creating gio/Makefile
+config.status: creating gio/xdgmime/Makefile
+config.status: creating gio/inotify/Makefile
+config.status: creating gio/libasyncns/Makefile
+config.status: creating gio/fen/Makefile
+config.status: creating gio/fam/Makefile
+config.status: creating gio/win32/Makefile
+config.status: creating gio/tests/Makefile
+config.status: creating po/Makefile.in
+config.status: creating docs/Makefile
+config.status: creating docs/reference/Makefile
+config.status: creating docs/reference/glib/Makefile
+config.status: creating docs/reference/glib/version.xml
+config.status: creating docs/reference/gobject/Makefile
+config.status: creating docs/reference/gobject/version.xml
+config.status: creating docs/reference/gio/Makefile
+config.status: creating docs/reference/gio/version.xml
+config.status: creating tests/Makefile
+config.status: creating tests/gobject/Makefile
+config.status: creating tests/refcount/Makefile
+config.status: creating m4macros/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing default-1 commands
+config.status: executing libtool commands
+config.status: executing glib/glibconfig.h commands
+config.status: executing chmod-scripts commands
+++ cd glib
+++ make glibconfig.h.win32
+cd .. && /bin/sh ./config.status glib/glibconfig.h.win32
+config.status: creating glib/glibconfig.h.win32
+++ make glibconfig-stamp
+  GEN    glibconfig-stamp
+config.status: executing glib/glibconfig.h commands
+config.status: glib/glibconfig.h is unchanged
+++ mv glibconfig.h glibconfig.h.autogened
+++ cp glibconfig.h.win32 glibconfig.h
+++ PATH=/devel/target/9af0ed5b9823f125da25c47653b9c863/bin:/devel/dist/win32/pkg-config-0.26-1/bin:/devel/dist/win32/glib-2.28.8-1/bin:/devel/dist/win32/gettext-tools-0.18.1.1-2/bin:/devel/dist/win32/gettext-runtime-0.18.1.1-2/bin:/opt/winsdk52/Bin/win64/x86/AMD64:/mingw/bin:/opt/local/bin:/bin:.:/usr/local/bin:/mingw/bin:/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem
+++ make -j3 install
+Making install in .
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8'
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/pkgconfig" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/pkgconfig"
+ /bin/install -c mkinstalldirs '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext'
+ /bin/install -c -m 644 glib-2.0.pc gobject-2.0.pc gmodule-2.0.pc gmodule-export-2.0.pc gmodule-no-export-2.0.pc gthread-2.0.pc gio-2.0.pc gio-windows-2.0.pc '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/pkgconfig'
+ /bin/install -c glib-gettextize '/devel/target/9af0ed5b9823f125da25c47653b9c863/bin'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8'
+Making install in m4macros
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/m4macros'
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/m4macros'
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/aclocal" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/aclocal"
+ /bin/install -c -m 644 glib-2.0.m4 glib-gettext.m4 gsettings.m4 '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/aclocal'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/m4macros'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/m4macros'
+Making install in glib
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+make  install-recursive
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+Making install in libcharset
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/libcharset'
+sed -e '/^#/d' -e 's/@''PACKAGE''@/glib/g' ref-add.sin > t-ref-add.sed
+sed -e '/^#/d' -e 's/@''PACKAGE''@/glib/g' ref-del.sin > t-ref-del.sed
+  CC     localcharset.lo
+mv t-ref-add.sed ref-add.sed
+/bin/sh ./config.charset 'i686-pc-mingw32' > t-charset.alias
+mv t-ref-del.sed ref-del.sed
+mv t-charset.alias charset.alias
+  CCLD   libcharset.la
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/libcharset'
+/bin/sh ../../mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+make[4]: Nothing to be done for `install-data-am'.
+if test -f /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.alias; then \
+	  sed -f ref-add.sed /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.alias > /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp ; \
+	  /bin/install -c -m 644 /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.alias ; \
+	  rm -f /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp ; \
+	else \
+	  if test no = no; then \
+	    sed -f ref-add.sed charset.alias > /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp ; \
+	    /bin/install -c -m 644 /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.alias ; \
+	    rm -f /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/charset.tmp ; \
+	  fi ; \
+	fi
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/libcharset'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/libcharset'
+Making install in gnulib
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/gnulib'
+  CC     printf-args.lo
+  CC     asnprintf.lo
+  CC     printf-parse.lo
+  CC     vasnprintf.lo
+  CC     printf.lo
+  CCLD   libgnulib.la
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/gnulib'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/gnulib'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/gnulib'
+Making install in pcre
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/pcre'
+  CC     pcre_compile.lo
+  CC     pcre_chartables.lo
+  CC     pcre_config.lo
+  CC     pcre_dfa_exec.lo
+  CC     pcre_exec.lo
+  CC     pcre_fullinfo.lo
+  CC     pcre_get.lo
+  CC     pcre_globals.lo
+  CC     pcre_newline.lo
+  CC     pcre_ord2utf8.lo
+  CC     pcre_study.lo
+  CC     pcre_tables.lo
+  CC     pcre_try_flipped.lo
+  CC     pcre_ucp_searchfuncs.lo
+  CC     pcre_xclass.lo
+  CCLD   libpcre.la
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/pcre'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/pcre'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/pcre'
+Making install in update-pcre
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/update-pcre'
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/update-pcre'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/update-pcre'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/update-pcre'
+Making install in .
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+  CC     gasyncqueue.lo
+  CC     gatomic.lo
+  CC     garray.lo
+  CC     gbacktrace.lo
+  CC     gbase64.lo
+  CC     gbitlock.lo
+  CC     gbookmarkfile.lo
+  CC     gbuffer.lo
+  CC     gcache.lo
+  CC     gchecksum.lo
+  CC     gcompletion.lo
+  CC     gconvert.lo
+gconvert.c: In function 'g_iconv':
+gconvert.c:313:3: warning: passing argument 2 of 'iconv' from incompatible pointer type
+win_iconv.c:775:1: note: expected 'const char **' but argument is of type 'gchar **'
+In file included from gconvert.c:35:0:
+win_iconv.c: In function 'utf32_mbtowc':
+win_iconv.c:1532:10: warning: 'wc' may be used uninitialized in this function
+  CC     gdataset.lo
+  CC     gdate.lo
+  CC     gdatetime.lo
+  CC     gdir.lo
+  CC     gerror.lo
+  CC     gfileutils.lo
+  CC     ghash.lo
+  CC     ghook.lo
+gfileutils.c: In function 'write_to_temp_file':
+gfileutils.c:1015:2: warning: label 'no_fsync' defined but not used
+  CC     ghostutils.lo
+  CC     giochannel.lo
+  CC     gkeyfile.lo
+  CC     glist.lo
+  CC     gmain.lo
+  CC     gmappedfile.lo
+  CC     gmarkup.lo
+  CC     gmem.lo
+  CC     gmessages.lo
+  CC     gnode.lo
+  CC     goption.lo
+  CC     gpattern.lo
+  CC     gpoll.lo
+  CC     gprimes.lo
+  CC     gqsort.lo
+  CC     gqueue.lo
+  CC     grel.lo
+  CC     grand.lo
+  CC     gregex.lo
+  CC     gscanner.lo
+  CC     gsequence.lo
+  CC     gshell.lo
+  CC     gslice.lo
+  CC     gslist.lo
+  CC     gstdio.lo
+  CC     gstrfuncs.lo
+  CC     gstring.lo
+gstdio.c: In function 'g_stat':
+gstdio.c:491:3: warning: passing argument 2 of '_wstat' from incompatible pointer type
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/sys/stat.h:251:37: note: expected 'struct _stat *' but argument is of type 'struct GStatBuf *'
+  CC     gtestutils.lo
+  CC     gthread.lo
+  CC     gthreadpool.lo
+gtestutils.c: In function 'g_test_log_send':
+gtestutils.c:174:13: warning: unknown conversion type character 'L' in format
+gtestutils.c:174:13: warning: too many arguments for format
+gtestutils.c: In function 'g_assertion_message_cmpnum':
+gtestutils.c:1387:5: warning: unknown conversion type character 'L' in format
+gtestutils.c:1387:5: warning: format '%s' expects type 'char *', but argument 3 has type 'long double'
+gtestutils.c:1387:5: warning: unknown conversion type character 'L' in format
+gtestutils.c:1387:5: warning: too many arguments for format
+gtestutils.c:1389:5: warning: unknown conversion type character 'L' in format
+gtestutils.c:1389:5: warning: format '%s' expects type 'char *', but argument 3 has type 'long double'
+gtestutils.c:1389:5: warning: unknown conversion type character 'L' in format
+gtestutils.c:1389:5: warning: too many arguments for format
+  CC     gtimer.lo
+  CC     gtimezone.lo
+  CC     gtree.lo
+  CC     guniprop.lo
+  CC     gutf8.lo
+  CC     gunibreak.lo
+  CC     gunicollate.lo
+  CC     gunidecomp.lo
+  CC     gurifuncs.lo
+  CC     gutils.lo
+  CC     gvariant.lo
+  CC     gvariant-core.lo
+gutils.c: In function 'g_win32_get_system_data_dirs_for_module':
+gutils.c:2792:11: warning: 'hmodule' may be used uninitialized in this function
+  CC     gvariant-parser.lo
+  CC     gvariant-serialiser.lo
+  CC     gvarianttypeinfo.lo
+  CC     gvarianttype.lo
+  CC     gprintf.lo
+  CC     giowin32.lo
+  CC     gspawn-win32.lo
+giowin32.c: In function 'g_io_channel_new_file_utf8':
+giowin32.c:1680:7: warning: case value '9' not in enumerated type
+giowin32.c:1684:7: warning: case value '10' not in enumerated type
+giowin32.c:1688:7: warning: case value '12' not in enumerated type
+giowin32.c:1734:7: warning: case value '9' not in enumerated type
+giowin32.c:1735:7: warning: case value '10' not in enumerated type
+giowin32.c:1736:7: warning: case value '12' not in enumerated type
+  CC     gwin32.lo
+giowin32.c: In function 'g_io_win32_sock_write':
+giowin32.c:1513:7: warning: 'winsock_error' may be used uninitialized in this function
+giowin32.c: In function 'g_io_win32_sock_read':
+giowin32.c:1452:7: warning: 'winsock_error' may be used uninitialized in this function
+cd .. && /bin/sh ./config.status glib/glib.rc
+  GEN    glib.def
+  CC     gspawn-win32-helper.o
+  CC     gspawn-win32-helper-console.o
+gspawn-win32.c:67:14: warning: 'debug' defined but not used
+gspawn-win32.c:67:14: warning: 'debug' defined but not used
+config.status: creating glib/glib.rc
+windres glib.rc glib-win32-res.o
+  CCLD   libglib-2.0.la
+Creating library file: .libs/libglib-2.0.dll.a
+lib -machine:X86 -name:libglib-2.0-0.dll -def:glib.def -out:glib-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library glib-2.0.lib and object glib-2.0.exp
+  CCLD   gspawn-win32-helper.exe
+  CCLD   gspawn-win32-helper-console.exe
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/glib-2.0/include" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/glib-2.0/include"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libglib-2.0.la '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib'
+ /bin/install -c -m 644 glibconfig.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/glib-2.0/include'
+/bin/install -c glib-2.0.lib /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+/bin/install -c glib.def /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/glib-2.0.def
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0"
+libtool: install: /bin/install -c .libs/libglib-2.0.dll.a /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libglib-2.0.dll.a
+libtool: install: base_file=`basename libglib-2.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libglib-2.0.la'i; echo libglib-2.0-0.dll'`
+ /bin/install -c glib.py '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb'
+ /bin/install -c -m 644 glib-object.h glib.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/glib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/glib"
+test -z "" || /bin/mkdir -p ""
+libtool: install:  dldir=/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/`dirname ../bin/libglib-2.0-0.dll`
+libtool: install:  test -d /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin || mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin
+libtool: install:  /bin/install -c .libs/libglib-2.0-0.dll /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libglib-2.0-0.dll
+libtool: install:  chmod a+x /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libglib-2.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libglib-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libglib-2.0.lai /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libglib-2.0.la
+ /bin/install -c -m 644 galloca.h garray.h gasyncqueue.h gatomic.h gbacktrace.h gbase64.h gbitlock.h gbookmarkfile.h gcache.h gchecksum.h gcompletion.h gconvert.h gdataset.h gdate.h gdatetime.h gdir.h gerror.h gfileutils.h ghash.h ghook.h ghostutils.h gi18n.h gi18n-lib.h giochannel.h gkeyfile.h glist.h gmacros.h gmain.h gmappedfile.h gmarkup.h gmem.h gmessages.h gnode.h goption.h gpattern.h gpoll.h gprimes.h gqsort.h gquark.h gqueue.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/glib'
+ /bin/install -c -m 644 grand.h gregex.h grel.h gscanner.h gsequence.h gshell.h gslice.h gslist.h gspawn.h gstdio.h gstrfuncs.h gtestutils.h gstring.h gthread.h gthreadpool.h gtimer.h gtimezone.h gtree.h gtypes.h gunicode.h gurifuncs.h gutils.h gvarianttype.h gvariant.h gwin32.h gprintf.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/glib'
+make  install-data-hook
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+make[5]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+  GEN    libglib-gdb.py
+mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gdb/auto-load
+/bin/install -c libglib-gdb.py /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gdb/auto-load/libglib-2.0.so.0.2800.8-gdb.py
+make[5]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+  /bin/sh ../libtool   --mode=install /bin/install -c gspawn-win32-helper.exe gspawn-win32-helper-console.exe '/devel/target/9af0ed5b9823f125da25c47653b9c863/bin'
+libtool: install: /bin/install -c .libs/gspawn-win32-helper.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gspawn-win32-helper.exe
+libtool: install: /bin/install -c .libs/gspawn-win32-helper-console.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gspawn-win32-helper-console.exe
+make  install-exec-hook
+make[5]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+make[5]: Nothing to be done for `install-exec-hook'.
+make[5]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+Making install in tests
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/tests'
+  CC     option-context.o
+  CC     testing.o
+  CC     keyfile.o
+  CC     fileutils.o
+fileutils.c: In function 'test_build_filename':
+fileutils.c:252:3: warning: not enough variable arguments to fit a sentinel
+  CC     test-printf.o
+  CC     protocol.o
+test-printf.c: In function 'test_64bit':
+test-printf.c:724:3: warning: unknown conversion type character 'l' in format
+test-printf.c:724:3: warning: too many arguments for format
+test-printf.c:728:3: warning: unknown conversion type character 'l' in format
+test-printf.c:728:3: warning: too many arguments for format
+test-printf.c:732:3: warning: unknown conversion type character 'l' in format
+test-printf.c:732:3: warning: too many arguments for format
+test-printf.c:736:3: warning: unknown conversion type character 'l' in format
+test-printf.c:736:3: warning: too many arguments for format
+test-printf.c:740:3: warning: unknown conversion type character 'l' in format
+test-printf.c:740:3: warning: too many arguments for format
+test-printf.c:744:3: warning: unknown conversion type character 'l' in format
+test-printf.c:744:3: warning: too many arguments for format
+test-printf.c:748:3: warning: unknown conversion type character 'l' in format
+test-printf.c:748:3: warning: too many arguments for format
+test-printf.c:752:3: warning: unknown conversion type character 'l' in format
+test-printf.c:752:3: warning: too many arguments for format
+test-printf.c: In function 'test_64bit2':
+test-printf.c:845:7: warning: unknown conversion type character 'l' in format
+test-printf.c:845:7: warning: too many arguments for format
+test-printf.c:854:7: warning: unknown conversion type character 'l' in format
+test-printf.c:854:7: warning: too many arguments for format
+test-printf.c:863:7: warning: unknown conversion type character 'l' in format
+test-printf.c:863:7: warning: too many arguments for format
+test-printf.c:872:7: warning: unknown conversion type character 'l' in format
+test-printf.c:872:7: warning: too many arguments for format
+test-printf.c:881:7: warning: unknown conversion type character 'l' in format
+test-printf.c:881:7: warning: too many arguments for format
+test-printf.c:890:7: warning: unknown conversion type character 'l' in format
+test-printf.c:890:7: warning: too many arguments for format
+test-printf.c:899:7: warning: unknown conversion type character 'l' in format
+test-printf.c:899:7: warning: too many arguments for format
+test-printf.c:908:7: warning: unknown conversion type character 'l' in format
+test-printf.c:908:7: warning: too many arguments for format
+  CC     rand.o
+  CC     strfuncs.o
+  CC     string.o
+  CC     markup-parse.o
+  CC     markup-collect.o
+  CC     markup-escape.o
+  CC     markup-subparser.o
+  CC     array-test.o
+  CC     hostutils.o
+  CC     gvariant.o
+  CC     mem-overflow.o
+  CC     utf8-performance.o
+  CC     utils.o
+  CC     regex.o
+  CC     base64.o
+  CC     sequence.o
+  CC     scannerapi.o
+  CC     shell.o
+  CC     collate.o
+  CC     utf8-validate.o
+  CC     utf8-pointer.o
+  CC     utf8-misc.o
+  CC     checksum.o
+  CC     hash.o
+  CC     date.o
+  CC     node.o
+  CC     convert.o
+  CC     list.o
+  CC     slist.o
+  CC     queue.o
+  CC     tree.o
+  CC     uri.o
+  CC     dir.o
+  CC     pattern.o
+  CC     logging.o
+  CC     error.o
+  CC     bookmarkfile.o
+  CC     gdatetime.o
+  CC     timeout.o
+  CC     environment.o
+  CCLD   testing.exe
+  CCLD   option-context.exe
+  CCLD   keyfile.exe
+  CCLD   fileutils.exe
+  CCLD   test-printf.exe
+  CCLD   protocol.exe
+  CCLD   rand.exe
+  CCLD   strfuncs.exe
+  CCLD   string.exe
+  CCLD   markup-parse.exe
+  CCLD   markup-collect.exe
+  CCLD   markup-escape.exe
+  CCLD   markup-subparser.exe
+  CCLD   array-test.exe
+  CCLD   hostutils.exe
+  CCLD   gvariant.exe
+  CCLD   mem-overflow.exe
+  CCLD   utf8-performance.exe
+  CCLD   utils.exe
+  CCLD   regex.exe
+  CCLD   base64.exe
+  CCLD   sequence.exe
+  CCLD   scannerapi.exe
+  CCLD   shell.exe
+  CCLD   collate.exe
+  CCLD   utf8-pointer.exe
+  CCLD   utf8-validate.exe
+  CCLD   utf8-misc.exe
+  CCLD   checksum.exe
+  CCLD   hash.exe
+  CCLD   date.exe
+  CCLD   node.exe
+  CCLD   convert.exe
+  CCLD   list.exe
+  CCLD   slist.exe
+  CCLD   queue.exe
+  CCLD   tree.exe
+  CCLD   uri.exe
+  CCLD   dir.exe
+  CCLD   pattern.exe
+  CCLD   logging.exe
+  CCLD   error.exe
+  CCLD   bookmarkfile.exe
+  CCLD   gdatetime.exe
+  CCLD   timeout.exe
+  CCLD   environment.exe
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/glib/tests'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/tests'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib/tests'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/glib'
+Making install in gmodule
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+make  install-am
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+cd .. && /bin/sh ./config.status gmodule/gmodule.rc
+  CC     gmodule.lo
+  GEN    gmodule.def
+config.status: creating gmodule/gmodule.rc
+  GEN    gmodule-win32-res.o
+  CCLD   libgmodule-2.0.la
+Creating library file: .libs/libgmodule-2.0.dll.a
+lib -machine:X86 -name:libgmodule-2.0-0.dll -def:gmodule.def -out:gmodule-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library gmodule-2.0.lib and object gmodule-2.0.exp
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib"
+/bin/install -c gmodule-2.0.lib /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+/bin/install -c gmodule.def /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gmodule-2.0.def
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libgmodule-2.0.la '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib'
+ /bin/install -c -m 644 gmodule.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0'
+make  install-data-hook
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+make[4]: Nothing to be done for `install-data-hook'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+libtool: install: /bin/install -c .libs/libgmodule-2.0.dll.a /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgmodule-2.0.dll.a
+libtool: install: base_file=`basename libgmodule-2.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgmodule-2.0.la'i; echo libgmodule-2.0-0.dll'`
+libtool: install:  dldir=/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/`dirname ../bin/libgmodule-2.0-0.dll`
+libtool: install:  test -d /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin || mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin
+libtool: install:  /bin/install -c .libs/libgmodule-2.0-0.dll /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgmodule-2.0-0.dll
+libtool: install:  chmod a+x /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgmodule-2.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgmodule-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libgmodule-2.0.lai /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgmodule-2.0.la
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gmodule'
+Making install in gthread
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+Making install in .
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+cd .. && /bin/sh ./config.status gthread/gthread.rc
+  CC     gthread-impl.lo
+gthread-impl.c: In function 'g_thread_init':
+gthread-impl.c:320:7: warning: the address of 'g_thread_gettime_impl' will always evaluate as 'true'
+config.status: creating gthread/gthread.rc
+  GEN    gthread-win32-res.o
+  CCLD   libgthread-2.0.la
+Creating library file: .libs/libgthread-2.0.dll.a
+lib -machine:X86 -name:libgthread-2.0-0.dll -def:./gthread.def -out:gthread-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library gthread-2.0.lib and object gthread-2.0.exp
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib"
+/bin/install -c gthread-2.0.lib /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+/bin/install -c ./gthread.def /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gthread-2.0.def
+make  install-data-hook
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+make[4]: Nothing to be done for `install-data-hook'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+ /bin/sh ../libtool   --mode=install /bin/install -c   libgthread-2.0.la '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib'
+libtool: install: /bin/install -c .libs/libgthread-2.0.dll.a /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgthread-2.0.dll.a
+libtool: install: base_file=`basename libgthread-2.0.la`
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgthread-2.0.la'i; echo libgthread-2.0-0.dll'`
+libtool: install:  dldir=/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/`dirname ../bin/libgthread-2.0-0.dll`
+libtool: install:  test -d /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin || mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin
+libtool: install:  /bin/install -c .libs/libgthread-2.0-0.dll /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgthread-2.0-0.dll
+libtool: install:  chmod a+x /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgthread-2.0-0.dll
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgthread-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libgthread-2.0.lai /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgthread-2.0.la
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+Making install in tests
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread/tests'
+  CC     642026.o
+  CC     1bit_emufutex-1bit-mutex.o
+  CC     1bit-mutex.o
+  CCLD   642026.exe
+  CCLD   1bit-emufutex.exe
+  CCLD   1bit-mutex.exe
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gthread/tests'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread/tests'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread/tests'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gthread'
+Making install in gobject
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+  CC     glib-genmarshal.o
+  CCLD   glib-genmarshal.exe
+make glib-genmarshal.exe
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+make[2]: `glib-genmarshal.exe' is up to date.
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+  GEN    stamp-gmarshal.h
+  GEN    gmarshal.c
+make  install-recursive
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+Making install in .
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+  CC     gbinding.lo
+  CC     gatomicarray.lo
+  CC     gboxed.lo
+  CC     gclosure.lo
+  CC     genums.lo
+  CC     gobject.lo
+  CC     gparam.lo
+  CC     gparamspecs.lo
+  CC     gsignal.lo
+  CC     gsourceclosure.lo
+  CC     gtype.lo
+  CC     gtypemodule.lo
+  CC     gtypeplugin.lo
+  CC     gvalue.lo
+  CC     gvaluearray.lo
+  CC     gvaluetransform.lo
+  CC     gvaluetypes.lo
+cd .. && /bin/sh ./config.status gobject/gobject.rc
+  GEN    gobject.def
+  CC     gobject-query.o
+  CC     testgobject.o
+config.status: creating gobject/gobject.rc
+  GEN    gobject-win32-res.o
+  CCLD   libgobject-2.0.la
+Creating library file: .libs/libgobject-2.0.dll.a
+lib -machine:X86 -name:libgobject-2.0-0.dll -def:gobject.def -out:gobject-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library gobject-2.0.lib and object gobject-2.0.exp
+  CCLD   testgobject.exe
+  CCLD   gobject-query.exe
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+/bin/install -c gobject-2.0.lib /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+/bin/install -c gobject.def /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gobject-2.0.def
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libgobject-2.0.la '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib'
+ /bin/install -c glib-mkenums '/devel/target/9af0ed5b9823f125da25c47653b9c863/bin'
+ /bin/install -c gobject.py '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gdb'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gobject" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gobject"
+test -z "" || /bin/mkdir -p ""
+libtool: install: /bin/install -c .libs/libgobject-2.0.dll.a /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgobject-2.0.dll.a
+libtool: install: base_file=`basename libgobject-2.0.la`
+ /bin/install -c -m 644 gbinding.h gboxed.h gclosure.h genums.h gobject.h gparam.h gparamspecs.h gsignal.h gsourceclosure.h gtype.h gtypemodule.h gtypeplugin.h gvalue.h gvaluearray.h gvaluecollector.h gvaluetypes.h gobjectnotifyqueue.c gmarshal.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gobject'
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgobject-2.0.la'i; echo libgobject-2.0-0.dll'`
+make  install-data-hook
+make[5]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+libtool: install:  dldir=/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/`dirname ../bin/libgobject-2.0-0.dll`
+  GEN    libgobject-gdb.py
+libtool: install:  test -d /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin || mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin
+libtool: install:  /bin/install -c .libs/libgobject-2.0-0.dll /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgobject-2.0-0.dll
+mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gdb/auto-load/
+libtool: install:  chmod a+x /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgobject-2.0-0.dll
+/bin/install -c libgobject-gdb.py /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gdb/auto-load//libgobject-2.0.so.0.2800.8-gdb.py
+make[5]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgobject-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libgobject-2.0.lai /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgobject-2.0.la
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+  /bin/sh ../libtool   --mode=install /bin/install -c gobject-query.exe glib-genmarshal.exe '/devel/target/9af0ed5b9823f125da25c47653b9c863/bin'
+libtool: install: /bin/install -c .libs/gobject-query.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gobject-query.exe
+libtool: install: /bin/install -c .libs/glib-genmarshal.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/glib-genmarshal.exe
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+Making install in tests
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject/tests'
+  CC     threadtests.o
+  CC     dynamictests.o
+  CC     binding.o
+  CC     properties.o
+  CC     reference.o
+  CC     ifaceproperties.o
+  CCLD   threadtests.exe
+  CCLD   dynamictests.exe
+  CCLD   binding.exe
+  CCLD   properties.exe
+  CCLD   reference.exe
+  CCLD   ifaceproperties.exe
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gobject/tests'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject/tests'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject/tests'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gobject'
+Making install in gio
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+make  install-recursive
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+Making install in win32
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio/win32'
+  CC     libgiowin32_la-gwin32directorymonitor.lo
+  CC     libgiowin32_la-gwinhttpvfs.lo
+  CC     libgiowin32_la-gwinhttpfile.lo
+  CC     libgiowin32_la-gwinhttpfileinputstream.lo
+  CC     libgiowin32_la-gwinhttpfileoutputstream.lo
+  CCLD   libgiowin32.la
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio/win32'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio/win32'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio/win32'
+Making install in .
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+  CC     gasynchelper.lo
+  CC     gappinfo.lo
+  CC     gasyncinitable.lo
+  CC     gasyncresult.lo
+  CC     gbufferedinputstream.lo
+  CC     gbufferedoutputstream.lo
+  CC     gcancellable.lo
+  CC     gcontenttype.lo
+  CC     gcharsetconverter.lo
+  CC     gconverterinputstream.lo
+  CC     gconverter.lo
+  CC     gconverteroutputstream.lo
+  CC     gcredentials.lo
+  CC     gdatainputstream.lo
+gcredentials.c:87:2: warning: #warning Please add GCredentials support for your OS
+  CC     gdataoutputstream.lo
+  CC     gdrive.lo
+  CC     gdummyfile.lo
+  CC     gdummyproxyresolver.lo
+  CC     gdummytlsbackend.lo
+  CC     gemblem.lo
+  CC     gemblemedicon.lo
+  CC     gfile.lo
+  CC     gfileattribute.lo
+  CC     gfileenumerator.lo
+  CC     gfileicon.lo
+  CC     gfileinfo.lo
+  CC     gfileinputstream.lo
+  CC     gfilemonitor.lo
+  CC     gfilenamecompleter.lo
+  CC     gfileoutputstream.lo
+  CC     gfileiostream.lo
+  CC     gfilterinputstream.lo
+  CC     gfilteroutputstream.lo
+  CC     gicon.lo
+  CC     ginetaddress.lo
+  CC     ginetsocketaddress.lo
+  CC     ginitable.lo
+  CC     ginputstream.lo
+  CC     gioerror.lo
+  CC     giomodule.lo
+  CC     gioscheduler.lo
+  CC     giostream.lo
+  CC     gloadableicon.lo
+  CC     gmount.lo
+  CC     gmemoryinputstream.lo
+  CC     gmemoryoutputstream.lo
+  CC     gmountoperation.lo
+  CC     gnativevolumemonitor.lo
+  CC     gnetworkaddress.lo
+  CC     gnetworkservice.lo
+make[3]: stat: gpermission.lo: Bad file number
+  CC     goutputstream.lo
+  CC     gpermission.lo
+  CC     gpollableinputstream.lo
+  CC     gpollableoutputstream.lo
+  CC     gpollfilemonitor.lo
+  CC     gproxyresolver.lo
+  CC     gresolver.lo
+  CC     gseekable.lo
+  CC     gsimpleasyncresult.lo
+  CC     gsimplepermission.lo
+  CC     gsocket.lo
+  CC     gsocketaddress.lo
+gsocket.c: In function 'g_socket_details_from_fd':
+gsocket.c:325:3: warning: pointer targets in passing argument 5 of 'getsockopt' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:543:32: note: expected 'int *' but argument is of type 'guint *'
+gsocket.c:369:32: warning: pointer targets in passing argument 3 of 'getsockname' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:542:32: note: expected 'int *' but argument is of type 'guint *'
+gsocket.c:414:36: warning: pointer targets in passing argument 3 of 'getpeername' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:541:32: note: expected 'int *' but argument is of type 'guint *'
+gsocket.c:420:5: warning: pointer targets in passing argument 5 of 'getsockopt' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:543:32: note: expected 'int *' but argument is of type 'guint *'
+gsocket.c: In function 'g_socket_get_local_address':
+gsocket.c:1242:46: warning: pointer targets in passing argument 3 of 'getsockname' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:542:32: note: expected 'int *' but argument is of type 'guint32 *'
+gsocket.c: In function 'g_socket_get_remote_address':
+gsocket.c:1285:50: warning: pointer targets in passing argument 3 of 'getpeername' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:541:32: note: expected 'int *' but argument is of type 'guint32 *'
+gsocket.c: In function 'g_socket_check_connect_result':
+gsocket.c:1711:3: warning: pointer targets in passing argument 5 of 'getsockopt' differ in signedness
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:543:32: note: expected 'int *' but argument is of type 'guint *'
+  CC     gsocketaddressenumerator.lo
+  CC     gsocketclient.lo
+  CC     gsocketconnectable.lo
+  CC     gsocketconnection.lo
+  CC     gsocketinputstream.lo
+  CC     gsocketcontrolmessage.lo
+  CC     gsocketlistener.lo
+  CC     gsocketoutputstream.lo
+  CC     gproxy.lo
+  CC     gproxyaddress.lo
+  CC     gproxyaddressenumerator.lo
+  CC     gsocketservice.lo
+  CC     gsrvtarget.lo
+  CC     gtcpconnection.lo
+  CC     gtcpwrapperconnection.lo
+  CC     gthreadedsocketservice.lo
+  CC     gthemedicon.lo
+  CC     gthreadedresolver.lo
+  CC     gtlsbackend.lo
+  CC     gtlscertificate.lo
+  CC     gtlsclientconnection.lo
+  CC     gtlsconnection.lo
+  CC     gtlsserverconnection.lo
+  CC     gunionvolumemonitor.lo
+  CC     gvfs.lo
+  CC     gvolume.lo
+  CC     gvolumemonitor.lo
+  CC     gzlibcompressor.lo
+  CC     gzlibdecompressor.lo
+  CC     gioenumtypes.lo
+  CC     gwin32appinfo.lo
+  CC     gwin32mount.lo
+  CC     gwin32volumemonitor.lo
+  CC     gwin32resolver.lo
+  CC     gwin32inputstream.lo
+gwin32volumemonitor.c: In function 'get_connected_drives':
+gwin32volumemonitor.c:172:11: warning: unused variable 'wc_name'
+gwin32volumemonitor.c:171:11: warning: unused variable 'found'
+gwin32volumemonitor.c:170:11: warning: unused variable 'find_handle'
+  CC     gwin32outputstream.lo
+  CC     gactiongroup.lo
+  CC     gsimpleactiongroup.lo
+  CC     gaction.lo
+  CC     gsimpleaction.lo
+  CC     gapplicationcommandline.lo
+  CC     gapplicationimpl-dbus.lo
+  CC     gapplication.lo
+  CC     gvdb-reader.lo
+  CC     gdelayedsettingsbackend.lo
+  CC     gkeyfilesettingsbackend.lo
+  CC     gmemorysettingsbackend.lo
+  CC     gnullsettingsbackend.lo
+  CC     gsettingsbackend.lo
+  CC     gsettingsschema.lo
+  CC     gsettings-mapping.lo
+  CC     gsettings.lo
+  CC     gregistrysettingsbackend.lo
+  CC     gdbusutils.lo
+gregistrysettingsbackend.c:500:1: warning: 'registry_cache_dump' defined but not used
+make[3]: stat: gdbusauthobserver.lo: Bad file number
+  CC     gdbusaddress.lo
+  CC     gdbusauthobserver.lo
+  CC     gdbusauth.lo
+  CC     gdbusauthmechanism.lo
+  CC     gdbusauthmechanismanon.lo
+  CC     gdbusauthmechanismexternal.lo
+  CC     gdbusauthmechanismsha1.lo
+gdbusauthmechanismexternal.c: In function 'mechanism_client_initiate':
+gdbusauthmechanismexternal.c:355:2: warning: #warning Dont know how to send credentials on this OS. The EXTERNAL D-Bus authentication mechanism will not work.
+  CC     gdbuserror.lo
+  CC     gdbusconnection.lo
+gdbusauthmechanismsha1.c: In function 'ensure_keyring_directory':
+gdbusauthmechanismsha1.c:287:2: warning: #warning Please implement permission checking on this non-UNIX platform
+  CC     gdbusmessage.lo
+  CC     gdbusnameowning.lo
+gdbusmessage.c: In function 'g_dbus_message_copy':
+gdbusmessage.c:3256:2: warning: label 'out' defined but not used
+  CC     gdbusnamewatching.lo
+  CC     gdbusproxy.lo
+  CC     gdbusprivate.lo
+  CC     gdbusintrospection.lo
+  CC     gdbusmethodinvocation.lo
+gdbusprivate.c: In function 'write_message_continue_writing':
+gdbusprivate.c:1075:2: warning: label 'out' defined but not used
+gdbusprivate.c: At top level:
+gdbusprivate.c:937:1: warning: 'on_socket_ready' defined but not used
+  CC     gdbusserver.lo
+  CC     glocaldirectorymonitor.lo
+  CC     glocalfile.lo
+  CC     glocalfileinfo.lo
+  CC     glocalfileenumerator.lo
+  CC     glocalfileinputstream.lo
+  CC     glocalfilemonitor.lo
+  CC     glocalfileoutputstream.lo
+  CC     glocalfileiostream.lo
+  CC     glocalvfs.lo
+  CC     gsocks4proxy.lo
+  CC     gsocks4aproxy.lo
+  CC     gsocks5proxy.lo
+cd .. && /bin/sh ./config.status gio/gio.rc
+  CC     gio-marshal.lo
+  GEN    gio.def
+  CC     gio-querymodules.o
+  CC     gvdb-builder.o
+  CC     glib-compile-schemas.o
+  CC     gsettings-tool.o
+  CC     gdbus-tool.o
+  CCLD   glib-compile-schemas.exe
+config.status: creating gio/gio.rc
+windres gio.rc gio-win32-res.o
+  CCLD   libgio-2.0.la
+Creating library file: .libs/libgio-2.0.dll.a
+  CCLD   gio-querymodules.exe
+  CCLD   gsettings.exe
+  CCLD   gdbus.exe
+lib -machine:X86 -name:libgio-2.0-0.dll -def:gio.def -out:gio-2.0.lib
+Microsoft (R) Library Manager Version 8.00.40310.39
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+   Creating library gio-2.0.lib and object gio-2.0.exp
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/lib"
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/etc/bash_completion.d" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/etc/bash_completion.d"
+/bin/install -c gio-2.0.lib /devel/target/9af0ed5b9823f125da25c47653b9c863/lib
+/bin/install -c gio.def /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gio-2.0.def
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/schemas" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/schemas"
+ /bin/sh ../libtool   --mode=install /bin/install -c   libgio-2.0.la '/devel/target/9af0ed5b9823f125da25c47653b9c863/lib'
+ /bin/install -c gdbus-bash-completion.sh gsettings-bash-completion.sh '/devel/target/9af0ed5b9823f125da25c47653b9c863/etc/bash_completion.d'
+ /bin/install -c -m 644 gschema.dtd '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/schemas'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gio/" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gio/"
+test -z "" || /bin/mkdir -p ""
+libtool: install: /bin/install -c .libs/libgio-2.0.dll.a /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgio-2.0.dll.a
+libtool: install: base_file=`basename libgio-2.0.la`
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/gio-win32-2.0/gio" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/include/gio-win32-2.0/gio"
+libtool: install:  dlpath=`/bin/sh 2>&1 -c '. .libs/'libgio-2.0.la'i; echo libgio-2.0-0.dll'`
+ /bin/install -c -m 644 gappinfo.h gasyncinitable.h gasyncresult.h gbufferedinputstream.h gbufferedoutputstream.h gcancellable.h gcontenttype.h gcharsetconverter.h gconverter.h gconverterinputstream.h gconverteroutputstream.h gdatainputstream.h gdataoutputstream.h gdrive.h gemblem.h gemblemedicon.h gfile.h gfileattribute.h gfileenumerator.h gfileicon.h gfileinfo.h gfileinputstream.h gfilemonitor.h gfilenamecompleter.h gfileoutputstream.h gfileiostream.h gfilterinputstream.h gfilteroutputstream.h gicon.h ginetaddress.h ginetsocketaddress.h ginputstream.h ginitable.h gio.h giotypes.h gioenums.h gioerror.h giomodule.h gioscheduler.h giostream.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gio/'
+ /bin/install -c -m 644 gloadableicon.h gmount.h gmemoryinputstream.h gmemoryoutputstream.h gmountoperation.h gnativevolumemonitor.h gnetworkaddress.h gnetworkservice.h goutputstream.h gpermission.h gpollableinputstream.h gpollableoutputstream.h gproxyaddress.h gproxy.h gproxyaddressenumerator.h gproxyresolver.h gresolver.h gseekable.h gsimpleasyncresult.h gsimplepermission.h gsocket.h gsocketaddress.h gsocketaddressenumerator.h gsocketclient.h gsocketconnectable.h gsocketconnection.h gsocketcontrolmessage.h gsocketlistener.h gsocketservice.h gsrvtarget.h gtcpconnection.h gtcpwrapperconnection.h gthreadedsocketservice.h gthemedicon.h gtlsbackend.h gtlscertificate.h gtlsclientconnection.h gtlsconnection.h gtlsserverconnection.h gvfs.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gio/'
+libtool: install:  dldir=/devel/target/9af0ed5b9823f125da25c47653b9c863/lib/`dirname ../bin/libgio-2.0-0.dll`
+ /bin/install -c -m 644 gwin32inputstream.h gwin32outputstream.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/gio-win32-2.0/gio'
+ /bin/install -c -m 644 gvolume.h gvolumemonitor.h gzlibcompressor.h gzlibdecompressor.h gactiongroup.h gsimpleactiongroup.h gaction.h gsimpleaction.h gapplicationcommandline.h gapplication.h gsettingsbackend.h gsettings.h gdbusauthobserver.h gcredentials.h gdbusutils.h gdbuserror.h gdbusaddress.h gdbusconnection.h gdbusmessage.h gdbusnameowning.h gdbusnamewatching.h gdbusproxy.h gdbusintrospection.h gdbusmethodinvocation.h gdbusserver.h gioenumtypes.h '/devel/target/9af0ed5b9823f125da25c47653b9c863/include/glib-2.0/gio/'
+/bin/sh ../mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gio/modules
+libtool: install:  test -d /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin || mkdir -p /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin
+libtool: install:  /bin/install -c .libs/libgio-2.0-0.dll /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgio-2.0-0.dll
+libtool: install:  chmod a+x /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgio-2.0-0.dll
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/gio/modules
+libtool: install:  if test -n '' && test -n 'strip --strip-unneeded'; then eval 'strip --strip-unneeded /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/../bin/libgio-2.0-0.dll' || exit 0; fi
+libtool: install: /bin/install -c .libs/libgio-2.0.lai /devel/target/9af0ed5b9823f125da25c47653b9c863/lib/libgio-2.0.la
+make  install-data-hook
+make[5]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+make[5]: Nothing to be done for `install-data-hook'.
+make[5]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/bin"
+  /bin/sh ../libtool   --mode=install /bin/install -c gio-querymodules.exe glib-compile-schemas.exe gsettings.exe gdbus.exe '/devel/target/9af0ed5b9823f125da25c47653b9c863/bin'
+libtool: install: /bin/install -c .libs/gio-querymodules.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gio-querymodules.exe
+libtool: install: /bin/install -c .libs/glib-compile-schemas.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/glib-compile-schemas.exe
+libtool: install: /bin/install -c .libs/gsettings.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gsettings.exe
+libtool: install: /bin/install -c .libs/gdbus.exe /devel/target/9af0ed5b9823f125da25c47653b9c863/bin/gdbus.exe
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+Making install in tests
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio/tests'
+  CC     io-stream.o
+  CC     actions.o
+  CC     memory-input-stream.o
+  CC     memory-output-stream.o
+  CC     readwrite.o
+  CC     g-file.o
+  CC     g-file-info.o
+  CC     converter-stream.o
+  CC     data-input-stream.o
+  CC     data-output-stream.o
+  CC     g-icon.o
+  CC     buffered-input-stream.o
+  CC     buffered-output-stream.o
+  CC     sleepy-stream.o
+  CC     filter-streams.o
+  CC     volumemonitor.o
+  CC     srvtarget.o
+  CC     simple-async-result.o
+  CC     contexts.o
+  CC     gsettings.o
+  CC     gschema-compile.o
+gschema-compile.c: In function 'test_schema':
+gschema-compile.c:32:7: warning: passing argument 2 of 'execve' from incompatible pointer type
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/process.h:119:42: note: expected 'const char * const*' but argument is of type 'gchar **'
+gschema-compile.c:32:7: warning: passing argument 3 of 'execve' from incompatible pointer type
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/process.h:119:42: note: expected 'const char * const*' but argument is of type 'gchar **'
+  CC     async-close-output-stream.o
+  CC     gdbus-addresses.o
+  CC     network-address.o
+  CC     gdbus-message.o
+  CC     socket.o
+  CC     pollable.o
+  CC     win32-streams.o
+  CC     resolver.o
+  CC     socket-server.o
+socket-common.c:3:20: warning: 'unix_socket_address_types' defined but not used
+  CC     socket-client.o
+  CC     echo-server.o
+socket-common.c:3:20: warning: 'unix_socket_address_types' defined but not used
+  CC     httpd.o
+  CC     send-data.o
+  CC     filter-cat.o
+  CC     gdbus-example-export.o
+  CC     gdbus-example-own-name.o
+  CC     gdbus-example-watch-name.o
+  CC     gdbus-example-watch-proxy.o
+  CC     gdbus-example-server.o
+  CC     gdbus-example-subtree.o
+  CC     gdbus-example-peer.o
+  CC     gdbus-connection-flush-helper.o
+  CC     gdbus-example-proxy-subclass.o
+  CC     appinfo-test.o
+appinfo-test.c: In function 'main':
+appinfo-test.c:13:3: warning: implicit declaration of function 'getpid'
+  CC     proxy.o
+  CC     gapplication-example-open.o
+  CC     gapplication-example-cmdline.o
+  CC     gapplication-example-cmdline2.o
+  CC     gapplication-example-cmdline3.o
+/devel/dist/win32/gettext-tools-0.18.1.1-2/bin/msgfmt -o test.mo ./de.po; \
+	/bin/mkdir -p de/LC_MESSAGES; \
+	cp -f test.mo de/LC_MESSAGES
+  CC     gapplication-example-actions.o
+  CCLD   io-stream.exe
+  CCLD   actions.exe
+  CCLD   memory-input-stream.exe
+  CCLD   memory-output-stream.exe
+  CCLD   readwrite.exe
+  CCLD   g-file.exe
+  CCLD   g-file-info.exe
+  CCLD   converter-stream.exe
+  CCLD   data-input-stream.exe
+  CCLD   data-output-stream.exe
+  CCLD   g-icon.exe
+  CCLD   buffered-input-stream.exe
+  CCLD   buffered-output-stream.exe
+  CCLD   sleepy-stream.exe
+  CCLD   filter-streams.exe
+  CCLD   volumemonitor.exe
+  CCLD   simple-async-result.exe
+  CCLD   srvtarget.exe
+  CCLD   contexts.exe
+  CCLD   gsettings.exe
+  CCLD   gschema-compile.exe
+  CCLD   async-close-output-stream.exe
+  CCLD   gdbus-addresses.exe
+  CCLD   network-address.exe
+  CCLD   gdbus-message.exe
+  CCLD   socket.exe
+  CCLD   pollable.exe
+  CCLD   win32-streams.exe
+  CCLD   resolver.exe
+  CCLD   socket-server.exe
+  CCLD   socket-client.exe
+  CCLD   echo-server.exe
+  CCLD   httpd.exe
+  CCLD   send-data.exe
+  CCLD   filter-cat.exe
+  CCLD   gdbus-example-export.exe
+  CCLD   gdbus-example-own-name.exe
+  CCLD   gdbus-example-watch-name.exe
+  CCLD   gdbus-example-watch-proxy.exe
+  CCLD   gdbus-example-server.exe
+  CCLD   gdbus-example-subtree.exe
+  CCLD   gdbus-example-peer.exe
+  CCLD   gdbus-example-proxy-subclass.exe
+  CCLD   gdbus-connection-flush-helper.exe
+  CCLD   appinfo-test.exe
+  CCLD   proxy.exe
+  CCLD   gapplication-example-open.exe
+  CCLD   gapplication-example-cmdline.exe
+  CCLD   gapplication-example-cmdline2.exe
+  CCLD   gapplication-example-cmdline3.exe
+  CCLD   gapplication-example-actions.exe
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/gio/tests'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio/tests'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio/tests'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/gio'
+Making install in tests
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+Making install in gobject
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+  GEN    stamp-testmarshal.h
+  GEN    testmarshal.c
+make  install-am
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+  CC     testmarshal.lo
+  CC     testmodule.lo
+  CCLD   libtestgobject.la
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests/gobject'
+Making install in refcount
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests/refcount'
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests/refcount'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests/refcount'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests/refcount'
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+  CC     libmoduletestplugin_b.lo
+  CC     libmoduletestplugin_a.lo
+  CC     testglib.o
+  CC     testgdate.o
+  CC     testgdateparser.o
+  CC     unicode-normalize.o
+  CC     unicode-collate.o
+  CC     errorcheck-mutex-test.o
+  CC     assert-msg-test.o
+  CCLD   libmoduletestplugin_a.la
+  CCLD   libmoduletestplugin_b.la
+  CCLD   testglib.exe
+Creating library file: .libs/libmoduletestplugin_a.dll.a
+Creating library file: .libs/libmoduletestplugin_b.dll.a
+  CCLD   testgdate.exe
+  CCLD   testgdateparser.exe
+  CCLD   unicode-normalize.exe
+  CCLD   unicode-collate.exe
+  CCLD   errorcheck-mutex-test.exe
+  CCLD   assert-msg-test.exe
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/tests'
+Making install in po
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/po'
+if test -r ".././mkinstalldirs"; then \
+	  .././mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/share; \
+	else \
+	  /bin/sh ../mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/share; \
+	fi
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/af/LC_MESSAGES
+installing af.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/af/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/am/LC_MESSAGES
+installing am.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/am/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ar/LC_MESSAGES
+installing ar.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ar/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/as/LC_MESSAGES
+installing as.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/as/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ast/LC_MESSAGES
+installing ast.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ast/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/az/LC_MESSAGES
+installing az.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/az/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/be/LC_MESSAGES
+installing be.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/be/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/be@latin/LC_MESSAGES
+installing be@latin.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/be@latin/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bg/LC_MESSAGES
+installing bg.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bg/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bn/LC_MESSAGES
+installing bn.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bn/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bn_IN/LC_MESSAGES
+installing bn_IN.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bn_IN/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bs/LC_MESSAGES
+installing bs.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/bs/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ca/LC_MESSAGES
+installing ca.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ca/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ca@valencia/LC_MESSAGES
+installing ca@valencia.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ca@valencia/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/cs/LC_MESSAGES
+installing cs.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/cs/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/cy/LC_MESSAGES
+installing cy.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/cy/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/da/LC_MESSAGES
+installing da.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/da/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/de/LC_MESSAGES
+installing de.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/de/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/dz/LC_MESSAGES
+installing dz.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/dz/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/el/LC_MESSAGES
+installing el.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/el/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en_CA/LC_MESSAGES
+installing en_CA.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en_CA/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en_GB/LC_MESSAGES
+installing en_GB.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en_GB/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en@shaw/LC_MESSAGES
+installing en@shaw.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/en@shaw/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/eo/LC_MESSAGES
+installing eo.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/eo/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/es/LC_MESSAGES
+installing es.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/es/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/et/LC_MESSAGES
+installing et.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/et/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/eu/LC_MESSAGES
+installing eu.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/eu/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fa/LC_MESSAGES
+installing fa.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fa/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fi/LC_MESSAGES
+installing fi.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fi/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fr/LC_MESSAGES
+installing fr.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/fr/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ga/LC_MESSAGES
+installing ga.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ga/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/gl/LC_MESSAGES
+installing gl.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/gl/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/gu/LC_MESSAGES
+installing gu.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/gu/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/he/LC_MESSAGES
+installing he.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/he/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hi/LC_MESSAGES
+installing hi.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hi/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hr/LC_MESSAGES
+installing hr.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hr/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hu/LC_MESSAGES
+installing hu.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hu/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hy/LC_MESSAGES
+installing hy.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/hy/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/id/LC_MESSAGES
+installing id.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/id/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/is/LC_MESSAGES
+installing is.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/is/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/it/LC_MESSAGES
+installing it.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/it/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ja/LC_MESSAGES
+installing ja.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ja/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ka/LC_MESSAGES
+installing ka.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ka/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/kk/LC_MESSAGES
+installing kk.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/kk/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/kn/LC_MESSAGES
+installing kn.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/kn/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ko/LC_MESSAGES
+installing ko.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ko/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ku/LC_MESSAGES
+installing ku.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ku/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/lt/LC_MESSAGES
+installing lt.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/lt/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/lv/LC_MESSAGES
+installing lv.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/lv/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mai/LC_MESSAGES
+installing mai.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mai/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mg/LC_MESSAGES
+installing mg.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mg/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mk/LC_MESSAGES
+installing mk.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mk/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ml/LC_MESSAGES
+installing ml.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ml/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mn/LC_MESSAGES
+installing mn.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mn/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mr/LC_MESSAGES
+installing mr.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/mr/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ms/LC_MESSAGES
+installing ms.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ms/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nb/LC_MESSAGES
+installing nb.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nb/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nds/LC_MESSAGES
+installing nds.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nds/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ne/LC_MESSAGES
+installing ne.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ne/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nl/LC_MESSAGES
+installing nl.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nl/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nn/LC_MESSAGES
+installing nn.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/nn/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/oc/LC_MESSAGES
+installing oc.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/oc/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/or/LC_MESSAGES
+installing or.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/or/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pa/LC_MESSAGES
+installing pa.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pa/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pl/LC_MESSAGES
+installing pl.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pl/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ps/LC_MESSAGES
+installing ps.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ps/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pt/LC_MESSAGES
+installing pt.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pt/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pt_BR/LC_MESSAGES
+installing pt_BR.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/pt_BR/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ro/LC_MESSAGES
+installing ro.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ro/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ru/LC_MESSAGES
+installing ru.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ru/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/rw/LC_MESSAGES
+installing rw.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/rw/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/si/LC_MESSAGES
+installing si.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/si/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sk/LC_MESSAGES
+installing sk.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sk/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sl/LC_MESSAGES
+installing sl.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sl/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sq/LC_MESSAGES
+installing sq.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sq/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr/LC_MESSAGES
+installing sr.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr@latin/LC_MESSAGES
+installing sr@latin.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr@latin/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr@ije/LC_MESSAGES
+installing sr@ije.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sr@ije/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sv/LC_MESSAGES
+installing sv.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/sv/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ta/LC_MESSAGES
+installing ta.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ta/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/te/LC_MESSAGES
+installing te.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/te/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/th/LC_MESSAGES
+installing th.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/th/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tl/LC_MESSAGES
+installing tl.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tl/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tr/LC_MESSAGES
+installing tr.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tr/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ug/LC_MESSAGES
+installing ug.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/ug/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tt/LC_MESSAGES
+installing tt.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/tt/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/uk/LC_MESSAGES
+installing uk.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/uk/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/vi/LC_MESSAGES
+installing vi.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/vi/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/wa/LC_MESSAGES
+installing wa.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/wa/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/xh/LC_MESSAGES
+installing xh.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/xh/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/yi/LC_MESSAGES
+installing yi.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/yi/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_CN/LC_MESSAGES
+installing zh_CN.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_CN/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_HK/LC_MESSAGES
+installing zh_HK.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_HK/LC_MESSAGES/glib20.mo
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_TW/LC_MESSAGES
+installing zh_TW.gmo as /devel/target/9af0ed5b9823f125da25c47653b9c863/share/locale/zh_TW/LC_MESSAGES/glib20.mo
+if test "glib" = "glib"; then \
+	  if test -r ".././mkinstalldirs"; then \
+	    .././mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext/po; \
+	  else \
+	    /bin/sh ../mkinstalldirs /devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext/po; \
+	  fi; \
+	  /bin/install -c -m 644 ./Makefile.in.in \
+			  /devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext/po/Makefile.in.in; \
+	else \
+	  : ; \
+	fi
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/glib-2.0/gettext/po
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/po'
+Making install in docs
+make[1]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+Making install in reference
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+Making install in glib
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/glib'
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/glib'
+make[4]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1"
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gtk-doc/html/glib
+-- Installing ./html/annotation-glossary.html
+-- Installing ./html/api-index-2-10.html
+ /bin/install -c -m 644 glib-gettextize.1 gtester.1 gtester-report.1 '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1'
+-- Installing ./html/api-index-2-12.html
+-- Installing ./html/api-index-2-14.html
+-- Installing ./html/api-index-2-16.html
+-- Installing ./html/api-index-2-18.html
+-- Installing ./html/api-index-2-2.html
+-- Installing ./html/api-index-2-20.html
+-- Installing ./html/api-index-2-22.html
+-- Installing ./html/api-index-2-24.html
+-- Installing ./html/api-index-2-26.html
+-- Installing ./html/api-index-2-28.html
+-- Installing ./html/api-index-2-4.html
+-- Installing ./html/api-index-2-6.html
+-- Installing ./html/api-index-2-8.html
+-- Installing ./html/api-index-deprecated.html
+-- Installing ./html/api-index-full.html
+-- Installing ./html/file-name-encodings.png
+-- Installing ./html/glib-Arrays.html
+-- Installing ./html/glib-Asynchronous-Queues.html
+-- Installing ./html/glib-Atomic-Operations.html
+-- Installing ./html/glib-Automatic-String-Completion.html
+-- Installing ./html/glib-Balanced-Binary-Trees.html
+-- Installing ./html/glib-Base64-Encoding.html
+-- Installing ./html/glib-Basic-Types.html
+-- Installing ./html/glib-Bookmark-file-parser.html
+-- Installing ./html/glib-Byte-Arrays.html
+-- Installing ./html/glib-Byte-Order-Macros.html
+-- Installing ./html/glib-Caches.html
+-- Installing ./html/glib-Character-Set-Conversion.html
+-- Installing ./html/glib-Commandline-option-parser.html
+-- Installing ./html/glib-Data-Checksums.html
+-- Installing ./html/glib-Datasets.html
+-- Installing ./html/glib-Date-and-Time-Functions.html
+-- Installing ./html/glib-Double-ended-Queues.html
+-- Installing ./html/glib-Doubly-Linked-Lists.html
+-- Installing ./html/glib-Dynamic-Loading-of-Modules.html
+-- Installing ./html/glib-Error-Reporting.html
+-- Installing ./html/glib-File-Utilities.html
+-- Installing ./html/glib-GDateTime.html
+-- Installing ./html/glib-GTimeZone.html
+-- Installing ./html/glib-GVariant.html
+-- Installing ./html/glib-GVariantType.html
+-- Installing ./html/glib-Glob-style-pattern-matching.html
+-- Installing ./html/glib-Hash-Tables.html
+-- Installing ./html/glib-Hook-Functions.html
+-- Installing ./html/glib-Hostname-Utilities.html
+-- Installing ./html/glib-I18N.html
+-- Installing ./html/glib-IO-Channels.html
+-- Installing ./html/glib-Key-value-file-parser.html
+-- Installing ./html/glib-Keyed-Data-Lists.html
+-- Installing ./html/glib-Lexical-Scanner.html
+-- Installing ./html/glib-Limits-of-Basic-Types.html
+-- Installing ./html/glib-Memory-Allocation.html
+-- Installing ./html/glib-Memory-Allocators.html
+-- Installing ./html/glib-Memory-Chunks.html
+-- Installing ./html/glib-Memory-Slices.html
+-- Installing ./html/glib-Message-Logging.html
+-- Installing ./html/glib-Miscellaneous-Macros.html
+-- Installing ./html/glib-Miscellaneous-Utility-Functions.html
+-- Installing ./html/glib-N-ary-Trees.html
+-- Installing ./html/glib-Numerical-Definitions.html
+-- Installing ./html/glib-Perl-compatible-regular-expressions.html
+-- Installing ./html/glib-Pointer-Arrays.html
+-- Installing ./html/glib-Quarks.html
+-- Installing ./html/glib-Random-Numbers.html
+-- Installing ./html/glib-Relations-and-Tuples.html
+-- Installing ./html/glib-Sequences.html
+-- Installing ./html/glib-Shell-related-Utilities.html
+-- Installing ./html/glib-Simple-XML-Subset-Parser.html
+-- Installing ./html/glib-Singly-Linked-Lists.html
+-- Installing ./html/glib-Spawning-Processes.html
+-- Installing ./html/glib-Standard-Macros.html
+-- Installing ./html/glib-String-Chunks.html
+-- Installing ./html/glib-String-Utility-Functions.html
+-- Installing ./html/glib-Strings.html
+-- Installing ./html/glib-Testing.html
+-- Installing ./html/glib-The-Main-Event-Loop.html
+-- Installing ./html/glib-Thread-Pools.html
+-- Installing ./html/glib-Threads.html
+-- Installing ./html/glib-Timers.html
+-- Installing ./html/glib-Trash-Stacks.html
+-- Installing ./html/glib-Type-Conversion-Macros.html
+-- Installing ./html/glib-URI-Functions.html
+-- Installing ./html/glib-Unicode-Manipulation.html
+-- Installing ./html/glib-Version-Information.html
+-- Installing ./html/glib-Warnings-and-Assertions.html
+-- Installing ./html/glib-Windows-Compatibility-Functions.html
+-- Installing ./html/glib-building.html
+-- Installing ./html/glib-changes.html
+-- Installing ./html/glib-compiling.html
+-- Installing ./html/glib-core.html
+-- Installing ./html/glib-cross-compiling.html
+-- Installing ./html/glib-data-types.html
+-- Installing ./html/glib-fundamentals.html
+-- Installing ./html/glib-gettextize.html
+-- Installing ./html/glib-regex-syntax.html
+-- Installing ./html/glib-resources.html
+-- Installing ./html/glib-running.html
+-- Installing ./html/glib-utilities.html
+-- Installing ./html/glib.devhelp
+-- Installing ./html/glib.devhelp2
+-- Installing ./html/glib.html
+-- Installing ./html/gtester-report.html
+-- Installing ./html/gtester.html
+-- Installing ./html/gvariant-format-strings.html
+-- Installing ./html/gvariant-text.html
+-- Installing ./html/home.png
+-- Installing ./html/index.html
+-- Installing ./html/index.sgml
+-- Installing ./html/left.png
+-- Installing ./html/mainloop-states.gif
+-- Installing ./html/right.png
+-- Installing ./html/style.css
+-- Installing ./html/tools.html
+-- Installing ./html/up.png
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/glib'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/glib'
+Making install in gobject
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gobject'
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gobject'
+make[4]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1"
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gtk-doc/html/gobject
+-- Installing ./html/GBinding.html
+-- Installing ./html/GTypeModule.html
+ /bin/install -c -m 644 glib-mkenums.1 glib-genmarshal.1 gobject-query.1 '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1'
+-- Installing ./html/GTypePlugin.html
+-- Installing ./html/annotation-glossary.html
+-- Installing ./html/api-index-2-10.html
+-- Installing ./html/api-index-2-12.html
+-- Installing ./html/api-index-2-14.html
+-- Installing ./html/api-index-2-18.html
+-- Installing ./html/api-index-2-2.html
+-- Installing ./html/api-index-2-22.html
+-- Installing ./html/api-index-2-24.html
+-- Installing ./html/api-index-2-26.html
+-- Installing ./html/api-index-2-28.html
+-- Installing ./html/api-index-2-4.html
+-- Installing ./html/api-index-2-6.html
+-- Installing ./html/api-index-2-8.html
+-- Installing ./html/api-index-deprecated.html
+-- Installing ./html/api-index-full.html
+-- Installing ./html/ch01s02.html
+-- Installing ./html/ch06s03.html
+-- Installing ./html/chapter-gobject.html
+-- Installing ./html/chapter-gtype.html
+-- Installing ./html/chapter-intro.html
+-- Installing ./html/chapter-signal.html
+-- Installing ./html/glib-genmarshal.html
+-- Installing ./html/glib-mkenums.html
+-- Installing ./html/glue.png
+-- Installing ./html/gobject-Boxed-Types.html
+-- Installing ./html/gobject-Closures.html
+-- Installing ./html/gobject-Enumeration-and-Flag-Types.html
+-- Installing ./html/gobject-GParamSpec.html
+-- Installing ./html/gobject-Generic-values.html
+-- Installing ./html/gobject-Signals.html
+-- Installing ./html/gobject-Standard-Parameter-and-Value-Types.html
+-- Installing ./html/gobject-The-Base-Object-Type.html
+-- Installing ./html/gobject-Type-Information.html
+-- Installing ./html/gobject-Value-arrays.html
+-- Installing ./html/gobject-Varargs-Value-Collection.html
+-- Installing ./html/gobject-memory.html
+-- Installing ./html/gobject-properties.html
+-- Installing ./html/gobject-query.html
+-- Installing ./html/gobject.devhelp
+-- Installing ./html/gobject.devhelp2
+-- Installing ./html/gtype-conventions.html
+-- Installing ./html/gtype-instantiable-classed.html
+-- Installing ./html/gtype-non-instantiable-classed.html
+-- Installing ./html/gtype-non-instantiable.html
+-- Installing ./html/home.png
+-- Installing ./html/howto-gobject-chainup.html
+-- Installing ./html/howto-gobject-code.html
+-- Installing ./html/howto-gobject-construction.html
+-- Installing ./html/howto-gobject-destruction.html
+-- Installing ./html/howto-gobject-methods.html
+-- Installing ./html/howto-gobject.html
+-- Installing ./html/howto-interface-implement.html
+-- Installing ./html/howto-interface-properties.html
+-- Installing ./html/howto-interface.html
+-- Installing ./html/howto-signals.html
+-- Installing ./html/index.html
+-- Installing ./html/index.sgml
+-- Installing ./html/left.png
+-- Installing ./html/pr01.html
+-- Installing ./html/pt01.html
+-- Installing ./html/pt02.html
+-- Installing ./html/pt03.html
+-- Installing ./html/right.png
+-- Installing ./html/rn01.html
+-- Installing ./html/rn02.html
+-- Installing ./html/signal.html
+-- Installing ./html/style.css
+-- Installing ./html/tools-ginspector.html
+-- Installing ./html/tools-gob.html
+-- Installing ./html/tools-gtkdoc.html
+-- Installing ./html/tools-refdb.html
+-- Installing ./html/tools-vala.html
+-- Installing ./html/up.png
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gobject'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gobject'
+Making install in gio
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gio'
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gio'
+make[4]: Nothing to be done for `install-exec-am'.
+test -z "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1" || /bin/mkdir -p "/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1"
+mkdir -p -- /devel/target/9af0ed5b9823f125da25c47653b9c863/share/gtk-doc/html/gio
+-- Installing ./html/GAction.html
+ /bin/install -c -m 644 gio-querymodules.1 glib-compile-schemas.1 gsettings.1 gdbus.1 '/devel/target/9af0ed5b9823f125da25c47653b9c863/share/man/man1'
+-- Installing ./html/GActionGroup.html
+-- Installing ./html/GAppInfo.html
+-- Installing ./html/GApplication.html
+-- Installing ./html/GApplicationCommandLine.html
+-- Installing ./html/GAsyncInitable.html
+-- Installing ./html/GAsyncResult.html
+-- Installing ./html/GBufferedInputStream.html
+-- Installing ./html/GBufferedOutputStream.html
+-- Installing ./html/GCancellable.html
+-- Installing ./html/GCharsetConverter.html
+-- Installing ./html/GConverter.html
+-- Installing ./html/GCredentials.html
+-- Installing ./html/GDBusAuthObserver.html
+-- Installing ./html/GDBusConnection.html
+-- Installing ./html/GDBusError.html
+-- Installing ./html/GDBusMessage.html
+-- Installing ./html/GDBusMethodInvocation.html
+-- Installing ./html/GDBusProxy.html
+-- Installing ./html/GDBusServer.html
+-- Installing ./html/GDataInputStream.html
+-- Installing ./html/GDataOutputStream.html
+-- Installing ./html/GDrive.html
+-- Installing ./html/GEmblem.html
+-- Installing ./html/GEmblemedIcon.html
+-- Installing ./html/GFile.html
+-- Installing ./html/GFileDescriptorBased.html
+-- Installing ./html/GFileEnumerator.html
+-- Installing ./html/GFileIOStream.html
+-- Installing ./html/GFileIcon.html
+-- Installing ./html/GFileInfo.html
+-- Installing ./html/GFileInputStream.html
+-- Installing ./html/GFileMonitor.html
+-- Installing ./html/GFileOutputStream.html
+-- Installing ./html/GFilenameCompleter.html
+-- Installing ./html/GFilterInputStream.html
+-- Installing ./html/GFilterOutputStream.html
+-- Installing ./html/GIOModule.html
+-- Installing ./html/GIOStream.html
+-- Installing ./html/GIcon.html
+-- Installing ./html/GInetAddress.html
+-- Installing ./html/GInetSocketAddress.html
+-- Installing ./html/GInitable.html
+-- Installing ./html/GInputStream.html
+-- Installing ./html/GLoadableIcon.html
+-- Installing ./html/GMemoryInputStream.html
+-- Installing ./html/GMemoryOutputStream.html
+-- Installing ./html/GMount.html
+-- Installing ./html/GMountOperation.html
+-- Installing ./html/GNetworkAddress.html
+-- Installing ./html/GNetworkService.html
+-- Installing ./html/GOutputStream.html
+-- Installing ./html/GPermission.html
+-- Installing ./html/GPollableInputStream.html
+-- Installing ./html/GPollableOutputStream.html
+-- Installing ./html/GProxy.html
+-- Installing ./html/GProxyAddress.html
+-- Installing ./html/GProxyResolver.html
+-- Installing ./html/GResolver.html
+-- Installing ./html/GSeekable.html
+-- Installing ./html/GSettings.html
+-- Installing ./html/GSettingsBackend.html
+-- Installing ./html/GSimpleAction.html
+-- Installing ./html/GSimpleActionGroup.html
+-- Installing ./html/GSimpleAsyncResult.html
+-- Installing ./html/GSimplePermission.html
+-- Installing ./html/GSocket.html
+-- Installing ./html/GSocketAddress.html
+-- Installing ./html/GSocketClient.html
+-- Installing ./html/GSocketConnectable.html
+-- Installing ./html/GSocketConnection.html
+-- Installing ./html/GSocketControlMessage.html
+-- Installing ./html/GSocketListener.html
+-- Installing ./html/GSocketService.html
+-- Installing ./html/GSrvTarget.html
+-- Installing ./html/GTcpConnection.html
+-- Installing ./html/GTcpWrapperConnection.html
+-- Installing ./html/GThemedIcon.html
+-- Installing ./html/GThreadedSocketService.html
+-- Installing ./html/GTlsBackend.html
+-- Installing ./html/GTlsCertificate.html
+-- Installing ./html/GTlsClientConnection.html
+-- Installing ./html/GTlsConnection.html
+-- Installing ./html/GTlsServerConnection.html
+-- Installing ./html/GUnixConnection.html
+-- Installing ./html/GUnixCredentialsMessage.html
+-- Installing ./html/GUnixFDList.html
+-- Installing ./html/GUnixFDMessage.html
+-- Installing ./html/GUnixInputStream.html
+-- Installing ./html/GUnixOutputStream.html
+-- Installing ./html/GUnixSocketAddress.html
+-- Installing ./html/GVfs.html
+-- Installing ./html/GVolume.html
+-- Installing ./html/GVolumeMonitor.html
+-- Installing ./html/GZlibCompressor.html
+-- Installing ./html/GZlibDecompressor.html
+-- Installing ./html/annotation-glossary.html
+-- Installing ./html/api-index-2-18.html
+-- Installing ./html/api-index-2-20.html
+-- Installing ./html/api-index-2-22.html
+-- Installing ./html/api-index-2-24.html
+-- Installing ./html/api-index-2-26.html
+-- Installing ./html/api-index-2-28.html
+-- Installing ./html/api-index-deprecated.html
+-- Installing ./html/api-index-full.html
+-- Installing ./html/application.html
+-- Installing ./html/async.html
+-- Installing ./html/ch01.html
+-- Installing ./html/ch02.html
+-- Installing ./html/ch03.html
+-- Installing ./html/ch26.html
+-- Installing ./html/ch27.html
+-- Installing ./html/ch27s02.html
+-- Installing ./html/ch27s03.html
+-- Installing ./html/ch28.html
+-- Installing ./html/ch28s02.html
+-- Installing ./html/ch28s03.html
+-- Installing ./html/ch28s04.html
+-- Installing ./html/ch28s05.html
+-- Installing ./html/ch28s06.html
+-- Installing ./html/ch28s07.html
+-- Installing ./html/ch29.html
+-- Installing ./html/ch29s02.html
+-- Installing ./html/ch29s03.html
+-- Installing ./html/ch29s04.html
+-- Installing ./html/ch29s05.html
+-- Installing ./html/ch29s06.html
+-- Installing ./html/conversion.html
+-- Installing ./html/extending-gio.html
+-- Installing ./html/extending.html
+-- Installing ./html/failable_initialization.html
+-- Installing ./html/file_mon.html
+-- Installing ./html/file_ops.html
+-- Installing ./html/gdbus-convenience.html
+-- Installing ./html/gdbus-lowlevel.html
+-- Installing ./html/gdbus.html
+-- Installing ./html/gio-D-Bus-Addresses.html
+-- Installing ./html/gio-D-Bus-Introspection-Data.html
+-- Installing ./html/gio-D-Bus-Utilities.html
+-- Installing ./html/gio-Desktop-file-based-GAppInfo.html
+-- Installing ./html/gio-Extension-Points.html
+-- Installing ./html/gio-GContentType.html
+-- Installing ./html/gio-GConverterInputstream.html
+-- Installing ./html/gio-GConverterOutputstream.html
+-- Installing ./html/gio-GFileAttribute.html
+-- Installing ./html/gio-GIOError.html
+-- Installing ./html/gio-GIOScheduler.html
+-- Installing ./html/gio-Owning-Bus-Names.html
+-- Installing ./html/gio-TLS-Overview.html
+-- Installing ./html/gio-Unix-Mounts.html
+-- Installing ./html/gio-Watching-Bus-Names.html
+-- Installing ./html/gio-hierarchy.html
+-- Installing ./html/gio-querymodules.html
+-- Installing ./html/gio.devhelp
+-- Installing ./html/gio.devhelp2
+-- Installing ./html/glib-compile-schemas.html
+-- Installing ./html/gsettings-tool.html
+-- Installing ./html/gvfs-overview.png
+-- Installing ./html/highlevel-socket.html
+-- Installing ./html/home.png
+-- Installing ./html/icons.html
+-- Installing ./html/index.html
+-- Installing ./html/index.sgml
+-- Installing ./html/left.png
+-- Installing ./html/migrating.html
+-- Installing ./html/networking.html
+-- Installing ./html/permissions.html
+-- Installing ./html/pt01.html
+-- Installing ./html/pt02.html
+-- Installing ./html/resolver.html
+-- Installing ./html/right.png
+-- Installing ./html/settings.html
+-- Installing ./html/streaming.html
+-- Installing ./html/style.css
+-- Installing ./html/tls.html
+-- Installing ./html/tools.html
+-- Installing ./html/types.html
+-- Installing ./html/up.png
+-- Installing ./html/utils.html
+-- Installing ./html/volume_mon.html
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gio'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference/gio'
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+make[4]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+make[4]: Nothing to be done for `install-exec-am'.
+make[4]: Nothing to be done for `install-data-am'.
+make[4]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs/reference'
+make[2]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+make[3]: Entering directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+make[3]: Nothing to be done for `install-exec-am'.
+make[3]: Nothing to be done for `install-data-am'.
+make[3]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+make[2]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+make[1]: Leaving directory `/devel/src/gnome/glib/glib-2.28.8/docs'
+++ ./glib-zip
+rm: cannot lstat `/tmp/glib-2.28.8.zip': No such file or directory
+  adding: bin/gspawn-win32-helper.exe (deflated 71%)
+  adding: bin/gspawn-win32-helper-console.exe (deflated 72%)
+  adding: bin/libgio-2.0-0.dll (deflated 67%)
+  adding: bin/libglib-2.0-0.dll (deflated 62%)
+  adding: bin/libgmodule-2.0-0.dll (deflated 69%)
+  adding: bin/libgobject-2.0-0.dll (deflated 64%)
+  adding: bin/libgthread-2.0-0.dll (deflated 69%)
+  adding: share/locale/af/LC_MESSAGES/glib20.mo (deflated 61%)
+  adding: share/locale/am/LC_MESSAGES/glib20.mo (deflated 28%)
+  adding: share/locale/ar/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/as/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/ast/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/az/LC_MESSAGES/glib20.mo (deflated 64%)
+  adding: share/locale/be/LC_MESSAGES/glib20.mo (deflated 71%)
+  adding: share/locale/be@latin/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/bg/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/bn/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/bn_IN/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/bs/LC_MESSAGES/glib20.mo (deflated 63%)
+  adding: share/locale/ca/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/ca@valencia/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/cs/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/cy/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/da/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/de/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/dz/LC_MESSAGES/glib20.mo (deflated 77%)
+  adding: share/locale/el/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/en@shaw/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/en_CA/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/en_GB/LC_MESSAGES/glib20.mo (deflated 77%)
+  adding: share/locale/eo/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/es/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/et/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/eu/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/fa/LC_MESSAGES/glib20.mo (deflated 70%)
+  adding: share/locale/fi/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/fr/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/ga/LC_MESSAGES/glib20.mo (deflated 64%)
+  adding: share/locale/gl/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/gu/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/he/LC_MESSAGES/glib20.mo (deflated 77%)
+  adding: share/locale/hi/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/hr/LC_MESSAGES/glib20.mo (deflated 64%)
+  adding: share/locale/hu/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/hy/LC_MESSAGES/glib20.mo (deflated 71%)
+  adding: share/locale/id/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/is/LC_MESSAGES/glib20.mo (deflated 62%)
+  adding: share/locale/it/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/ja/LC_MESSAGES/glib20.mo (deflated 69%)
+  adding: share/locale/ka/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/kk/LC_MESSAGES/glib20.mo (deflated 60%)
+  adding: share/locale/kn/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/ko/LC_MESSAGES/glib20.mo (deflated 69%)
+  adding: share/locale/ku/LC_MESSAGES/glib20.mo (deflated 38%)
+  adding: share/locale/lt/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/lv/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/mai/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/mg/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/mk/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/ml/LC_MESSAGES/glib20.mo (deflated 77%)
+  adding: share/locale/mn/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/mr/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/ms/LC_MESSAGES/glib20.mo (deflated 64%)
+  adding: share/locale/nb/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/nds/LC_MESSAGES/glib20.mo (deflated 55%)
+  adding: share/locale/ne/LC_MESSAGES/glib20.mo (deflated 73%)
+  adding: share/locale/nl/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/nn/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/oc/LC_MESSAGES/glib20.mo (deflated 40%)
+  adding: share/locale/or/LC_MESSAGES/glib20.mo (deflated 75%)
+  adding: share/locale/pa/LC_MESSAGES/glib20.mo (deflated 73%)
+  adding: share/locale/pl/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/ps/LC_MESSAGES/glib20.mo (deflated 64%)
+  adding: share/locale/pt/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/pt_BR/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/ro/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/ru/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/rw/LC_MESSAGES/glib20.mo (deflated 28%)
+  adding: share/locale/si/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/sk/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/sl/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/sq/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/sr/LC_MESSAGES/glib20.mo (deflated 71%)
+  adding: share/locale/sr@ije/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/sr@latin/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/sv/LC_MESSAGES/glib20.mo (deflated 67%)
+  adding: share/locale/ta/LC_MESSAGES/glib20.mo (deflated 75%)
+  adding: share/locale/te/LC_MESSAGES/glib20.mo (deflated 74%)
+  adding: share/locale/th/LC_MESSAGES/glib20.mo (deflated 76%)
+  adding: share/locale/tl/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/tr/LC_MESSAGES/glib20.mo (deflated 66%)
+  adding: share/locale/tt/LC_MESSAGES/glib20.mo (deflated 59%)
+  adding: share/locale/ug/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/uk/LC_MESSAGES/glib20.mo (deflated 72%)
+  adding: share/locale/vi/LC_MESSAGES/glib20.mo (deflated 68%)
+  adding: share/locale/wa/LC_MESSAGES/glib20.mo (deflated 57%)
+  adding: share/locale/xh/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/yi/LC_MESSAGES/glib20.mo (deflated 71%)
+  adding: share/locale/zh_CN/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/zh_HK/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/locale/zh_TW/LC_MESSAGES/glib20.mo (deflated 65%)
+  adding: share/doc/glib-2.28.8/COPYING (deflated 64%)
+rm: cannot lstat `/tmp/glib-dev-2.28.8.zip': No such file or directory
+	zip warning: name not matched: bin/gsettings.
+  adding: bin/gdbus.exe (deflated 70%)
+  adding: bin/gio-querymodules.exe (deflated 73%)
+  adding: bin/glib-compile-schemas.exe (deflated 68%)
+  adding: bin/glib-genmarshal.exe (deflated 71%)
+  adding: bin/glib-gettextize (deflated 59%)
+  adding: bin/glib-mkenums (deflated 73%)
+  adding: bin/gobject-query.exe (deflated 71%)
+  adding: etc/bash_completion.d/gdbus-bash-completion.sh (deflated 61%)
+  adding: etc/bash_completion.d/gsettings-bash-completion.sh (deflated 73%)
+  adding: include/gio-win32-2.0/gio/gwin32inputstream.h (deflated 63%)
+  adding: include/gio-win32-2.0/gio/gwin32outputstream.h (deflated 64%)
+  adding: include/glib-2.0/gio/gaction.h (deflated 72%)
+  adding: include/glib-2.0/gio/gactiongroup.h (deflated 83%)
+  adding: include/glib-2.0/gio/gappinfo.h (deflated 79%)
+  adding: include/glib-2.0/gio/gapplication.h (deflated 78%)
+  adding: include/glib-2.0/gio/gapplicationcommandline.h (deflated 76%)
+  adding: include/glib-2.0/gio/gasyncinitable.h (deflated 68%)
+  adding: include/glib-2.0/gio/gasyncresult.h (deflated 55%)
+  adding: include/glib-2.0/gio/gbufferedinputstream.h (deflated 71%)
+  adding: include/glib-2.0/gio/gbufferedoutputstream.h (deflated 65%)
+  adding: include/glib-2.0/gio/gcancellable.h (deflated 65%)
+  adding: include/glib-2.0/gio/gcharsetconverter.h (deflated 60%)
+  adding: include/glib-2.0/gio/gcontenttype.h (deflated 59%)
+  adding: include/glib-2.0/gio/gconverter.h (deflated 58%)
+  adding: include/glib-2.0/gio/gconverterinputstream.h (deflated 63%)
+  adding: include/glib-2.0/gio/gconverteroutputstream.h (deflated 64%)
+  adding: include/glib-2.0/gio/gcredentials.h (deflated 66%)
+  adding: include/glib-2.0/gio/gdatainputstream.h (deflated 85%)
+  adding: include/glib-2.0/gio/gdataoutputstream.h (deflated 72%)
+  adding: include/glib-2.0/gio/gdbusaddress.h (deflated 64%)
+  adding: include/glib-2.0/gio/gdbusauthobserver.h (deflated 55%)
+  adding: include/glib-2.0/gio/gdbusconnection.h (deflated 85%)
+  adding: include/glib-2.0/gio/gdbuserror.h (deflated 68%)
+  adding: include/glib-2.0/gio/gdbusintrospection.h (deflated 81%)
+  adding: include/glib-2.0/gio/gdbusmessage.h (deflated 85%)
+  adding: include/glib-2.0/gio/gdbusmethodinvocation.h (deflated 77%)
+  adding: include/glib-2.0/gio/gdbusnameowning.h (deflated 75%)
+  adding: include/glib-2.0/gio/gdbusnamewatching.h (deflated 74%)
+  adding: include/glib-2.0/gio/gdbusproxy.h (deflated 82%)
+  adding: include/glib-2.0/gio/gdbusserver.h (deflated 61%)
+  adding: include/glib-2.0/gio/gdbusutils.h (deflated 49%)
+  adding: include/glib-2.0/gio/gdrive.h (deflated 81%)
+  adding: include/glib-2.0/gio/gemblem.h (deflated 56%)
+  adding: include/glib-2.0/gio/gemblemedicon.h (deflated 61%)
+  adding: include/glib-2.0/gio/gfile.h (deflated 91%)
+  adding: include/glib-2.0/gio/gfileattribute.h (deflated 60%)
+  adding: include/glib-2.0/gio/gfileenumerator.h (deflated 75%)
+  adding: include/glib-2.0/gio/gfileicon.h (deflated 53%)
+  adding: include/glib-2.0/gio/gfileinfo.h (deflated 83%)
+  adding: include/glib-2.0/gio/gfileinputstream.h (deflated 70%)
+  adding: include/glib-2.0/gio/gfileiostream.h (deflated 72%)
+  adding: include/glib-2.0/gio/gfilemonitor.h (deflated 63%)
+  adding: include/glib-2.0/gio/gfilenamecompleter.h (deflated 63%)
+  adding: include/glib-2.0/gio/gfileoutputstream.h (deflated 73%)
+  adding: include/glib-2.0/gio/gfilterinputstream.h (deflated 61%)
+  adding: include/glib-2.0/gio/gfilteroutputstream.h (deflated 62%)
+  adding: include/glib-2.0/gio/gicon.h (deflated 57%)
+  adding: include/glib-2.0/gio/ginetaddress.h (deflated 70%)
+  adding: include/glib-2.0/gio/ginetsocketaddress.h (deflated 61%)
+  adding: include/glib-2.0/gio/ginitable.h (deflated 58%)
+  adding: include/glib-2.0/gio/ginputstream.h (deflated 79%)
+  adding: include/glib-2.0/gio/gio.h (deflated 73%)
+  adding: include/glib-2.0/gio/gioenums.h (deflated 73%)
+  adding: include/glib-2.0/gio/gioenumtypes.h (deflated 81%)
+  adding: include/glib-2.0/gio/gioerror.h (deflated 47%)
+  adding: include/glib-2.0/gio/giomodule.h (deflated 65%)
+  adding: include/glib-2.0/gio/gioscheduler.h (deflated 55%)
+  adding: include/glib-2.0/gio/giostream.h (deflated 73%)
+  adding: include/glib-2.0/gio/giotypes.h (deflated 75%)
+  adding: include/glib-2.0/gio/gloadableicon.h (deflated 66%)
+  adding: include/glib-2.0/gio/gmemoryinputstream.h (deflated 64%)
+  adding: include/glib-2.0/gio/gmemoryoutputstream.h (deflated 65%)
+  adding: include/glib-2.0/gio/gmount.h (deflated 84%)
+  adding: include/glib-2.0/gio/gmountoperation.h (deflated 69%)
+  adding: include/glib-2.0/gio/gnativevolumemonitor.h (deflated 57%)
+  adding: include/glib-2.0/gio/gnetworkaddress.h (deflated 63%)
+  adding: include/glib-2.0/gio/gnetworkservice.h (deflated 62%)
+  adding: include/glib-2.0/gio/goutputstream.h (deflated 82%)
+  adding: include/glib-2.0/gio/gpermission.h (deflated 78%)
+  adding: include/glib-2.0/gio/gpollableinputstream.h (deflated 65%)
+  adding: include/glib-2.0/gio/gpollableoutputstream.h (deflated 65%)
+  adding: include/glib-2.0/gio/gproxy.h (deflated 63%)
+  adding: include/glib-2.0/gio/gproxyaddress.h (deflated 62%)
+  adding: include/glib-2.0/gio/gproxyaddressenumerator.h (deflated 62%)
+  adding: include/glib-2.0/gio/gproxyresolver.h (deflated 63%)
+  adding: include/glib-2.0/gio/gresolver.h (deflated 77%)
+  adding: include/glib-2.0/gio/gseekable.h (deflated 62%)
+  adding: include/glib-2.0/gio/gsettings.h (deflated 84%)
+  adding: include/glib-2.0/gio/gsettingsbackend.h (deflated 79%)
+  adding: include/glib-2.0/gio/gsimpleaction.h (deflated 69%)
+  adding: include/glib-2.0/gio/gsimpleactiongroup.h (deflated 70%)
+  adding: include/glib-2.0/gio/gsimpleasyncresult.h (deflated 78%)
+  adding: include/glib-2.0/gio/gsimplepermission.h (deflated 54%)
+  adding: include/glib-2.0/gio/gsocket.h (deflated 82%)
+  adding: include/glib-2.0/gio/gsocketaddress.h (deflated 64%)
+  adding: include/glib-2.0/gio/gsocketaddressenumerator.h (deflated 68%)
+  adding: include/glib-2.0/gio/gsocketclient.h (deflated 84%)
+  adding: include/glib-2.0/gio/gsocketconnectable.h (deflated 60%)
+  adding: include/glib-2.0/gio/gsocketconnection.h (deflated 69%)
+  adding: include/glib-2.0/gio/gsocketcontrolmessage.h (deflated 72%)
+  adding: include/glib-2.0/gio/gsocketlistener.h (deflated 78%)
+  adding: include/glib-2.0/gio/gsocketservice.h (deflated 66%)
+  adding: include/glib-2.0/gio/gsrvtarget.h (deflated 55%)
+  adding: include/glib-2.0/gio/gtcpconnection.h (deflated 66%)
+  adding: include/glib-2.0/gio/gtcpwrapperconnection.h (deflated 66%)
+  adding: include/glib-2.0/gio/gthemedicon.h (deflated 61%)
+  adding: include/glib-2.0/gio/gthreadedsocketservice.h (deflated 69%)
+  adding: include/glib-2.0/gio/gtlsbackend.h (deflated 61%)
+  adding: include/glib-2.0/gio/gtlscertificate.h (deflated 65%)
+  adding: include/glib-2.0/gio/gtlsclientconnection.h (deflated 65%)
+  adding: include/glib-2.0/gio/gtlsconnection.h (deflated 71%)
+  adding: include/glib-2.0/gio/gtlsserverconnection.h (deflated 57%)
+  adding: include/glib-2.0/gio/gvfs.h (deflated 67%)
+  adding: include/glib-2.0/gio/gvolume.h (deflated 76%)
+  adding: include/glib-2.0/gio/gvolumemonitor.h (deflated 72%)
+  adding: include/glib-2.0/gio/gzlibcompressor.h (deflated 59%)
+  adding: include/glib-2.0/gio/gzlibdecompressor.h (deflated 58%)
+  adding: include/glib-2.0/glib/galloca.h (deflated 57%)
+  adding: include/glib-2.0/glib/garray.h (deflated 74%)
+  adding: include/glib-2.0/glib/gasyncqueue.h (deflated 66%)
+  adding: include/glib-2.0/glib/gatomic.h (deflated 68%)
+  adding: include/glib-2.0/glib/gbacktrace.h (deflated 53%)
+  adding: include/glib-2.0/glib/gbase64.h (deflated 63%)
+  adding: include/glib-2.0/glib/gbitlock.h (deflated 53%)
+  adding: include/glib-2.0/glib/gbookmarkfile.h (deflated 81%)
+  adding: include/glib-2.0/glib/gcache.h (deflated 62%)
+  adding: include/glib-2.0/glib/gchecksum.h (deflated 65%)
+  adding: include/glib-2.0/glib/gcompletion.h (deflated 60%)
+  adding: include/glib-2.0/glib/gconvert.h (deflated 67%)
+  adding: include/glib-2.0/glib/gdataset.h (deflated 71%)
+  adding: include/glib-2.0/glib/gdate.h (deflated 70%)
+  adding: include/glib-2.0/glib/gdatetime.h (deflated 83%)
+  adding: include/glib-2.0/glib/gdir.h (deflated 48%)
+  adding: include/glib-2.0/glib/gerror.h (deflated 68%)
+  adding: include/glib-2.0/glib/gfileutils.h (deflated 62%)
+  adding: include/glib-2.0/glib/ghash.h (deflated 70%)
+  adding: include/glib-2.0/glib/ghook.h (deflated 68%)
+  adding: include/glib-2.0/glib/ghostutils.h (deflated 50%)
+  adding: include/glib-2.0/glib/gi18n-lib.h (deflated 49%)
+  adding: include/glib-2.0/glib/gi18n.h (deflated 48%)
+  adding: include/glib-2.0/glib/giochannel.h (deflated 69%)
+  adding: include/glib-2.0/glib/gkeyfile.h (deflated 85%)
+  adding: include/glib-2.0/glib/glist.h (deflated 73%)
+  adding: include/glib-2.0/glib/gmacros.h (deflated 65%)
+  adding: include/glib-2.0/glib/gmain.h (deflated 76%)
+  adding: include/glib-2.0/glib/gmappedfile.h (deflated 50%)
+  adding: include/glib-2.0/glib/gmarkup.h (deflated 71%)
+  adding: include/glib-2.0/glib/gmem.h (deflated 74%)
+  adding: include/glib-2.0/glib/gmessages.h (deflated 76%)
+  adding: include/glib-2.0/glib/gnode.h (deflated 70%)
+  adding: include/glib-2.0/glib/goption.h (deflated 72%)
+  adding: include/glib-2.0/glib/gpattern.h (deflated 53%)
+  adding: include/glib-2.0/glib/gpoll.h (deflated 53%)
+  adding: include/glib-2.0/glib/gprimes.h (deflated 45%)
+  adding: include/glib-2.0/glib/gprintf.h (deflated 60%)
+  adding: include/glib-2.0/glib/gqsort.h (deflated 44%)
+  adding: include/glib-2.0/glib/gquark.h (deflated 51%)
+  adding: include/glib-2.0/glib/gqueue.h (deflated 73%)
+  adding: include/glib-2.0/glib/grand.h (deflated 57%)
+  adding: include/glib-2.0/glib/gregex.h (deflated 74%)
+  adding: include/glib-2.0/glib/grel.h (deflated 61%)
+  adding: include/glib-2.0/glib/gscanner.h (deflated 64%)
+  adding: include/glib-2.0/glib/gsequence.h (deflated 83%)
+  adding: include/glib-2.0/glib/gshell.h (deflated 50%)
+  adding: include/glib-2.0/glib/gslice.h (deflated 62%)
+  adding: include/glib-2.0/glib/gslist.h (deflated 72%)
+  adding: include/glib-2.0/glib/gspawn.h (deflated 70%)
+  adding: include/glib-2.0/glib/gstdio.h (deflated 60%)
+  adding: include/glib-2.0/glib/gstrfuncs.h (deflated 71%)
+  adding: include/glib-2.0/glib/gstring.h (deflated 71%)
+  adding: include/glib-2.0/glib/gtestutils.h (deflated 79%)
+  adding: include/glib-2.0/glib/gthread.h (deflated 74%)
+  adding: include/glib-2.0/glib/gthreadpool.h (deflated 65%)
+  adding: include/glib-2.0/glib/gtimer.h (deflated 53%)
+  adding: include/glib-2.0/glib/gtimezone.h (deflated 66%)
+  adding: include/glib-2.0/glib/gtree.h (deflated 69%)
+  adding: include/glib-2.0/glib/gtypes.h (deflated 72%)
+  adding: include/glib-2.0/glib/gunicode.h (deflated 73%)
+  adding: include/glib-2.0/glib/gurifuncs.h (deflated 61%)
+  adding: include/glib-2.0/glib/gutils.h (deflated 66%)
+  adding: include/glib-2.0/glib/gvariant.h (deflated 87%)
+  adding: include/glib-2.0/glib/gvarianttype.h (deflated 75%)
+  adding: include/glib-2.0/glib/gwin32.h (deflated 54%)
+  adding: include/glib-2.0/glib-object.h (deflated 54%)
+  adding: include/glib-2.0/glib.h (deflated 64%)
+  adding: include/glib-2.0/gmodule.h (deflated 55%)
+  adding: include/glib-2.0/gobject/gbinding.h (deflated 70%)
+  adding: include/glib-2.0/gobject/gboxed.h (deflated 69%)
+  adding: include/glib-2.0/gobject/gclosure.h (deflated 68%)
+  adding: include/glib-2.0/gobject/genums.h (deflated 72%)
+  adding: include/glib-2.0/gobject/gmarshal.h (deflated 93%)
+  adding: include/glib-2.0/gobject/gobject.h (deflated 77%)
+  adding: include/glib-2.0/gobject/gobjectnotifyqueue.c (deflated 65%)
+  adding: include/glib-2.0/gobject/gparam.h (deflated 71%)
+  adding: include/glib-2.0/gobject/gparamspecs.h (deflated 86%)
+  adding: include/glib-2.0/gobject/gsignal.h (deflated 76%)
+  adding: include/glib-2.0/gobject/gsourceclosure.h (deflated 49%)
+  adding: include/glib-2.0/gobject/gtype.h (deflated 78%)
+  adding: include/glib-2.0/gobject/gtypemodule.h (deflated 72%)
+  adding: include/glib-2.0/gobject/gtypeplugin.h (deflated 68%)
+  adding: include/glib-2.0/gobject/gvalue.h (deflated 60%)
+  adding: include/glib-2.0/gobject/gvaluearray.h (deflated 59%)
+  adding: include/glib-2.0/gobject/gvaluecollector.h (deflated 72%)
+  adding: include/glib-2.0/gobject/gvaluetypes.h (deflated 79%)
+  adding: lib/glib-2.0/include/glibconfig.h (deflated 70%)
+  adding: lib/pkgconfig/glib-2.0.pc (deflated 38%)
+  adding: lib/pkgconfig/gmodule-2.0.pc (deflated 29%)
+  adding: lib/pkgconfig/gmodule-no-export-2.0.pc (deflated 29%)
+  adding: lib/pkgconfig/gobject-2.0.pc (deflated 27%)
+  adding: lib/pkgconfig/gthread-2.0.pc (deflated 26%)
+  adding: lib/pkgconfig/gio-2.0.pc (deflated 37%)
+  adding: lib/pkgconfig/gio-windows-2.0.pc (deflated 32%)
+  adding: lib/gio-2.0.def (deflated 83%)
+  adding: lib/gio-2.0.lib (deflated 87%)
+  adding: lib/glib-2.0.def (deflated 78%)
+  adding: lib/glib-2.0.lib (deflated 85%)
+  adding: lib/gmodule-2.0.def (deflated 49%)
+  adding: lib/gmodule-2.0.lib (deflated 78%)
+  adding: lib/gobject-2.0.def (deflated 78%)
+  adding: lib/gobject-2.0.lib (deflated 87%)
+  adding: lib/gthread-2.0.def (deflated 18%)
+  adding: lib/gthread-2.0.lib (deflated 74%)
+  adding: lib/libgio-2.0.dll.a (deflated 94%)
+  adding: lib/libglib-2.0.dll.a (deflated 94%)
+  adding: lib/libgmodule-2.0.dll.a (deflated 87%)
+  adding: lib/libgobject-2.0.dll.a (deflated 94%)
+  adding: lib/libgthread-2.0.dll.a (deflated 76%)
+  adding: share/aclocal/glib-2.0.m4 (deflated 68%)
+  adding: share/aclocal/glib-gettext.m4 (deflated 64%)
+  adding: share/aclocal/gsettings.m4 (deflated 62%)
+  adding: share/glib-2.0/gdb/glib.py (deflated 74%)
+  adding: share/glib-2.0/gdb/gobject.py (deflated 76%)
+  adding: share/glib-2.0/gettext/mkinstalldirs (deflated 58%)
+  adding: share/glib-2.0/gettext/po/Makefile.in.in (deflated 67%)
+  adding: share/glib-2.0/schemas/gschema.dtd (deflated 68%)
+  adding: share/gtk-doc/html/gio/annotation-glossary.html (deflated 71%)
+  adding: share/gtk-doc/html/gio/api-index-2-18.html (deflated 79%)
+  adding: share/gtk-doc/html/gio/api-index-2-20.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/api-index-2-22.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/api-index-2-24.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/api-index-2-26.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/api-index-2-28.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/api-index-deprecated.html (deflated 78%)
+  adding: share/gtk-doc/html/gio/api-index-full.html (deflated 93%)
+  adding: share/gtk-doc/html/gio/application.html (deflated 67%)
+  adding: share/gtk-doc/html/gio/async.html (deflated 63%)
+  adding: share/gtk-doc/html/gio/ch01.html (deflated 68%)
+  adding: share/gtk-doc/html/gio/ch02.html (deflated 60%)
+  adding: share/gtk-doc/html/gio/ch03.html (deflated 72%)
+  adding: share/gtk-doc/html/gio/ch26.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/ch27.html (deflated 76%)
+  adding: share/gtk-doc/html/gio/ch27s02.html (deflated 57%)
+  adding: share/gtk-doc/html/gio/ch27s03.html (deflated 58%)
+  adding: share/gtk-doc/html/gio/ch28.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/ch28s02.html (deflated 59%)
+  adding: share/gtk-doc/html/gio/ch28s03.html (deflated 79%)
+  adding: share/gtk-doc/html/gio/ch28s04.html (deflated 63%)
+  adding: share/gtk-doc/html/gio/ch28s05.html (deflated 62%)
+  adding: share/gtk-doc/html/gio/ch28s06.html (deflated 67%)
+  adding: share/gtk-doc/html/gio/ch28s07.html (deflated 60%)
+  adding: share/gtk-doc/html/gio/ch29.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/ch29s02.html (deflated 81%)
+  adding: share/gtk-doc/html/gio/ch29s03.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/ch29s04.html (deflated 73%)
+  adding: share/gtk-doc/html/gio/ch29s05.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/ch29s06.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/conversion.html (deflated 64%)
+  adding: share/gtk-doc/html/gio/extending-gio.html (deflated 72%)
+  adding: share/gtk-doc/html/gio/extending.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/failable_initialization.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/file_mon.html (deflated 58%)
+  adding: share/gtk-doc/html/gio/file_ops.html (deflated 65%)
+  adding: share/gtk-doc/html/gio/GAction.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GActionGroup.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GAppInfo.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/GApplication.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/GApplicationCommandLine.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GAsyncInitable.html (deflated 89%)
+  adding: share/gtk-doc/html/gio/GAsyncResult.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GBufferedInputStream.html (deflated 89%)
+  adding: share/gtk-doc/html/gio/GBufferedOutputStream.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GCancellable.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GCharsetConverter.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GConverter.html (deflated 80%)
+  adding: share/gtk-doc/html/gio/GCredentials.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GDataInputStream.html (deflated 93%)
+  adding: share/gtk-doc/html/gio/GDataOutputStream.html (deflated 93%)
+  adding: share/gtk-doc/html/gio/gdbus-convenience.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/gdbus-lowlevel.html (deflated 68%)
+  adding: share/gtk-doc/html/gio/gdbus.html (deflated 72%)
+  adding: share/gtk-doc/html/gio/GDBusAuthObserver.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GDBusConnection.html (deflated 93%)
+  adding: share/gtk-doc/html/gio/GDBusError.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GDBusMessage.html (deflated 93%)
+  adding: share/gtk-doc/html/gio/GDBusMethodInvocation.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GDBusProxy.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GDBusServer.html (deflated 89%)
+  adding: share/gtk-doc/html/gio/GDrive.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GEmblem.html (deflated 81%)
+  adding: share/gtk-doc/html/gio/GEmblemedIcon.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GFile.html (deflated 94%)
+  adding: share/gtk-doc/html/gio/GFileDescriptorBased.html (deflated 72%)
+  adding: share/gtk-doc/html/gio/GFileEnumerator.html (deflated 89%)
+  adding: share/gtk-doc/html/gio/GFileIcon.html (deflated 78%)
+  adding: share/gtk-doc/html/gio/GFileInfo.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GFileInputStream.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GFileIOStream.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GFileMonitor.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GFilenameCompleter.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GFileOutputStream.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GFilterInputStream.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GFilterOutputStream.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GIcon.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GInetAddress.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GInetSocketAddress.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GInitable.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GInputStream.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/gio-D-Bus-Addresses.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/gio-D-Bus-Introspection-Data.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/gio-D-Bus-Utilities.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/gio-Desktop-file-based-GAppInfo.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/gio-Extension-Points.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/gio-GContentType.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/gio-GConverterInputstream.html (deflated 80%)
+  adding: share/gtk-doc/html/gio/gio-GConverterOutputstream.html (deflated 80%)
+  adding: share/gtk-doc/html/gio/gio-GFileAttribute.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/gio-GIOError.html (deflated 79%)
+  adding: share/gtk-doc/html/gio/gio-GIOScheduler.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/gio-hierarchy.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/gio-Owning-Bus-Names.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/gio-querymodules.html (deflated 59%)
+  adding: share/gtk-doc/html/gio/gio-TLS-Overview.html (deflated 76%)
+  adding: share/gtk-doc/html/gio/gio-Unix-Mounts.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/gio-Watching-Bus-Names.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/gio.devhelp (deflated 89%)
+  adding: share/gtk-doc/html/gio/gio.devhelp2 (deflated 90%)
+  adding: share/gtk-doc/html/gio/GIOModule.html (deflated 78%)
+  adding: share/gtk-doc/html/gio/GIOStream.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/glib-compile-schemas.html (deflated 65%)
+  adding: share/gtk-doc/html/gio/GLoadableIcon.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GMemoryInputStream.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GMemoryOutputStream.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GMount.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GMountOperation.html (deflated 89%)
+  adding: share/gtk-doc/html/gio/GNetworkAddress.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GNetworkService.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GOutputStream.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GPermission.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GPollableInputStream.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GPollableOutputStream.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GProxy.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GProxyAddress.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/GProxyResolver.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GResolver.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GSeekable.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/gsettings-tool.html (deflated 77%)
+  adding: share/gtk-doc/html/gio/GSettings.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/GSettingsBackend.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GSimpleAction.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GSimpleActionGroup.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GSimpleAsyncResult.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GSimplePermission.html (deflated 72%)
+  adding: share/gtk-doc/html/gio/GSocket.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/GSocketAddress.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GSocketClient.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GSocketConnectable.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GSocketConnection.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GSocketControlMessage.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GSocketListener.html (deflated 92%)
+  adding: share/gtk-doc/html/gio/GSocketService.html (deflated 81%)
+  adding: share/gtk-doc/html/gio/GSrvTarget.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GTcpConnection.html (deflated 78%)
+  adding: share/gtk-doc/html/gio/GTcpWrapperConnection.html (deflated 81%)
+  adding: share/gtk-doc/html/gio/GThemedIcon.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GThreadedSocketService.html (deflated 77%)
+  adding: share/gtk-doc/html/gio/GTlsBackend.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GTlsCertificate.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GTlsClientConnection.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GTlsConnection.html (deflated 88%)
+  adding: share/gtk-doc/html/gio/GTlsServerConnection.html (deflated 78%)
+  adding: share/gtk-doc/html/gio/GUnixConnection.html (deflated 87%)
+  adding: share/gtk-doc/html/gio/GUnixCredentialsMessage.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GUnixFDList.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/GUnixFDMessage.html (deflated 83%)
+  adding: share/gtk-doc/html/gio/GUnixInputStream.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GUnixOutputStream.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/GUnixSocketAddress.html (deflated 86%)
+  adding: share/gtk-doc/html/gio/gvfs-overview.png (deflated 7%)
+  adding: share/gtk-doc/html/gio/GVfs.html (deflated 85%)
+  adding: share/gtk-doc/html/gio/GVolume.html (deflated 90%)
+  adding: share/gtk-doc/html/gio/GVolumeMonitor.html (deflated 91%)
+  adding: share/gtk-doc/html/gio/GZlibCompressor.html (deflated 82%)
+  adding: share/gtk-doc/html/gio/GZlibDecompressor.html (deflated 79%)
+  adding: share/gtk-doc/html/gio/highlevel-socket.html (deflated 68%)
+  adding: share/gtk-doc/html/gio/home.png (stored 0%)
+  adding: share/gtk-doc/html/gio/icons.html (deflated 65%)
+  adding: share/gtk-doc/html/gio/index.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/index.sgml (deflated 90%)
+  adding: share/gtk-doc/html/gio/left.png (stored 0%)
+  adding: share/gtk-doc/html/gio/migrating.html (deflated 69%)
+  adding: share/gtk-doc/html/gio/networking.html (deflated 71%)
+  adding: share/gtk-doc/html/gio/permissions.html (deflated 60%)
+  adding: share/gtk-doc/html/gio/pt01.html (deflated 60%)
+  adding: share/gtk-doc/html/gio/pt02.html (deflated 84%)
+  adding: share/gtk-doc/html/gio/resolver.html (deflated 65%)
+  adding: share/gtk-doc/html/gio/right.png (stored 0%)
+  adding: share/gtk-doc/html/gio/settings.html (deflated 59%)
+  adding: share/gtk-doc/html/gio/streaming.html (deflated 79%)
+  adding: share/gtk-doc/html/gio/style.css (deflated 71%)
+  adding: share/gtk-doc/html/gio/tls.html (deflated 66%)
+  adding: share/gtk-doc/html/gio/tools.html (deflated 62%)
+  adding: share/gtk-doc/html/gio/types.html (deflated 61%)
+  adding: share/gtk-doc/html/gio/up.png (stored 0%)
+  adding: share/gtk-doc/html/gio/utils.html (deflated 59%)
+  adding: share/gtk-doc/html/gio/volume_mon.html (deflated 64%)
+  adding: share/gtk-doc/html/glib/annotation-glossary.html (deflated 69%)
+  adding: share/gtk-doc/html/glib/api-index-2-10.html (deflated 82%)
+  adding: share/gtk-doc/html/glib/api-index-2-12.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/api-index-2-14.html (deflated 91%)
+  adding: share/gtk-doc/html/glib/api-index-2-16.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/api-index-2-18.html (deflated 76%)
+  adding: share/gtk-doc/html/glib/api-index-2-2.html (deflated 81%)
+  adding: share/gtk-doc/html/glib/api-index-2-20.html (deflated 72%)
+  adding: share/gtk-doc/html/glib/api-index-2-22.html (deflated 83%)
+  adding: share/gtk-doc/html/glib/api-index-2-24.html (deflated 91%)
+  adding: share/gtk-doc/html/glib/api-index-2-26.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/api-index-2-28.html (deflated 78%)
+  adding: share/gtk-doc/html/glib/api-index-2-4.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/api-index-2-6.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/api-index-2-8.html (deflated 83%)
+  adding: share/gtk-doc/html/glib/api-index-deprecated.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/api-index-full.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/file-name-encodings.png (deflated 3%)
+  adding: share/gtk-doc/html/glib/glib-Arrays.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Asynchronous-Queues.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Atomic-Operations.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-Automatic-String-Completion.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-Balanced-Binary-Trees.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Base64-Encoding.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-Basic-Types.html (deflated 84%)
+  adding: share/gtk-doc/html/glib/glib-Bookmark-file-parser.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-building.html (deflated 73%)
+  adding: share/gtk-doc/html/glib/glib-Byte-Arrays.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Byte-Order-Macros.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-Caches.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-changes.html (deflated 63%)
+  adding: share/gtk-doc/html/glib/glib-Character-Set-Conversion.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-Commandline-option-parser.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-compiling.html (deflated 63%)
+  adding: share/gtk-doc/html/glib/glib-core.html (deflated 67%)
+  adding: share/gtk-doc/html/glib/glib-cross-compiling.html (deflated 65%)
+  adding: share/gtk-doc/html/glib/glib-Data-Checksums.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-data-types.html (deflated 74%)
+  adding: share/gtk-doc/html/glib/glib-Datasets.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-Date-and-Time-Functions.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Double-ended-Queues.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-Doubly-Linked-Lists.html (deflated 92%)
+  adding: share/gtk-doc/html/glib/glib-Dynamic-Loading-of-Modules.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-Error-Reporting.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-File-Utilities.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-fundamentals.html (deflated 66%)
+  adding: share/gtk-doc/html/glib/glib-GDateTime.html (deflated 92%)
+  adding: share/gtk-doc/html/glib/glib-gettextize.html (deflated 66%)
+  adding: share/gtk-doc/html/glib/glib-Glob-style-pattern-matching.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-GTimeZone.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-GVariant.html (deflated 91%)
+  adding: share/gtk-doc/html/glib/glib-GVariantType.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-Hash-Tables.html (deflated 92%)
+  adding: share/gtk-doc/html/glib/glib-Hook-Functions.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-Hostname-Utilities.html (deflated 82%)
+  adding: share/gtk-doc/html/glib/glib-I18N.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-IO-Channels.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Key-value-file-parser.html (deflated 94%)
+  adding: share/gtk-doc/html/glib/glib-Keyed-Data-Lists.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-Lexical-Scanner.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Limits-of-Basic-Types.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-Memory-Allocation.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-Memory-Allocators.html (deflated 77%)
+  adding: share/gtk-doc/html/glib/glib-Memory-Chunks.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-Memory-Slices.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-Message-Logging.html (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib-Miscellaneous-Macros.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-Miscellaneous-Utility-Functions.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-N-ary-Trees.html (deflated 92%)
+  adding: share/gtk-doc/html/glib/glib-Numerical-Definitions.html (deflated 74%)
+  adding: share/gtk-doc/html/glib/glib-Perl-compatible-regular-expressions.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Pointer-Arrays.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Quarks.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-Random-Numbers.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-regex-syntax.html (deflated 72%)
+  adding: share/gtk-doc/html/glib/glib-Relations-and-Tuples.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-resources.html (deflated 61%)
+  adding: share/gtk-doc/html/glib/glib-running.html (deflated 65%)
+  adding: share/gtk-doc/html/glib/glib-Sequences.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-Shell-related-Utilities.html (deflated 78%)
+  adding: share/gtk-doc/html/glib/glib-Simple-XML-Subset-Parser.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-Singly-Linked-Lists.html (deflated 92%)
+  adding: share/gtk-doc/html/glib/glib-Spawning-Processes.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-Standard-Macros.html (deflated 81%)
+  adding: share/gtk-doc/html/glib/glib-String-Chunks.html (deflated 86%)
+  adding: share/gtk-doc/html/glib/glib-String-Utility-Functions.html (deflated 91%)
+  adding: share/gtk-doc/html/glib/glib-Strings.html (deflated 93%)
+  adding: share/gtk-doc/html/glib/glib-Testing.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-The-Main-Event-Loop.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-Thread-Pools.html (deflated 87%)
+  adding: share/gtk-doc/html/glib/glib-Threads.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib-Timers.html (deflated 82%)
+  adding: share/gtk-doc/html/glib/glib-Trash-Stacks.html (deflated 82%)
+  adding: share/gtk-doc/html/glib/glib-Type-Conversion-Macros.html (deflated 80%)
+  adding: share/gtk-doc/html/glib/glib-Unicode-Manipulation.html (deflated 90%)
+  adding: share/gtk-doc/html/glib/glib-URI-Functions.html (deflated 85%)
+  adding: share/gtk-doc/html/glib/glib-utilities.html (deflated 75%)
+  adding: share/gtk-doc/html/glib/glib-Version-Information.html (deflated 79%)
+  adding: share/gtk-doc/html/glib/glib-Warnings-and-Assertions.html (deflated 83%)
+  adding: share/gtk-doc/html/glib/glib-Windows-Compatibility-Functions.html (deflated 79%)
+  adding: share/gtk-doc/html/glib/glib.devhelp (deflated 88%)
+  adding: share/gtk-doc/html/glib/glib.devhelp2 (deflated 89%)
+  adding: share/gtk-doc/html/glib/glib.html (deflated 63%)
+  adding: share/gtk-doc/html/glib/gtester-report.html (deflated 63%)
+  adding: share/gtk-doc/html/glib/gtester.html (deflated 70%)
+  adding: share/gtk-doc/html/glib/gvariant-format-strings.html (deflated 89%)
+  adding: share/gtk-doc/html/glib/gvariant-text.html (deflated 76%)
+  adding: share/gtk-doc/html/glib/home.png (stored 0%)
+  adding: share/gtk-doc/html/glib/index.html (deflated 79%)
+  adding: share/gtk-doc/html/glib/index.sgml (deflated 90%)
+  adding: share/gtk-doc/html/glib/left.png (stored 0%)
+  adding: share/gtk-doc/html/glib/mainloop-states.gif (stored 0%)
+  adding: share/gtk-doc/html/glib/right.png (stored 0%)
+  adding: share/gtk-doc/html/glib/style.css (deflated 71%)
+  adding: share/gtk-doc/html/glib/tools.html (deflated 61%)
+  adding: share/gtk-doc/html/glib/up.png (stored 0%)
+  adding: share/gtk-doc/html/gobject/annotation-glossary.html (deflated 72%)
+  adding: share/gtk-doc/html/gobject/api-index-2-10.html (deflated 76%)
+  adding: share/gtk-doc/html/gobject/api-index-2-12.html (deflated 68%)
+  adding: share/gtk-doc/html/gobject/api-index-2-14.html (deflated 64%)
+  adding: share/gtk-doc/html/gobject/api-index-2-18.html (deflated 66%)
+  adding: share/gtk-doc/html/gobject/api-index-2-2.html (deflated 59%)
+  adding: share/gtk-doc/html/gobject/api-index-2-22.html (deflated 65%)
+  adding: share/gtk-doc/html/gobject/api-index-2-24.html (deflated 71%)
+  adding: share/gtk-doc/html/gobject/api-index-2-26.html (deflated 85%)
+  adding: share/gtk-doc/html/gobject/api-index-2-28.html (deflated 62%)
+  adding: share/gtk-doc/html/gobject/api-index-2-4.html (deflated 85%)
+  adding: share/gtk-doc/html/gobject/api-index-2-6.html (deflated 62%)
+  adding: share/gtk-doc/html/gobject/api-index-2-8.html (deflated 63%)
+  adding: share/gtk-doc/html/gobject/api-index-deprecated.html (deflated 71%)
+  adding: share/gtk-doc/html/gobject/api-index-full.html (deflated 93%)
+  adding: share/gtk-doc/html/gobject/ch01s02.html (deflated 62%)
+  adding: share/gtk-doc/html/gobject/ch06s03.html (deflated 64%)
+  adding: share/gtk-doc/html/gobject/chapter-gobject.html (deflated 73%)
+  adding: share/gtk-doc/html/gobject/chapter-gtype.html (deflated 74%)
+  adding: share/gtk-doc/html/gobject/chapter-intro.html (deflated 59%)
+  adding: share/gtk-doc/html/gobject/chapter-signal.html (deflated 72%)
+  adding: share/gtk-doc/html/gobject/GBinding.html (deflated 89%)
+  adding: share/gtk-doc/html/gobject/glib-genmarshal.html (deflated 75%)
+  adding: share/gtk-doc/html/gobject/glib-mkenums.html (deflated 72%)
+  adding: share/gtk-doc/html/gobject/glue.png (deflated 10%)
+  adding: share/gtk-doc/html/gobject/gobject-Boxed-Types.html (deflated 85%)
+  adding: share/gtk-doc/html/gobject/gobject-Closures.html (deflated 94%)
+  adding: share/gtk-doc/html/gobject/gobject-Enumeration-and-Flag-Types.html (deflated 90%)
+  adding: share/gtk-doc/html/gobject/gobject-Generic-values.html (deflated 88%)
+  adding: share/gtk-doc/html/gobject/gobject-GParamSpec.html (deflated 89%)
+  adding: share/gtk-doc/html/gobject/gobject-memory.html (deflated 72%)
+  adding: share/gtk-doc/html/gobject/gobject-properties.html (deflated 73%)
+  adding: share/gtk-doc/html/gobject/gobject-query.html (deflated 69%)
+  adding: share/gtk-doc/html/gobject/gobject-Signals.html (deflated 91%)
+  adding: share/gtk-doc/html/gobject/gobject-Standard-Parameter-and-Value-Types.html (deflated 95%)
+  adding: share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html (deflated 90%)
+  adding: share/gtk-doc/html/gobject/gobject-Type-Information.html (deflated 89%)
+  adding: share/gtk-doc/html/gobject/gobject-Value-arrays.html (deflated 90%)
+  adding: share/gtk-doc/html/gobject/gobject-Varargs-Value-Collection.html (deflated 82%)
+  adding: share/gtk-doc/html/gobject/gobject.devhelp (deflated 89%)
+  adding: share/gtk-doc/html/gobject/gobject.devhelp2 (deflated 90%)
+  adding: share/gtk-doc/html/gobject/gtype-conventions.html (deflated 67%)
+  adding: share/gtk-doc/html/gobject/gtype-instantiable-classed.html (deflated 72%)
+  adding: share/gtk-doc/html/gobject/gtype-non-instantiable-classed.html (deflated 73%)
+  adding: share/gtk-doc/html/gobject/gtype-non-instantiable.html (deflated 65%)
+  adding: share/gtk-doc/html/gobject/GTypeModule.html (deflated 87%)
+  adding: share/gtk-doc/html/gobject/GTypePlugin.html (deflated 88%)
+  adding: share/gtk-doc/html/gobject/home.png (stored 0%)
+  adding: share/gtk-doc/html/gobject/howto-gobject-chainup.html (deflated 62%)
+  adding: share/gtk-doc/html/gobject/howto-gobject-code.html (deflated 60%)
+  adding: share/gtk-doc/html/gobject/howto-gobject-construction.html (deflated 63%)
+  adding: share/gtk-doc/html/gobject/howto-gobject-destruction.html (deflated 60%)
+  adding: share/gtk-doc/html/gobject/howto-gobject-methods.html (deflated 70%)
+  adding: share/gtk-doc/html/gobject/howto-gobject.html (deflated 67%)
+  adding: share/gtk-doc/html/gobject/howto-interface-implement.html (deflated 64%)
+  adding: share/gtk-doc/html/gobject/howto-interface-properties.html (deflated 69%)
+  adding: share/gtk-doc/html/gobject/howto-interface.html (deflated 67%)
+  adding: share/gtk-doc/html/gobject/howto-signals.html (deflated 59%)
+  adding: share/gtk-doc/html/gobject/index.html (deflated 78%)
+  adding: share/gtk-doc/html/gobject/index.sgml (deflated 91%)
+  adding: share/gtk-doc/html/gobject/left.png (stored 0%)
+  adding: share/gtk-doc/html/gobject/pr01.html (deflated 57%)
+  adding: share/gtk-doc/html/gobject/pt01.html (deflated 73%)
+  adding: share/gtk-doc/html/gobject/pt02.html (deflated 69%)
+  adding: share/gtk-doc/html/gobject/pt03.html (deflated 58%)
+  adding: share/gtk-doc/html/gobject/right.png (stored 0%)
+  adding: share/gtk-doc/html/gobject/rn01.html (deflated 69%)
+  adding: share/gtk-doc/html/gobject/rn02.html (deflated 60%)
+  adding: share/gtk-doc/html/gobject/signal.html (deflated 74%)
+  adding: share/gtk-doc/html/gobject/style.css (deflated 71%)
+  adding: share/gtk-doc/html/gobject/tools-ginspector.html (deflated 55%)
+  adding: share/gtk-doc/html/gobject/tools-gob.html (deflated 54%)
+  adding: share/gtk-doc/html/gobject/tools-gtkdoc.html (deflated 55%)
+  adding: share/gtk-doc/html/gobject/tools-refdb.html (deflated 57%)
+  adding: share/gtk-doc/html/gobject/tools-vala.html (deflated 55%)
+  adding: share/gtk-doc/html/gobject/up.png (stored 0%)
+  adding: share/man/man1/gdbus.1 (deflated 71%)
+  adding: share/man/man1/gio-querymodules.1 (deflated 60%)
+  adding: share/man/man1/glib-compile-schemas.1 (deflated 60%)
+  adding: share/man/man1/glib-genmarshal.1 (deflated 66%)
+  adding: share/man/man1/glib-gettextize.1 (deflated 60%)
+  adding: share/man/man1/glib-mkenums.1 (deflated 66%)
+  adding: share/man/man1/gobject-query.1 (deflated 64%)
+  adding: share/man/man1/gsettings.1 (deflated 69%)
+  adding: share/doc/glib-dev-2.28.8/ (stored 0%)
+  adding: share/doc/glib-dev-2.28.8/COPYING (deflated 64%)
+++ mv /tmp/glib-2.28.8.zip /tmp/glib_2.28.8-1_win32.zip
+++ mv /tmp/glib-dev-2.28.8.zip /tmp/glib-dev_2.28.8-1_win32.zip

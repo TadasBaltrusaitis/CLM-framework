@@ -1,0 +1,11 @@
+prefix=/devel/target/e7ccdb85e6820e4560d75f6316aa481d
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Pango Cairo
+Description: Cairo rendering support for Pango
+Version: 1.29.4
+Requires: pango cairo 
+Libs: -L${libdir} -lpangocairo-1.0
+Cflags: -I${includedir}/pango-1.0
