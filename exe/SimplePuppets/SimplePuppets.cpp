@@ -530,6 +530,18 @@ void doFaceTracking(int argc, char **argv)
 						avatar_shape.at<double>(i+p,0) -= min_y;
 					}
 					
+					// TODO this is an opportunity to create a piecewise affine warp
+					CLMTracker::PAW paw(avatar_shape, clm_model.landmark_validator.paws[0].triangulation);
+
+					// Warp onto itself as a test
+					Mat_<uchar> gray;
+					Mat_<uchar> dest;
+
+					cvtColor(avatar_image, gray, CV_RGB2GRAY);
+					Mat_<uchar> dst;
+					paw.Warp(gray, dst, avatar_shape);
+					cv::imshow("dest", dst);
+					cv::waitKey(0);
 					// TODO actually resize the image to something sensible as well if too big (say over 500x500px)
 
 					// Convert RGB to BGR as that is what OpenGL expects
