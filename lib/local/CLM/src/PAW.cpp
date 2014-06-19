@@ -51,6 +51,84 @@ using namespace CLMTracker;
 
 using namespace cv;
 
+// A constructor from destination shape and triangulation
+PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
+{
+	// Initialise some variables directly
+	this->destination_landmarks = destination_shape;
+	this->triangulation = triangulation;
+
+	int num_points = destination_shape.rows/2;
+
+	int num_tris = triangulation.rows;
+	
+	// Pre-compute the rest
+    alpha = Mat_<double>(num_tris, 3);
+    beta = Mat_<double>(num_tris, 3);
+    
+    Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
+    Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
+    
+	for (int tri = 0; tri < num_tris; ++tri)
+	{	
+		int j = triangulation.at<int>(tri, 0);
+		int k = triangulation.at<int>(tri, 1);
+		int l = triangulation.at<int>(tri, 2);
+
+        double c1 = ys.at<double>(l) - ys.at<double>(j);
+        double c2 = xs.at<double>(l) - xs.at<double>(j);
+        double c4 = ys.at<double>(k) - ys.at<double>(j);
+        double c3 = xs.at<double>(k) - xs.at<double>(j);
+        		
+        double c5 = c3*c1 - c2*c4;
+
+        alpha.at<double>(tri, 0) = (ys.at<double>(j) * c2 - xs.at<double>(j) * c1) / c5;
+        alpha.at<double>(tri, 1) = c1/c5;
+        alpha.at<double>(tri, 2) = -c2/c5;
+
+        beta.at<double>(tri, 0) = (xs.at<double>(j) * c4 - ys.at<double>(j) * c3)/c5;
+        beta.at<double>(tri, 1) = -c4/c5;
+        beta.at<double>(tri, 2) = c3/c5;
+	}
+
+	double max_x;
+	double max_y;
+
+	minMaxLoc(xs, &min_x, &max_x);
+	minMaxLoc(ys, &min_y, &max_y);
+
+	int w = (int)(max_x - min_x + 1.5);
+    int h = (int)(max_y - min_y + 1.5);
+    
+	// Round the min_x and min_y for simplicity?
+
+    pixel_mask = Mat_<uchar>(h, w, (uchar)0);
+    triangle_id = Mat_<int>(h, w, -1);
+        
+	int curr_tri = -1;
+
+	for(int y = 0; y < pixel_mask.rows; y++)
+	{
+		for(int x = 0; x < pixel_mask.cols; x++)
+		{
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
+			// If there is a triangle at this location
+            if(curr_tri != -1)
+			{
+				triangle_id.at<int>(y, x) = curr_tri;
+                pixel_mask.at<uchar>(y, x) = 1;
+			}	
+		}
+	}
+    	
+	// Preallocate maps and coefficients
+	coefficients.create(num_tris, 6);
+	map_x.create(pixel_mask.rows,pixel_mask.cols);
+	map_y.create(pixel_mask.rows,pixel_mask.cols);
+
+
+}
+
 //===========================================================================
 void PAW::Read(std::ifstream& stream)
 {
@@ -87,18 +165,18 @@ void PAW::Read(std::ifstream& stream)
 
 //=============================================================================
 // cropping from the source image to the destination image using the shape in s, used to determine if shape fitting converged successfully
-void PAW::Warp(const Mat_<uchar>& image_to_warp, Mat_<uchar>& destination_image, Mat_<double>& landmarks_to_warp)
+void PAW::Warp(const Mat& image_to_warp, Mat& destination_image, const Mat_<double>& landmarks_to_warp)
 {
   
 	// set the current shape
-	source_landmarks = landmarks_to_warp;
+	source_landmarks = landmarks_to_warp.clone();
 
 	// prepare the mapping coefficients using the current shape
 	this->CalcCoeff();
 
 	// Do the actual mapping computation (where to warp from)
 	this->WarpRegion(map_x, map_y);
-  
+  	
 	// Do the actual warp (with bi-linear interpolation)
 	remap(image_to_warp, destination_image, map_x, map_y, CV_INTER_LINEAR);
   
@@ -205,5 +283,84 @@ void PAW::WarpRegion(Mat_<float>& mapx, Mat_<float>& mapy)
 			mp++; tp++; xp++; yp++;	
 		}
 	}
-	
+}
+
+// ============================================================
+// Helper functions to determine which point a triangle lies in
+// ============================================================
+
+// Is the point on same side as a half-plane defined by v1, v2, v3
+bool sameSide(const Point_<double>& to_test, const Point_<double>& v1, const Point_<double>& v2, const Point_<double>& v3)
+{
+    double x0 = to_test.x;
+	double y0 = to_test.y;
+    
+    double x1 = v1.x;
+    double x2 = v2.x;
+    double x3 = v3.x;
+    
+    double y1 = v1.y;
+    double y2 = v2.y;
+    double y3 = v3.y;
+
+    double x = (x3-x2)*(y0-y2) - (x0-x2)*(y3-y2);
+    double y = (x3-x2)*(y1-y2) - (x1-x2)*(y3-y2);
+
+    return x*y >= 0;
+
+}
+
+// if point is on same side for all three half-planes it is in a triangle
+bool pointInTriangle(const Point_<double>& point, const Point_<double>& v1, const Point_<double>& v2, const Point_<double>& v3)
+{
+    return sameSide(point, v1, v2, v3) && sameSide(point, v2, v1, v3) && sameSide(point, v3, v1, v2);
+
+}
+
+// Find if a given point lies in the triangles
+int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles, const Mat_<double> control_points, int guess) const
+{
+    
+    int num_tris = triangles.rows;
+	int num_points = control_points.rows / 2;
+
+	int tri = -1;
+    
+	// Allow a guess for speed (so as not to go through all triangles)
+	if(guess != -1)
+	{
+		int j = triangles.at<int>(guess, 0);
+		int k = triangles.at<int>(guess, 1);
+		int l = triangles.at<int>(guess, 2);
+
+		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
+		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
+		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
+
+		bool in_triangle = pointInTriangle(point, v1, v2, v3);
+		if(in_triangle)
+		{
+			return guess;
+		}
+	}
+
+    for (int i = 0; i < num_tris; ++i)
+	{
+		int j = triangles.at<int>(i, 0);
+		int k = triangles.at<int>(i, 1);
+		int l = triangles.at<int>(i, 2);
+
+		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
+		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
+		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
+
+		bool in_triangle = pointInTriangle(point, v1, v2, v3);
+
+        if(in_triangle)
+		{
+           tri = i;
+           break;
+		}        
+	}
+	return tri;
 }

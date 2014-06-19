@@ -112,6 +112,9 @@ public:
 	// Default constructor
     PAW(){;}
 
+	// Construct a warp from a destination shape and triangulation
+	PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation);
+
 	// Copy constructor
 	PAW(const PAW& other): destination_landmarks(other.destination_landmarks.clone()), source_landmarks(other.source_landmarks.clone()), triangulation(other.triangulation.clone()),
 		triangle_id(other.triangle_id.clone()), pixel_mask(other.pixel_mask.clone()), coefficients(other.coefficients.clone()), alpha(other.alpha.clone()), beta(other.beta.clone()), map_x(other.map_x.clone()), map_y(other.map_y.clone())
@@ -124,7 +127,7 @@ public:
 	void Read(std::ifstream &s);
 
 	// The actual warping
-    void Warp(const Mat_<uchar>& image_to_warp, Mat_<uchar>& destination_image, Mat_<double>& landmarks_to_warp);
+    void Warp(const Mat& image_to_warp, Mat& destination_image, const Mat_<double>& landmarks_to_warp);
 	
 	// Compute coefficients needed for warping
     void CalcCoeff();
@@ -132,13 +135,17 @@ public:
 	// Perform the actual warping
     void WarpRegion(Mat_<float>& map_x, Mat_<float>& map_y);
 
-    inline int NumberOfLandmarks(){return destination_landmarks.rows/2;}
-    inline int NumberOfTriangles(){return triangulation.rows;}
+    inline int NumberOfLandmarks() const {return destination_landmarks.rows/2;} ;
+    inline int NumberOfTriangles() const {return triangulation.rows;} ;
 
 	// The width and height of the warped image
-    inline int Width(){return pixel_mask.cols;}
-    inline int Height(){return pixel_mask.rows;}
+    inline int constWidth() const {return pixel_mask.cols;}
+    inline int Height() const {return pixel_mask.rows;}
     
+private:
+
+	int findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles, const Mat_<double> control_points, int guess = -1) const;
+
   };
   //===========================================================================
 }
