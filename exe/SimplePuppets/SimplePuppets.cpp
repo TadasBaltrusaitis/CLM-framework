@@ -97,66 +97,6 @@ void readFromStock(int c ){
 
 }
 
-//this is where the magic happens! Sort of. 
-void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, const Mat& avatar_image, const Mat& avatar_shape, const cv::Mat_<int>& face_triangles,
-	const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, bool face_replace)
-{		
-
-	Mat_<double> local_params;
-	Vec6d global_params;
-		
-	double mouth = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale))));
-	double eyebrows = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale2))));
-	double smile = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale3))));		//weight of expression parameters
-
-	double head_motion = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale5))))/100.0;
-
-	clm_model.params_local.copyTo(local_params);
-	global_params = clm_model.params_global;
-
-	// Exaggeration or attenuation of rotation
-	global_params[1] *= head_motion;
-	global_params[2] *= head_motion;
-	global_params[3] *= head_motion;
-
-	//calculate old shape (in original image)
-	Mat_<double> original_shape;
-	clm_model.pdm.CalcShape2D(original_shape, local_params, global_params);		
-
-	// Exaggeration or attenuation of expression
-	local_params.at<double>(0,0) *= (mouth/100.0);
-	local_params.at<double>(1,0) *= (eyebrows/100.0);
-	local_params.at<double>(2,0) *= (smile/100.0);
-		
-	// Compute and exaggerated or attenuated shape
-	Mat_<double> destination_shape;		
-	clm_model.pdm.CalcShape2D(destination_shape, local_params, global_params); //calculate new shape
-
-	cv::Mat neutralshape(destination_shape.rows, 1, CV_64FC1);
-		
-	Vec3d orientation(global_params[1], global_params[2], global_params[3]);
-
-	bool toggleERI = ERIon;
-	
-	// TODO if rotation too extreme don't do ERI
-
-	Mat result;
-		
-	if(face_replace)
-	{
-		faceReplace(background_image, original_shape, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, result, false);
-	}
-	else
-	{
-		faceAnimate(background_image, original_shape, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, result, false);
-	}
-
-	//***************//
-	// TODO rem
-	//imshow("Result image", result);		
-
-}
-
 //called when the 'use webcam' checkbox is ticked
 void use_webcam(){			
 	USEWEBCAM = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check));
@@ -574,7 +514,6 @@ void doFaceTracking(int argc, char **argv)
 						avatar_shape.at<double>(i + num_landmarks, 0) -= paw.min_y;
 					}
 					
-
 					// TODO rem
 					cv::imshow("dest", avatar_image);
 
@@ -600,8 +539,6 @@ void doFaceTracking(int argc, char **argv)
 					{
 						cvtColor(avatar_image, avatar_image, CV_GRAY2BGR);
 					}
-
-
 				}
 				else
 				{
@@ -612,7 +549,6 @@ void doFaceTracking(int argc, char **argv)
 
 			}
 
-			Mat_<float> depth;
 			Mat_<uchar> gray;
 			cvtColor(read_img, gray, CV_RGB2GRAY);
 			cvtColor(read_img, read_image_bgr, CV_RGB2BGR);
@@ -634,7 +570,7 @@ void doFaceTracking(int argc, char **argv)
 			Rect faceRegion;
 
 			// The actual facial landmark detection / tracking
-			bool detection_success = CLMTracker::DetectLandmarksInVideo(gray, depth, clm_model, clm_parameters);
+			bool detection_success = CLMTracker::DetectLandmarksInVideo(gray, Mat_<float>(), clm_model, clm_parameters);
 			
 			Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
@@ -658,7 +594,48 @@ void doFaceTracking(int argc, char **argv)
 			// The actual animation and displaying step
 			if(!avatar_image.empty())
 			{
-				Puppets(clm_model, read_image_bgr, avatar_image, avatar_shape, face_triangles, mouth_triangles, eye_triangles, face_replace_global);
+				Mat_<double> local_params_corrected;
+				Vec6d global_params_corrected;
+		
+				// Get expression exaggeration attenuation values
+				double mouth = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale))));
+				double eyebrows = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale2))));
+				double smile = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale3))));		//weight of expression parameters
+
+				// Get head motion attenuation or exaggeration values
+				double head_motion = double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale5))))/100.0;
+
+				clm_model.params_local.copyTo(local_params_corrected);
+				global_params_corrected = clm_model.params_global;
+
+				// Exaggeration or attenuation of rotation
+				global_params_corrected[1] *= head_motion;
+				global_params_corrected[2] *= head_motion;
+				global_params_corrected[3] *= head_motion;
+
+				// Exaggeration or attenuation of expression
+				local_params_corrected.at<double>(0,0) *= (mouth/100.0);
+				local_params_corrected.at<double>(1,0) *= (eyebrows/100.0);
+				local_params_corrected.at<double>(2,0) *= (smile/100.0);
+		
+				// Compute and exaggerated or attenuated shape
+				Mat_<double> destination_shape;		
+				clm_model.pdm.CalcShape2D(destination_shape, local_params_corrected, global_params_corrected); //calculate new shape
+
+				bool toggleERI = ERIon;
+	
+				// TODO if rotation too extreme don't do ERI
+
+				Mat result;
+		
+				if(face_replace_global)
+				{
+					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, toggleERI, result, false);
+				}
+				else
+				{
+					faceAnimate(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, toggleERI, result, false);
+				}
 			}
 
 			frame_processed++;

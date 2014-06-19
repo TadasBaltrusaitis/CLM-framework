@@ -74,9 +74,4 @@ void doFaceTracking(int argc, char **argv);
 void startGTK(int argc, char **argv);
 int main (int argc, char **argv);
 
-void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, const Mat& avatar_image, const Mat& avatar_shape, const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, bool face_replace);
-
-
-
-
 #endif

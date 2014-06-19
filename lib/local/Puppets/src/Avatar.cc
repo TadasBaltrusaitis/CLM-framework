@@ -407,35 +407,13 @@ void compensateColoursHistograms(Mat &compensator, Mat &compensated){
 
 }
 
-
-void addAlphaMask(Mat &opaque){
-
-	if(opaque.channels() == 3){
-
-		if(opaque.size() != blurredmask.size()){
-			resize(opaque,opaque,blurredmask.size());
-		}
-
-		vector<Mat> channels;
-		split(opaque,channels);
-
-		if(UNDERLAYER){
-			channels.push_back(blurredmask / 1.3f);
-		}
-		else{
-			channels.push_back(blurredmask);
-		}
-
-		merge(channels,opaque);
-
-	}
-}
-
-void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image)
+void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate)
 {
 
 	if((compensator.channels() == 3) && (to_compensate.channels() == 3)){
 		
+		// TODO mask here is possibly incorrect
+
 		Mat mask_compensator;
 		Mat mask_to_compensate;
 
@@ -486,17 +464,24 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 		if(DISPLAYHISTOGRAMS){
 			displayHistogram("compensated",channels);
 		}
+		
+		// TODO what value should this be
+		Mat underlayer_mask = mask_to_compensate * 4;
+		// This should be related to image size TODO
+		GaussianBlur(underlayer_mask, underlayer_mask, Size(0,0), 25, 25, BORDER_CONSTANT);
+
+		channels.push_back(underlayer_mask);
 
 		// TODO add this there somewhere
 		//if(UNDERLAYER){
-		//	channels.push_back(mask / 1.3f);
+		//	channels.push_back(mask_to_compensate / 1.2f);
 		//}
 		//else{
-			channels.push_back(mask_to_compensate);
+		//	channels.push_back(mask_to_compensate);
 		//}
 
 		merge(channels, corrected_image);
-
+		
 	}
 
 
@@ -527,13 +512,13 @@ void drawTexture(GLuint texture_index, const Mat_<double>& shape_in_texture, con
 		int	j = triangles.at<int>(l,2);
 		int	k = triangles.at<int>(l,1);
 		
-		glTexCoord2d((shape_in_texture.at<double>(i,0))/texture_size.width, (shape_in_texture.at<double>(i+p,0))/texture_size.height);
+		glTexCoord2d((shape_in_texture.at<double>(i,0)+1)/texture_size.width, (shape_in_texture.at<double>(i+p,0)+1)/texture_size.height);
 		glVertex3d(shape_in_output.at<double>(i,0)/output_size.width, shape_in_output.at<double>(i+p,0)/output_size.height,0.0f);
 
-		glTexCoord2d((shape_in_texture.at<double>(j,0))/texture_size.width, (shape_in_texture.at<double>(j+p,0))/texture_size.height);
+		glTexCoord2d((shape_in_texture.at<double>(j,0)+1)/texture_size.width, (shape_in_texture.at<double>(j+p,0)+1)/texture_size.height);
 		glVertex3d(shape_in_output.at<double>(j,0)/output_size.width, shape_in_output.at<double>(j+p,0)/output_size.height,0.0f);
 
-		glTexCoord2d((shape_in_texture.at<double>(k,0))/texture_size.width, (shape_in_texture.at<double>(k+p,0))/texture_size.height);
+		glTexCoord2d((shape_in_texture.at<double>(k,0)+1)/texture_size.width, (shape_in_texture.at<double>(k+p,0)+1)/texture_size.height);
 		glVertex3d(shape_in_output.at<double>(k,0)/output_size.width, shape_in_output.at<double>(k+p,0)/output_size.height,0.0f);
 
 	}
@@ -566,21 +551,10 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	GLuint underlayer_texture;
 	// If underlayer is used
 	if(!underlayer_image.empty())
-	{
-
-		// TODO this needs to be pulled out
-		//Mat blurredAvatar2;
-		//Mat original_imgCopy;
-		
-		// Blurr the underlying image
-		//resize(original_img, original_imgCopy, Size(64,64));
-		//GaussianBlur(original_imgCopy,blurredAvatar2,Size(0,0),7,7,4);
-		//resize(blurredAvatar2,blurredAvatar2,Size(128,128));
-
-		// Add an alpha mask on the blurred image (the mickey mouse one)
-		// TODO doesn't work if face is rotated as the mask is not, does not seem to accomplish much
-		//addAlphaMask(blurredAvatar2);
-		
+	{		
+		cvtColor(underlayer_image, disp, CV_BGRA2RGBA);
+		CLMTracker::Draw(disp, underlayer_shape);
+		cv::imshow("underlayer shape", disp);
 		underlayer_texture = matToTexture(underlayer_image);
 	}
 			
@@ -643,7 +617,7 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	// Potentially draw the underlayer texture
 	if(!underlayer_image.empty())
 	{
-		drawTexture(underlayer_texture, underlayer_shape, underlayer_image.size(), destination_shape, background_image.size(), face_triangles, true);
+		drawTexture(underlayer_texture, underlayer_shape, underlayer_image.size(), destination_shape, background_image.size(), face_triangles, false);
 	}
 
 	// Drawing the actual avatar (TODO culling needs to be sorted here) (triangles need to be rearranged properly during read?)
@@ -783,7 +757,7 @@ void initGL(int argc, char* argv[])
 }
 
 void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination,
-	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, Mat& result_image, bool record)
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
 {
 
 	// Initialising openGL
@@ -796,6 +770,72 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		INIT = true;
 	}
 		
+	// First warp the original image to the avatar location (this will be useful for both ERI computation and underlayer creation)
+	Mat warped_to_neutral_original;
+	paw.Warp(original_image_bgr, warped_to_neutral_original, shape_original_image);
+	Mat underlayer;
+
+	int num_points = shape_original_image.rows/2;
+
+	if(UNDERLAYER)
+	{
+
+		Mat_<uchar> pixel_mask = paw.pixel_mask;
+
+		// First crop, then blur, upsample, then warp, and mask be just regular mask
+		Mat cropped_resized_original;
+		Mat_<double> cropped_original_shape;
+
+		Size small_size(64,64);
+
+		cropFace(original_image_bgr, shape_original_image, small_size, cropped_resized_original, cropped_original_shape);
+
+		GaussianBlur(cropped_resized_original, underlayer, Size(0,0), 5, 5);
+		cv::resize(underlayer, underlayer, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows));	
+
+		Mat_<double> underlayer_shape = cropped_original_shape.clone();
+
+		double scaling_x = (double)warped_to_neutral_original.cols / (double)small_size.width;
+		double scaling_y = (double)warped_to_neutral_original.rows / (double)small_size.height;
+
+		for(int i = 0; i < num_points; ++i)
+		{
+			underlayer_shape.at<double>(i) = underlayer_shape.at<double>(i) * scaling_x;
+			underlayer_shape.at<double>(i + num_points) = underlayer_shape.at<double>(i + num_points) * scaling_y;
+		}
+
+		paw.Warp(underlayer, underlayer, underlayer_shape);
+
+		// Add alpha (TODO correct the alphas to something more meaningful)
+		Mat mask;
+		if(underlayer.size() != blurredmask.size()){
+			resize(blurredmask, mask, underlayer.size());
+		}
+
+		vector<Mat> channels;
+		split(underlayer, channels);
+
+		// The mask needs to be extended up and down as well
+
+		// TODO rem
+		//channels.push_back(mask / 1.3f);	
+		Mat underlayer_mask = pixel_mask * 1;
+		// This should be related to image size TODO
+		GaussianBlur(underlayer_mask, underlayer_mask, Size(0,0), 5, 5, BORDER_CONSTANT);
+
+		channels.push_back(underlayer_mask);
+		
+		merge(channels, underlayer);
+
+		underlayer = underlayer.setTo(0, pixel_mask==0);
+
+		Mat disp;
+		cvtColor(underlayer, disp, CV_BGRA2RGB);
+		imshow("Underlayer", disp);
+		imshow("underlayer_mask", underlayer_mask);
+
+	}		
+	
 	// TODO col correct should only be on the face area?
 
 	// Crop the face from the background image and use that for colour correction
@@ -807,9 +847,9 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	
 	// Correct the avatar image using colour correction and masking
 	Mat avatar_image_corrected;// = avatar_image.clone();
-	compensateColours(original_image_bgr_cropped, avatar_image, avatar_image_corrected);
+	compensateColours(original_image_bgr_cropped, avatar_image, avatar_image_corrected, paw.pixel_mask);
 
-	drawFaceReplace(original_image_bgr, shape_original_image, Mat(), Mat_<double>(), avatar_image_corrected, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
+	drawFaceReplace(original_image_bgr, shape_original_image, underlayer, avatar_shape, avatar_image_corrected, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
 	frameCount++;
 
@@ -823,7 +863,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 }
 
 void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination, 
-	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, Mat& result_image, bool record)
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
 {
 
 	// Initialising openGL
@@ -833,8 +873,8 @@ void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		myargv [0]=_strdup ("Myappname");
 		initGL(1, myargv);
 		INIT = true;
-	}
-	
+	}	
+
 	drawFaceAnimate(original_image_bgr, shape_original_image, avatar_image, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
 	frameCount++;
