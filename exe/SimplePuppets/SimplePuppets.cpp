@@ -98,7 +98,10 @@ void readFromStock(int c ){
 
 }
 
-void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, const Mat& avatar_image, const Mat& avatar_shape, bool face_replace){		//this is where the magic happens! Sort of. 
+//this is where the magic happens! Sort of. 
+void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, const Mat& avatar_image, const Mat& avatar_shape, const cv::Mat_<int>& face_triangles,
+	const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, bool face_replace)
+{		
 
 
 	Mat_<double> local_params;
@@ -128,10 +131,10 @@ void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, cons
 	local_params.at<double>(2,0) *= (smile/100.0);
 		
 	// Compute and exaggerated or attenuated shape
-	Mat_<double> newshape;		
-	clm_model.pdm.CalcShape2D(newshape, local_params, global_params); //calculate new shape
+	Mat_<double> destination_shape;		
+	clm_model.pdm.CalcShape2D(destination_shape, local_params, global_params); //calculate new shape
 
-	cv::Mat neutralshape(newshape.rows, 1, CV_64FC1);
+	cv::Mat neutralshape(destination_shape.rows, 1, CV_64FC1);
 		
 	Vec3d orientation(global_params[1], global_params[2], global_params[3]);
 
@@ -147,14 +150,15 @@ void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, cons
 		
 	if(face_replace)
 	{
-		faceReplace(background_image, original_shape, avatar_image, avatar_shape, newshape, clm_model.landmark_validator.paws[0].triangulation, result, false);
+		faceReplace(background_image, original_shape, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, result, false);
 	}
 	else
 	{
-		faceAnimate(background_image, original_shape, avatar_image, avatar_shape, newshape, clm_model.landmark_validator.paws[0].triangulation, result, false);
+		faceAnimate(background_image, original_shape, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, result, false);
 	}
 
 	//***************//
+	// TODO rem
 	//imshow("Result image", result);		
 
 }
@@ -336,6 +340,40 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
+// Reading in triangle files
+void readTriangles(int num_landmarks, Mat_<int>& face_triangles, Mat_<int>& mouth_triangles, Mat_<int>& eye_triangles)
+{
+
+	string mouth_file;
+	string face_file;
+	if(num_landmarks == 66)
+	{
+		mouth_file = "./avatars/mouth_eyes_tris_66.yml";
+		face_file = "./avatars/face_tris_66.yml";
+	}
+	else if(num_landmarks == 68)
+	{
+		mouth_file = "./avatars/mouth_eyes_tris_68.yml";
+		face_file = "./avatars/face_tris_68.yml";
+	}
+	else
+	{
+		// TODO proper error message here
+		cout << "Unsupported number of landmarks detected" << endl;
+	}
+
+	cout << "Reading mouth and eyes triangles from " << mouth_file << endl;
+	FileStorage fsc(mouth_file, FileStorage::READ);		
+	fsc["eyestri"] >> eye_triangles;
+	fsc["mouthtri"] >> mouth_triangles;
+	fsc.release();
+	
+	cout << "Reading face triangles from " << face_file << endl;
+	FileStorage fsc_face(face_file, FileStorage::READ);		
+	fsc_face["facetri"] >> face_triangles;
+	fsc_face.release();
+}
+
 // This is the main loop
 void doFaceTracking(int argc, char **argv)
 {
@@ -356,6 +394,29 @@ void doFaceTracking(int argc, char **argv)
 
 	// Avatar selection is performed through a combo box, determine the initial combo box selection
 	int avatar_selection = gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice));
+
+	// This is the Piecewise affine warp that will be used to map to the avatar
+	CLMTracker::PAW paw;
+
+	// Read in the triangles that will be used by the avatar
+	Mat_<int> face_triangles;
+	Mat_<int> mouth_triangles;
+	Mat_<int> eye_triangles;
+
+	int num_landmarks = clm_model.pdm.NumberOfPoints();
+
+	readTriangles(num_landmarks, face_triangles, mouth_triangles, eye_triangles);
+
+	// Useful when dealing with avatar for colour normalisation, ERI etc.
+
+	// Face mask includes the inner part of the face without eyes and the mouth
+	Mat_<uchar> mask_avatar_face;
+
+	// Eye mask includes just the eyes
+	Mat_<uchar> mask_avatar_eyes;
+
+	// This will store a normalised version of the face for computing ERI
+	Mat neutral_face_reference;
 
 	// The main loop
 	while( true )
@@ -463,11 +524,9 @@ void doFaceTracking(int argc, char **argv)
 		//todo: fix bug with crash when selecting video file to play under webcam mode (disable video select button?)
 		//also occasionally opencv error when changing between different sizes of video input/webcam owing to shape going outside boundries. 
 		
-		while(!read_img.empty() && !CHANGESOURCE)						//This is where stuff happens once the file's open.
+		while(!read_img.empty() && !CHANGESOURCE)
 		{		
-
 			
-			// TODO sep function
 			// Grabbing the avatar image
 			if(avatar_image.empty() || avatar_selection != gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice)))
 			{
@@ -495,72 +554,72 @@ void doFaceTracking(int argc, char **argv)
 						
 				if(detection_success)
 				{
-					avatar_shape = clm_model_avatar.detected_landmarks;
+					//avatar_shape = clm_model_avatar.detected_landmarks;
+				
+					Mat_<double> shape_in_image = clm_model_avatar.detected_landmarks;
 
-					// TODO rem
-					//Mat disp = grayscale_avatar_image.clone();
-					//CLMTracker::Draw(disp, clm_model_avatar);
-					//imshow("Avatar image", disp);
-					//cv::waitKey(0);
+					// Rotate the avatar shape to a neutral that we will warp to
+					clm_model.pdm.CalcShape2D(avatar_shape, clm_model_avatar.params_local, Vec6d(clm_model_avatar.params_global[0], 0, 0, 0, 0, 0));								
+					
+					// This is an opportunity to create a piecewise affine warp
+					Mat_<int> triangles_face_with_eyes;
+					cv::vconcat(face_triangles, eye_triangles, triangles_face_with_eyes);
 
-					// Crop out the image now (for texture loading speed)
-					int p = avatar_shape.rows/2;
+					paw = CLMTracker::PAW(avatar_shape, triangles_face_with_eyes);
 
-					// Finding the minimum and maximum x and y values of the shape
-					double min_x, min_y, max_x, max_y;
-					cv::minMaxLoc(avatar_shape(Rect(0, 0, 1, p)), &min_x, &max_x);
-					cv::minMaxLoc(avatar_shape(Rect(0, p, 1, p)), &min_y, &max_y);
+					// The triangle ID's of eyes will be above number of face triangles
+					mask_avatar_eyes = paw.triangle_id >= face_triangles.rows;
 
-					Rect image_b_box(1, 1, avatar_image.cols - 1, avatar_image.rows - 1);
+					// Face mask does not include the eyes
+					mask_avatar_face = paw.pixel_mask & (mask_avatar_eyes == 0);
+					
+					// Warp from current shape in image to the normalised avatar image
+					paw.Warp(avatar_image, avatar_image, shape_in_image);
 
-					double width = max_x - min_x;
-					double height = max_y - min_y;
-
-					Rect face_b_box((int)min_x, (int)min_y, (int)width, (int)height);
-
-					// Intersect image and face bounding boxes, leading to a new bounding box that is valid
-					Rect to_crop = image_b_box & face_b_box;
-
-					// Perform the operation in place
-					avatar_image = Mat(avatar_image, to_crop);
-
-					for(int i = 0; i < p; i++)
+					// Correct avatar location from the PAW
+					for(int i = 0; i < num_landmarks; i++)
 					{
-						avatar_shape.at<double>(i,0) -= min_x;
-						avatar_shape.at<double>(i+p,0) -= min_y;
+						avatar_shape.at<double>(i, 0) -= paw.min_x;
+						avatar_shape.at<double>(i + num_landmarks, 0) -= paw.min_y;
 					}
 					
-					// TODO this is an opportunity to create a piecewise affine warp
-					CLMTracker::PAW paw(avatar_shape, clm_model.landmark_validator.paws[0].triangulation);
 
-					// Warp onto itself as a test
-					Mat_<uchar> gray;
-					Mat_<uchar> dest;
-
-					cvtColor(avatar_image, gray, CV_RGB2GRAY);
-					Mat_<uchar> dst;
-					paw.Warp(gray, dst, avatar_shape);
-					cv::imshow("dest", dst);
-					cv::waitKey(0);
-					// TODO actually resize the image to something sensible as well if too big (say over 500x500px)
+					// TODO rem
+					cv::imshow("dest", avatar_image);
 
 					// Convert RGB to BGR as that is what OpenGL expects
 					if(avatar_image.channels() == 3)
 					{
 						cvtColor(avatar_image, avatar_image, CV_RGB2BGR);	
+
+						// Do color normalisation (seems to preserve facial features better, but leads to a slightly cartoony look as color is slightly off) TODO is it necessary
+						//Mat avatar_image_ycrcb;
+						//cvtColor(avatar_image, avatar_image_ycrcb, CV_BGR2YCrCb);
+						//vector<Mat> channels;
+						//split(avatar_image_ycrcb, channels);
+
+						//equalizeHist(channels[0], channels[0]);
+
+						//merge(channels, avatar_image_ycrcb);
+
+						//cvtColor(avatar_image_ycrcb, avatar_image, CV_YCrCb2BGR);
+
 					}
 					else
 					{
 						cvtColor(avatar_image, avatar_image, CV_GRAY2BGR);
 					}
+
+
 				}
 				else
 				{
-					// TODO this needs to result in some error message
+					// empty the image if failed to construct an avatar
+					avatar_image = Mat();
+					avatar_shape = Mat_<double>();
 				}
 
 			}
-
 
 			Mat_<float> depth;
 			Mat_<uchar> gray;
@@ -578,13 +637,6 @@ void doFaceTracking(int argc, char **argv)
 
 			writeToFile = 0;
 
-			// TODO rem
-			//if(GETFACE){
-			//	GETFACE = false;
-			//	writeToFile = !writeToFile;
-			//	PAWREADAGAIN = true;
-			//}
-			
 			Vec6d poseEstimateHaar;
 			Matx66d poseEstimateHaarUncertainty;
 
@@ -613,13 +665,12 @@ void doFaceTracking(int argc, char **argv)
 			}
 
 			// The actual animation and displaying step
-			Puppets(clm_model, read_image_bgr, avatar_image, avatar_shape, face_replace_global);
+			if(!avatar_image.empty())
+			{
+				Puppets(clm_model, read_image_bgr, avatar_image, avatar_shape, face_triangles, mouth_triangles, eye_triangles, face_replace_global);
+			}
 
 			frame_processed++;
-
-			//Mat disprgb;			
-			//cvtColor(disp, disprgb, CV_RGB2BGR);
-			//resize(disprgb,disprgb,Size(500,400),0,0,INTER_NEAREST );
 
 			char fpsC[255];
 			_itoa((int)fps, fpsC, 10);
@@ -645,9 +696,7 @@ void doFaceTracking(int argc, char **argv)
 			{		
 				writerFace << disp;
 			}
-
-			// key detections
-
+			
 			sendERIstrength(double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)))));
 
 			if(int(gtk_combo_box_get_active(GTK_COMBO_BOX(inputchoice))) != mindreadervideo){
@@ -661,49 +710,11 @@ void doFaceTracking(int argc, char **argv)
 
 			// Get the current dropbox selection
 			option = int(gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice)) );
-
-			//GRAYSCALE = false;
-			//
-			//// TODO why is this here?
-			//if ((option == -1) || (option == 2)){
-			//	choiceavatar = "";
-			//}
-			//if (option == 0){
-			//	choiceavatar = "_clo";
-			//}
-			//if (option == 1){
-			//	choiceavatar = "_ero";
-			//}
-			//if (option == 3){
-			//	choiceavatar = "_oba";
-			//}
-			//if (option == 4){
-			//	choiceavatar = "_jol";
-			//}
-			//if (option == 5){
-			//	choiceavatar = "_old";
-			//}
-			//if (option == 6){
-			//	choiceavatar = "_jak";
-			//}
-			//if (option == 7){
-			//	choiceavatar = "_cag";
-			//}
-
+			
 			while(gtk_events_pending ()){
 				gtk_main_iteration ();
 			}
 			
-			//if(option != oldoption)
-			//{
-
-			//	read_avatar  = true;
-			//	avatar_file = string("../images/shape_central" + choiceavatar + ".jpg");
-			//	
-			//}
-
-			//oldoption = option;
-
 			if(quitmain==1){
 				cout << "Quit." << endl;
 				return;
@@ -937,7 +948,7 @@ void startGTK(int argc, char **argv)
 	avatar_extensions.push_back(".jpg");
 	avatar_extensions.push_back(".png");
 
-	avatar_files = CollectFiles("../avatars", avatar_extensions);
+	avatar_files = CollectFiles("./avatars", avatar_extensions);
 
 	for(vector<pair<string,string> >::iterator it = avatar_files.begin(); it != avatar_files.end(); it++)
 	{

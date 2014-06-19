@@ -79,7 +79,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\glew-1.10.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\Puppets\model" "$(OutDir)model"</Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\Puppets\avatars" "$(OutDir)avatars"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -107,7 +107,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\glew-1.10.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\Puppets\model" "$(OutDir)model"</Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\Puppets\avatars" "$(OutDir)avatars"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

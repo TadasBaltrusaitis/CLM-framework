@@ -42,18 +42,10 @@ GLenum status;
 int framesTick = 1;				//How often (every N frames) the openGL textures are re-calculated 
 bool INIT = false;				
 
-float widthavat, heightavat;		//height and width of the avatar
 // Frame counting and limiting
 int    frameCount = 0;
 
 int oldposture = -5; //position of the head, 0=straight ahead, 1=right, 2=left. Initialised to a non-existant pose so 'changeposture' is called on startup
-
-// TODO rem
-//Eyes not used as filling them in looks too weird:
-Mat eyestri;
-
-//...We DO fill the oral cavity in, but instead we read the co-ordinates from lib/local/Puppets/model/mouthEyesShape.yml. 
-Mat mouthtri;
 
 void sendFaceBackgroundBool(bool under)
 {		//sent by the main loop to toggle background image
@@ -551,7 +543,8 @@ void drawTexture(GLuint texture_index, const Mat_<double>& shape_in_texture, con
 }
 
 // warped_avatar_image is only used when considering ERI as it is only needed then for the ratio computation
-void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& underlayer_image, const cv::Mat_<double>& underlayer_shape, const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangles)
+void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& underlayer_image, const cv::Mat_<double>& underlayer_shape, 
+	const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles)
 {
 	// TODO this should be set somewhere else? or always resize the background image to this representation
 	int height = background_image.rows;
@@ -645,19 +638,19 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	glEnd();
 	
 	// Do the mouth filling in from background texture to destination
-	drawTexture(background_texture, background_shape, background_image.size(), destination_shape, background_image.size(), mouthtri, false);
+	drawTexture(background_texture, background_shape, background_image.size(), destination_shape, background_image.size(), mouth_triangles, false);
 
 	// Potentially draw the underlayer texture
 	if(!underlayer_image.empty())
 	{
-		drawTexture(underlayer_texture, underlayer_shape, underlayer_image.size(), destination_shape, background_image.size(), triangles, true);
+		drawTexture(underlayer_texture, underlayer_shape, underlayer_image.size(), destination_shape, background_image.size(), face_triangles, true);
 	}
 
 	// Drawing the actual avatar (TODO culling needs to be sorted here) (triangles need to be rearranged properly during read?)
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), triangles, true);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), face_triangles, true);
 	
 	// Drawing the eyes from the avatar texture, we're not sure which way around the triangles go, hence no culling
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eyestri, false);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, false);
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -674,7 +667,8 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 }
 
 // warped_avatar_image is only used when considering ERI as it is only needed then for the ratio computation
-void drawFaceAnimate(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangles)
+void drawFaceAnimate(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape,
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles)
 {
 	// TODO this should be set somewhere else? or always resize the background image to this representation
 	int height = background_image.rows;
@@ -721,13 +715,13 @@ void drawFaceAnimate(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	glBindTexture(GL_TEXTURE_2D, background_texture);	
 	
 	// Do the mouth filling in from background texture to destination
-	drawTexture(background_texture, background_shape, background_image.size(), destination_shape, background_image.size(), mouthtri, false);
+	drawTexture(background_texture, background_shape, background_image.size(), destination_shape, background_image.size(), mouth_triangles, false);
 
 	// Drawing the actual avatar, TODO culling needs to be sorted here as triangles can be in a weird order
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), triangles, true);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), face_triangles, true);
 	
 	// Drawing the eyes from the avatar texture, we're not sure which way around the triangles go, hence no culling
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eyestri, false);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, false);
 
 	// Delete the assigned textures	
 	glDeleteTextures( 1, &avatar_texture );			
@@ -794,7 +788,8 @@ void resetERIExpression(){
 	resetexpression = true;
 }
 
-void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination, const Mat_<int>& triangles, Mat& result_image, bool record)
+void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination,
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, Mat& result_image, bool record)
 {
 
 	// Initialising openGL
@@ -806,31 +801,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		initGL(1, myargv);
 		INIT = true;
 	}
-
-	// TODO this should be moved out
-	if(mouthtri.empty() || eyestri.empty()){
 		
-		string mouthfile;
-		if(shape_original_image.rows == 66*2)
-		{
-			mouthfile = "./model/mouth_eyes_tris_66.yml";
-		}
-		else if(shape_original_image.rows == 68*2)
-		{
-			mouthfile = "./model/mouth_eyes_tris_68.yml";
-		}
-		else
-		{
-			cout << "Unsupported number of landmarks detected" << endl;
-		}
-
-		cout << "Reading mouth and eyes triangles from " << mouthfile << endl;
-		FileStorage fsc(mouthfile, FileStorage::READ);		
-		fsc["eyestri"] >> eyestri;
-		fsc["mouthtri"] >> mouthtri;
-		fsc.release();
-	}
-	
 	// TODO col correct should only be on the face area?
 
 	// Crop the face from the background image and use that for colour correction
@@ -844,7 +815,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	Mat avatar_image_corrected;// = avatar_image.clone();
 	compensateColours(original_image_bgr_cropped, avatar_image, avatar_image_corrected);
 
-	drawFaceReplace(original_image_bgr, shape_original_image, Mat(), Mat_<double>(), avatar_image_corrected, avatar_shape, shape_destination, triangles);
+	drawFaceReplace(original_image_bgr, shape_original_image, Mat(), Mat_<double>(), avatar_image_corrected, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
 	frameCount++;
 
@@ -857,44 +828,20 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 
 }
 
-void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination, const Mat_<int>& triangles, Mat& result_image, bool record)
+void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination, 
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, Mat& result_image, bool record)
 {
 
 	// Initialising openGL
 	if(INIT != true ) {
-
 		char *myargv [1];
 		int myargc=1;
 		myargv [0]=_strdup ("Myappname");
 		initGL(1, myargv);
 		INIT = true;
 	}
-
-	// TODO this should be moved out
-	if(mouthtri.empty() || eyestri.empty()){
-		
-		string mouthfile;
-		if(shape_original_image.rows == 66*2)
-		{
-			mouthfile = "./model/mouth_eyes_tris_66.yml";
-		}
-		else if(shape_original_image.rows == 68*2)
-		{
-			mouthfile = "./model/mouth_eyes_tris_68.yml";
-		}
-		else
-		{
-			cout << "Unsupported number of landmarks detected" << endl;
-		}
-
-		cout << "Reading mouth and eyes triangles from " << mouthfile << endl;
-		FileStorage fsc(mouthfile, FileStorage::READ);		
-		fsc["eyestri"] >> eyestri;
-		fsc["mouthtri"] >> mouthtri;
-		fsc.release();
-	}
 	
-	drawFaceAnimate(original_image_bgr, shape_original_image, avatar_image, avatar_shape, shape_destination, triangles);
+	drawFaceAnimate(original_image_bgr, shape_original_image, avatar_image, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
 	frameCount++;
 
