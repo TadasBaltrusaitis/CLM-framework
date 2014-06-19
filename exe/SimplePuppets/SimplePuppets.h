@@ -57,6 +57,7 @@ bool USEWEBCAM = false;
 bool CHANGESOURCE = false;
 
 bool face_replace_global = true;
+bool reset_neutral_global = true;
 
 void use_webcam();
 static gboolean time_handler( GtkWidget *widget );

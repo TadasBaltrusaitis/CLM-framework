@@ -14,8 +14,6 @@ using namespace cv;
 
 void sendOptions(bool writeto, bool usedsave, string avatar);
 
-void resetERIExpression();
-
 // Cropping the face
 void cropFace(const cv::Mat &image, const cv::Mat_<double> &shape, const cv::Size output_size, cv::Mat &cropped_image, cv::Mat_<double>& cropped_shape);
  

@@ -69,7 +69,6 @@ void readFromStock(int c ){
 
 	USEWEBCAM = 0;
 	
-	resetERIExpression();
 	CHANGESOURCE = true;
 	NEWFILE = true;
 
@@ -102,7 +101,6 @@ void readFromStock(int c ){
 void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, const Mat& avatar_image, const Mat& avatar_shape, const cv::Mat_<int>& face_triangles,
 	const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, bool face_replace)
 {		
-
 
 	Mat_<double> local_params;
 	Vec6d global_params;
@@ -138,13 +136,9 @@ void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, cons
 		
 	Vec3d orientation(global_params[1], global_params[2], global_params[3]);
 
-	int viewid = clm_model.landmark_validator.GetViewId(orientation);
-
 	bool toggleERI = ERIon;
-
-	if(viewid != 0){
-		toggleERI = 1;
-	}
+	
+	// TODO if rotation too extreme don't do ERI
 
 	Mat result;
 		
@@ -167,7 +161,7 @@ void Puppets(const CLMTracker::CLM& clm_model, const Mat& background_image, cons
 void use_webcam(){			
 	USEWEBCAM = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check));
 	CHANGESOURCE = true;
-	resetERIExpression();
+
 	if(USEWEBCAM)
 	{
 		cout << "Using Webcam. " << endl;
@@ -176,7 +170,6 @@ void use_webcam(){
 	{
 		cout << "Not using Webcam. " << endl;
 	}
-	resetERIExpression();
 }
 
 void replace_face(){
@@ -214,7 +207,6 @@ static void file_ok_sel( GtkWidget *w, GtkFileSelection *fs )
 	oldfile = file;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 	USEWEBCAM = 0;
-	resetERIExpression();
 	CHANGESOURCE = true;
 	NEWFILE = true;
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filew));
@@ -230,7 +222,6 @@ static void file_ok_sel_z( GtkWidget *w, GtkFileSelection *fs )
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 	USEWEBCAM = 0;
 	CHANGESOURCE = true;
-	resetERIExpression();
 	CHANGESOURCE = true;
 	NEWFILE = true;
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
@@ -279,7 +270,7 @@ static void callback( GtkWidget *widget, gpointer data )
 
 	if(command.compare("reset eri") == 0)
 	{
-		resetERIExpression();
+		reset_neutral_global = true;
 	}
 
 	if(command.compare("load video") == 0)
@@ -407,20 +398,21 @@ void doFaceTracking(int argc, char **argv)
 
 	readTriangles(num_landmarks, face_triangles, mouth_triangles, eye_triangles);
 
-	// Useful when dealing with avatar for colour normalisation, ERI etc.
-
-	// Face mask includes the inner part of the face without eyes and the mouth
-	Mat_<uchar> mask_avatar_face;
-
-	// Eye mask includes just the eyes
-	Mat_<uchar> mask_avatar_eyes;
-
-	// This will store a normalised version of the face for computing ERI
-	Mat neutral_face_reference;
-
 	// The main loop
 	while( true )
 	{
+
+		// Useful when dealing with avatar for colour normalisation, ERI etc.
+
+		// Face mask includes the inner part of the face without eyes and the mouth
+		Mat_<uchar> mask_avatar_face;
+
+		// Eye mask includes just the eyes
+		Mat_<uchar> mask_avatar_eyes;
+
+		// This will store a normalised version of the face for computing ERI
+		Mat neutral_face_reference;
+
 
 		while(gtk_events_pending ())
 		{
@@ -475,7 +467,6 @@ void doFaceTracking(int argc, char **argv)
 				USEWEBCAM = false;
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 				CHANGESOURCE = true;
-				resetERIExpression();
 				cout << "Not using Webcam. " << endl;
 			}
 		}
