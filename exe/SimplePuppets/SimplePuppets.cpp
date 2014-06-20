@@ -61,41 +61,6 @@ string file = "../videos/changeLighting.wmv";
 string oldfile;
 
 bool GETFACE = false;		//get a new face
-bool SHOWIMAGE = false;		//show the webcam image (in the main window). Turned on when the matrix isn't empty
-
-void readFromStock(int c ){
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
-
-	USEWEBCAM = 0;
-	
-	CHANGESOURCE = true;
-	NEWFILE = true;
-
-	if(c == 0)
-		inputfile = "..\\videos\\dreamy3.avi";
-	if(c == 1)
-		inputfile = "..\\videos\\afraid0.avi";
-	if(c == 2)
-		inputfile = "..\\videos\\comfortable0.avi";
-	if(c == 3)
-		inputfile = "..\\videos\\disliking2.avi";
-	if(c == 4)
-		inputfile = "..\\videos\\shocked2.avi";
-	if(c == 5)
-		inputfile = "..\\videos\\sad3.avi";
-	if(c == 6)
-		inputfile = "..\\videos\\heartbroken2.avi";
-	if(c == 7)
-		inputfile = "..\\videos\\angry1.avi";
-	if(c == 8)
-		inputfile = "..\\videos\\inspired11.avi";
-
-	cout << "Loading Video File..... " << endl;
-	g_print ("%s\n", inputfile);
-
-
-}
 
 //called when the 'use webcam' checkbox is ticked
 void use_webcam(){			
@@ -127,7 +92,7 @@ static gboolean time_handler( GtkWidget *widget ) {
 
 gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-	if(SHOWIMAGE)
+	if(opencvImage.width > 0)
 	{
 		pix = gdk_pixbuf_new_from_data( (guchar*)opencvImage.imageData,
 			GDK_COLORSPACE_RGB, FALSE, opencvImage.depth, opencvImage.width,
@@ -179,7 +144,7 @@ static void callback( GtkWidget *widget, gpointer data )
 	// TODO need proper avatar saving? Just an image would do
 	if(command.compare("save avatar") == 0)
 	{
-		writeToFile = !writeToFile;
+		write_to_file_global = true;
 	}
 
 	if(command.compare("toggle eri") == 0)
@@ -202,7 +167,7 @@ static void callback( GtkWidget *widget, gpointer data )
 
 		/* Lets set the filename, as if this were a save dialog, and we are giving
 		a default filename */
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "..\\images\\" );
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "." );
 
 		gtk_widget_show (filew);
 
@@ -271,6 +236,19 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M", &tstruct);
+
+    return buf;
+}
+
 // Reading in triangle files
 void readTriangles(int num_landmarks, Mat_<int>& face_triangles, Mat_<int>& mouth_triangles, Mat_<int>& eye_triangles)
 {
@@ -316,7 +294,7 @@ void doFaceTracking(int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 	
 	CLMTracker::CLMParameters clm_parameters(arguments);
-
+	
 	// Initialise our tracker
 	CLMTracker::CLM clm_model = CLMTracker::CLM(clm_parameters.model_location);
 		
@@ -489,6 +467,14 @@ void doFaceTracking(int argc, char **argv)
 				
 					Mat_<double> shape_in_image = clm_model_avatar.detected_landmarks;
 
+					double avatar_scale = clm_model_avatar.params_global[0];
+
+					// If avatar is too big resize it for efficiency
+					if(avatar_scale > 2)
+					{
+						avatar_scale = 2;
+					}
+
 					// Rotate the avatar shape to a neutral that we will warp to
 					clm_model.pdm.CalcShape2D(avatar_shape, clm_model_avatar.params_local, Vec6d(clm_model_avatar.params_global[0], 0, 0, 0, 0, 0));								
 					
@@ -514,25 +500,12 @@ void doFaceTracking(int argc, char **argv)
 						avatar_shape.at<double>(i + num_landmarks, 0) -= paw.min_y;
 					}
 					
-					// TODO rem
-					cv::imshow("dest", avatar_image);
+					cv::imshow("Avatar used", avatar_image);
 
 					// Convert RGB to BGR as that is what OpenGL expects
 					if(avatar_image.channels() == 3)
 					{
 						cvtColor(avatar_image, avatar_image, CV_RGB2BGR);	
-
-						// Do color normalisation (seems to preserve facial features better, but leads to a slightly cartoony look as color is slightly off) TODO is it necessary
-						//Mat avatar_image_ycrcb;
-						//cvtColor(avatar_image, avatar_image_ycrcb, CV_BGR2YCrCb);
-						//vector<Mat> channels;
-						//split(avatar_image_ycrcb, channels);
-
-						//equalizeHist(channels[0], channels[0]);
-
-						//merge(channels, avatar_image_ycrcb);
-
-						//cvtColor(avatar_image_ycrcb, avatar_image, CV_YCrCb2BGR);
 
 					}
 					else
@@ -545,6 +518,14 @@ void doFaceTracking(int argc, char **argv)
 					// empty the image if failed to construct an avatar
 					avatar_image = Mat();
 					avatar_shape = Mat_<double>();
+
+					// Inform the user that the face could not be detected
+					GtkWidget *dialog;
+					dialog = gtk_message_dialog_new (GTK_WINDOW (window), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "Can't detect a face in an avatar image, aborting");
+
+					/* Destroy the dialog when the user responds to it (e.g. clicks a button) */
+					g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+					gtk_widget_show (dialog);
 				}
 
 			}
@@ -561,8 +542,6 @@ void doFaceTracking(int argc, char **argv)
 			{
 				cvtColor(gray, read_image_bgr, CV_GRAY2RGB);
 			}
-
-			writeToFile = 0;
 
 			Vec6d poseEstimateHaar;
 			Matx66d poseEstimateHaarUncertainty;
@@ -590,9 +569,9 @@ void doFaceTracking(int argc, char **argv)
 				fps = 10.0 / (double(t1-t0)/cv::getTickFrequency()); 
 				t0 = t1;
 			}
-
+			
 			// The actual animation and displaying step
-			if(!avatar_image.empty())
+			if(!avatar_image.empty() && clm_model.detection_certainty < -0.2)
 			{
 				Mat_<double> local_params_corrected;
 				Vec6d global_params_corrected;
@@ -649,15 +628,35 @@ void doFaceTracking(int argc, char **argv)
 			// Setting the image to draw
 			opencvImage = disp;
 
-			if(disp.empty()){
-				SHOWIMAGE = false;
-			}
-			else{
-				SHOWIMAGE = true;
-			}
-
 			gtk_widget_draw(GTK_WIDGET(drawing_area), NULL);
 			
+			// Saving the avatar from current image feed			
+			if(write_to_file_global)
+			{
+				// The new avatar name will be a date?
+				string time = currentDateTime();
+
+				stringstream ss_file;
+				ss_file << "./avatars/From_Video_" << time << ".png";
+				string image_loc = ss_file.str();
+
+				stringstream ss_name;
+				ss_name << "From Video " << time;
+				string image_name = ss_name.str();
+
+				imwrite(image_loc, read_img);
+
+				avatar_files.push_back(pair<string,string>(image_loc, image_name));
+
+				// add to the combo box selection
+				gtk_combo_box_append_text(GTK_COMBO_BOX(avatarchoice), image_name.c_str());
+
+				// and select it
+				gtk_combo_box_set_active(GTK_COMBO_BOX(avatarchoice), avatar_files.size() - 1);
+
+				write_to_file_global = false;
+			}
+
 			vCap >> read_img;
 
 			if(!outvideos.empty())
@@ -666,18 +665,6 @@ void doFaceTracking(int argc, char **argv)
 			}
 			
 			sendERIstrength(double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)))));
-
-			if(int(gtk_combo_box_get_active(GTK_COMBO_BOX(inputchoice))) != mindreadervideo){
-
-				mindreadervideo = int(gtk_combo_box_get_active(GTK_COMBO_BOX(inputchoice)));
-				cout << "Choice: " << mindreadervideo << endl;
-
-				readFromStock(mindreadervideo);
-
-			}
-
-			// Get the current dropbox selection
-			option = int(gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice)) );
 			
 			while(gtk_events_pending ()){
 				gtk_main_iteration ();
@@ -974,7 +961,6 @@ void startGTK(int argc, char **argv)
 	gtk_range_set_update_policy( GTK_RANGE(hscale2), GTK_UPDATE_DELAYED);
 	gtk_widget_show (hscale2);
 
-
 	hscale3 = gtk_hscale_new (GTK_ADJUSTMENT (adj3));
 	gtk_widget_set_size_request (GTK_WIDGET (hscale3), 200, -1);
 	gtk_table_attach_defaults (GTK_TABLE (table), hscale3, 1, 2, 7,8);
@@ -989,14 +975,12 @@ void startGTK(int argc, char **argv)
 	gtk_range_set_update_policy( GTK_RANGE(hscale4), GTK_UPDATE_DELAYED);
 	gtk_widget_show (hscale4);
 
-
 	hscale5 = gtk_hscale_new (GTK_ADJUSTMENT (adj5));
 	gtk_widget_set_size_request (GTK_WIDGET (hscale5), 200, -1);
 	gtk_table_attach_defaults (GTK_TABLE (table), hscale5, 1, 2, 9,10);
 
 	gtk_range_set_update_policy( GTK_RANGE(hscale5), GTK_UPDATE_DELAYED);
 	gtk_widget_show (hscale5);
-
 
 	/* Insert the quit button into the both 
 	* lower quadrants of the table */
@@ -1008,13 +992,6 @@ void startGTK(int argc, char **argv)
 	gtk_widget_show (window);
 
 }
-
-
-
-
-
-
-
 
 int main (int argc, char **argv)
 {

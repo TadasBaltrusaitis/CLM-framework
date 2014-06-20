@@ -24,16 +24,9 @@ GtkObject *adj1, *adj2, *adj3, *adj4, *adj5;
 // A list of avatar files in a '../avatars' directory that will be used to load tghem
 vector<pair<string,string> > avatar_files;
 
-int mindreadervideo = -1;
-
-void readFromStock(int c);
-
-bool writeToFile = 0;
 bool ERIon = 1;
 bool quitmain = 0;
 bool GRAYSCALE = false;
-
-int option, oldoption;
 
 GtkWidget *filew, *filez;
 
@@ -58,14 +51,15 @@ bool CHANGESOURCE = false;
 
 bool face_replace_global = true;
 bool reset_neutral_global = true;
+bool write_to_file_global = false;
 
 void use_webcam();
 static gboolean time_handler( GtkWidget *widget );
 gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
-static void file_ok_sel( GtkWidget        *w,  GtkFileSelection *fs );
-static void file_ok_sel_z( GtkWidget        *w,  GtkFileSelection *fs );
-static void callback( GtkWidget *widget,  gpointer   data );
-static gboolean delete_event( GtkWidget *widget, GdkEvent  *event, gpointer   data );
+static void file_ok_sel( GtkWidget *w, GtkFileSelection *fs );
+static void file_ok_sel_z( GtkWidget *w, GtkFileSelection *fs );
+static void callback( GtkWidget *widget, gpointer data );
+static gboolean delete_event( GtkWidget *widget, GdkEvent *event, gpointer data );
 static void printErrorAndAbort( const std::string & error );
 
 vector<string> get_arguments(int argc, char **argv);
