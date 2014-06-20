@@ -106,27 +106,25 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 	return TRUE;
 }
 
-
+// TODO this needs to be corrected for loading avatar
 static void file_ok_sel( GtkWidget *w, GtkFileSelection *fs )
 {
 	oldfile = file;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
-	USEWEBCAM = 0;
-	CHANGESOURCE = true;
-	NEWFILE = true;
+
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filew));
-	cout << "Loading from: " << inputfile << endl;
+	cout << "Loading avatar from: " << inputfile << endl;
 
 	GETFACE = true;
 	cout << "file: " << inputfile << ", oldfile: " << oldfile << endl;
 	gtk_widget_destroy(filew);	
 }
 
+// This is used when loading a video from file
 static void file_ok_sel_z( GtkWidget *w, GtkFileSelection *fs )
 {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 	USEWEBCAM = 0;
-	CHANGESOURCE = true;
 	CHANGESOURCE = true;
 	NEWFILE = true;
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
@@ -167,7 +165,7 @@ static void callback( GtkWidget *widget, gpointer data )
 
 		/* Lets set the filename, as if this were a save dialog, and we are giving
 		a default filename */
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "." );
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "../" );
 
 		gtk_widget_show (filew);
 
@@ -363,7 +361,8 @@ void doFaceTracking(int argc, char **argv)
 			file = files[f_n];
 		}
 
-		if(NEWFILE){
+		if(NEWFILE)
+		{
 			file = inputfile;
 		}
 		
@@ -630,20 +629,30 @@ void doFaceTracking(int argc, char **argv)
 
 			gtk_widget_draw(GTK_WIDGET(drawing_area), NULL);
 			
-			// Saving the avatar from current image feed			
-			if(write_to_file_global)
+			// Saving the avatar from current image feed (TODO rename getface)			
+			if(write_to_file_global || GETFACE)
 			{
-				// The new avatar name will be a date?
-				string time = currentDateTime();
+				string image_loc;
+				string image_name;
+				if(GETFACE)
+				{
+					// The new avatar name will be a date?
+					string time = currentDateTime();
 
-				stringstream ss_file;
-				ss_file << "./avatars/From_Video_" << time << ".png";
-				string image_loc = ss_file.str();
+					stringstream ss_file;
+					ss_file << "./avatars/From_Video_" << time << ".png";
+					string image_loc = ss_file.str();
 
-				stringstream ss_name;
-				ss_name << "From Video " << time;
-				string image_name = ss_name.str();
-
+					stringstream ss_name;
+					ss_name << "From Video " << time;
+					string image_name = ss_name.str();
+				}
+				else
+				{
+					string image_loc = inputfile;
+					string image_name = path(inputfile).filename().stem().string();
+					read_img = imread(image_loc);
+				}
 				imwrite(image_loc, read_img);
 
 				avatar_files.push_back(pair<string,string>(image_loc, image_name));
