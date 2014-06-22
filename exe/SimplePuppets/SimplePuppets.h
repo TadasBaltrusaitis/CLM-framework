@@ -24,6 +24,8 @@ GtkObject *adj1, *adj2, *adj3, *adj4, *adj5;
 // A list of avatar files in a '../avatars' directory that will be used to load tghem
 vector<pair<string,string> > avatar_files;
 
+vector<pair<string,string> > default_videos;
+
 bool ERIon = 1;
 bool quitmain = 0;
 bool GRAYSCALE = false;

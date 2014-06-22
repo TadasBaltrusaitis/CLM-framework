@@ -636,22 +636,25 @@ void doFaceTracking(int argc, char **argv)
 				string image_name;
 				if(GETFACE)
 				{
+					image_loc = inputfile;
+					image_name = path(inputfile).filename().stem().string();
+					read_img = imread(image_loc);
+
+					// Reset the flag
+					GETFACE = false;
+				}
+				else
+				{
 					// The new avatar name will be a date?
 					string time = currentDateTime();
 
 					stringstream ss_file;
 					ss_file << "./avatars/From_Video_" << time << ".png";
-					string image_loc = ss_file.str();
+					image_loc = ss_file.str();
 
 					stringstream ss_name;
 					ss_name << "From Video " << time;
-					string image_name = ss_name.str();
-				}
-				else
-				{
-					string image_loc = inputfile;
-					string image_name = path(inputfile).filename().stem().string();
-					read_img = imread(image_loc);
+					image_name = ss_name.str();
 				}
 				imwrite(image_loc, read_img);
 
@@ -919,19 +922,19 @@ void startGTK(int argc, char **argv)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(avatarchoice), it->second.c_str());
 	}
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(avatarchoice), 1);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(avatarchoice), 0);
 	
-	// TODO make the same thing for videos
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Dreamy");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Afraid");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Comfortable");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Disliking");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Shocked");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Sad");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Heartbroken");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Angry");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), "Inspired");
+	vector<string> video_extensions;
+	video_extensions.push_back(".avi");
+	video_extensions.push_back(".wmv");
 
+	default_videos = CollectFiles("../videos", video_extensions);
+
+	for(vector<pair<string,string> >::iterator it = default_videos.begin(); it != default_videos.end(); it++)
+	{
+		gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), it->second.c_str());
+	}
+		
 	gtk_table_attach_defaults (GTK_TABLE (table), avatarchoice, 0, 2, 2, 3);
 	gtk_widget_show(avatarchoice);
 

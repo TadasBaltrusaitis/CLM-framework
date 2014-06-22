@@ -37,6 +37,10 @@ GLuint framebuffer = 0;
 GLuint renderbuffer;
 GLenum status;
 
+int window_height_global = 640;
+
+double aspect_ratio_img_global;
+
 bool INIT = false;				
 
 void sendFaceBackgroundBool(bool under)
@@ -137,12 +141,10 @@ void buffertoMat(Mat &flipped)
 	flip(img, flipped, 0);
 }
 
-// TODO should the resizing actually happen
+//This function crops down a camera frame of image labelled with shape points shape to just the rectangle enclosing all shape points and resizes the cropped image to output_size
+//It also scales/offsets the matrix of feature points shape to make them refer to the new (cropped) image, result is stored in cropped_imag and cropped_shape
 void cropFace(const cv::Mat &image, const cv::Mat_<double> &shape, const cv::Size output_size, cv::Mat &cropped_image, cv::Mat_<double>& cropped_shape)
 {			
-
-	//This function crops down a camera frame of image labelled with shape points shape to just the rectangle enclosing all shape points and resizes the cropped image to FaceResolution x FaceResolution
-	//It also scales/offsets the matrix of feature points shape to make them refer to the new (cropped) image, result is stored in cropped_imag and cropped_shape
 		
 	int p = shape.rows/2;
 
@@ -168,7 +170,8 @@ void cropFace(const cv::Mat &image, const cv::Mat_<double> &shape, const cv::Siz
 	resize(cropped_image, cropped_image, output_size, 0, 0, INTER_NEAREST );
 	
 	cropped_shape = shape.clone();
-	for(int i = 0; i < p; i++){
+	for(int i = 0; i < p; i++)
+	{
 		cropped_shape.at<double>(i,0) -= min_x;
 		cropped_shape.at<double>(i,0) *= (output_size.width/(width));
 		cropped_shape.at<double>(i+p,0) -= min_y;
@@ -466,7 +469,7 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 		}
 
 		// Blur the mask so it is smooth at the borders
-		GaussianBlur(underlayer_mask, underlayer_mask, Size(0,0), 9, 9, BORDER_CONSTANT);
+		GaussianBlur(underlayer_mask, underlayer_mask, Size(0,0), 11, 11, BORDER_CONSTANT);
 
 		// Manually correct the underlayer mask so that eyebrow region has a lower value as otherwise there is a visible line where a face is warped in		
 		int steps = 5;
@@ -531,7 +534,7 @@ void drawTexture(GLuint texture_index, const Mat_<double>& shape_in_texture, con
 void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& underlayer_image, const cv::Mat_<double>& underlayer_shape, 
 	const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles)
 {
-	// TODO this should be set somewhere else? or always resize the background image to this representation
+
 	int height = background_image.rows;
 	int width = background_image.cols;
 
@@ -707,16 +710,63 @@ void drawFaceAnimate(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	glFinish();
 }
 
-void initGL(int argc, char* argv[])
+// Making sure the image fits when resizing (while also keeping the correct aspect ratio) TODO
+void changeSize(int w, int h)
 {
 
-	glewExperimental = TRUE;
+	// Use the Projection Matrix
+	glMatrixMode(GL_PROJECTION);
+
+        // Reset Matrix
+	glLoadIdentity();
+
+	double aspect_ratio_window = ((double)h) / (double)w;
+
+	// Set the viewport to reflect the aspect ratio to avoid stretching	
+	if(aspect_ratio_window > aspect_ratio_img_global)
+	{
+		h = (int)((double)w * aspect_ratio_img_global);
+		glViewport(0, 0, w, h);
+	}
+	else
+	{
+		w = (int)((double)h / aspect_ratio_img_global);
+		glViewport(0, 0, w, h);
+	}
+	// Change to the projection matrix and set our viewing volume
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// ----- OpenGL settings -----
+	// Specify depth function to use
+	glDepthFunc(GL_LEQUAL);		
+
+	// Enable the depth buffer
+	glEnable(GL_DEPTH_TEST);    
+
+	// Switch to ModelView matrix and reset
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set our clear colour to black
+}
+
+// Needed for changeSize to work
+void renderScene(void)
+{
+
+}
+
+void initGL(int argc, char* argv[], double aspect_ratio)
+{
 
 	// Initialise glfw
 	glutInit(&argc, argv);
 	glutInitDisplayMode (GLUT_DOUBLE);
 
-	glutInitWindowSize(640, 480); 
+	int width = (int) window_height_global / aspect_ratio;
+
+	glutInitWindowSize(width, window_height_global); 
 
 	glutCreateWindow("Puppets");
 
@@ -733,35 +783,42 @@ void initGL(int argc, char* argv[])
 	resize(blurredmask, blurredmask, Size(128,128),0,0,1);
 
 	// Setup our viewport to be the entire size of the window
-	
-	// TODO proper sizes?
-	glViewport(0, 0, 640, 480);
+	// TODO dealing with resizing
+	glViewport(0, 0, width, window_height_global);
 	
 	// Change to the projection matrix and set our viewing volume
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	// ----- OpenGL settings -----
+	// Specify depth function to use
+	glDepthFunc(GL_LEQUAL);		
 
-	glDepthFunc(GL_LEQUAL);		// Specify depth function to use
+	// Enable the depth buffer
+	glEnable(GL_DEPTH_TEST);    
 
-	glEnable(GL_DEPTH_TEST);    // Enable the depth buffer
-
-//	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Ask for nicest perspective correction
-	
 	// Switch to ModelView matrix and reset
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set our clear colour to black
-	if(KIOSKMODE){
+	if(KIOSKMODE)
+	{
 		 glutHideWindow();
 	}
+
+	// Dealing with window resizing	
+	glutReshapeFunc(changeSize);
+	glutDisplayFunc(renderScene);
+
+
 }
 
 void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination,
 	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
 {
+
+	aspect_ratio_img_global = ((double)original_image_bgr.rows) / (double)original_image_bgr.cols;
 
 	// Initialising openGL
 	if(INIT != true ) {
@@ -769,10 +826,10 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		char *myargv [1];
 		int myargc=1;
 		myargv [0]=_strdup ("Myappname");
-		initGL(1, myargv);
+		initGL(1, myargv, aspect_ratio_img_global);
 		INIT = true;
 	}
-		
+	
 	// First warp the original image to the avatar location (this will be useful for both ERI computation and underlayer creation)
 	Mat warped_to_neutral_original;
 	paw.Warp(original_image_bgr, warped_to_neutral_original, shape_original_image);
@@ -784,7 +841,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 
 	if(UNDERLAYER)
 	{
-		// TODO do I care about alphas in underlayer going down? Try without
+		// TODO do I care about alphas in underlayer going down? Try without (prob should care as now looks odd, also does underlayer have mouth)
 
 		//Mat_<uchar> pixel_mask = paw.pixel_mask;
 
@@ -796,7 +853,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 
 		cropFace(original_image_bgr, shape_original_image, small_size, cropped_resized_original, cropped_original_shape);
 
-		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 5, 5);
+		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 7, 7);
 		cv::resize(underlayer_image, underlayer_image, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows));	
 
 		underlayer_shape = cropped_original_shape.clone();
@@ -859,15 +916,17 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination, 
 	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
 {
+	
+	aspect_ratio_img_global = ((double)original_image_bgr.rows) / (double)original_image_bgr.cols;
 
 	// Initialising openGL
 	if(INIT != true ) {
 		char *myargv [1];
 		int myargc=1;
 		myargv [0]=_strdup ("Myappname");
-		initGL(1, myargv);
+		initGL(1, myargv, aspect_ratio_img_global);
 		INIT = true;
-	}	
+	}		
 
 	drawFaceAnimate(original_image_bgr, shape_original_image, avatar_image, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
