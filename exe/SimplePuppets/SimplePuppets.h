@@ -7,6 +7,7 @@
 #include <CLM.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <vector>
 
@@ -41,6 +42,7 @@ bool GRAYSCALE = false;
 
 GtkWidget *filew, *filez;
 
+bool display_avatar_global = true;
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl

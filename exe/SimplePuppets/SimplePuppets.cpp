@@ -499,7 +499,7 @@ void doFaceTracking(int argc, char **argv)
 						avatar_shape.at<double>(i + num_landmarks, 0) -= paw.min_y;
 					}
 					
-					cv::imshow("Avatar used", avatar_image);
+					//cv::imshow("Avatar used", avatar_image);
 
 					// Convert RGB to BGR as that is what OpenGL expects
 					if(avatar_image.channels() == 3)
@@ -526,7 +526,6 @@ void doFaceTracking(int argc, char **argv)
 					g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
 					gtk_widget_show (dialog);
 				}
-
 			}
 
 			Mat_<uchar> gray;
@@ -556,10 +555,7 @@ void doFaceTracking(int argc, char **argv)
 			{
 
 				// drawing the facial features on the face if tracking is successful
-				CLMTracker::Draw(disp, clm_model);
-				
-				// Draw it in reddish if uncertain, blueish if certain
-				CLMTracker::DrawBox(disp, pose_estimate_to_draw, Scalar(0, 0, 255.0), 3, fx, fy, cx, cy);	
+				CLMTracker::Draw(disp, clm_model);				
 			}
 
 			if(frame_processed % 10 == 0)
@@ -574,6 +570,26 @@ void doFaceTracking(int argc, char **argv)
 			// The actual animation and displaying step
 			if(!avatar_image.empty() && clm_model.detection_certainty < -0.2)
 			{
+
+				// Adding the avatar image to top left corner (if that option is selected)
+				if(display_avatar_global)
+				{
+					// TODO move to avatar bit
+					Mat disp_avatar = avatar_image.clone();
+
+					if(disp_avatar.cols > read_image_bgr.cols / 5)
+					{
+						double aspect_ratio = (double)disp_avatar.cols / (double)disp_avatar.rows;
+
+						int resize_width = read_image_bgr.cols / 5;
+						int resize_height = resize_width / aspect_ratio;
+
+						resize(disp_avatar, disp_avatar, Size(resize_width, resize_height));
+					}
+
+					disp_avatar.copyTo(read_image_bgr(Rect(0, 0, disp_avatar.cols, disp_avatar.rows)));
+				}
+
 				Mat_<double> local_params_corrected;
 				Vec6d global_params_corrected;
 		
@@ -603,8 +619,6 @@ void doFaceTracking(int argc, char **argv)
 				clm_model.pdm.CalcShape2D(destination_shape, local_params_corrected, global_params_corrected); //calculate new shape
 
 				// TODO if rotation too extreme don't do ERI
-
-		
 				if(face_replace_global)
 				{
 					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
@@ -618,7 +632,6 @@ void doFaceTracking(int argc, char **argv)
 			// Recording the animations
 			if(video_writer.isOpened())
 			{
-
 				if(record_global)
 				{
 					cv::resize(animation_result, animation_result, Size(read_img.cols, read_img.rows));
@@ -629,7 +642,6 @@ void doFaceTracking(int argc, char **argv)
 					video_writer.release();
 					cout << video_writer.isOpened() << endl;
 				}
-
 			}
 			else if(record_global)
 			{
@@ -725,7 +737,8 @@ void doFaceTracking(int argc, char **argv)
 
 			sendERIstrength(double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)))));
 			
-			while(gtk_events_pending ()){
+			while(gtk_events_pending ())
+			{
 				gtk_main_iteration ();
 			}
 			
@@ -776,6 +789,24 @@ vector<pair<string,string> > CollectFiles(string directory, vector<string> exten
 	return result;
 }
 
+static gboolean on_key_press( GtkWidget *widget, GdkEvent  *event, gpointer   data )
+{
+  switch (event->key.keyval)
+  {
+    case GDK_a:
+      display_avatar_global = !display_avatar_global;
+      break;
+    case GDK_w:
+      use_webcam();
+	  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check)));
+      break;
+    default:
+      return FALSE; 
+  }
+
+  return FALSE; 
+}
+
 void startGTK(int argc, char **argv)
 {
 
@@ -788,6 +819,9 @@ void startGTK(int argc, char **argv)
 	gtk_window_set_title (GTK_WINDOW (window), "Puppets Control Panel");
 
 	gtk_window_set_resizable(GTK_WINDOW (window), false);
+
+	// key press press detection
+	g_signal_connect (G_OBJECT (window), "key_press_event", G_CALLBACK (on_key_press), NULL);
 
 	/* Set a handler for delete_event that immediately
 	* exits GTK. */
