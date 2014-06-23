@@ -24,9 +24,7 @@ void sendERIstrength(double texmag);
 // Converting an OpenCV matrix to texture (stores the result in GPU memory)
 GLuint matToTexture(const cv::Mat& mat);
 
-void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate);
-
-void compensateColoursHistograms(Mat &compensator, Mat &compensated);
+void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate);
 
 void addAlphaMask(Mat &threechannel);
 

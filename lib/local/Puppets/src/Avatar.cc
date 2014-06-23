@@ -29,10 +29,6 @@ double	ERIstrength = 0.333f;	//the amount of ratio image that is applied to the 
 
 bool UNDERLAYER = true; //if the computer is fast enough, it deals with side-lighting quite well. It blends a heavily-blurred original face below the new one
 
-// TODO these globals are very suspect
-Mat alphamask;
-Mat blurredmask;
-
 GLuint framebuffer = 0;
 GLuint renderbuffer;
 GLenum status;
@@ -227,202 +223,18 @@ void displayHistogram(string windowname, vector<cv::Mat> bgr_planes){
 	imshow(windowname, histImage );
 }
 
-//this is an alternative function for compensating colours, instead of compensateColours. It creates a lookup table to completely align the RGB histograms. 
-//it is a little slower, and normally doesn't give results as good as compensateColours. However, in drastic lighting conditions it can give far superior results
-void compensateColoursHistograms(Mat &compensator, Mat &compensated){
-	if((compensator.channels() == 3) && (compensated.channels() == 3)){
-
-		if(compensated.size() != blurredmask.size()){
-			resize(compensated,compensated,blurredmask.size(),0,0,1);
-		}
-
-		vector<cv::Mat> channels, sourcechannels;
-		split(compensated, channels);
-		split(compensator, sourcechannels);
-
-		Mat histMask = alphamask;
-
-		/// Establish the number of bins
-		int histSize = 256;
-
-		/// Set the ranges ( for B,G,R) )
-		float range[] = { 0, 256 } ;
-		const float* histRange = { range };
-
-		bool uniform = true; bool accumulate = false;
-
-		Mat b_hist, g_hist, r_hist;
-
-		Mat b_hist_before, g_hist_before, r_hist_before;
-		calcHist( &channels[0], 1, 0, histMask, b_hist_before, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &channels[1], 1, 0, histMask, g_hist_before, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &channels[2], 1, 0, histMask, r_hist_before, 1, &histSize, &histRange, uniform, accumulate );
-
-		//make cumulative
-		for( int i = 1; i < histSize; i++ )
-		{
-			b_hist_before.at<float>(i) += b_hist_before.at<float>(i-1) ;
-			g_hist_before.at<float>(i) += g_hist_before.at<float>(i-1) ;
-			r_hist_before.at<float>(i) += r_hist_before.at<float>(i-1) ;
-		}
-
-		normalize(b_hist_before, b_hist_before, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(g_hist_before, g_hist_before, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(r_hist_before, r_hist_before, 0, 256, NORM_MINMAX, -1, Mat() );
-
-		r_hist_before.convertTo(r_hist_before,CV_8U);
-
-		equalizeHist(channels[0],channels[0]);
-		equalizeHist(channels[1],channels[1]);
-		equalizeHist(channels[2],channels[2]);
-
-		/// Compute the histograms:
-		calcHist( &sourcechannels[0], 1, 0, histMask, b_hist, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &sourcechannels[1], 1, 0, histMask, g_hist, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &sourcechannels[2], 1, 0, histMask, r_hist, 1, &histSize, &histRange, uniform, accumulate );
-
-		//make cumulative
-		for( int i = 1; i < histSize; i++ )
-		{
-			b_hist.at<float>(i) += b_hist.at<float>(i-1) ;
-			g_hist.at<float>(i) += g_hist.at<float>(i-1) ;
-			r_hist.at<float>(i) += r_hist.at<float>(i-1) ;
-		}
-
-		normalize(b_hist, b_hist, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(g_hist, g_hist, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(r_hist, r_hist, 0, 256, NORM_MINMAX, -1, Mat() );
-
-		Mat bHistNew,gHistNew,rHistNew;
-
-		b_hist.convertTo(bHistNew,CV_8U);
-		g_hist.convertTo(gHistNew,CV_8U);
-		r_hist.convertTo(rHistNew,CV_8U);
-
-		Mat Bout,Rout,Gout;
-
-		Mat bHistInv(1,256,CV_8U);
-		Mat gHistInv(1,256,CV_8U);
-		Mat rHistInv(1,256,CV_8U);
-
-		for(int i = 1; i < 256; i++){
-			int firstindex = bHistNew.at<uchar>(i-1);
-			int secondindex = bHistNew.at<uchar>(i);
-			//cout << "i: " << i << ", first index: " << firstindex << ", second index: " << secondindex << endl;
-			for(int f = firstindex; f <= secondindex; f++){
-				bHistInv.at<uchar>(f) = i;
-				//cout << "     f: " << f << ", i: " << i << endl;
-			}
-		}
-
-		for(int i = 1; i < 256; i++){
-			int firstindex = gHistNew.at<uchar>(i-1);
-			int secondindex = gHistNew.at<uchar>(i);
-			for(int f = firstindex; f <= secondindex; f++){
-				gHistInv.at<uchar>(f) = i;
-			}
-		}	
-
-		for(int i = 1; i < 256; i++){
-			int firstindex = rHistNew.at<uchar>(i-1);
-			int secondindex = rHistNew.at<uchar>(i);
-			for(int f = firstindex; f <= secondindex; f++){
-				rHistInv.at<uchar>(f) = i;
-			}
-		}
-
-		Mat histImage( 256, 256, CV_8UC3, Scalar( 0,0,0) );
-
-		LUT(channels[0],bHistInv,Bout);
-		LUT(channels[1],gHistInv,Gout);
-		LUT(channels[2],rHistInv,Rout);
-
-		if(!Bout.empty()){
-			Bout.copyTo(channels[0]);
-			Gout.copyTo(channels[1]);
-			Rout.copyTo(channels[2]);
-		}
-
-		Mat b_hist_after, g_hist_after, r_hist_after;
-		calcHist( &channels[0], 1, 0, histMask, b_hist_after, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &channels[1], 1, 0, histMask, g_hist_after, 1, &histSize, &histRange, uniform, accumulate );
-		calcHist( &channels[2], 1, 0, histMask, r_hist_after, 1, &histSize, &histRange, uniform, accumulate );
-
-		//make cumulative
-		for( int i = 1; i < histSize; i++ )
-		{
-			b_hist_after.at<float>(i) += b_hist_after.at<float>(i-1) ;
-			g_hist_after.at<float>(i) += g_hist_after.at<float>(i-1) ;
-			r_hist_after.at<float>(i) += r_hist_after.at<float>(i-1) ;
-		}
-
-		normalize(b_hist_after, b_hist_after, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(g_hist_after, g_hist_after, 0, 256, NORM_MINMAX, -1, Mat() );
-		normalize(r_hist_after, r_hist_after, 0, 256, NORM_MINMAX, -1, Mat() );
-
-
-		r_hist_after.convertTo(r_hist_after,CV_8U);
-
-		/// Draw for each channel
-		for( int i = 1; i < histSize; i++ )
-		{
-
-			line( histImage, Point( i-1 , r_hist_before.at<uchar>(i-1) ) ,
-				Point(i , r_hist_before.at<uchar>(i)),
-				Scalar( 255, 0, 255), 2, 8, 0  );
-
-			line( histImage, Point( i-1 , rHistNew.at<uchar>(i-1) ) ,
-				Point(i , rHistNew.at<uchar>(i)),
-				Scalar( 255, 0, 0), 2, 8, 0  );
-
-			line( histImage, Point( i-1 , rHistInv.at<uchar>(i-1) ) ,
-				Point(i , rHistInv.at<uchar>(i)),
-				Scalar( 255, 255, 0), 2, 8, 0  );
-
-			line( histImage, Point( i-1 , r_hist_after.at<uchar>(i-1) ) ,
-				Point(i , r_hist_after.at<uchar>(i)),
-				Scalar( 0, 255, 255), 2, 8, 0  );
-		}
-
-		imshow("histImage",histImage);
-
-		merge(channels, compensated);
-
-		split(compensated, channels);
-
-		if(UNDERLAYER){
-			channels.push_back(blurredmask / 1.3f);
-		}
-		else{
-			channels.push_back(blurredmask);
-		}
-
-		merge(channels, compensated);
-
-	}
-
-}
-
-void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate)
+void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_smooth)
 {
 
 	if((compensator.channels() == 3) && (to_compensate.channels() == 3)){
 		
-		// TODO mask here is possibly incorrect
-
-		Mat mask_compensator;
-		//Mat mask_to_compensate;
-
-		if(to_compensate.size() != blurredmask.size()){
-			resize(blurredmask, mask_compensator, compensator.size());
-		}
-
-		Mat histMask = alphamask;
+		// Only use the reliable features (this allows us to ignore eyes and mouth to some extent)
+		Mat_<uchar> mask_sharp = mask_smooth > 200;
 
 		Mat meanComp,stddevComp;
 		Mat meanRef,stddevRef;
 
-		meanStdDev(compensator, meanRef, stddevRef, mask_compensator);
+		meanStdDev(compensator, meanRef, stddevRef, mask_sharp);
 
 		vector<cv::Mat> channels, refchannels;
 
@@ -441,7 +253,7 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 
 			Mat oldmean,oldstddev;
 
-			meanStdDev(channels[c], oldmean, oldstddev, mask_to_compensate);
+			meanStdDev(channels[c], oldmean, oldstddev, mask_sharp);
 			double scale = stddevRef.at<double>(c,0) / oldstddev.at<double>(0,0);
 
 			channels[c] *= scale;
@@ -456,38 +268,9 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 
 		if(DISPLAYHISTOGRAMS){
 			displayHistogram("compensated",channels);
-		}
-		
-		Mat_<uchar> underlayer_mask;
+		}		
 
-		// The values have been determined experimentaly
-		if(UNDERLAYER)
-		{
-			cv::resize(mask_to_compensate*210, underlayer_mask, Size(64,64));
-		}
-		else
-		{
-			cv::resize(mask_to_compensate*240, underlayer_mask, Size(64,64));
-		}
-
-		// Blur the mask so it is smooth at the borders
-		GaussianBlur(underlayer_mask, underlayer_mask, Size(0,0), 11, 11, BORDER_CONSTANT);
-
-		// Manually correct the underlayer mask so that eyebrow region has a lower value as otherwise there is a visible line where a face is warped in		
-		int steps = 5;
-		double scaling = 1.0/(double)steps;
-		for(int i = 0; i < steps; ++i)
-		{
-			underlayer_mask.row(i) = underlayer_mask.row(i) * (scaling * (double)i);
-			underlayer_mask.col(i) = underlayer_mask.col(i) * (scaling * (double)i);
-			underlayer_mask.col(underlayer_mask.cols - i - 1) = underlayer_mask.col(underlayer_mask.cols - i - 1) * (scaling * (double)i);
-		}
-
-		cv::resize(underlayer_mask, underlayer_mask, mask_to_compensate.size());
-
-		imshow("underlayer_mask", underlayer_mask);
-
-		channels.push_back(underlayer_mask);
+		channels.push_back(mask_smooth);
 		
 		merge(channels, corrected_image);
 		
@@ -638,7 +421,7 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), face_triangles, true);
 	
 	// Drawing the eyes from the avatar texture, we're not sure which way around the triangles go, hence no culling
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, true);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, false);
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -789,19 +572,8 @@ void initGL(int argc, char* argv[], double aspect_ratio)
 	glutCreateWindow("Puppets");
 
 	glewInit();
-
-	// Creation of the mickey mouse alpha mask (TODO move out somewhere else?
-	alphamask = Mat::zeros(256,256, CV_8UC1);
-	circle(alphamask, Point(64,64), 40, Scalar(200), -1, 8, 0); 
-	circle(alphamask, Point(192,64), 40, Scalar(200), -1, 8, 0); 
-	circle(alphamask, Point(128,128), 110, Scalar(255), -1, 8, 0); 
-	GaussianBlur(alphamask,blurredmask,Size(0,0),11,11,4);
-
-	resize(alphamask, alphamask, Size(128,128),0,0,1);
-	resize(blurredmask, blurredmask, Size(128,128),0,0,1);
-
+	
 	// Setup our viewport to be the entire size of the window
-	// TODO dealing with resizing
 	glViewport(0, 0, width, window_height_global);
 	
 	// Change to the projection matrix and set our viewing volume
@@ -831,6 +603,43 @@ void initGL(int argc, char* argv[], double aspect_ratio)
 
 }
 
+void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
+{
+
+	// Do the convolutions in resized image for size independence and speed
+	resize(pixel_mask*255, smooth_mask, Size(64,64));
+
+	int border_size = 10;
+
+	// Add border to the image for Gaussian blurring
+	hconcat(smooth_mask, Mat_<uchar>(smooth_mask.rows, border_size, (uchar)0), smooth_mask);
+	hconcat( Mat_<uchar>(smooth_mask.rows, border_size, (uchar)0), smooth_mask, smooth_mask);
+
+	cv::vconcat(smooth_mask, Mat_<uchar>(border_size, smooth_mask.cols, (uchar)0), smooth_mask);
+	cv::vconcat(Mat_<uchar>(border_size, smooth_mask.cols, (uchar)0), smooth_mask, smooth_mask);
+
+	Mat_<float> smooth_mask_foat;
+	smooth_mask.convertTo(smooth_mask_foat, CV_32F);
+	
+	// This ensure that at the edge of the mask we have 0, ensuring nice and smooth blending
+	smooth_mask_foat.setTo(-255, smooth_mask == 0);
+		
+		// Blur the mask so it is smooth at the borders
+	GaussianBlur(smooth_mask_foat, smooth_mask_foat, Size(0, 0), 5, 5, BORDER_CONSTANT);
+	
+	// Remove the negative values
+	smooth_mask_foat.setTo(0, smooth_mask_foat < 0);
+
+	smooth_mask_foat.convertTo(smooth_mask, CV_8U);
+
+	// Take the valid region
+	smooth_mask = smooth_mask(Rect(border_size, border_size, 64, 64));
+
+	// Resize to original size
+	cv::resize(smooth_mask, smooth_mask, pixel_mask.size());
+
+}
+
 void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat_<double>& shape_destination,
 	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
 {
@@ -845,22 +654,27 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		myargv [0]=_strdup ("Myappname");
 		initGL(1, myargv, aspect_ratio_img_global);
 		INIT = true;
-	}
-	
-	// First warp the original image to the avatar location (this will be useful for both ERI computation and underlayer creation)
-	Mat warped_to_neutral_original;
-	paw.Warp(original_image_bgr, warped_to_neutral_original, shape_original_image);
-	Mat underlayer_image;
+	}	
+
 
 	int num_points = shape_original_image.rows/2;
 
-	Mat_<double> underlayer_shape;
+	// First warp the original image to the avatar location (this will be useful for both ERI computation, underlayer creation, and colour compensation)
+	Mat warped_to_neutral_original;
+	paw.Warp(original_image_bgr, warped_to_neutral_original, shape_original_image);
 
+	Mat_<uchar> smooth_mask;
+
+	// Correct the avatar image using colour correction and masking
+	Mat_<uchar> mask = (paw.triangle_id >= 0) & (paw.triangle_id < face_triangles.rows);
+
+	computeSmoothMask(mask, smooth_mask);
+	
+	Mat_<double> underlayer_shape;
+	Mat underlayer_image;
+	
 	if(UNDERLAYER)
 	{
-		// TODO do I care about alphas in underlayer going down? Try without (prob should care as now looks odd, also does underlayer have mouth)
-
-		//Mat_<uchar> pixel_mask = paw.pixel_mask;
 
 		// First crop, then blur, upsample, then warp, and mask be just regular mask
 		Mat cropped_resized_original;
@@ -870,57 +684,27 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 
 		cropFace(original_image_bgr, shape_original_image, small_size, cropped_resized_original, cropped_original_shape);
 
-		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 7, 7);
-		cv::resize(underlayer_image, underlayer_image, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows));	
+		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 3, 3);
 
-		underlayer_shape = cropped_original_shape.clone();
+		paw.Warp(underlayer_image, underlayer_image, cropped_original_shape);
+				
+		underlayer_shape = paw.destination_landmarks.clone();
 
-		double scaling_x = (double)warped_to_neutral_original.cols / (double)small_size.width;
-		double scaling_y = (double)warped_to_neutral_original.rows / (double)small_size.height;
-
-		for(int i = 0; i < num_points; ++i)
-		{
-			underlayer_shape.at<double>(i) = underlayer_shape.at<double>(i) * scaling_x;
-			underlayer_shape.at<double>(i + num_points) = underlayer_shape.at<double>(i + num_points) * scaling_y;
-		}
-		
 		vector<Mat> channels;
 		split(underlayer_image, channels);
 
-		// The mask needs to be extended up and down as well		
-		//Mat_<uchar> underlayer_mask(small_size, 100);
-		Mat_<uchar> underlayer_mask(small_size, 240);
-
-		// TODO the mask needs to be smooth around the edges of the triangle, maybe polyfill?
-		int steps = 5;
-		double scaling = 1.0/(double)steps;
-		for(int i = 0; i < steps; ++i)
-		{
-			underlayer_mask.row(i) = underlayer_mask.row(i) * (scaling * (double)i);			
-			underlayer_mask.col(i) = underlayer_mask.col(i) * (scaling * (double)i);			
-			underlayer_mask.col(small_size.width-1-i) = underlayer_mask.col(small_size.width-1-i) * (scaling * (double)i);			
-		}
-		resize(underlayer_mask, underlayer_mask, underlayer_image.size());
-
-		channels.push_back(underlayer_mask);
+		// Add a mask
+		channels.push_back(smooth_mask*1.1);
 		
 		merge(channels, underlayer_image);
-
+		
 	}		
-	
-	// TODO col correct should only be on the face area?
+		
+	// Perform colour compensation	
+	Mat avatar_image_corrected;
+	compensateColoursAndAddAlpha(warped_to_neutral_original, avatar_image, avatar_image_corrected, smooth_mask);
 
-	// Crop the face from the background image and use that for colour correction
-	Mat_<double> shape_original_cropped;
-	Mat original_image_bgr_cropped;
-
-	// The size of 128 x 128 seems suitable for colour correction
-	cropFace(original_image_bgr, shape_original_image, Size(128,128), original_image_bgr_cropped, shape_original_cropped);
-	
-	// Correct the avatar image using colour correction and masking
-	Mat avatar_image_corrected;// = avatar_image.clone();
-	compensateColours(original_image_bgr_cropped, avatar_image, avatar_image_corrected, paw.pixel_mask);
-
+	// The actual model drawing
 	drawFaceReplace(original_image_bgr, shape_original_image, underlayer_image, underlayer_shape, avatar_image_corrected, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
 	glutSwapBuffers();

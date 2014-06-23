@@ -128,6 +128,10 @@ static void file_ok_sel_z( GtkWidget *w, GtkFileSelection *fs )
 // Video selection callback
 static void selectVideoFromComboBox( GtkWidget *widget, gpointer data )
 {
+	// Unselect webcam
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
+	USEWEBCAM = 0;
+
 	int selection = gtk_combo_box_get_active(GTK_COMBO_BOX(inputchoice));	
 	inputfile = default_videos[selection].first;
 	CHANGESOURCE = true;
