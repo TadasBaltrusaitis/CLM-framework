@@ -55,32 +55,25 @@ using namespace boost::filesystem;
 using namespace std;
 using namespace cv;
 
-//A few OpenCV mats: (TODO rem all of them)
-string file = "../videos/changeLighting.wmv";
-
 string oldfile;
 
 bool GETFACE = false;		//get a new face
 
 //called when the 'use webcam' checkbox is ticked
-void use_webcam(){			
+void use_webcam()
+{			
 	USEWEBCAM = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check));
 	CHANGESOURCE = true;
-
-	if(USEWEBCAM)
-	{
-		cout << "Using Webcam. " << endl;
-	}
-	else
-	{
-		cout << "Not using Webcam. " << endl;
-	}
 }
 
 void replace_face(){
 	face_replace_global = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check1));
 }
 
+void recordCheckCallback()
+{	
+	record_global = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(record_checkbox));
+}
 
 void face_under(){
 	sendFaceBackgroundBool(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check2)));
@@ -106,10 +99,10 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 	return TRUE;
 }
 
-// TODO this needs to be corrected for loading avatar
+// This function loads an avatar from an image
 static void file_ok_sel( GtkWidget *w, GtkFileSelection *fs )
 {
-	oldfile = file;
+	oldfile = inputfile;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filew));
@@ -126,11 +119,18 @@ static void file_ok_sel_z( GtkWidget *w, GtkFileSelection *fs )
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 	USEWEBCAM = 0;
 	CHANGESOURCE = true;
-	NEWFILE = true;
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
 	cout << "Loading Video File..... " << endl;
 	g_print ("%s\n", inputfile);
 	gtk_widget_destroy(filez);
+}
+
+// Video selection callback
+static void selectVideoFromComboBox( GtkWidget *widget, gpointer data )
+{
+	int selection = gtk_combo_box_get_active(GTK_COMBO_BOX(inputchoice));	
+	inputfile = default_videos[selection].first;
+	CHANGESOURCE = true;
 }
 
 // Our callback.
@@ -143,11 +143,6 @@ static void callback( GtkWidget *widget, gpointer data )
 	if(command.compare("save avatar") == 0)
 	{
 		write_to_file_global = true;
-	}
-
-	if(command.compare("toggle eri") == 0)
-	{
-		ERIon = !ERIon;
 	}
 
 	if(command.compare("load avatar") == 0)
@@ -182,17 +177,14 @@ static void callback( GtkWidget *widget, gpointer data )
 		/* Create a new file selection widget */
 		filez = gtk_file_selection_new ("File selection");
 
-		g_signal_connect (GTK_FILE_SELECTION (filez)->ok_button,
-			"clicked", G_CALLBACK (file_ok_sel_z), (gpointer) filez);
+		g_signal_connect (GTK_FILE_SELECTION (filez)->ok_button, "clicked", G_CALLBACK (file_ok_sel_z), (gpointer) filez);
 
 		/* Connect the cancel_button to destroy the widget */
-		g_signal_connect_swapped (GTK_FILE_SELECTION (filez)->cancel_button,
-			"clicked", G_CALLBACK (gtk_widget_destroy),
-			filez);
+		g_signal_connect_swapped (GTK_FILE_SELECTION (filez)->cancel_button, "clicked", G_CALLBACK (gtk_widget_destroy), filez);
 
 		/* Lets set the filename, as if this were a save dialog, and we are giving
 		a default filename */
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filez), "..\\videos\\");
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION(filez), "../videos/");
 
 		gtk_widget_show (filez);
 
@@ -314,6 +306,17 @@ void doFaceTracking(int argc, char **argv)
 
 	readTriangles(num_landmarks, face_triangles, mouth_triangles, eye_triangles);
 
+	// The object for capturing videos from webcam or files
+	VideoCapture video_capture;
+
+	// We will be resizing our videos to this
+	int drawing_area_width;
+	int drawing_area_height;
+	gdk_window_get_size(gtk_widget_get_window(drawing_area), &drawing_area_width, &drawing_area_height);
+
+	// Object for recording videos
+	VideoWriter video_writer;
+
 	// The main loop
 	while( true )
 	{
@@ -358,20 +361,20 @@ void doFaceTracking(int argc, char **argv)
 		if(files.size() > 0)
 		{
 			f_n++;			
-			file = files[f_n];
+			inputfile = files[f_n];
 		}
-
-		if(NEWFILE)
-		{
-			file = inputfile;
-		}
-		
+				
 		// Do some grabbing
 		if(USEWEBCAM)
 		{
 			INFO_STREAM( "Attempting to capture from device: " << device );
-			vCap = VideoCapture( device );
-			if( !vCap.isOpened() ) 
+			video_capture = VideoCapture( device );
+
+			// Attempt highish res video capture
+			video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+			video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
+			if( !video_capture.isOpened() ) 
 			{
 				GtkWidget *dialog;
 				dialog = gtk_message_dialog_new (GTK_WINDOW (window), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "Error loading Webcam. Please load video file");
@@ -390,10 +393,10 @@ void doFaceTracking(int argc, char **argv)
 		else
 		{
 
-			if(file.size() > 0 )
+			if(inputfile.size() > 0 )
 			{
-				INFO_STREAM( "Attempting to read from file: " << file );
-				vCap = VideoCapture( file );
+				INFO_STREAM( "Attempting to read from file: " << inputfile );
+				video_capture = VideoCapture( inputfile );
 			}
 			else 
 			{
@@ -403,7 +406,7 @@ void doFaceTracking(int argc, char **argv)
 		}
 
 		Mat read_img;
-		vCap >> read_img;
+		video_capture >> read_img;
 
 		// If optical centers are not defined just use center of image
 		if(cx == 0 || cy == 0)
@@ -413,14 +416,7 @@ void doFaceTracking(int argc, char **argv)
 		}
 		
 		int frame_processed = 0;
-
-		// saving the videos
-		VideoWriter writerFace;
-		if(!outvideos.empty())
-		{
-			writerFace = VideoWriter(outvideos[f_n], CV_FOURCC('D','I','V','X'), 30, read_img.size(), true);		
-		}
-		
+				
 		// For measuring the timings
 		int64 t1,t0 = cv::getTickCount();
 		double fps = 10;
@@ -569,6 +565,8 @@ void doFaceTracking(int argc, char **argv)
 				t0 = t1;
 			}
 			
+			Mat animation_result;
+
 			// The actual animation and displaying step
 			if(!avatar_image.empty() && clm_model.detection_certainty < -0.2)
 			{
@@ -600,20 +598,53 @@ void doFaceTracking(int argc, char **argv)
 				Mat_<double> destination_shape;		
 				clm_model.pdm.CalcShape2D(destination_shape, local_params_corrected, global_params_corrected); //calculate new shape
 
-				bool toggleERI = ERIon;
-	
 				// TODO if rotation too extreme don't do ERI
 
-				Mat result;
 		
 				if(face_replace_global)
 				{
-					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, toggleERI, result, false);
+					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
 				}
 				else
 				{
-					faceAnimate(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, toggleERI, result, false);
+					faceAnimate(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
 				}
+			}
+
+			// Recording the animations
+			if(video_writer.isOpened())
+			{
+
+				if(record_global)
+				{
+					cv::resize(animation_result, animation_result, Size(read_img.cols, read_img.rows));
+					video_writer << animation_result;
+				}
+				else
+				{
+					video_writer.release();
+					cout << video_writer.isOpened() << endl;
+				}
+
+			}
+			else if(record_global)
+			{
+				string time = currentDateTime();
+				string recording_root = "./recorded/";
+
+				boost::filesystem::path dir(recording_root);
+				boost::filesystem::create_directory(recording_root);
+
+				stringstream ss;
+				ss << recording_root << "recording_" << time << ".avi";
+
+				int fps = (int)video_capture.get(CV_CAP_PROP_FPS);
+
+				if(fps == 0)
+				{
+					fps = 30;
+				}
+				video_writer.open(ss.str(), CV_FOURCC('D', 'I', 'V', 'X'), fps, Size(read_img.cols, read_img.rows), true);
 			}
 
 			frame_processed++;
@@ -625,6 +656,23 @@ void doFaceTracking(int argc, char **argv)
 			cv::putText(disp, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));
 			
 			// Setting the image to draw
+
+			// Resize the image appropriately
+			double aspect_ratio_drawing_area = ((double)drawing_area_height) / (double)drawing_area_width;
+			double aspect_ratio_image = ((double)disp.rows) / (double)disp.cols;
+
+			// Set the viewport to reflect the aspect ratio to avoid stretching	
+			if(aspect_ratio_drawing_area > aspect_ratio_image)
+			{
+				int new_height = (int)((double)drawing_area_width * aspect_ratio_image);
+				cv::resize(disp, disp, Size(drawing_area_width, new_height));
+			}
+			else
+			{
+				int new_width = (int)((double)drawing_area_height / aspect_ratio_image);
+				cv::resize(disp, disp, Size(new_width, drawing_area_height));
+			}
+
 			opencvImage = disp;
 
 			gtk_widget_draw(GTK_WIDGET(drawing_area), NULL);
@@ -669,13 +717,8 @@ void doFaceTracking(int argc, char **argv)
 				write_to_file_global = false;
 			}
 
-			vCap >> read_img;
+			video_capture >> read_img;
 
-			if(!outvideos.empty())
-			{		
-				writerFace << disp;
-			}
-			
 			sendERIstrength(double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)))));
 			
 			while(gtk_events_pending ()){
@@ -736,32 +779,15 @@ void startGTK(int argc, char **argv)
 
 	/* Create a new window */
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-
-	bool USEGLADE = false;	//import the .xml window designed using the GLADE interface
-
-	if(USEGLADE){
-
-		GtkBuilder *builder;
-		builder = gtk_builder_new ();
-		gtk_builder_add_from_file (builder, "../gtkmainscreen.glade", NULL);
-		testwindow = GTK_WIDGET(gtk_builder_get_object (builder, "window1"));
-		GtkWidget* exitButton = 0;
-		exitButton =  GTK_WIDGET(gtk_builder_get_object (builder, "exit"));
-   		g_signal_connect (exitButton, "clicked", G_CALLBACK (delete_event), NULL);
-		gtk_builder_connect_signals (builder, NULL);          
-		g_object_unref (G_OBJECT (builder));
-
-		gtk_widget_show (testwindow);
-
-	}
-
+	
 	/* Set the window title */
 	gtk_window_set_title (GTK_WINDOW (window), "Puppets Control Panel");
 
+	gtk_window_set_resizable(GTK_WINDOW (window), false);
+
 	/* Set a handler for delete_event that immediately
 	* exits GTK. */
-	g_signal_connect (window, "delete-event",
-		G_CALLBACK (delete_event), NULL);
+	g_signal_connect (window, "delete-event", G_CALLBACK (delete_event), NULL);
 
 	/* Sets the border width of the window. */
 	gtk_container_set_border_width (GTK_CONTAINER (window), 20);
@@ -779,43 +805,33 @@ void startGTK(int argc, char **argv)
 	* with a pointer to "save avatar" as its argument */
 	g_signal_connect (button, "clicked", G_CALLBACK (callback), (gpointer) "save avatar");
 
-
 	/* Insert button 1 into the upper left quadrant of the table */
 	gtk_table_attach_defaults (GTK_TABLE (table), button, 0, 1, 0, 1);
 
 	gtk_widget_show (button);
 
-	/* Create second button */
-
-	button = gtk_button_new_with_label ("Toggle ERI System");
-
-	/* When the button is clicked, we call the "callback" function
-	* with a pointer to "toggle eri" as its argument */
-	g_signal_connect (button, "clicked",
-		G_CALLBACK (callback), (gpointer) "toggle eri");
-	/* Insert button 2 into the upper right quadrant of the table */
-	gtk_table_attach_defaults (GTK_TABLE (table), button, 1, 2, 0, 1);
-
-	gtk_widget_show (button);
+	/* Create a recording checkbox*/
+		
+	record_checkbox = gtk_check_button_new_with_label ("Record");
+	gtk_signal_connect(GTK_OBJECT (record_checkbox), "pressed", recordCheckCallback, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(record_checkbox), 0);
+	gtk_table_attach_defaults (GTK_TABLE (table), record_checkbox, 1, 2, 0, 1);
+	gtk_widget_show(record_checkbox);
 
 	/* Create "Quit" button */
 	button = gtk_button_new_with_label ("Quit");
 
-
 	/* When the button is clicked, we call the "delete-event" function
 	* and the program exits */
-	g_signal_connect (button, "clicked",
-		G_CALLBACK (delete_event), NULL);
-
+	g_signal_connect (button, "clicked", G_CALLBACK (delete_event), NULL);
 
 	/* Create third button */
-
 	button = gtk_button_new_with_label ("Load Avatar Image");
 
 	/* When the button is clicked, we call the "callback" function
 	* with a pointer to "load avatar" as its argument */
-	g_signal_connect (button, "clicked",
-		G_CALLBACK (callback), (gpointer) "load avatar");
+	g_signal_connect (button, "clicked", G_CALLBACK (callback), (gpointer) "load avatar");
+
 	/* Insert button 3 into the table */
 	gtk_table_attach_defaults (GTK_TABLE (table), button, 1, 2, 3, 4);
 
@@ -839,8 +855,7 @@ void startGTK(int argc, char **argv)
 
 	/* When the button is clicked, we call the "callback" function
 	* with a pointer to "load video" as its argument */
-	g_signal_connect (button, "clicked",
-		G_CALLBACK (callback), (gpointer) "load video");
+	g_signal_connect (button, "clicked", G_CALLBACK (callback), (gpointer) "load video");
 	/* Insert button 3 into the table */
 	gtk_table_attach_defaults (GTK_TABLE (table), button, 0, 1, 1, 2);
 
@@ -893,9 +908,9 @@ void startGTK(int argc, char **argv)
 	drawing_area = gtk_drawing_area_new();
 
 	/* Ask for a window   */
-	gtk_widget_set_size_request(drawing_area, opencvImage.width,opencvImage.height);
+	//gtk_widget_set_size_request(drawing_area, opencvImage.width, opencvImage.height); (do the size properly)
 	gtk_table_attach_defaults (GTK_TABLE (table), drawing_area, 2, 5, 0, 12);
-
+	
 	g_signal_connect(G_OBJECT (drawing_area), "expose_event", G_CALLBACK (expose_event_callback), NULL);
 	gtk_widget_show(drawing_area);
 
@@ -922,8 +937,10 @@ void startGTK(int argc, char **argv)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(avatarchoice), it->second.c_str());
 	}
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(avatarchoice), 0);
-	
+	gtk_combo_box_set_active(GTK_COMBO_BOX(avatarchoice), 0);	
+	gtk_table_attach_defaults (GTK_TABLE (table), avatarchoice, 0, 2, 2, 3);
+
+	// For selecting default videos (quick access)
 	vector<string> video_extensions;
 	video_extensions.push_back(".avi");
 	video_extensions.push_back(".wmv");
@@ -935,7 +952,9 @@ void startGTK(int argc, char **argv)
 		gtk_combo_box_append_text(GTK_COMBO_BOX(inputchoice), it->second.c_str());
 	}
 		
-	gtk_table_attach_defaults (GTK_TABLE (table), avatarchoice, 0, 2, 2, 3);
+	// Adding a listener for selection
+	g_signal_connect (inputchoice, "changed", G_CALLBACK (selectVideoFromComboBox), NULL);
+
 	gtk_widget_show(avatarchoice);
 
 	gtk_table_attach_defaults (GTK_TABLE (table), inputchoice, 0, 2, 4, 5);
@@ -1002,6 +1021,10 @@ void startGTK(int argc, char **argv)
 
 	gtk_widget_show (table);
 	gtk_widget_show (window);
+		
+	// Adding a listener for window resizing (so that drawing area is resized properly)
+	// TODO rem
+	//g_signal_connect(G_OBJECT(window), "configure-event", G_CALLBACK(resize_callback), NULL);
 
 }
 

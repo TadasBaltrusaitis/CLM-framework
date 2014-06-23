@@ -14,27 +14,33 @@ using namespace std;
 
 GtkWidget *window;
 GtkWidget *testwindow;
+
 GtkWidget *button;
+
 GtkWidget *table;
+
 GtkWidget *drawing_area;
+
 GtkWidget *check, *check1, *check2;
+
 GtkWidget *hscale, *hscale2, *hscale3, *hscale4, *hscale5, *label1, *label2, *label3, *label4, *label5, *avatarchoice, *inputchoice;
+
 GtkObject *adj1, *adj2, *adj3, *adj4, *adj5;
+
+// File recording definitions
+GtkWidget *record_checkbox;
+bool record_global = false;
 
 // A list of avatar files in a '../avatars' directory that will be used to load tghem
 vector<pair<string,string> > avatar_files;
 
 vector<pair<string,string> > default_videos;
 
-bool ERIon = 1;
 bool quitmain = 0;
 bool GRAYSCALE = false;
 
 GtkWidget *filew, *filez;
 
-string inputfile;
-bool NEWFILE = false;
-VideoCapture vCap;
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -48,12 +54,16 @@ std::cout << "Error: " << stream << std::endl
 // TODO most of these need to be removed
 IplImage opencvImage;
 GdkPixbuf* pix;
+
 bool USEWEBCAM = false;
 bool CHANGESOURCE = false;
 
 bool face_replace_global = true;
 bool reset_neutral_global = true;
 bool write_to_file_global = false;
+
+// This indicates which video file should be read anew
+string inputfile = "../videos/changeLighting.wmv";
 
 void use_webcam();
 static gboolean time_handler( GtkWidget *widget );

@@ -38,6 +38,7 @@ GLuint renderbuffer;
 GLenum status;
 
 int window_height_global = 640;
+int window_width_global = 640;
 
 double aspect_ratio_img_global;
 
@@ -122,8 +123,9 @@ GLuint matToTexture(const cv::Mat& mat)
 //OpenGL-> OpenCV
 //changes a screen buffer to an OpenCV matrix (so it can be post-processed or saved as a video file)
 void buffertoMat(Mat &flipped)
-{
-	Mat img(480, 640, CV_8UC3);
+{	
+	
+	Mat img(window_height_global, window_width_global, CV_8UC3);
 
 	//use fast 4-byte alignment (default anyway) if possible
 	glPixelStorei(GL_PACK_ALIGNMENT, (img.step & 3) ? 1 : 4);
@@ -461,7 +463,7 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 		// The values have been determined experimentaly
 		if(UNDERLAYER)
 		{
-			cv::resize(mask_to_compensate*190, underlayer_mask, Size(64,64));
+			cv::resize(mask_to_compensate*210, underlayer_mask, Size(64,64));
 		}
 		else
 		{
@@ -477,9 +479,13 @@ void compensateColours(const Mat &compensator, const Mat &to_compensate, Mat &co
 		for(int i = 0; i < steps; ++i)
 		{
 			underlayer_mask.row(i) = underlayer_mask.row(i) * (scaling * (double)i);
+			underlayer_mask.col(i) = underlayer_mask.col(i) * (scaling * (double)i);
+			underlayer_mask.col(underlayer_mask.cols - i - 1) = underlayer_mask.col(underlayer_mask.cols - i - 1) * (scaling * (double)i);
 		}
 
 		cv::resize(underlayer_mask, underlayer_mask, mask_to_compensate.size());
+
+		imshow("underlayer_mask", underlayer_mask);
 
 		channels.push_back(underlayer_mask);
 		
@@ -591,7 +597,9 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 
 	// This moves the whole background image to be mapped on
 	glBindTexture(GL_TEXTURE_2D, background_texture);	
-	
+			
+	glDisable(GL_CULL_FACE);	
+
 	glBegin(GL_TRIANGLES);
 
 	float xmax = 1.0;
@@ -630,7 +638,7 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), face_triangles, true);
 	
 	// Drawing the eyes from the avatar texture, we're not sure which way around the triangles go, hence no culling
-	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, false);
+	drawTexture(avatar_texture, avatar_shape, avatar_image.size(), destination_shape, background_image.size(), eye_triangles, true);
 
 	glDisable(GL_TEXTURE_2D);
 
@@ -710,7 +718,7 @@ void drawFaceAnimate(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	glFinish();
 }
 
-// Making sure the image fits when resizing (while also keeping the correct aspect ratio) TODO
+// Making sure the image fits when resizing (while also keeping the correct aspect ratio)
 void changeSize(int w, int h)
 {
 
@@ -726,11 +734,19 @@ void changeSize(int w, int h)
 	if(aspect_ratio_window > aspect_ratio_img_global)
 	{
 		h = (int)((double)w * aspect_ratio_img_global);
+		
+		window_height_global = h;
+		window_width_global = w;
+
 		glViewport(0, 0, w, h);
 	}
 	else
 	{
 		w = (int)((double)h / aspect_ratio_img_global);
+		
+		window_height_global = h;
+		window_width_global = w;
+
 		glViewport(0, 0, w, h);
 	}
 	// Change to the projection matrix and set our viewing volume
@@ -767,6 +783,8 @@ void initGL(int argc, char* argv[], double aspect_ratio)
 	int width = (int) window_height_global / aspect_ratio;
 
 	glutInitWindowSize(width, window_height_global); 
+
+	window_width_global = width;
 
 	glutCreateWindow("Puppets");
 
@@ -810,7 +828,6 @@ void initGL(int argc, char* argv[], double aspect_ratio)
 	// Dealing with window resizing	
 	glutReshapeFunc(changeSize);
 	glutDisplayFunc(renderScene);
-
 
 }
 
@@ -871,9 +888,11 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		split(underlayer_image, channels);
 
 		// The mask needs to be extended up and down as well		
-		Mat_<uchar> underlayer_mask(small_size, 100);
+		//Mat_<uchar> underlayer_mask(small_size, 100);
+		Mat_<uchar> underlayer_mask(small_size, 240);
 
-		int steps = 10;
+		// TODO the mask needs to be smooth around the edges of the triangle, maybe polyfill?
+		int steps = 5;
 		double scaling = 1.0/(double)steps;
 		for(int i = 0; i < steps; ++i)
 		{
