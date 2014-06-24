@@ -65,7 +65,7 @@ bool reset_neutral_global = true;
 bool write_to_file_global = false;
 
 // This indicates which video file should be read anew
-string inputfile = "../videos/changeLighting.wmv";
+string inputfile = "../videos/default.wmv";
 
 void use_webcam();
 static gboolean time_handler( GtkWidget *widget );

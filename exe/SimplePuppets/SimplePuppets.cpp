@@ -332,17 +332,11 @@ void doFaceTracking(int argc, char **argv)
 
 		// Eye mask includes just the eyes
 		Mat_<uchar> mask_avatar_eyes;
-
-		// This will store a normalised version of the face for computing ERI
-		Mat neutral_face_reference;
-
-
+		
 		while(gtk_events_pending ())
 		{
 			gtk_main_iteration ();
 		}
-
-		cout << "Button pressed:" << gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check)) << endl;
 
 		// Some initial parameters that can be overriden from command line	
 		vector<string> files, depth_dirs, outposes, outvideos, outfeatures;
@@ -429,9 +423,12 @@ void doFaceTracking(int argc, char **argv)
 
 		CHANGESOURCE = false;
 
-		//todo: fix bug with crash when selecting video file to play under webcam mode (disable video select button?)
-		//also occasionally opencv error when changing between different sizes of video input/webcam owing to shape going outside boundries. 
-		
+		// This is neutral expression image for ERI mode
+		Mat neutral_face;
+		Mat_<double> neutral_shape;
+
+		Mat neutral_face_warped;
+
 		while(!read_img.empty() && !CHANGESOURCE)
 		{		
 			
@@ -511,6 +508,9 @@ void doFaceTracking(int argc, char **argv)
 					{
 						cvtColor(avatar_image, avatar_image, CV_GRAY2BGR);
 					}
+
+					// Remove the ERI reference image as it has to be warped anew
+					neutral_face_warped = Mat();
 				}
 				else
 				{
@@ -554,8 +554,28 @@ void doFaceTracking(int argc, char **argv)
 			if(detection_success)			
 			{
 
+				// Creating a neutral image if it has not been created yet (or updating it)
+				if(neutral_face_warped.empty() && !avatar_image.empty())
+				{
+					if(neutral_face.empty())
+					{
+						neutral_face = read_img.clone();
+						neutral_shape = clm_model.detected_landmarks.clone();
+					}
+
+					if(neutral_face_warped.empty())
+					{
+						paw.Warp(neutral_face, neutral_face_warped, neutral_shape);
+						cvtColor(neutral_face_warped, neutral_face_warped, CV_RGB2BGR);
+						//imshow("neutral_face", neutral_face_warped);
+					}
+
+				}
+				
 				// drawing the facial features on the face if tracking is successful
 				CLMTracker::Draw(disp, clm_model);				
+
+
 			}
 
 			if(frame_processed % 10 == 0)
@@ -621,11 +641,11 @@ void doFaceTracking(int argc, char **argv)
 				// TODO if rotation too extreme don't do ERI
 				if(face_replace_global)
 				{
-					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
+					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, neutral_face_warped, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
 				}
 				else
 				{
-					faceAnimate(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
+					faceAnimate(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, neutral_face_warped, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
 				}
 			}
 
