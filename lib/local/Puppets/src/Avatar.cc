@@ -337,11 +337,11 @@ void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensa
 
 		if(UNDERLAYER)
 		{
-			channels.push_back(mask_smooth / 1.5);
+			channels.push_back(mask_smooth / 1.3);
 		}
 		else
 		{
-			channels.push_back(mask_smooth / 1.5);
+			channels.push_back(mask_smooth / 1.3);
 		}
 		merge(channels, corrected_image);
 		
@@ -680,6 +680,12 @@ void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 	// Do the convolutions in resized image for size independence and speed
 	resize(pixel_mask*255, smooth_mask, Size(64,64));
 
+	circle(smooth_mask, Point(32, 0), 10, Scalar(125), -1);
+
+	imshow("pixel_mask", smooth_mask);
+
+	// Add the mickey mouse ear thing
+
 	int border_size = 10;
 
 	// Add border to the image for Gaussian blurring
@@ -696,7 +702,6 @@ void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 	smooth_mask_foat.setTo(-255, smooth_mask == 0);
 		
 		// Blur the mask so it is smooth at the borders
-	//GaussianBlur(smooth_mask_foat, smooth_mask_foat, Size(0, 0), 5, 5, BORDER_CONSTANT);
 	GaussianBlur(smooth_mask_foat, smooth_mask_foat, Size(0, 0), 2, 2, BORDER_CONSTANT);
 
 	// Smooth more inbetween eyebrows TODO
