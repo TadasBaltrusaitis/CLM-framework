@@ -24,7 +24,7 @@ void sendERIstrength(double texmag);
 // Converting an OpenCV matrix to texture (stores the result in GPU memory)
 GLuint matToTexture(const cv::Mat& mat);
 
-void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate);
+void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_to_compensate, double alpha_strength);
 
 void addAlphaMask(Mat &threechannel);
 
@@ -43,7 +43,7 @@ void drawTexture(GLuint texture_index, const Mat_<double>& shape_in_texture, con
 
 // New functions
 void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat& neutral_face_warped, const Mat_<double>& shape_destination, 
-	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record);
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record, double alpha_strength, double eri_multiplier);
 void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& background_shape, const cv::Mat& underlayer_image, const cv::Mat_<double>& underlayer_shape, 
 	const cv::Mat& avatar_image, const cv::Mat_<double>& avatar_shape, const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles);
 

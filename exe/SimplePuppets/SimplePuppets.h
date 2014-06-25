@@ -24,9 +24,16 @@ GtkWidget *drawing_area;
 
 GtkWidget *check, *check1, *check2;
 
-GtkWidget *hscale, *hscale2, *hscale3, *hscale4, *hscale5, *label1, *label2, *label3, *label4, *label5, *avatarchoice, *inputchoice;
+// Sliders
+GtkWidget *hscale, *hscale2, *hscale3, *hscale4, *hscale5, *slider_eri;
 
-GtkObject *adj1, *adj2, *adj3, *adj4, *adj5;
+// Labels
+GtkWidget *label1, *label2, *label3, *label4, *label5, *eri_label;
+
+// Comboboxes for selecting avatars and videos in ./avatar and ../videos folders respectively
+GtkWidget *avatarchoice, *inputchoice;
+
+GtkObject *adj1, *adj2, *adj3, *adj4, *adj5, *adjustment_eri;
 
 // File recording definitions
 GtkWidget *record_checkbox;
@@ -43,6 +50,7 @@ bool GRAYSCALE = false;
 GtkWidget *filew, *filez;
 
 bool display_avatar_global = true;
+bool display_neutral_global = true;
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl

@@ -21,13 +21,9 @@
 bool DISPLAYHISTOGRAMS = false;			//set to 'true' to display three histograms from the CompensateColour operation
 bool KIOSKMODE = false;
 
-bool	USESAVEDIMAGE = false;		//boolean variables for the Avatar control state-machine:
-bool	CHANGEIMAGE = false;
-bool	WRITETODISK = false;		//save current face image as an avatar
-bool	resetexpression = false;
-double	ERIstrength = 0.333f;	//the amount of ratio image that is applied to the avatar from the warped live stream
-
-bool UNDERLAYER = true; //if the computer is fast enough, it deals with side-lighting quite well. It blends a heavily-blurred original face below the new one
+// TODO rem as well
+ //if the computer is fast enough, it deals with side-lighting quite well. It blends a heavily-blurred original face below the new one
+bool UNDERLAYER = true;
 
 GLuint framebuffer = 0;
 GLuint renderbuffer;
@@ -44,11 +40,6 @@ void sendFaceBackgroundBool(bool under)
 {		//sent by the main loop to toggle background image
 	UNDERLAYER = under;
 }
-
-void sendERIstrength(double texmag){	//this is called from the main simpleclm program
-
-	ERIstrength = texmag/100.0;		//the slider is in %
-};
 
 //OpenCV -> OpenGL
 // Function turn a cv::Mat into a texture, and return the texture ID as a GLuint for use
@@ -153,7 +144,7 @@ void extractResultImage(const Mat_<double> &destination_shape, Mat &result_image
 	face_b_box_ocv = face_b_box_ocv & image_b_box;
 
 	Rect face_b_box_gl( face_b_box_ocv);
-	face_b_box_gl.x *= scale;
+	face_b_box_gl.x = (int)(face_b_box_gl.x  * scale);
 	face_b_box_gl.y *= scale;
 	face_b_box_gl.width *= scale;
 	face_b_box_gl.height *= scale;
@@ -288,7 +279,7 @@ void displayHistogram(string windowname, vector<cv::Mat> bgr_planes){
 	imshow(windowname, histImage );
 }
 
-void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_smooth)
+void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensate, Mat &corrected_image, Mat& mask_smooth, double alpha_strength)
 {
 
 	if((compensator.channels() == 3) && (to_compensate.channels() == 3)){
@@ -314,7 +305,7 @@ void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensa
 
 		for(int c = 0; c < 3; c++){
 
-			channels[c].convertTo(channels[c],CV_32F);
+			channels[c].convertTo(channels[c], CV_32F);
 
 			Mat oldmean,oldstddev;
 
@@ -335,14 +326,8 @@ void compensateColoursAndAddAlpha(const Mat &compensator, const Mat &to_compensa
 			displayHistogram("compensated",channels);
 		}		
 
-		if(UNDERLAYER)
-		{
-			channels.push_back(mask_smooth / 1.3);
-		}
-		else
-		{
-			channels.push_back(mask_smooth / 1.3);
-		}
+		channels.push_back(mask_smooth * (alpha_strength / 100));
+
 		merge(channels, corrected_image);
 		
 	}
@@ -402,24 +387,24 @@ void drawFaceReplace(const cv::Mat& background_image, const cv::Mat_<double>& ba
 	int avatar_width = avatar_image.cols;
 
 	// TODO rem
-	Mat disp;
-	cvtColor(background_image, disp, CV_BGR2RGB);
-	CLMTracker::Draw(disp, background_shape);
-	cv::imshow("background_shape", disp);
+	//Mat disp;
+	//cvtColor(background_image, disp, CV_BGR2RGB);
+	//CLMTracker::Draw(disp, background_shape);
+	//cv::imshow("background_shape", disp);
 
-	//disp = avatar_image.clone();
-	cvtColor(avatar_image, disp, CV_BGRA2RGBA);
-	CLMTracker::Draw(disp, avatar_shape);
-	cv::imshow("avatar_image shape", disp);
+	////disp = avatar_image.clone();
+	//cvtColor(avatar_image, disp, CV_BGRA2RGBA);
+	//CLMTracker::Draw(disp, avatar_shape);
+	//cv::imshow("avatar_image shape", disp);
 	
 	GLuint underlayer_texture;
 	// If underlayer is used
 	if(!underlayer_image.empty())
 	{		
 		// TODO rem
-		cvtColor(underlayer_image, disp, CV_BGRA2RGBA);
-		CLMTracker::Draw(disp, underlayer_shape);
-		cv::imshow("underlayer shape", disp);
+		//cvtColor(underlayer_image, disp, CV_BGRA2RGBA);
+		//CLMTracker::Draw(disp, underlayer_shape);
+		//cv::imshow("underlayer shape", disp);
 
 		underlayer_texture = matToTexture(underlayer_image);
 	}
@@ -676,13 +661,11 @@ void initGL(int argc, char* argv[], double aspect_ratio)
 
 void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 {
-
+	Size small_size = Size(64,64);
 	// Do the convolutions in resized image for size independence and speed
-	resize(pixel_mask*255, smooth_mask, Size(64,64));
+	resize(pixel_mask*255, smooth_mask, small_size);
 
-	circle(smooth_mask, Point(32, 0), 10, Scalar(125), -1);
-
-	imshow("pixel_mask", smooth_mask);
+	circle(smooth_mask, Point(32, 0), 10, Scalar(125), -1);	
 
 	// Add the mickey mouse ear thing
 
@@ -695,34 +678,123 @@ void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 	cv::vconcat(smooth_mask, Mat_<uchar>(border_size, smooth_mask.cols, (uchar)0), smooth_mask);
 	cv::vconcat(Mat_<uchar>(border_size, smooth_mask.cols, (uchar)0), smooth_mask, smooth_mask);
 
-	Mat_<float> smooth_mask_foat;
-	smooth_mask.convertTo(smooth_mask_foat, CV_32F);
+	Mat_<float> smooth_mask_float;
+	smooth_mask.convertTo(smooth_mask_float, CV_32F);
 	
 	// This ensure that at the edge of the mask we have 0, ensuring nice and smooth blending
-	smooth_mask_foat.setTo(-255, smooth_mask == 0);
+	smooth_mask_float.setTo(-255, smooth_mask == 0);
 		
 		// Blur the mask so it is smooth at the borders
-	GaussianBlur(smooth_mask_foat, smooth_mask_foat, Size(0, 0), 2, 2, BORDER_CONSTANT);
-
-	// Smooth more inbetween eyebrows TODO
+	GaussianBlur(smooth_mask_float, smooth_mask_float, Size(0, 0), 2, 2, BORDER_CONSTANT);
 
 	// smooth less around the mouth area TODO
 
 	// Remove the negative values
-	smooth_mask_foat.setTo(0, smooth_mask_foat < 0);
+	smooth_mask_float.setTo(0, smooth_mask_float < 0);
 
-	smooth_mask_foat.convertTo(smooth_mask, CV_8U);
+	smooth_mask_float.convertTo(smooth_mask, CV_8U);
 
 	// Take the valid region
 	smooth_mask = smooth_mask(Rect(border_size, border_size, 64, 64));
+
+	// Smoothing the left and right sides a bit (for better blending in)
+	int steps = 5;
+	double step_size = 1.0/steps;
+	for(int i = 0; i < steps; ++i)
+	{
+		smooth_mask.col(i) *= step_size*i;
+		smooth_mask.col(small_size.width - 1 - i) *= step_size*i;
+	}
 
 	// Resize to original size
 	cv::resize(smooth_mask, smooth_mask, pixel_mask.size());
 
 }
 
+// TODO cleanup
+// Constructing an ERI corrected image from a neutral face, current face and an avatar face
+void constructERI(const Mat& warped_to_neutral_original, const Mat& neutral_face_warped, const Mat& avatar_image, Mat& eri_image, double eri_multiplier)
+{
+	
+	//imshow("warped_to_neutral_original", warped_to_neutral_original);
+	//imshow("neutral_face_warped", neutral_face_warped);
+
+	Mat warped_neutral_face = neutral_face_warped.clone();
+				
+	// Blur the warped_to_neutral_original face for ERI
+	//Mat blurred_warped_face;
+	//resize(warped_to_neutral_original, blurred_warped_face, Size(64,64), 0, 0, INTER_NEAREST);
+	//GaussianBlur( blurred_warped_face, blurred_warped_face, Size( 5, 5 ), 0, 0 );
+	//resize(blurred_warped_face, blurred_warped_face, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows), 0, 0, INTER_LINEAR);
+	Mat blurred_warped_face = warped_to_neutral_original.clone();
+
+	// Convert to floats in order to do proper ratio computation
+	blurred_warped_face.convertTo(blurred_warped_face, CV_32FC3);
+	warped_neutral_face.convertTo(warped_neutral_face, CV_32FC3);
+
+	// convert image to YCrCb color space.
+	Mat blurred_warped_face_yuv, warped_neutral_face_yuv;
+	cvtColor(blurred_warped_face, blurred_warped_face_yuv, CV_BGR2YCrCb);
+	cvtColor(warped_neutral_face, warped_neutral_face_yuv, CV_BGR2YCrCb);
+
+
+	vector<Mat> newWarpedFaceFloat_planes, oldFace_planes;
+	split(blurred_warped_face_yuv, newWarpedFaceFloat_planes);
+	split(warped_neutral_face_yuv, oldFace_planes);
+
+	Mat ratioFaceFloat;
+	divide(newWarpedFaceFloat_planes[0], oldFace_planes[0], ratioFaceFloat);
+
+	//imshow("ratioFaceFloat", ratioFaceFloat);
+
+	//Mat ratioFace;
+
+	// Blurr the mask for smoother results
+	Mat ratioFaceFloatBlur;
+	GaussianBlur( ratioFaceFloat, ratioFaceFloatBlur, Size( 5, 5 ), 0, 0 );
+
+	// use only regions that become darker (wrinkles and shadows)
+	Mat lessthan = (ratioFaceFloatBlur <= 0.98);		
+	
+	lessthan.convertTo(lessthan, CV_8U);		
+		
+	//imshow("lessthan", lessthan*255);
+
+	Mat ratioFaceFloatMask;		
+	ratioFaceFloat -= Scalar(1.0f);
+	ratioFaceFloat.copyTo(ratioFaceFloatMask, lessthan);
+	ratioFaceFloatMask *= eri_multiplier;
+	ratioFaceFloatMask += Scalar(1.0f);
+	
+	Mat avatarFace_yuv;
+
+	cvtColor(avatar_image, avatarFace_yuv, CV_BGR2YCrCb);
+	vector<Mat> avatarFace_channels;
+	split(avatarFace_yuv, avatarFace_channels);
+
+	avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_32F);
+
+	Mat newFace;
+
+	multiply(avatarFace_channels[0], ratioFaceFloatMask, newFace);
+
+	avatarFace_channels[0] = newFace;
+
+	avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_8U);
+
+	// now merge the results back
+	merge(avatarFace_channels, newFace);
+	// and produce the output RGB image
+	cvtColor(newFace, newFace, CV_YCrCb2BGR);
+	eri_image = newFace.clone();
+
+	//imshow("eri_image", eri_image);
+	//imshow("avatar_image", avatar_image);
+
+}
+
 void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_original_image, const Mat& avatar_image, const Mat_<double>& avatar_shape, const Mat& neutral_face_warped, const Mat_<double>& shape_destination,
-	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record)
+	const cv::Mat_<int>& face_triangles, const cv::Mat_<int>& mouth_triangles, const cv::Mat_<int>& eye_triangles, CLMTracker::PAW& paw, bool ERI, Mat& result_image, bool record, double alpha_strength, double eri_multiplier)
 {
 
 	aspect_ratio_img_global = ((double)original_image_bgr.rows) / (double)original_image_bgr.cols;
@@ -737,88 +809,15 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		INIT = true;
 	}	
 
-
 	int num_points = shape_original_image.rows/2;
 
 	// First warp the original image to the avatar location (this will be useful for both ERI computation, underlayer creation, and colour compensation)
 	Mat warped_to_neutral_original;
 	paw.Warp(original_image_bgr, warped_to_neutral_original, shape_original_image);
 
-	// TODO remove eri, not useful
-	bool eri = false;
 	Mat eri_image;
-	if(eri)
-	{
+	constructERI(warped_to_neutral_original, neutral_face_warped, avatar_image, eri_image, eri_multiplier);
 
-		Mat warped_neutral_face = neutral_face_warped.clone();
-				
-		// Blur the warped_to_neutral_original face for ERI (TODO is this necessary)
-		Mat blurred_warped_face;
-		resize(warped_to_neutral_original, blurred_warped_face, Size(64,64), 0, 0, INTER_NEAREST);
-		GaussianBlur( blurred_warped_face, blurred_warped_face, Size( 5, 5 ), 0, 0 );
-		resize(blurred_warped_face, blurred_warped_face, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows), 0, 0, INTER_LINEAR);
-
-		// Convert to floats in order to do proper ratio computation
-		blurred_warped_face.convertTo(blurred_warped_face, CV_32FC3);
-		warped_neutral_face.convertTo(warped_neutral_face, CV_32FC3);
-
-		// convert image to YCrCb color space.
-		Mat blurred_warped_face_yuv, warped_neutral_face_yuv;
-		cvtColor(blurred_warped_face, blurred_warped_face_yuv, CV_BGR2YCrCb);
-		cvtColor(warped_neutral_face, warped_neutral_face_yuv, CV_BGR2YCrCb);
-
-		//imshow("oldFace_yuv", blurred_warped_face_yuv);
-		//imshow("newWarpedFaceFloat_yuv", warped_neutral_face_yuv);
-
-		// split the image into separate color planes
-		// TODO rename
-		vector<Mat> newWarpedFaceFloat_planes, oldFace_planes;
-		split(blurred_warped_face_yuv, newWarpedFaceFloat_planes);
-		split(warped_neutral_face_yuv, oldFace_planes);
-
-		Mat ratioFaceFloat;
-		divide(newWarpedFaceFloat_planes[0], oldFace_planes[0], ratioFaceFloat);	//always do this... just in case!
-
-		Mat ratioFace;
-
-		Mat lessthan = (ratioFaceFloat <= 1.0f);		
-		lessthan.convertTo(lessthan, CV_8U);		
-		Mat ratioFaceFloatMask;		
-		ratioFaceFloat -= Scalar(1.0f);
-		ratioFaceFloat.copyTo(ratioFaceFloatMask, lessthan);		//applies the 'less than' mask!
-		ratioFaceFloatMask *= ERIstrength;
-		ratioFaceFloatMask += Scalar(1.0f);
-		ratioFace = ratioFaceFloatMask * 100.0;
-		ratioFace.convertTo(ratioFace, CV_8UC3);
-
-		imshow("ratioFace", ratioFace);
-		
-		Mat avatarFace_yuv;
-		imshow("avatar_image", avatar_image);
-
-		cvtColor(avatar_image, avatarFace_yuv, CV_BGR2YCrCb);
-		vector<Mat> avatarFace_channels;
-		split(avatarFace_yuv, avatarFace_channels);
-
-		avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_32F);
-
-		Mat newFace;
-
-		multiply(avatarFace_channels[0], ratioFaceFloatMask, newFace);
-
-		avatarFace_channels[0] = newFace;
-
-		avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_8U);
-
-		// now merge the results back
-		merge(avatarFace_channels, newFace);
-		// and produce the output RGB image
-		cvtColor(newFace, newFace, CV_YCrCb2BGR);
-		eri_image = newFace.clone();
-
-		imshow("new face",newFace);
-
-	}
 
 	Mat_<uchar> smooth_mask;
 
@@ -828,8 +827,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	
 	Mat_<double> underlayer_shape;
 	Mat underlayer_image;
-	
-	// TODO rem underlayer?
+		
 	if(UNDERLAYER)
 	{
 
@@ -841,7 +839,7 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 
 		cropFace(original_image_bgr, shape_original_image, small_size, cropped_resized_original, cropped_original_shape);
 
-		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 3, 3);
+		GaussianBlur(cropped_resized_original, underlayer_image, Size(0,0), 1.5, 1.5);
 
 		paw.Warp(underlayer_image, underlayer_image, cropped_original_shape);
 				
@@ -850,8 +848,8 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		vector<Mat> channels;
 		split(underlayer_image, channels);
 
-		// Add a mask
-		channels.push_back(smooth_mask*2);
+		// Add an underlayer mask
+		channels.push_back(smooth_mask * 0.8);
 		
 		merge(channels, underlayer_image);
 		
@@ -859,14 +857,8 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 		
 	// Perform colour compensation	
 	Mat avatar_image_corrected;
-	if(eri)
-	{
-		compensateColoursAndAddAlpha(warped_to_neutral_original, eri_image, avatar_image_corrected, smooth_mask);
-	}
-	else
-	{
-		compensateColoursAndAddAlpha(warped_to_neutral_original, avatar_image, avatar_image_corrected, smooth_mask);
-	}
+	compensateColoursAndAddAlpha(warped_to_neutral_original, eri_image, avatar_image_corrected, smooth_mask, alpha_strength);
+
 	// The actual model drawing
 	drawFaceReplace(original_image_bgr, shape_original_image, underlayer_image, underlayer_shape, avatar_image_corrected, avatar_shape, shape_destination, face_triangles, mouth_triangles, eye_triangles);
 
@@ -877,9 +869,10 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	
 	cvtColor(original_image_bgr, result_image, CV_BGR2RGB);
 
-	extractResultImage(shape_original_image, result_image);
-	//imshow("result_image", result_image);
-
+	if(record)
+	{
+		extractResultImage(shape_original_image, result_image);
+	}
 
 }
 

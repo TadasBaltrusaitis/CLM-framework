@@ -429,12 +429,19 @@ void doFaceTracking(int argc, char **argv)
 
 		Mat neutral_face_warped;
 
+		// If blending in the avatar start with 0 alpha and continue to 80
+		bool blend_in_avatar = false;
+
 		while(!read_img.empty() && !CHANGESOURCE)
 		{		
 			
 			// Grabbing the avatar image
 			if(avatar_image.empty() || avatar_selection != gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice)))
 			{
+				// In case detection does not succeed keep the olf avatar
+				Mat avatar_image_old = avatar_image.clone();
+				Mat_<double> avatar_shape_old = avatar_shape.clone();
+
 				avatar_selection = gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice));
 				string avatar_file = avatar_files[avatar_selection].first;
 	
@@ -466,13 +473,13 @@ void doFaceTracking(int argc, char **argv)
 					double avatar_scale = clm_model_avatar.params_global[0];
 
 					// If avatar is too big resize it for efficiency
-					if(avatar_scale > 2)
+					if(avatar_scale > 1.5)
 					{
-						avatar_scale = 2;
+						avatar_scale = 1.5;
 					}
 
 					// Rotate the avatar shape to a neutral that we will warp to
-					clm_model.pdm.CalcShape2D(avatar_shape, clm_model_avatar.params_local, Vec6d(clm_model_avatar.params_global[0], 0, 0, 0, 0, 0));								
+					clm_model.pdm.CalcShape2D(avatar_shape, clm_model_avatar.params_local, Vec6d(avatar_scale, 0, 0, 0, 0, 0));								
 					
 					// This is an opportunity to create a piecewise affine warp
 					Mat_<int> triangles_face_with_eyes;
@@ -496,8 +503,6 @@ void doFaceTracking(int argc, char **argv)
 						avatar_shape.at<double>(i + num_landmarks, 0) -= paw.min_y;
 					}
 					
-					//cv::imshow("Avatar used", avatar_image);
-
 					// Convert RGB to BGR as that is what OpenGL expects
 					if(avatar_image.channels() == 3)
 					{
@@ -511,12 +516,21 @@ void doFaceTracking(int argc, char **argv)
 
 					// Remove the ERI reference image as it has to be warped anew
 					neutral_face_warped = Mat();
+
+					// Indicate that the avatar should be blended in
+					blend_in_avatar = true;
+					gtk_adjustment_set_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)), 20.0);
+
+					// Also turn off the undercoat (if it is on)
+					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), false);
+					sendFaceBackgroundBool(false);
+
 				}
 				else
 				{
 					// empty the image if failed to construct an avatar
-					avatar_image = Mat();
-					avatar_shape = Mat_<double>();
+					avatar_image = avatar_image_old.clone();
+					avatar_shape = avatar_shape_old.clone();
 
 					// Inform the user that the face could not be detected
 					GtkWidget *dialog;
@@ -533,8 +547,7 @@ void doFaceTracking(int argc, char **argv)
 			cvtColor(read_img, read_image_bgr, CV_RGB2BGR);
 
 			// For display purposes			
-			Mat disp;
-			cvtColor(read_img, disp, CV_BGR2RGB);
+			Mat disp = read_image_bgr.clone();
 
 			if(GRAYSCALE)
 			{
@@ -554,28 +567,32 @@ void doFaceTracking(int argc, char **argv)
 			if(detection_success)			
 			{
 
-				// Creating a neutral image if it has not been created yet (or updating it)
-				if(neutral_face_warped.empty() && !avatar_image.empty())
+				// Creating a neutral image if it has not been created yet (or updating it), this is used by ERI
+				if((reset_neutral_global || neutral_face_warped.empty()) && !avatar_image.empty())
 				{
-					if(neutral_face.empty())
+					// If forcing by reset_neutral_global, read the new neutral face, otherwise just update the warp
+					if(reset_neutral_global || neutral_face.empty())
 					{
 						neutral_face = read_img.clone();
 						neutral_shape = clm_model.detected_landmarks.clone();
 					}
 
-					if(neutral_face_warped.empty())
-					{
-						paw.Warp(neutral_face, neutral_face_warped, neutral_shape);
-						cvtColor(neutral_face_warped, neutral_face_warped, CV_RGB2BGR);
-						//imshow("neutral_face", neutral_face_warped);
-					}
+					paw.Warp(neutral_face, neutral_face_warped, neutral_shape);
+					cvtColor(neutral_face_warped, neutral_face_warped, CV_RGB2BGR);
+
+					reset_neutral_global = false;
 
 				}
 				
 				// drawing the facial features on the face if tracking is successful
 				CLMTracker::Draw(disp, clm_model);				
 
+			}
 
+			// If failed a number of times reset ERI (a chance that a new person came in)
+			if(clm_model.failures_in_a_row > 5)
+			{
+				reset_neutral_global = true;
 			}
 
 			if(frame_processed % 10 == 0)
@@ -610,6 +627,24 @@ void doFaceTracking(int argc, char **argv)
 					disp_avatar.copyTo(read_image_bgr(Rect(0, 0, disp_avatar.cols, disp_avatar.rows)));
 				}
 
+				// Adding the avatar image to top left corner (if that option is selected)
+				if(display_neutral_global)
+				{
+					Mat disp_neutral = neutral_face_warped.clone();
+
+					if(disp_neutral.cols > read_image_bgr.cols / 5)
+					{
+						double aspect_ratio = (double)disp_neutral.cols / (double)disp_neutral.rows;
+
+						int resize_width = read_image_bgr.cols / 5;
+						int resize_height = resize_width / aspect_ratio;
+
+						resize(disp_neutral, disp_neutral, Size(resize_width, resize_height));
+					}
+
+					disp_neutral.copyTo(read_image_bgr(Rect(0, disp_neutral.rows, disp_neutral.cols, disp_neutral.rows)));
+				}
+
 				Mat_<double> local_params_corrected;
 				Vec6d global_params_corrected;
 		
@@ -637,11 +672,30 @@ void doFaceTracking(int argc, char **argv)
 				// Compute and exaggerated or attenuated shape
 				Mat_<double> destination_shape;		
 				clm_model.pdm.CalcShape2D(destination_shape, local_params_corrected, global_params_corrected); //calculate new shape
+				
+				double alpha_comp = gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)));
 
-				// TODO if rotation too extreme don't do ERI
+				// Do smooth blending in of avatar
+				if(blend_in_avatar)
+				{
+					if(alpha_comp >= 80)
+					{
+						blend_in_avatar = false;
+						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), true);
+						sendFaceBackgroundBool(true);
+					}
+					else
+					{
+						double blend_speed = 2.5;
+						gtk_adjustment_set_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)), alpha_comp + blend_speed);
+					}
+				}
+
+				double eri_strength = gtk_adjustment_get_value(gtk_range_get_adjustment(GTK_RANGE(slider_eri)));
+
 				if(face_replace_global)
 				{
-					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, neutral_face_warped, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global);
+					faceReplace(read_image_bgr, clm_model.detected_landmarks, avatar_image, avatar_shape, neutral_face_warped, destination_shape, face_triangles, mouth_triangles, eye_triangles, paw, false, animation_result, record_global, alpha_comp, eri_strength);
 				}
 				else
 				{
@@ -705,7 +759,7 @@ void doFaceTracking(int argc, char **argv)
 			}
 			else
 			{
-				int new_width = (int)((double)drawing_area_height / aspect_ratio_image);
+				int new_width = (int)((double)drawing_area_height / aspect_ratio_image);				
 				cv::resize(disp, disp, Size(new_width, drawing_area_height));
 			}
 
@@ -755,8 +809,6 @@ void doFaceTracking(int argc, char **argv)
 
 			video_capture >> read_img;
 
-			sendERIstrength(double(gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)))));
-			
 			while(gtk_events_pending ())
 			{
 				gtk_main_iteration ();
@@ -815,6 +867,9 @@ static gboolean on_key_press( GtkWidget *widget, GdkEvent  *event, gpointer   da
   {
     case GDK_a:
       display_avatar_global = !display_avatar_global;
+      break;
+    case GDK_n:
+      display_neutral_global = !display_neutral_global;
       break;
     case GDK_w:
       use_webcam();
@@ -900,8 +955,7 @@ void startGTK(int argc, char **argv)
 
 	/* When the button is clicked, we call the "callback" function
 	* with a pointer to "reset eri" as its argument */
-	g_signal_connect (button, "clicked",
-		G_CALLBACK (callback), (gpointer) "reset eri");
+	g_signal_connect (button, "clicked", G_CALLBACK (callback), (gpointer) "reset eri");
 
 	/* Insert button 4 into the upper left quadrant of the table */
 	gtk_table_attach_defaults (GTK_TABLE (table), button, 0, 1, 3, 4);
@@ -949,9 +1003,9 @@ void startGTK(int argc, char **argv)
 
 	/* Add a check button to select the webcam by default */
 	check2 = gtk_check_button_new_with_label ("Face Undercoat");
-	gtk_signal_connect(GTK_OBJECT (check2), "pressed",face_under, NULL);
+	gtk_signal_connect(GTK_OBJECT (check2), "pressed", face_under, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), 1);
-	gtk_table_attach_defaults (GTK_TABLE (table), check2, 1, 2, 11,12);
+	gtk_table_attach_defaults (GTK_TABLE (table), check2, 1, 2, 11, 12);
 	gtk_widget_show(check2);
 
 	/* Create "Quit" button */
@@ -967,7 +1021,7 @@ void startGTK(int argc, char **argv)
 
 	/* Ask for a window   */
 	//gtk_widget_set_size_request(drawing_area, opencvImage.width, opencvImage.height); (do the size properly)
-	gtk_table_attach_defaults (GTK_TABLE (table), drawing_area, 2, 5, 0, 12);
+	gtk_table_attach_defaults (GTK_TABLE (table), drawing_area, 2, 5, 0, 13);
 	
 	g_signal_connect(G_OBJECT (drawing_area), "expose_event", G_CALLBACK (expose_event_callback), NULL);
 	gtk_widget_show(drawing_area);
@@ -979,6 +1033,7 @@ void startGTK(int argc, char **argv)
 	adj3 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
 	adj4 = gtk_adjustment_new (33.3, 0.0, 101.0, 0.1, 1.0, 1.0);
 	adj5 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
+	adjustment_eri = gtk_adjustment_new (0.33, 0.0, 1.01, 0.01, 0.01, 0.01);
 
 	avatarchoice = gtk_combo_box_entry_new_text();
 	inputchoice = gtk_combo_box_entry_new_text();
@@ -1028,20 +1083,24 @@ void startGTK(int argc, char **argv)
 	label1 = gtk_label_new("Mouth open (%)");
 	label2 = gtk_label_new("Eyebrows (%)");
 	label3 = gtk_label_new("Smile (%)");
-	label4 = gtk_label_new("ERI (Texture) Mapping (%)");
+	label4 = gtk_label_new("Amount of face morph (%)");
 	label5 = gtk_label_new("Head Rotation (%)");
+	
+	eri_label = gtk_label_new("ERI strength");
 
 	gtk_table_attach_defaults (GTK_TABLE (table), label1, 0, 1, 5, 6);
 	gtk_table_attach_defaults (GTK_TABLE (table), label2, 0, 1, 6, 7);
 	gtk_table_attach_defaults (GTK_TABLE (table), label3, 0, 1, 7, 8);
 	gtk_table_attach_defaults (GTK_TABLE (table), label4, 0, 1, 8, 9);
 	gtk_table_attach_defaults (GTK_TABLE (table), label5, 0, 1, 9, 10);
+	gtk_table_attach_defaults (GTK_TABLE (table), eri_label, 0, 1, 12, 13);
 
 	gtk_widget_show (label1);
 	gtk_widget_show (label2);
 	gtk_widget_show (label3);
 	gtk_widget_show (label4);
 	gtk_widget_show (label5);
+	gtk_widget_show (eri_label);
 
 	hscale2 = gtk_hscale_new (GTK_ADJUSTMENT (adj2));
 	gtk_widget_set_size_request (GTK_WIDGET (hscale2), 200, -1);
@@ -1070,6 +1129,13 @@ void startGTK(int argc, char **argv)
 
 	gtk_range_set_update_policy( GTK_RANGE(hscale5), GTK_UPDATE_DELAYED);
 	gtk_widget_show (hscale5);
+
+	slider_eri = gtk_hscale_new (GTK_ADJUSTMENT (adjustment_eri));
+	gtk_widget_set_size_request (GTK_WIDGET (slider_eri), 200, -1);
+	gtk_table_attach_defaults (GTK_TABLE (table), slider_eri, 1, 2, 12, 13);
+
+	gtk_range_set_update_policy( GTK_RANGE(slider_eri), GTK_UPDATE_DELAYED);
+	gtk_widget_show (slider_eri);
 
 	/* Insert the quit button into the both 
 	* lower quadrants of the table */
