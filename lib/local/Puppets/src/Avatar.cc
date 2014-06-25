@@ -25,10 +25,6 @@ bool KIOSKMODE = false;
  //if the computer is fast enough, it deals with side-lighting quite well. It blends a heavily-blurred original face below the new one
 bool UNDERLAYER = true;
 
-GLuint framebuffer = 0;
-GLuint renderbuffer;
-GLenum status;
-
 int window_height_global = 480;
 int window_width_global = 640;
 
@@ -145,9 +141,9 @@ void extractResultImage(const Mat_<double> &destination_shape, Mat &result_image
 
 	Rect face_b_box_gl( face_b_box_ocv);
 	face_b_box_gl.x = (int)(face_b_box_gl.x  * scale);
-	face_b_box_gl.y *= scale;
-	face_b_box_gl.width *= scale;
-	face_b_box_gl.height *= scale;
+	face_b_box_gl.y = (int)(face_b_box_gl.y * scale);
+	face_b_box_gl.width = (int)(face_b_box_gl.width * scale);
+	face_b_box_gl.height = (int)(face_b_box_gl.height * scale);
 
 	// Inverting the y (as openGL starts y at the bottom and openCV at the top)
 	int gl_min_y = window_height_global - face_b_box_gl.y - (int)face_b_box_gl.height;

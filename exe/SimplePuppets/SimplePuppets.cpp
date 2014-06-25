@@ -55,8 +55,6 @@ using namespace boost::filesystem;
 using namespace std;
 using namespace cv;
 
-string oldfile;
-
 bool GETFACE = false;		//get a new face
 
 //called when the 'use webcam' checkbox is ticked
@@ -102,14 +100,12 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
 // This function loads an avatar from an image
 static void file_ok_sel( GtkWidget *w, GtkFileSelection *fs )
 {
-	oldfile = inputfile;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), 0);
 
 	inputfile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filew));
 	cout << "Loading avatar from: " << inputfile << endl;
 
 	GETFACE = true;
-	cout << "file: " << inputfile << ", oldfile: " << oldfile << endl;
 	gtk_widget_destroy(filew);	
 }
 
