@@ -365,8 +365,11 @@ void doFaceTracking(int argc, char **argv)
 			video_capture = VideoCapture( device );
 
 			// Attempt highish res video capture
-			video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 960);
-			video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+			//video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+			//video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
+			video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 640);
+			video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
 
 			if( !video_capture.isOpened() ) 
 			{
@@ -583,12 +586,6 @@ void doFaceTracking(int argc, char **argv)
 				// drawing the facial features on the face if tracking is successful
 				CLMTracker::Draw(disp, clm_model);				
 
-			}
-
-			// If failed a number of times reset ERI (a chance that a new person came in)
-			if(clm_model.failures_in_a_row > 5)
-			{
-				reset_neutral_global = true;
 			}
 
 			if(frame_processed % 10 == 0)

@@ -705,84 +705,80 @@ void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 	// Resize to original size
 	cv::resize(smooth_mask, smooth_mask, pixel_mask.size());
 
+	imshow("smooth_mask", smooth_mask);
+
 }
 
 // TODO cleanup
-// Constructing an ERI corrected image from a neutral face, current face and an avatar face
-void constructERI(const Mat& warped_to_neutral_original, const Mat& neutral_face_warped, const Mat& avatar_image, Mat& eri_image, double eri_multiplier)
+// Constructing an ERI corrected image from a neutral face, current face and an avatar face (all warped to same basis)
+void constructERI(const Mat& current, const Mat& neutral_expression, const Mat& avatar_image, Mat& eri_image, double eri_multiplier)
 {
 	
 	//imshow("warped_to_neutral_original", warped_to_neutral_original);
 	//imshow("neutral_face_warped", neutral_face_warped);
-
-	Mat warped_neutral_face = neutral_face_warped.clone();
-				
-	// Blur the warped_to_neutral_original face for ERI
-	//Mat blurred_warped_face;
-	//resize(warped_to_neutral_original, blurred_warped_face, Size(64,64), 0, 0, INTER_NEAREST);
-	//GaussianBlur( blurred_warped_face, blurred_warped_face, Size( 5, 5 ), 0, 0 );
-	//resize(blurred_warped_face, blurred_warped_face, Size(warped_to_neutral_original.cols, warped_to_neutral_original.rows), 0, 0, INTER_LINEAR);
-	Mat blurred_warped_face = warped_to_neutral_original.clone();
-
+			
 	// Convert to floats in order to do proper ratio computation
-	blurred_warped_face.convertTo(blurred_warped_face, CV_32FC3);
-	warped_neutral_face.convertTo(warped_neutral_face, CV_32FC3);
+	
+	Mat current_float;
+	current.convertTo(current_float, CV_32FC3);
 
-	// convert image to YCrCb color space.
-	Mat blurred_warped_face_yuv, warped_neutral_face_yuv;
-	cvtColor(blurred_warped_face, blurred_warped_face_yuv, CV_BGR2YCrCb);
-	cvtColor(warped_neutral_face, warped_neutral_face_yuv, CV_BGR2YCrCb);
+	Mat neutral_expression_float;	
+	neutral_expression.convertTo(neutral_expression_float, CV_32FC3);
 
+	// convert image to YCrCb color space (as we only want to modify Y
+	Mat current_float_ycrcb, neutral_expression_float_ycrcb;
+	cvtColor(current_float, current_float_ycrcb, CV_BGR2YCrCb);
+	cvtColor(neutral_expression_float, neutral_expression_float_ycrcb, CV_BGR2YCrCb);
 
-	vector<Mat> newWarpedFaceFloat_planes, oldFace_planes;
-	split(blurred_warped_face_yuv, newWarpedFaceFloat_planes);
-	split(warped_neutral_face_yuv, oldFace_planes);
+	// Picking just the first plane for ratio
+	vector<Mat> current_expression_planes, neutral_expression_planes;
+	split(current_float_ycrcb, current_expression_planes);
+	split(neutral_expression_float_ycrcb, neutral_expression_planes);
 
-	Mat ratioFaceFloat;
-	divide(newWarpedFaceFloat_planes[0], oldFace_planes[0], ratioFaceFloat);
+	// Compute ratio between current expression Y and neutral expression Y
+	Mat ratio_image_float;
+	divide(current_expression_planes[0], neutral_expression_planes[0], ratio_image_float);
 
-	//imshow("ratioFaceFloat", ratioFaceFloat);
+	// Blur the mask for smoother results
+	Mat ratio_image_float_blur;
+	GaussianBlur( ratio_image_float, ratio_image_float_blur, Size( 5, 5 ), 0, 0 );
 
-	//Mat ratioFace;
-
-	// Blurr the mask for smoother results
-	Mat ratioFaceFloatBlur;
-	GaussianBlur( ratioFaceFloat, ratioFaceFloatBlur, Size( 5, 5 ), 0, 0 );
+	// Normalise the ratio image (to be around 0)
+	ratio_image_float -= Scalar(1.0f);
 
 	// use only regions that become darker (wrinkles and shadows)
-	Mat lessthan = (ratioFaceFloatBlur <= 0.98);		
+	ratio_image_float.setTo(0, ratio_image_float_blur >= 0.95);
+
+	// Scale it using our ERI multiplier
+	ratio_image_float *= eri_multiplier;
+
+	// Renormalise it
+	ratio_image_float += Scalar(1.0f);
 	
-	lessthan.convertTo(lessthan, CV_8U);		
-		
-	//imshow("lessthan", lessthan*255);
+	// Apply the eri scaling on the actual avatar image
+	Mat avatar_face_yuv;
 
-	Mat ratioFaceFloatMask;		
-	ratioFaceFloat -= Scalar(1.0f);
-	ratioFaceFloat.copyTo(ratioFaceFloatMask, lessthan);
-	ratioFaceFloatMask *= eri_multiplier;
-	ratioFaceFloatMask += Scalar(1.0f);
-	
-	Mat avatarFace_yuv;
+	cvtColor(avatar_image, avatar_face_yuv, CV_BGR2YCrCb);
+	vector<Mat> avatar_face_channels;
+	split(avatar_face_yuv, avatar_face_channels);
 
-	cvtColor(avatar_image, avatarFace_yuv, CV_BGR2YCrCb);
-	vector<Mat> avatarFace_channels;
-	split(avatarFace_yuv, avatarFace_channels);
+	avatar_face_channels[0].convertTo(avatar_face_channels[0], CV_32F);
 
-	avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_32F);
+	Mat avatar_with_eri;
 
-	Mat newFace;
+	multiply(avatar_face_channels[0], ratio_image_float, avatar_with_eri);
 
-	multiply(avatarFace_channels[0], ratioFaceFloatMask, newFace);
+	avatar_face_channels[0] = avatar_with_eri;
 
-	avatarFace_channels[0] = newFace;
-
-	avatarFace_channels[0].convertTo(avatarFace_channels[0], CV_8U);
+	avatar_face_channels[0].convertTo(avatar_face_channels[0], CV_8U);
 
 	// now merge the results back
-	merge(avatarFace_channels, newFace);
+	merge(avatar_face_channels, avatar_with_eri);
+
 	// and produce the output RGB image
-	cvtColor(newFace, newFace, CV_YCrCb2BGR);
-	eri_image = newFace.clone();
+	cvtColor(avatar_with_eri, avatar_with_eri, CV_YCrCb2BGR);
+
+	eri_image = avatar_with_eri;
 
 	//imshow("eri_image", eri_image);
 	//imshow("avatar_image", avatar_image);
@@ -814,11 +810,11 @@ void faceReplace(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	Mat eri_image;
 	constructERI(warped_to_neutral_original, neutral_face_warped, avatar_image, eri_image, eri_multiplier);
 
-
 	Mat_<uchar> smooth_mask;
 
 	// Correct the avatar image using colour correction and masking
 	Mat_<uchar> mask = paw.pixel_mask;
+
 	computeSmoothMask(mask, smooth_mask);
 	
 	Mat_<double> underlayer_shape;
