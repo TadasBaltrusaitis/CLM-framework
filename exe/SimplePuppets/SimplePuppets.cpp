@@ -515,15 +515,7 @@ void doFaceTracking(int argc, char **argv)
 
 					// Remove the ERI reference image as it has to be warped anew
 					neutral_face_warped = Mat();
-
-					// Indicate that the avatar should be blended in
-					blend_in_avatar = true;
-					gtk_adjustment_set_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)), 20.0);
-
-					// Also turn off the undercoat (if it is on)
-					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), false);
-					sendFaceBackgroundBool(false);
-
+					
 				}
 				else
 				{
@@ -667,22 +659,6 @@ void doFaceTracking(int argc, char **argv)
 				clm_model.pdm.CalcShape2D(destination_shape, local_params_corrected, global_params_corrected); //calculate new shape
 				
 				double alpha_comp = gtk_adjustment_get_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)));
-
-				// Do smooth blending in of avatar
-				if(blend_in_avatar)
-				{
-					if(alpha_comp >= 80)
-					{
-						blend_in_avatar = false;
-						gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), true);
-						sendFaceBackgroundBool(true);
-					}
-					else
-					{
-						double blend_speed = 2.5;
-						gtk_adjustment_set_value(gtk_range_get_adjustment( GTK_RANGE(hscale4)), alpha_comp + blend_speed);
-					}
-				}
 
 				double eri_strength = gtk_adjustment_get_value(gtk_range_get_adjustment(GTK_RANGE(slider_eri)));
 
@@ -1024,7 +1000,7 @@ void startGTK(int argc, char **argv)
 	adj1 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
 	adj2 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
 	adj3 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
-	adj4 = gtk_adjustment_new (33.3, 0.0, 101.0, 0.1, 1.0, 1.0);
+	adj4 = gtk_adjustment_new (80.0, 0.0, 101.0, 0.1, 1.0, 1.0);
 	adj5 = gtk_adjustment_new (100.0, 0.0, 301.0, 0.1, 1.0, 1.0);
 	adjustment_eri = gtk_adjustment_new (0.33, 0.0, 1.01, 0.01, 0.01, 0.01);
 

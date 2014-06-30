@@ -50,7 +50,7 @@ bool GRAYSCALE = false;
 GtkWidget *filew, *filez;
 
 bool display_avatar_global = true;
-bool display_neutral_global = true;
+bool display_neutral_global = false;
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
