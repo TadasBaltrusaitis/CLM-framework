@@ -705,7 +705,7 @@ void computeSmoothMask(const Mat_<uchar>& pixel_mask, Mat_<uchar>& smooth_mask)
 	// Resize to original size
 	cv::resize(smooth_mask, smooth_mask, pixel_mask.size());
 
-	imshow("smooth_mask", smooth_mask);
+	//imshow("smooth_mask", smooth_mask);
 
 }
 
