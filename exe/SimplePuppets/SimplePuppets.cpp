@@ -192,8 +192,7 @@ static void callback( GtkWidget *widget, gpointer data )
 
 	if(command.compare("reset tracking") == 0)
 	{
-		// TODO a way to do this
-		//clm_model.Reset();
+		reset_tracking_global = true;
 	}
 }
 
@@ -786,6 +785,13 @@ void doFaceTracking(int argc, char **argv)
 			if(quitmain==1){
 				cout << "Quit." << endl;
 				return;
+			}
+
+			if(reset_tracking_global)
+			{
+				clm_model.Reset();
+
+				reset_tracking_global = false;
 			}
 
 		}			

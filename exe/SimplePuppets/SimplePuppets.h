@@ -71,6 +71,7 @@ bool CHANGESOURCE = false;
 bool face_replace_global = true;
 bool reset_neutral_global = true;
 bool write_to_file_global = false;
+bool reset_tracking_global = false;
 
 // This indicates which video file should be read anew
 string inputfile = "../videos/default.wmv";
