@@ -431,7 +431,7 @@ void doFaceTracking(int argc, char **argv)
 		bool blend_in_avatar = false;
 
 		while(!read_img.empty() && !CHANGESOURCE)
-		{		
+		{
 			
 			// Grabbing the avatar image
 			if(avatar_image.empty() || avatar_selection != gtk_combo_box_get_active(GTK_COMBO_BOX(avatarchoice)))
@@ -471,9 +471,9 @@ void doFaceTracking(int argc, char **argv)
 					double avatar_scale = clm_model_avatar.params_global[0];
 
 					// If avatar is too big resize it for efficiency
-					if(avatar_scale > 1.5)
+					if(avatar_scale > 1)
 					{
-						avatar_scale = 1.5;
+						avatar_scale = 1;
 					}
 
 					// Rotate the avatar shape to a neutral that we will warp to
@@ -554,7 +554,7 @@ void doFaceTracking(int argc, char **argv)
 			
 			Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
-			if(detection_success)			
+			if(clm_model.detection_certainty < -0.2)			
 			{
 
 				// Creating a neutral image if it has not been created yet (or updating it), this is used by ERI
@@ -577,6 +577,10 @@ void doFaceTracking(int argc, char **argv)
 				// drawing the facial features on the face if tracking is successful
 				CLMTracker::Draw(disp, clm_model);				
 
+			}
+			if(frame_processed % 100 == 0)
+			{
+				clm_model.Reset();
 			}
 
 			if(frame_processed % 10 == 0)
