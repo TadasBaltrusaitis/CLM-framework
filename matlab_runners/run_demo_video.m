@@ -36,9 +36,10 @@ for i=1:numel(in_files)
     [~, name, ~] = fileparts(inputFile);
     
     % where to output tracking results
-    outputFile = [output name '.txt'];
+    outputFile_pose = [output name '_pose.txt'];
+    outputFile_fp = [output name '_fp.txt'];
     
-    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile '"']);
+    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' '" -of "' outputFile_fp '"']);
     
     if(verbose)
         outputVideo = ['"' output name '.avi' '"'];
