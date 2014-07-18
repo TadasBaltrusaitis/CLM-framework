@@ -42,3 +42,9 @@ for videos:
 for images:
 	cd bin
 	./SimpleCLMImg -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+
+8. (optional)
+	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
+
+	run:
+	apt-get install xvfb

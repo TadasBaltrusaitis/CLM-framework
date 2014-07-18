@@ -172,3 +172,5 @@ exe/SimplePuppets/Release/
 exe/ConsolePuppets/Release/
 lib/local/Puppets/Debug/
 lib/local/Puppets/Release/
+Debug/recorded/
+Release/recorded/
