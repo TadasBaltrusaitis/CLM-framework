@@ -1075,7 +1075,9 @@ template<typename _Tp> template<int n> inline Mat_<_Tp>::operator Vec<typename D
 template<typename _Tp> template<int m, int n> inline Mat_<_Tp>::operator Matx<typename DataType<_Tp>::channel_type, m, n>() const
 {
     CV_Assert(n % DataType<_Tp>::channels == 0);
-    return this->Mat::operator Matx<typename DataType<_Tp>::channel_type, m, n>();
+
+    Matx<typename DataType<_Tp>::channel_type, m, n> res = this->Mat::operator Matx<typename DataType<_Tp>::channel_type, m, n>();
+    return res;
 }
 
 template<typename T1, typename T2, typename Op> inline void
@@ -2263,10 +2265,10 @@ template<typename _Tp> inline const _Tp& SparseMat::value(const Node* n) const
 { return *(const _Tp*)((const uchar*)n + hdr->valueOffset); }
 
 inline SparseMat::Node* SparseMat::node(size_t nidx)
-{ return (Node*)&hdr->pool[nidx]; }
+{ return (Node*)(void*)&hdr->pool[nidx]; }
 
 inline const SparseMat::Node* SparseMat::node(size_t nidx) const
-{ return (const Node*)&hdr->pool[nidx]; }
+{ return (const Node*)(void*)&hdr->pool[nidx]; }
 
 inline SparseMatIterator SparseMat::begin()
 { return SparseMatIterator(this); }
@@ -2327,7 +2329,7 @@ template<typename _Tp> inline const _Tp& SparseMatConstIterator::value() const
 inline const SparseMat::Node* SparseMatConstIterator::node() const
 {
     return ptr && m && m->hdr ?
-        (const SparseMat::Node*)(ptr - m->hdr->valueOffset) : 0;
+        (const SparseMat::Node*)(void*)(ptr - m->hdr->valueOffset) : 0;
 }
 
 inline SparseMatConstIterator SparseMatConstIterator::operator ++(int)
@@ -2399,7 +2401,7 @@ template<typename _Tp> inline SparseMat_<_Tp>::SparseMat_(const SparseMat& m)
     if( m.type() == DataType<_Tp>::type )
         *this = (const SparseMat_<_Tp>&)m;
     else
-        m.convertTo(this, DataType<_Tp>::type);
+        m.convertTo(*this, DataType<_Tp>::type);
 }
 
 template<typename _Tp> inline SparseMat_<_Tp>::SparseMat_(const SparseMat_<_Tp>& m)
