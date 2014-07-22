@@ -1,21 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLM", "exe\SimpleCLM\SimpleCLM_vs2012.vcxproj", "{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLM_vs2012", "exe\SimpleCLM\SimpleCLM_vs2012.vcxproj", "{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLMImg", "exe\SimpleCLMImg\SimpleCLMImg_vs2012.vcxproj", "{DDC3535E-526C-44EC-9DF4-739E2D3A323B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLMImg_vs2012", "exe\SimpleCLMImg\SimpleCLMImg_vs2012.vcxproj", "{DDC3535E-526C-44EC-9DF4-739E2D3A323B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLM", "lib\local\CLM\CLM_vs2012.vcxproj", "{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recording", "exe\Recording\Recording_vs2012.vcxproj", "{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recording_vs2012", "exe\Recording\Recording_vs2012.vcxproj", "{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05BD3423-2A81-44E5-B599-C42D94E95B76}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiTrackCLM", "exe\MultiTrackCLM\MultiTrackCLM_vs2012.vcxproj", "{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puppets", "lib\local\Puppets\Puppets_vs2012.vcxproj", "{FF1E8D3E-467C-47AC-B586-A3CB462003CF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimplePuppets", "exe\SimplePuppets\SimplePuppets_vs2012.vcxproj", "{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiTrackCLM_vs2012", "exe\MultiTrackCLM\MultiTrackCLM_vs2012.vcxproj", "{C3FAF36F-44BC-4454-87C2-C5106575FE50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,20 +35,15 @@ Global
 		{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}.Debug|Win32.Build.0 = Debug|Win32
 		{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}.Release|Win32.ActiveCfg = Release|Win32
 		{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}.Release|Win32.Build.0 = Release|Win32
-		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Debug|Win32.Build.0 = Debug|Win32
-		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Release|Win32.ActiveCfg = Release|Win32
-		{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}.Release|Win32.Build.0 = Release|Win32
-		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Debug|Win32.Build.0 = Debug|Win32
-		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Release|Win32.ActiveCfg = Release|Win32
-		{FF1E8D3E-467C-47AC-B586-A3CB462003CF}.Release|Win32.Build.0 = Release|Win32
-		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Debug|Win32.Build.0 = Debug|Win32
-		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Release|Win32.ActiveCfg = Release|Win32
-		{EB2E9F4A-9E99-4574-8F2D-7DF9C93C01CA}.Release|Win32.Build.0 = Release|Win32
+		{C3FAF36F-44BC-4454-87C2-C5106575FE50}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C3FAF36F-44BC-4454-87C2-C5106575FE50}.Debug|Win32.Build.0 = Debug|Win32
+		{C3FAF36F-44BC-4454-87C2-C5106575FE50}.Release|Win32.ActiveCfg = Release|Win32
+		{C3FAF36F-44BC-4454-87C2-C5106575FE50}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

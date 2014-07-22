@@ -11,18 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CDE9BD80-83BF-4184-A6A1-17E1610C1D7D}</ProjectGuid>
-    <RootNamespace>MultiTrackCLM</RootNamespace>
+    <ProjectGuid>{C3FAF36F-44BC-4454-87C2-C5106575FE50}</ProjectGuid>
+    <RootNamespace>MultiTrackCLM_vs2012</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -31,13 +33,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\lib\3rdParty\boost\boost _d.props" />
-    <Import Project="..\..\lib\3rdParty\OpenCV\openCVd.props" />
+    <Import Project="..\..\lib\3rdParty\boost\boost_vs2012d.props" />
+    <Import Project="..\..\lib\3rdParty\OpenCV\openCVd_vs2012.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\lib\3rdParty\boost\boost.props" />
-    <Import Project="..\..\lib\3rdParty\OpenCV\openCV.props" />
+    <Import Project="..\..\lib\3rdParty\boost\boost_vs2012.props" />
+    <Import Project="..\..\lib\3rdParty\OpenCV\openCV_vs2012.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -45,7 +47,6 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\lib\local\CLM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -69,7 +70,7 @@
     <ClCompile Include="MultiTrackCLM.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\local\CLM\CLM.vcxproj">
+    <ProjectReference Include="..\..\lib\local\CLM\CLM_vs2012.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>
   </ItemGroup>

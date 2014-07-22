@@ -213,3 +213,15 @@ Release/opencv_stitching249.dll
 Release/opencv_superres249.dll
 Release/opencv_video249.dll
 Release/opencv_videostab249.dll
+*.psess
+*.pdb
+Debug/Recording_vs2012.exe
+Debug/Recording_vs2012.ilk
+Debug/SimpleCLMImg_vs2012.exe
+Debug/SimpleCLMImg_vs2012.ilk
+Debug/SimpleCLM_vs2012.exe
+Debug/SimpleCLM_vs2012.ilk
+Release/MultiTrackCLM_vs2012.exe
+Release/Recording_vs2012.exe
+Release/SimpleCLMImg_vs2012.exe
+Release/SimpleCLM_vs2012.exe
