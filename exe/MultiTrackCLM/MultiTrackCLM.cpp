@@ -115,8 +115,9 @@ int main (int argc, char **argv)
 	int num_faces_max = 3;
 
 	CLMTracker::CLM clm_model(clm_parameters.model_location);
-	clm_model.face_detector = CascadeClassifier(clm_parameters.face_detector_location);
-
+	clm_model.face_detector.load(clm_parameters.face_detector_location);
+	clm_model.face_detector_location = clm_parameters.face_detector_location;
+	
 	clm_models.push_back(clm_model);
 	active_models.push_back(false);
 

@@ -97,6 +97,7 @@ public:
 
 	// Haar cascade classifier for face detection
 	CascadeClassifier face_detector;
+	string			  face_detector_location;
 
 	// Validate if the detected landmarks are correct using an SVR regressor
 	DetectionValidator	landmark_validator; 
@@ -142,7 +143,7 @@ public:
 	
 	// Copy constructor (none of the member share memory, it is all allocated anew)
 	CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
-		landmark_likelihoods(other.landmark_likelihoods.clone()), face_detector(other.face_detector), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator)
+		landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
 	{
 		this->detection_success = other.detection_success;
 		this->tracking_initialised = other.tracking_initialised;
@@ -150,6 +151,11 @@ public:
 		this->model_likelihood = other.model_likelihood;
 		this->failures_in_a_row = other.failures_in_a_row;
 
+		// Load the CascadeClassifier
+		if(!face_detector_location.empty())
+		{
+			this->face_detector.load(face_detector_location);
+		}
 		// Make sure the matrices are allocated properly
 		this->triangulations.resize(other.triangulations.size());
 		for(size_t i = 0; i < other.triangulations.size(); ++i)

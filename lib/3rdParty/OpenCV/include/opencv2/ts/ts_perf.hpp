@@ -209,6 +209,7 @@ private:
 #define SANITY_CHECK(array, ...) ::perf::Regression::add(this, #array, array , ## __VA_ARGS__)
 #define SANITY_CHECK_KEYPOINTS(array, ...) ::perf::Regression::addKeypoints(this, #array, array , ## __VA_ARGS__)
 #define SANITY_CHECK_MATCHES(array, ...) ::perf::Regression::addMatches(this, #array, array , ## __VA_ARGS__)
+#define SANITY_CHECK_NOTHING() this->setVerified()
 
 class CV_EXPORTS GpuPerf
 {
@@ -242,11 +243,23 @@ typedef struct CV_EXPORTS performance_metrics
         TERM_TIME = 1,
         TERM_INTERRUPT = 2,
         TERM_EXCEPTION = 3,
+        TERM_SKIP_TEST = 4, // there are some limitations and test should be skipped
         TERM_UNKNOWN = -1
     };
 
     performance_metrics();
+    void clear();
 } performance_metrics;
+
+
+/*****************************************************************************************\
+*                           Strategy for performance measuring                            *
+\*****************************************************************************************/
+enum PERF_STRATEGY
+{
+    PERF_STRATEGY_BASE = 0,
+    PERF_STRATEGY_SIMPLE = 1
+};
 
 
 /*****************************************************************************************\
@@ -263,6 +276,11 @@ public:
     static void RecordRunParameters();
     static std::string getDataPath(const std::string& relativePath);
     static std::string getSelectedImpl();
+
+    static enum PERF_STRATEGY getPerformanceStrategy();
+    static enum PERF_STRATEGY setPerformanceStrategy(enum PERF_STRATEGY strategy);
+
+    class PerfSkipTestException: public cv::Exception {};
 
 protected:
     virtual void PerfTestBody() = 0;
@@ -345,12 +363,13 @@ private:
         friend class TestBase;
     };
     friend class _declareHelper;
-    friend class Regression;
 
     bool verified;
 
 public:
     _declareHelper declare;
+
+    void setVerified() { this->verified = true; }
 };
 
 template<typename T> class TestBaseWithParam: public TestBase, public ::testing::WithParamInterface<T> {};
@@ -475,16 +494,25 @@ CV_EXPORTS void PrintTo(const Size& sz, ::std::ostream* os);
     INSTANTIATE_TEST_CASE_P(/*none*/, fixture##_##name, params);\
     void fixture##_##name::PerfTestBody()
 
+#ifndef __CV_TEST_EXEC_ARGS
+#if defined(_MSC_VER) && (_MSC_VER <= 1400)
+#define __CV_TEST_EXEC_ARGS(...)    \
+    while (++argc >= (--argc,-1)) {__VA_ARGS__; break;} /*this ugly construction is needed for VS 2005*/
+#else
+#define __CV_TEST_EXEC_ARGS(...)    \
+    __VA_ARGS__;
+#endif
+#endif
 
-#define CV_PERF_TEST_MAIN_INTERNALS(modulename, impls, ...) \
-    while (++argc >= (--argc,-1)) {__VA_ARGS__; break;} /*this ugly construction is needed for VS 2005*/\
-    ::perf::Regression::Init(#modulename);\
-    ::perf::TestBase::Init(std::vector<std::string>(impls, impls + sizeof impls / sizeof *impls),\
-                           argc, argv);\
-    ::testing::InitGoogleTest(&argc, argv);\
-    cvtest::printVersionInfo();\
-    ::testing::Test::RecordProperty("cv_module_name", #modulename);\
-    ::perf::TestBase::RecordRunParameters();\
+#define CV_PERF_TEST_MAIN_INTERNALS(modulename, impls, ...)	\
+    ::perf::Regression::Init(#modulename); \
+    ::perf::TestBase::Init(std::vector<std::string>(impls, impls + sizeof impls / sizeof *impls), \
+                           argc, argv); \
+    ::testing::InitGoogleTest(&argc, argv); \
+    cvtest::printVersionInfo(); \
+    ::testing::Test::RecordProperty("cv_module_name", #modulename); \
+    ::perf::TestBase::RecordRunParameters(); \
+    __CV_TEST_EXEC_ARGS(__VA_ARGS__) \
     return RUN_ALL_TESTS();
 
 // impls must be an array, not a pointer; "plain" should always be one of the implementations

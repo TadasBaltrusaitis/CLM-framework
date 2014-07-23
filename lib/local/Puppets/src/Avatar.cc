@@ -16,7 +16,6 @@
 #include <cv.h>
 
 #include <highgui.h>
-#include <imgproc.hpp>
 
 bool DISPLAYHISTOGRAMS = false;			//set to 'true' to display three histograms from the CompensateColour operation
 bool KIOSKMODE = false;

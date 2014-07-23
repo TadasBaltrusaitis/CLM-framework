@@ -137,7 +137,7 @@
 #ifndef CV_INLINE
 #  if defined __cplusplus
 #    define CV_INLINE inline
-#  elif (defined WIN32 || defined _WIN32 || defined WINCE) && !defined __GNUC__
+#  elif defined _MSC_VER
 #    define CV_INLINE __inline
 #  else
 #    define CV_INLINE static
@@ -245,7 +245,7 @@ enum {
  CV_StsVecLengthErr=           -28, /* incorrect vector length */
  CV_StsFilterStructContentErr= -29, /* incorr. filter structure content */
  CV_StsKernelStructContentErr= -30, /* incorr. transform kernel content */
- CV_StsFilterOffsetErr=        -31, /* incorrect filter ofset value */
+ CV_StsFilterOffsetErr=        -31, /* incorrect filter offset value */
  CV_StsBadSize=                -201, /* the input/output structure size is incorrect  */
  CV_StsDivByZero=              -202, /* division by zero */
  CV_StsInplaceNotSupported=    -203, /* in-place operation is not supported */
@@ -264,7 +264,10 @@ enum {
  CV_GpuNotSupported=           -216,
  CV_GpuApiCallError=           -217,
  CV_OpenGlNotSupported=        -218,
- CV_OpenGlApiCallError=        -219
+ CV_OpenGlApiCallError=        -219,
+ CV_OpenCLDoubleNotSupported=  -220,
+ CV_OpenCLInitError=           -221,
+ CV_OpenCLNoAMDBlasFft=        -222
 };
 
 /****************************************************************************************\
@@ -317,7 +320,7 @@ CV_INLINE  int  cvRound( double value )
     return t;
 #elif defined _MSC_VER && defined _M_ARM && defined HAVE_TEGRA_OPTIMIZATION
     TEGRA_ROUND(value);
-#elif defined HAVE_LRINT || defined CV_ICC || defined __GNUC__
+#elif defined CV_ICC || defined __GNUC__
 #  ifdef HAVE_TEGRA_OPTIMIZATION
     TEGRA_ROUND(value);
 #  else
@@ -766,11 +769,11 @@ CV_INLINE  double  cvmGet( const CvMat* mat, int row, int col )
             (unsigned)col < (unsigned)mat->cols );
 
     if( type == CV_32FC1 )
-        return ((float*)(mat->data.ptr + (size_t)mat->step*row))[col];
+        return ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
     else
     {
         assert( type == CV_64FC1 );
-        return ((double*)(mat->data.ptr + (size_t)mat->step*row))[col];
+        return ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
     }
 }
 
@@ -783,11 +786,11 @@ CV_INLINE  void  cvmSet( CvMat* mat, int row, int col, double value )
             (unsigned)col < (unsigned)mat->cols );
 
     if( type == CV_32FC1 )
-        ((float*)(mat->data.ptr + (size_t)mat->step*row))[col] = (float)value;
+        ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = (float)value;
     else
     {
         assert( type == CV_64FC1 );
-        ((double*)(mat->data.ptr + (size_t)mat->step*row))[col] = (double)value;
+        ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = (double)value;
     }
 }
 

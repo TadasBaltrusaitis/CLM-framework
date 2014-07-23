@@ -257,6 +257,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		if(clm_model.face_detector.empty())
 		{
 			clm_model.face_detector.load(params.face_detector_location);
+			clm_model.face_detector_location = params.face_detector_location;
 		}
 
 		bool face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector);
@@ -418,6 +419,7 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	if(clm_model.face_detector.empty())
 	{
 		clm_model.face_detector.load(params.face_detector_location);
+		clm_model.face_detector_location = params.face_detector_location;
 	}
 		
 	// Initialise the face detector

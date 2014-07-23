@@ -38,13 +38,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)lib\3rdParty\OpenCV\openCVd.props" />
+    <Import Project="$(SolutionDir)lib\3rdParty\OpenCV\openCVd_vs2010.props" />
     <Import Project="$(SolutionDir)lib\3rdParty\freeglut\freeglut.props" />
     <Import Project="$(SolutionDir)lib\3rdParty\Eigen\Eigen.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(SolutionDir)lib\3rdParty\OpenCV\openCV.props" />
+    <Import Project="$(SolutionDir)lib\3rdParty\OpenCV\openCV_vs2010.props" />
     <Import Project="$(SolutionDir)lib\3rdParty\freeglut\freeglut.props" />
     <Import Project="$(SolutionDir)lib\3rdParty\Eigen\Eigen.props" />
   </ImportGroup>

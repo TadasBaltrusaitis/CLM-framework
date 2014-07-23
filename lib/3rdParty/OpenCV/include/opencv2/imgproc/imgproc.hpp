@@ -398,6 +398,10 @@ CV_EXPORTS_W void GaussianBlur( InputArray src,
 CV_EXPORTS_W void bilateralFilter( InputArray src, OutputArray dst, int d,
                                    double sigmaColor, double sigmaSpace,
                                    int borderType=BORDER_DEFAULT );
+//! smooths the image using adaptive bilateral filter
+CV_EXPORTS_W void adaptiveBilateralFilter( InputArray src, OutputArray dst, Size ksize,
+                                           double sigmaSpace, double maxSigmaColor = 20.0, Point anchor=Point(-1, -1),
+                                           int borderType=BORDER_DEFAULT );
 //! smooths the image using the box filter. Each pixel is processed in O(1) time
 CV_EXPORTS_W void boxFilter( InputArray src, OutputArray dst, int ddepth,
                              Size ksize, Point anchor=Point(-1,-1),
@@ -478,7 +482,7 @@ CV_EXPORTS_W void HoughLines( InputArray image, OutputArray lines,
                               double rho, double theta, int threshold,
                               double srn=0, double stn=0 );
 
-//! finds line segments in the black-n-white image using probabalistic Hough transform
+//! finds line segments in the black-n-white image using probabilistic Hough transform
 CV_EXPORTS_W void HoughLinesP( InputArray image, OutputArray lines,
                                double rho, double theta, int threshold,
                                double minLineLength=0, double maxLineGap=0 );
@@ -759,20 +763,20 @@ CV_EXPORTS double compareHist( const SparseMat& H1, const SparseMat& H2, int met
 //! normalizes the grayscale image brightness and contrast by normalizing its histogram
 CV_EXPORTS_W void equalizeHist( InputArray src, OutputArray dst );
 
-class CV_EXPORTS CLAHE : public Algorithm
+class CV_EXPORTS_W CLAHE : public Algorithm
 {
 public:
-    virtual void apply(InputArray src, OutputArray dst) = 0;
+    CV_WRAP virtual void apply(InputArray src, OutputArray dst) = 0;
 
-    virtual void setClipLimit(double clipLimit) = 0;
-    virtual double getClipLimit() const = 0;
+    CV_WRAP virtual void setClipLimit(double clipLimit) = 0;
+    CV_WRAP virtual double getClipLimit() const = 0;
 
-    virtual void setTilesGridSize(Size tileGridSize) = 0;
-    virtual Size getTilesGridSize() const = 0;
+    CV_WRAP virtual void setTilesGridSize(Size tileGridSize) = 0;
+    CV_WRAP virtual Size getTilesGridSize() const = 0;
 
-    virtual void collectGarbage() = 0;
+    CV_WRAP virtual void collectGarbage() = 0;
 };
-CV_EXPORTS Ptr<CLAHE> createCLAHE(double clipLimit = 40.0, Size tileGridSize = Size(8, 8));
+CV_EXPORTS_W Ptr<CLAHE> createCLAHE(double clipLimit = 40.0, Size tileGridSize = Size(8, 8));
 
 CV_EXPORTS float EMD( InputArray signature1, InputArray signature2,
                       int distType, InputArray cost=noArray(),
