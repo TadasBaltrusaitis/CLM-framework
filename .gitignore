@@ -225,3 +225,6 @@ Release/MultiTrackCLM_vs2012.exe
 Release/Recording_vs2012.exe
 Release/SimpleCLMImg_vs2012.exe
 Release/SimpleCLM_vs2012.exe
+Debug/Puppets_vs2012.lib
+Debug/SimplePuppets_vs2012.exe
+Debug/SimplePuppets_vs2012.ilk
