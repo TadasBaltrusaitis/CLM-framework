@@ -135,6 +135,11 @@ int main (int argc, char **argv)
 			f_n++;			
 		    current_file = files[f_n];
 		}
+		else
+		{
+			// If we want to write out from webcam
+			f_n = 0;
+		}
 
 		bool use_depth = !depth_directories.empty();	
 
@@ -354,8 +359,8 @@ int main (int argc, char **argv)
 		pose_output_file.close();
 		landmarks_output_file.close();
 
-		// break out of the loop if done with all the files
-		if(f_n == files.size() -1)
+		// break out of the loop if done with all the files (or using a webcam)
+		if(f_n == files.size() -1 || files.empty())
 		{
 			done = true;
 		}

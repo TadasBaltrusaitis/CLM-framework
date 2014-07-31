@@ -105,6 +105,7 @@ run_demo_videos - runs CLNF on some sample videos that come with the code (some 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
 
 	-f <filename> - the video file being input
+	-device <device_num> the webcam from which to read images (default 0)
 	-fd <depth directory/> - the directory where depth files are stored
 
 	optional camera parameters for proper head pose visualisation
