@@ -1112,6 +1112,21 @@ void ReadMat(std::ifstream& stream, Mat &output_mat)
 	}
 }
 
+void ReadMatBin(std::ifstream& stream, Mat &output_mat)
+{
+	// Read in the number of rows, columns and the data type
+	int row, col, type;
+	
+	stream.read ((char*)&row, 4);
+	stream.read ((char*)&col, 4);
+	stream.read ((char*)&type, 4);
+	
+	output_mat = cv::Mat(row, col, type);
+	int size = output_mat.rows * output_mat.cols * output_mat.elemSize();
+	stream.read((char *)output_mat.data, size);
+
+}
+
 // Skipping lines that start with # (together with empty lines)
 void SkipComments(std::ifstream& stream)
 {	

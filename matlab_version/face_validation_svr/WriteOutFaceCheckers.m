@@ -72,5 +72,4 @@ function WriteOutFaceCheckers(locationTxt, locationMlab, faceCheckers)
     
     fclose(faceCheckerFile);
     
-    save(locationMlab, 'faceCheckers');
 end

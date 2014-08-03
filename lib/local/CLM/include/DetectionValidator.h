@@ -63,11 +63,17 @@ class DetectionValidator
 		
 public:    
 	
+	// What type of validator we're using - 0 - linear svr, 1 - feed forward neural net, 2 - convolutional neural net
+	int validator_type;
+
 	// The orientations of each of the landmark detection validator
 	vector<cv::Vec3d> orientations;
 
 	// Piecewise affine warps to the reference shape (per orientation)
 	vector<PAW>     paws;
+
+	//==========================================
+	// Linear SVR
 
 	// SVR biases
 	vector<double>  bs;
@@ -75,6 +81,32 @@ public:
 	// SVR weights
 	vector<Mat_<double> > ws;
 	
+	//==========================================
+	// Neural Network
+
+	// Neural net weights
+	vector<vector<Mat_<double> > > ws_nn;
+
+	// What type of activation or output functions are used
+	// 0 - sigmoid, 1 - tanh_opt, 2 - ReLU
+	vector<int> activation_fun;
+	vector<int> output_fun;
+
+	//==========================================
+	// Convolutional Neural Network
+
+	// CNN layers for each view
+	// view -> layer -> input maps -> kernels
+	vector<vector<vector<vector<Mat_<float> > > > > cnn_convolutional_layers;
+	vector<vector<vector<float > > > cnn_convolutional_layers_bias;
+	vector< vector<int> > cnn_subsampling_layers;
+	vector< vector<Mat_<float> > > cnn_fully_connected_layers;
+	vector< vector<float > > cnn_fully_connected_layers_bias;
+	// 0 - convolutional, 1 - subsampling, 2 - fully connected
+	vector<vector<int> > cnn_layer_types;
+	
+	//==========================================
+
 	// Normalisation for face validation
 	vector<Mat_<double> > mean_images;
 	vector<Mat_<double> > standard_deviations;
@@ -83,14 +115,68 @@ public:
 	DetectionValidator(){;}
 
 	// Copy constructor
-	DetectionValidator(const DetectionValidator& other): orientations(other.orientations), bs(other.bs), paws(other.paws)
+	DetectionValidator(const DetectionValidator& other): orientations(other.orientations), bs(other.bs), paws(other.paws),
+		cnn_subsampling_layers(other.cnn_subsampling_layers),cnn_layer_types(other.cnn_layer_types), cnn_fully_connected_layers_bias(other.cnn_fully_connected_layers_bias),
+		cnn_convolutional_layers_bias(other.cnn_convolutional_layers_bias)
 	{
 	
+		this->validator_type = other.validator_type;
+
+		this->activation_fun = other.activation_fun;
+		this->output_fun = other.output_fun;
+
 		this->ws.resize(other.ws.size());
 		for(size_t i = 0; i < other.ws.size(); ++i)
 		{
 			// Make sure the matrix is copied.
 			this->ws[i] = other.ws[i].clone();
+		}
+
+		this->ws_nn.resize(other.ws_nn.size());
+		for(size_t i = 0; i < other.ws_nn.size(); ++i)
+		{
+			this->ws_nn[i].resize(other.ws_nn[i].size());
+
+			for(size_t k = 0; k < other.ws_nn[i].size(); ++k)
+			{
+				// Make sure the matrix is copied.
+				this->ws_nn[i][k] = other.ws_nn[i][k].clone();
+			}
+		}
+
+		this->cnn_convolutional_layers.resize(other.cnn_convolutional_layers.size());
+		for(size_t v = 0; v < other.cnn_convolutional_layers.size(); ++v)
+		{
+			this->cnn_convolutional_layers[v].resize(other.cnn_convolutional_layers[v].size());
+
+			for(size_t l = 0; l < other.cnn_convolutional_layers[v].size(); ++l)
+			{
+				this->cnn_convolutional_layers[v][l].resize(other.cnn_convolutional_layers[v][l].size());
+
+				for(size_t i = 0; i < other.cnn_convolutional_layers[v][l].size(); ++i)
+				{
+					this->cnn_convolutional_layers[v][l][i].resize(other.cnn_convolutional_layers[v][l][i].size());
+
+					for(size_t k = 0; k < other.cnn_convolutional_layers[v][l][i].size(); ++k)
+					{
+						// Make sure the matrix is copied.
+						this->cnn_convolutional_layers[v][l][i][k] = other.cnn_convolutional_layers[v][l][i][k].clone();
+					}
+					
+				}
+			}
+		}
+
+		this->cnn_fully_connected_layers.resize(other.cnn_fully_connected_layers.size());
+		for(size_t v = 0; v < other.cnn_fully_connected_layers.size(); ++v)
+		{
+			this->cnn_fully_connected_layers[v].resize(other.cnn_fully_connected_layers[v].size());
+
+			for(size_t l = 0; l < other.cnn_fully_connected_layers[v].size(); ++l)
+			{
+				// Make sure the matrix is copied.
+				this->cnn_fully_connected_layers[v][l] = other.cnn_fully_connected_layers[v][l].clone();
+			}
 		}
 
 		this->mean_images.resize(other.mean_images.size());
@@ -117,6 +203,22 @@ public:
 			
 	// Getting the closest view center based on orientation
 	int GetViewId(const cv::Vec3d& orientation) const;
+
+private:
+
+	// The actual regressor application on the image
+
+	// Support Vector Regression (linear kernel)
+	double CheckSVR(const Mat_<double>& warped_img, int view_id);
+
+	// Feed-forward Neural Network
+	double CheckNN(const Mat_<double>& warped_img, int view_id);
+
+	// Convolutional Neural Network
+	double CheckCNN(const Mat_<double>& warped_img, int view_id);
+
+	// A normalisation helper
+	void NormaliseWarpedToVector(const Mat_<double>& warped_img, Mat_<double>& feature_vec, int view_id);
 
 };
 

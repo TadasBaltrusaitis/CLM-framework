@@ -36,7 +36,7 @@ intraface_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds))
 
 [error_x, error_y] = cummErrorCurve(intraface_wild_error);
 
-plot(error_x, error_y, '.-g','DisplayName', 'Intraface [30]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-g','DisplayName', 'SDM [32]', 'LineWidth',line_width);
 
 load('results/zhu_wild.mat');
 labels_all = labels_all(18:end,:,:);
@@ -46,7 +46,7 @@ zhu_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(zhu_wild_error);
 
-plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [25]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [28]', 'LineWidth',line_width);
 
 load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -68,7 +68,7 @@ drmf_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(drmf_error);
 
-plot(error_x, error_y, '-.k','DisplayName', 'DRMF [24]', 'LineWidth',line_width);
+plot(error_x, error_y, '-.k','DisplayName', 'DRMF [27]', 'LineWidth',line_width);
 
 set(gca,'xtick',[0:0.05:0.15])
 xlim([0,0.15]);
@@ -118,7 +118,7 @@ intraface_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds))
 
 [error_x, error_y] = cummErrorCurve(intraface_wild_error);
 
-plot(error_x, error_y, '.-g','DisplayName', 'Intraface [30]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-g','DisplayName', 'SDM [32]', 'LineWidth',line_width);
 
 load('results/zhu_wild.mat');
 labels_all = labels_all(18:end,:,:);
@@ -128,7 +128,7 @@ zhu_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(zhu_wild_error);
 
-plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [25]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [28]', 'LineWidth',line_width);
 
 load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -150,7 +150,7 @@ drmf_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(drmf_error);
 
-plot(error_x, error_y, '-.k','DisplayName', 'DRMF [24]', 'LineWidth',line_width);
+plot(error_x, error_y, '-.k','DisplayName', 'DRMF [27]', 'LineWidth',line_width);
 
 set(gca,'xtick',[0:0.05:0.15])
 xlim([0,0.15]);
@@ -200,7 +200,7 @@ intraface_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds))
 
 [error_x, error_y] = cummErrorCurve(intraface_wild_error);
 
-plot(error_x, error_y, '.-g','DisplayName', 'Intraface [30]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-g','DisplayName', 'SDM [32]', 'LineWidth',line_width);
 
 load('results/zhu_wild.mat');
 labels_all = labels_all(18:end,:,:);
@@ -210,7 +210,7 @@ zhu_wild_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(zhu_wild_error);
 
-plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [25]', 'LineWidth',line_width);
+plot(error_x, error_y, '.-c','DisplayName', 'Tree based (p204) [28]', 'LineWidth',line_width);
 
 load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -232,7 +232,7 @@ drmf_error = compute_error(labels_all(:,:,inds), shapes_all(:,:,inds));
 
 [error_x, error_y] = cummErrorCurve(drmf_error);
 
-plot(error_x, error_y, '-.k','DisplayName', 'DRMF [24]', 'LineWidth',line_width);
+plot(error_x, error_y, '-.k','DisplayName', 'DRMF [27]', 'LineWidth',line_width);
 
 set(gca,'xtick',[0:0.05:0.15])
 xlim([0,0.15]);

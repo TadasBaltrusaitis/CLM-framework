@@ -5,7 +5,7 @@ load '../models/tri_68.mat';
 
 % This script uses the same format used for patch expert training, and
 % expects the data to be there
-dataset_loc = '../../../CCNF experiments/clnf/patch_training/data_preparation/prepared_data/';
+dataset_loc = 'C:/Users/Tadas/Documents/CCNF/patch_experts/data_preparation/prepared_data/';
 addpath('../PDM_helpers/');
 
 scale = '0.5';
@@ -41,18 +41,18 @@ for i=1:numel(data_files)
     
 end
         
-outputLocation = './prep_data/';
+outputLocation = 'F:/datasets/detection_validation/prep_data/';
     
 num_more_neg = 10;
 
 % Make sure same data generated all the time
 rng(0);
 
-neg_image_loc = './neg/';
+neg_image_loc = 'F:/datasets/detection_validation/neg/';
 
 neg_images = cat(1,dir([neg_image_loc, '/*.jpg']),dir([neg_image_loc, '/*.png']));
 
-max_img_used = 1500;
+max_img_used = 2500;
 
 % do it separately for centers due to memory limitations
 for r=1:size(centres_all,1)
@@ -172,6 +172,7 @@ for r=1:size(centres_all,1)
         curr_filled = curr_filled + 1;        
         [features] = ExtractFaceFeatures(img, labels, triangulation, triX, mask, alphas, betas, nPix, minX, minY);
         examples(curr_filled,:) = features;
+        errors(curr_filled,:) = 0;
         
         % Extract the correct PDM parameters for the model (we will perturb
         % them for some negative examples)
