@@ -101,6 +101,7 @@ void DetectionValidator::Read(string location)
 		else if(validator_type == 2)
 		{
 			cnn_convolutional_layers.resize(n);
+			cnn_convolutional_layers_dft.resize(n);
 			cnn_subsampling_layers.resize(n);
 			cnn_fully_connected_layers.resize(n);
 			cnn_layer_types.resize(n);
@@ -180,8 +181,11 @@ void DetectionValidator::Read(string location)
 						detection_validator_stream.read ((char*)&num_kernels, 4);
 
 						vector<vector<Mat_<float> > > kernels;
+						vector<vector<pair<int, Mat_<double> > > > kernel_dfts;
+
 						kernels.resize(num_in_maps);
-						
+						kernel_dfts.resize(num_in_maps);
+
 						vector<float> biases;
 						for (int k = 0; k < num_kernels; ++k)
 						{
@@ -196,15 +200,20 @@ void DetectionValidator::Read(string location)
 						for (int in = 0; in < num_in_maps; ++in)
 						{
 							kernels[in].resize(num_kernels);
+							kernel_dfts[in].resize(num_kernels);
 
 							// For every kernel on that input map
 							for (int k = 0; k < num_kernels; ++k)
 							{
-								ReadMatBin(detection_validator_stream, kernels[in][k]);							
+								ReadMatBin(detection_validator_stream, kernels[in][k]);				
+								
+								// Flip the kernel in order to do convolution and not correlation
+								cv::flip(kernels[in][k], kernels[in][k], -1);
 							}
 						}
 
 						cnn_convolutional_layers[i].push_back(kernels);
+						cnn_convolutional_layers_dft[i].push_back(kernel_dfts);
 					}
 					else if(layer_type == 1)
 					{
@@ -371,13 +380,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		}
 	}
 	img = img.t();
-
-	// TODO rem
-	//Mat disp;
-	//cv::normalize(img, disp, 0, 255, NORM_MINMAX, CV_8UC1);
-	//imshow("test", disp);
-	//cv::waitKey(0);
-
+	
 	int cnn_layer = 0;
 	int subsample_layer = 0;
 	int fully_connected_layer = 0;
@@ -397,22 +400,37 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		if(layer_type == 0)
 		{
 			vector<Mat_<float> > outputs_kern;
-			for(int in = 0; in < input_maps.size(); ++in)
+			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
-				Mat_<double> in_map = input_maps[in];
-				Mat_<float> input_image;
-				in_map.convertTo(input_image, CV_32F);
-				for(int k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][in].size(); ++k)
-				{
-					Mat_<float> kernel = cnn_convolutional_layers[view_id][cnn_layer][in][k].clone();
-					
-					// Flip the kernel in order to do convolution and not correlation
-					cv::flip(kernel, kernel, -1);
+				Mat_<float> input_image = input_maps[in];
 
-					// The convolution
+				// Useful precomputed data placeholders for quick correlation (convolution)
+				Mat_<double> input_image_dft;
+				Mat integral_image;
+				Mat integral_image_sq;
+
+				for(size_t k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][in].size(); ++k)
+				{
+					// TODO this can be made much more efficient 
+					Mat_<float> kernel = cnn_convolutional_layers[view_id][cnn_layer][in][k];					
+										
+					// The convolution (with precomputation)
 					Mat_<float> output;
-					cv::matchTemplate(input_image, kernel, output, CV_TM_CCORR);
-	
+					if(cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second.empty())
+					{
+						std::map<int, Mat_<double> > precomputed_dft;
+						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel, precomputed_dft, output, CV_TM_CCORR);
+
+						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first = precomputed_dft.begin()->first;
+						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second = precomputed_dft.begin()->second;
+					}
+					else
+					{
+						std::map<int, Mat_<double> > precomputed_dft;
+						precomputed_dft[cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first] = cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second;
+						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);
+					}
+
 					// Combining the maps
 					if(in == 0)
 					{
@@ -428,7 +446,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 			}
 			
 			outputs.clear();
-			for(int k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][0].size(); ++k)
+			for(size_t k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][0].size(); ++k)
 			{
 				// Apply the sigmoid
 				cv::exp(-outputs_kern[k] - cnn_convolutional_layers_bias[view_id][cnn_layer][k], outputs_kern[k]);
@@ -436,8 +454,6 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 
 				outputs.push_back(outputs_kern[k]);
 
-				//TODO rem
-				//cout << outputs_kern[k] << endl;
 			}			
 
 			cnn_layer++;
@@ -452,7 +468,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 			//cout << filter;
 
 			vector<Mat_<float>> outputs_sub;
-			for(int in = 0; in < input_maps.size(); ++in)
+			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
 				// TODO attempt pyr down here instead
 
@@ -480,10 +496,6 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					}
 				}
 				outputs_sub.push_back(sub_out);
-				// TODO rem
-				//cout << sub_out << endl;
-				//for
-				//outputs
 			}
 			outputs = outputs_sub;
 			subsample_layer++;
@@ -495,22 +507,19 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 			Mat_<float> input_concat = input_maps[0].t();
 			input_concat = input_concat.reshape(0, 1);
 
-			for(int in = 1; in < input_maps.size(); ++in)
+			for(size_t in = 1; in < input_maps.size(); ++in)
 			{
 				Mat_<float> add = input_maps[in].t();
 				add = add.reshape(0,1);
 				cv::hconcat(input_concat, add, input_concat);
 			}
 			
-			//cout << input_concat << endl;
 			
 			input_concat = input_concat * cnn_fully_connected_layers[view_id][fully_connected_layer].t();
 
 			cv::exp(-input_concat - cnn_fully_connected_layers_bias[view_id][fully_connected_layer], input_concat);
 			input_concat = 1.0 /(1.0 + input_concat);		
 
-			//cout << input_concat << endl;
-			
 			outputs.clear();
 			outputs.push_back(input_concat);
 
@@ -518,39 +527,6 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		}
 		// Set the outputs of this layer to inputs of the next
 		input_maps = outputs;
-
-		// Apply the weights
-		//feature_vec = feature_vec * ws_nn[view_id][layer];
-
-		//// Activation or output
-		//int fun_type;
-		//if(layer != ws_nn[view_id].size() - 1)
-		//{
-		//	fun_type = activation_fun[view_id];
-		//}
-		//else
-		//{
-		//	fun_type = output_fun[view_id];
-		//}
-
-		//if(fun_type == 0)
-		//{
-		//	cv::exp(-feature_vec, feature_vec);
-		//	feature_vec = 1.0 /(1.0 + feature_vec);		
-		//}
-		//else if(fun_type == 1)
-		//{
-		//	MatIterator_<double> q1 = feature_vec.begin(); // respone for each pixel
-		//	MatIterator_<double> q2 = feature_vec.end();
-
-		//	// the logistic function (sigmoid) applied to the response
-		//	while(q1 != q2)
-		//	{
-		//		*q1 = 1.7159 * tanh((2.0/3.0) * (*q1));
-		//		q1++;
-		//	}
-		//}
-		// TODO ReLU
 
 	}
 

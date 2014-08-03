@@ -98,6 +98,8 @@ public:
 	// CNN layers for each view
 	// view -> layer -> input maps -> kernels
 	vector<vector<vector<vector<Mat_<float> > > > > cnn_convolutional_layers;
+	// Bit ugly with so much nesting, but oh well
+	vector<vector<vector<vector<pair<int, Mat_<double> > > > > > cnn_convolutional_layers_dft;
 	vector<vector<vector<float > > > cnn_convolutional_layers_bias;
 	vector< vector<int> > cnn_subsampling_layers;
 	vector< vector<Mat_<float> > > cnn_fully_connected_layers;
@@ -117,7 +119,7 @@ public:
 	// Copy constructor
 	DetectionValidator(const DetectionValidator& other): orientations(other.orientations), bs(other.bs), paws(other.paws),
 		cnn_subsampling_layers(other.cnn_subsampling_layers),cnn_layer_types(other.cnn_layer_types), cnn_fully_connected_layers_bias(other.cnn_fully_connected_layers_bias),
-		cnn_convolutional_layers_bias(other.cnn_convolutional_layers_bias)
+		cnn_convolutional_layers_bias(other.cnn_convolutional_layers_bias), cnn_convolutional_layers_dft(other.cnn_convolutional_layers_dft)
 	{
 	
 		this->validator_type = other.validator_type;
