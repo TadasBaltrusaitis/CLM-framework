@@ -1,4 +1,4 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 and compile the code. The project was built and tested on Visual Studio 2010 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from VisualStudio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps.
+For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps. Finally the Visual Studio 2010 version seems to be slightly faster.
 
 For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt.
 
@@ -105,6 +105,7 @@ run_demo_videos - runs CLNF on some sample videos that come with the code (some 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
 
 	-f <filename> - the video file being input
+	-device <device_num> the webcam from which to read images (default 0)
 	-fd <depth directory/> - the directory where depth files are stored
 
 	optional camera parameters for proper head pose visualisation

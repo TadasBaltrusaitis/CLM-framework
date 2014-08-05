@@ -1,9 +1,9 @@
 Type, mean, median
-err clnf: 0.071158, 0.056394
+err clnf: 0.071156, 0.056394
 err clnf wild: 0.059877, 0.047446
 err svr: 0.080832, 0.062298
-err svr wild: 0.069309, 0.051445
-err clnf no out: 0.055739, 0.042373
-err clnf wild no out: 0.045830, 0.033765
+err svr wild: 0.069306, 0.051445
+err clnf no out: 0.055736, 0.042373
+err clnf wild no out: 0.045828, 0.033765
 err svr no out: 0.065080, 0.047738
-err svr wild no out: 0.055427, 0.039108
+err svr wild no out: 0.055425, 0.039108
