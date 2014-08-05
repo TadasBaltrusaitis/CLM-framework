@@ -465,13 +465,11 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 			int scale = cnn_subsampling_layers[view_id][subsample_layer];
 			
 			Mat_<float> filter(scale, scale, 1.0/(scale*scale));
-			//cout << filter;
-
+			
 			vector<Mat_<float>> outputs_sub;
 			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
-				// TODO attempt pyr down here instead
-
+				// TODO this could be sped up using precomputed dft's
 				Mat_<float> conv_out;
 				cv::matchTemplate(input_maps[in], filter, conv_out, CV_TM_CCORR);
 	
@@ -513,8 +511,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 				add = add.reshape(0,1);
 				cv::hconcat(input_concat, add, input_concat);
 			}
-			
-			
+						
 			input_concat = input_concat * cnn_fully_connected_layers[view_id][fully_connected_layer].t();
 
 			cv::exp(-input_concat - cnn_fully_connected_layers_bias[view_id][fully_connected_layer], input_concat);

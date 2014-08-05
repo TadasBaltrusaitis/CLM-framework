@@ -14,6 +14,10 @@ dists = centres*pi/180 - repmat(global_params(2:4)',size(centres,1),1);
 
 mask_small = cnns(view_id).mask(1:size(cnns(view_id).triX,1), 1:size(cnns(view_id).triX,2));
 
+if(size(cnns(view_id).destination,1) == 66 && size(shape,1) == 68)
+    label_inds = [1:60,62:64,66:68];
+    shape = shape(label_inds,:);
+end
 img_crop = Crop(img, shape, cnns(view_id).triangulation,...
     cnns(view_id).triX, mask_small,...
     cnns(view_id).alphas, cnns(view_id).betas,...

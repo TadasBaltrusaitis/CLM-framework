@@ -21,7 +21,9 @@ for i=1:numel(faceCheckersLoc)
     training_cutoff = round(num_examples * training_ratio);
     
     % Randomise the samples before training
-    examples = examples(randperm(size(examples,1)), :);
+    new_inds = randperm(size(examples,1));
+    examples = examples(new_inds, :);
+    errors = errors(new_inds);
     
     % Extract the mean and standard deviation and normalise by it, the
     % examples have been normalised individually, but this is a global
@@ -76,16 +78,15 @@ for i=1:numel(faceCheckersLoc)
     addpath(genpath('DeepLearnToolbox'));
                
     % This needs to be validated
-    
-    num_kern = [3];
-    alphas_learn = [0.5, 1];
+    num_kern = [2, 3];
+    alphas_learn = [0.5, 0.75, 1];
     
     res = zeros(numel(num_kern), numel(alphas_learn));
     corrs = zeros(numel(num_kern), numel(alphas_learn));
     
     % Set up model options
     opts.batchsize = 50;    
-    opts.numepochs = 75;
+    opts.numepochs = 100;
     
     cnns = cell(numel(num_kern), numel(alphas_learn));
 
@@ -130,8 +131,11 @@ for i=1:numel(faceCheckersLoc)
             cnn.dffW = [];
             
             for l=1:numel(cnn.layers)
-                cnn.layers{1}.a = [];
-            end     
+                cnn.layers{l}.a = [];
+                if(isfield(cnn.layers{l}, 'd'))
+                    cnn.layers{l}.d = [];
+                end
+            end             
             
             cnns(n, a) = {cnn};
         end
@@ -145,22 +149,6 @@ for i=1:numel(faceCheckersLoc)
     fprintf('---------------------------------\n');
     
     cnn = cnns{a, b};
-%     cnn.layers = {
-%         struct('type', 'i') %input layer
-%         struct('type', 'c', 'outputmaps', num_kern(a), 'kernelsize', kernel_1_size) %convolution layer
-%         struct('type', 's', 'scale', 2) %sub sampling layer
-%         struct('type', 'c', 'outputmaps', num_kern(a) * 2, 'kernelsize', kernel_2_size) %convolution layer
-%         struct('type', 's', 'scale', 2) %subsampling layer
-%     };
-% 
-%     cnn = cnnsetup(cnn, examples_r, errors'/3);
-%     cnn = cnntrain(cnn, examples_r, errors'/3, opts);
-% 
-%     cnn = cnnff(cnn, examples_valid);
-%     pred_y = cnn.o';     
-%  
-%     rms_valid = sqrt(mean((labels_valid - pred_y).^2));    
-%     corrs = corr(labels_valid, pred_y); 
     
     face_check_cnns(i).cnn = cnn;
     face_check_cnns(i).destination = shape(:,1:2);    
@@ -183,13 +171,12 @@ face_check_fun = @(img, shape, global_params) face_check_cnn(img, shape, global_
 
 [ predictions, gts, rmse, corr_coeff ] = Test_face_checker(face_check_fun);
 
-locationOut = [root_loc, './trained/face_check_cnn_66.txt'];
-locationOutM = [root_loc, './trained/face_check_cnn_66.mat'];
+locationOut = ['./trained/face_check_cnn_66.txt'];
+locationOutM = ['./trained/face_check_cnn_66.mat'];
 
 save(locationOutM, 'face_check_cnns', 'rmse', 'gts', 'predictions', 'corr_coeff');
 
 WriteOutFaceCheckersCNNbinary(locationOut, face_check_cnns);
-% WriteOutFaceCheckers(locationOut, locationOutM, faceCheckers);
 
 % as a side effect write out a triangulation file as well
-% WriteOutTriangulation('./trained/tris_68.txt', './trained/tris_68.mat', faceCheckers);
+WriteOutTriangulation('./trained/tris_66.txt', './trained/tris_66.mat', face_check_cnns);
