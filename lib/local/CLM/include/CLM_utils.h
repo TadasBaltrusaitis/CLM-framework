@@ -137,6 +137,9 @@ namespace CLMTracker
 	// Matrix reading functionality
 	//============================================================================
 
+	// Reading a matrix written in a binary format
+	void ReadMatBin(std::ifstream& stream, Mat &output_mat);
+
 	// Reading in a matrix from a stream
 	void ReadMat(std::ifstream& stream, Mat& output_matrix);
 

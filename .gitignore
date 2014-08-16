@@ -228,3 +228,4 @@ Release/SimpleCLM_vs2012.exe
 Debug/Puppets_vs2012.lib
 Debug/SimplePuppets_vs2012.exe
 Debug/SimplePuppets_vs2012.ilk
+matlab_version/face_validation_svr/DeepLearnToolbox/data/mnist_uint8.mat
