@@ -461,18 +461,20 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		if(layer_type == 1)
 		{
 			// Subsampling layer
-
 			int scale = cnn_subsampling_layers[view_id][subsample_layer];
 			
-			Mat_<float> filter(scale, scale, 1.0/(scale*scale));
-			
+			Mat kx = Mat::ones(2, 1, CV_32F)*1.0f/scale;
+			Mat ky = Mat::ones(1, 2, CV_32F)*1.0f/scale;
+
 			vector<Mat_<float>> outputs_sub;
 			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
-				// TODO this could be sped up using precomputed dft's
+
 				Mat_<float> conv_out;
-				cv::matchTemplate(input_maps[in], filter, conv_out, CV_TM_CCORR);
-	
+
+				sepFilter2D(input_maps[in], conv_out, CV_32F, kx, ky);
+				conv_out = conv_out(Rect(1, 1, conv_out.cols - 1, conv_out.rows - 1));
+
 				int res_rows = conv_out.rows / scale;
 				int res_cols = conv_out.cols / scale;
 
