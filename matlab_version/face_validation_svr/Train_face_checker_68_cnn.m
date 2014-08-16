@@ -35,6 +35,8 @@ for i=1:numel(faceCheckersLoc)
     mean_ex = mean(examples_train);
     std_ex = std(examples_train);
         
+    examples = bsxfun(@times, bsxfun(@minus, examples, mean_ex), 1./std_ex);
+        
     kernel_1_size = 7;
     kernel_2_size = 5;
         
@@ -75,7 +77,7 @@ for i=1:numel(faceCheckersLoc)
                
     % This needs to be validated
     
-    num_kern = [2, 3];
+    num_kern = [3];
     alphas_learn = [0.5, 0.75, 1];
     
     res = zeros(numel(num_kern), numel(alphas_learn));
