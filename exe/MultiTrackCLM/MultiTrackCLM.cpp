@@ -41,7 +41,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-// SimpleCLM.cpp : Defines the entry point for the console application.
+// MultiTrackCLM.cpp : Defines the entry point for the console application.
 
 #include <CLM.h>
 #include <CLMTracker.h>
@@ -118,15 +118,17 @@ int main (int argc, char **argv)
 	clm_model.face_detector.load(clm_parameters.face_detector_location);
 	clm_model.face_detector_location = clm_parameters.face_detector_location;
 	
+	clm_models.reserve(num_faces_max);
+
 	clm_models.push_back(clm_model);
 	active_models.push_back(false);
 
 	for (int i = 1; i < num_faces_max; ++i)
 	{
-		clm_models.push_back(CLMTracker::CLM(clm_model));
+		clm_models.push_back(clm_model);
 		active_models.push_back(false);
 	}
-
+	
 	// If multiple video files are tracked, use this to indicate if we are done
 	bool done = false;	
 	int f_n = -1;
@@ -258,7 +260,7 @@ int main (int argc, char **argv)
 
 			// Get the detections (every 8th frame for efficiency)
 			if(frame_count % 8 == 0)
-			{
+			{				
 				CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector);				
 			}
 

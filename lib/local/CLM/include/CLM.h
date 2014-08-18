@@ -141,7 +141,7 @@ public:
 		this->Read(fname);
 	}
 	
-	// Copy constructor (none of the member share memory, it is all allocated anew)
+	// Copy constructor (makes a deep copy of CLM)
 	CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
 		landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
 	{
@@ -151,7 +151,7 @@ public:
 		this->model_likelihood = other.model_likelihood;
 		this->failures_in_a_row = other.failures_in_a_row;
 
-		// Load the CascadeClassifier
+		// Load the CascadeClassifier (as it does not have a proper copy constructor)
 		if(!face_detector_location.empty())
 		{
 			this->face_detector.load(face_detector_location);
@@ -171,7 +171,102 @@ public:
 			this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
 		}
 	}
-	
+
+	// Assignment operator for lvalues (makes a deep copy of CLM)
+	CLM & operator= (const CLM& other)
+	{
+		if (this != &other) // protect against invalid self-assignment
+		{
+			pdm = PDM(other.pdm);
+			params_local = other.params_local.clone();
+			params_global = other.params_global;
+			detected_landmarks = other.detected_landmarks.clone();
+		
+			landmark_likelihoods =other.landmark_likelihoods.clone();
+			patch_experts = Patch_experts(other.patch_experts);
+			landmark_validator = DetectionValidator(other.landmark_validator);
+			face_detector_location = other.face_detector_location;
+
+			this->detection_success = other.detection_success;
+			this->tracking_initialised = other.tracking_initialised;
+			this->detection_certainty = other.detection_certainty;
+			this->model_likelihood = other.model_likelihood;
+			this->failures_in_a_row = other.failures_in_a_row;
+
+			// Load the CascadeClassifier (as it does not have a proper copy constructor)
+			if(!face_detector_location.empty())
+			{
+				this->face_detector.load(face_detector_location);
+			}
+			// Make sure the matrices are allocated properly
+			this->triangulations.resize(other.triangulations.size());
+			for(size_t i = 0; i < other.triangulations.size(); ++i)
+			{
+				// Make sure the matrix is copied.
+				this->triangulations[i] = other.triangulations[i].clone();
+			}
+
+			// Make sure the matrices are allocated properly
+			for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+			{
+				// Make sure the matrix is copied.
+				this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
+			}
+		}
+		return *this;
+	}
+	// Empty Destructor	as the memory of every object will be managed by the corresponding libraries (no pointers)
+	~CLM(){}
+
+	// Move constructor
+	CLM(const CLM&& other)
+	{
+		this->detection_success = other.detection_success;
+		this->tracking_initialised = other.tracking_initialised;
+		this->detection_certainty = other.detection_certainty;
+		this->model_likelihood = other.model_likelihood;
+		this->failures_in_a_row = other.failures_in_a_row;
+
+		pdm = other.pdm;
+		params_local = other.params_local;
+		params_global = other.params_global;
+		detected_landmarks = other.detected_landmarks;
+		landmark_likelihoods = other.landmark_likelihoods;
+		patch_experts = other.patch_experts;
+		landmark_validator = other.landmark_validator;
+		face_detector_location = other.face_detector_location;
+
+		face_detector = other.face_detector;
+
+		triangulations = other.triangulations;
+		kde_resp_precalc = other.kde_resp_precalc;
+	}
+
+	// Assignment operator for rvalues
+	CLM & operator= (const CLM&& other)
+	{
+		this->detection_success = other.detection_success;
+		this->tracking_initialised = other.tracking_initialised;
+		this->detection_certainty = other.detection_certainty;
+		this->model_likelihood = other.model_likelihood;
+		this->failures_in_a_row = other.failures_in_a_row;
+
+		pdm = other.pdm;
+		params_local = other.params_local;
+		params_global = other.params_global;
+		detected_landmarks = other.detected_landmarks;
+		landmark_likelihoods = other.landmark_likelihoods;
+		patch_experts = other.patch_experts;
+		landmark_validator = other.landmark_validator;
+		face_detector_location = other.face_detector_location;
+
+		face_detector = other.face_detector;
+
+		triangulations = other.triangulations;
+		kde_resp_precalc = other.kde_resp_precalc;
+		return *this;
+	}
+
 	// Does the actual work - landmark detection
 	bool DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CLMParameters& params);
 	
