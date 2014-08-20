@@ -256,10 +256,10 @@ void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_m
 
 	cv::minMaxIdx(corr_out, NULL, NULL, NULL, max_loc);
 
-	Rect out_bbox(max_loc[1]/scaling + off_x, max_loc[0]/scaling + off_y, clm_model.face_template.rows / scaling, clm_model.face_template.cols / scaling);
+	Rect_<double> out_bbox(max_loc[1]/scaling + off_x, max_loc[0]/scaling + off_y, clm_model.face_template.rows / scaling, clm_model.face_template.cols / scaling);
 
-	double shift_x = out_bbox.x - init_box.x;
-	double shift_y = out_bbox.y - init_box.y;
+	double shift_x = out_bbox.x - (double)init_box.x;
+	double shift_y = out_bbox.y - (double)init_box.y;
 			
 	clm_model.params_global[4] = clm_model.params_global[4] + shift_x;
 	clm_model.params_global[5] = clm_model.params_global[5] + shift_y;

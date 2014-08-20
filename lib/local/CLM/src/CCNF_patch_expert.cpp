@@ -109,12 +109,15 @@ void CCNF_neuron::Read(ifstream &stream)
 {
 	// Sanity check
 	int read_type;
-	stream >> read_type;
+	stream.read ((char*)&read_type, 4);
 	assert(read_type == 2);
 
-	stream >> neuron_type >> norm_weights >> bias >> alpha;
-	CLMTracker::ReadMat(stream, weights); 
-	weights = weights.t();
+	stream.read ((char*)&neuron_type, 4);
+	stream.read ((char*)&norm_weights, 8);
+	stream.read ((char*)&bias, 8);
+	stream.read ((char*)&alpha, 8);
+	
+	CLMTracker::ReadMatBin(stream, weights); 
 
 }
 
@@ -200,19 +203,22 @@ void CCNF_patch_expert::Read(ifstream &stream, vector<int> window_sizes, vector<
 
 	// Sanity check
 	int read_type;
-	stream >> read_type;		
+
+	stream.read ((char*)&read_type, 4);
 	assert(read_type == 5);
 
 	// the number of neurons for this patch
 	int num_neurons;
-	stream >> width >> height >> num_neurons;
+	stream.read ((char*)&width, 4);
+	stream.read ((char*)&height, 4);
+	stream.read ((char*)&num_neurons, 4);
 
 	if(num_neurons == 0)
 	{
 		// empty patch due to landmark being invisible at that orientation
 	
 		// read an empty int (due to the way things were written out)
-		stream >> num_neurons;
+		stream.read ((char*)&num_neurons, 4);
 		return;
 	}
 
@@ -232,12 +238,12 @@ void CCNF_patch_expert::Read(ifstream &stream, vector<int> window_sizes, vector<
 
 		for (int i=0; i < n_betas;  ++i)
 		{
-			stream >> betas[i];
+			stream.read ((char*)&betas[i], 8);
 		}
 	}	
 
 	// Read the patch confidence
-	stream >> patch_confidence;
+	stream.read ((char*)&patch_confidence, 8);
 
 }
 
