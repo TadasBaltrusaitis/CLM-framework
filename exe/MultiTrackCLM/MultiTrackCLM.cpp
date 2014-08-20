@@ -101,7 +101,8 @@ int main (int argc, char **argv)
     float fx = 600, fy = 600, cx = 0, cy = 0;
 			
 	CLMTracker::CLMParameters clm_parameters(arguments);
-		
+	clm_parameters.use_face_template = true;
+
 	// Get the input output file parameters
 	bool use_camera_plane_pose;
 	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);

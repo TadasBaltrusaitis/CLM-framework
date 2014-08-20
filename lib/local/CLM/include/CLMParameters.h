@@ -83,7 +83,12 @@ struct CLMParameters
 	
 	// Used for the current frame
 	vector<int> window_sizes_current;
+	
+	// How big is the tracking template that helps with large motions TODO
+	double face_template_scale;	
+	bool use_face_template;
 
+	// Where to load the model from
 	string model_location;
 	
 	// this is used for the smooting of response maps (KDE sigma)
@@ -242,6 +247,10 @@ struct CLMParameters
 			window_sizes_init.at(0) = 11;
 			window_sizes_init.at(1) = 9;
 			window_sizes_init.at(2) = 7;
+			
+			face_template_scale = 0.3;
+			// Off by default (as it might lead to some slight inaccuracies in slowly moving faces)
+			use_face_template = false;
 
 			// For first frame use the initialisation
 			window_sizes_current = window_sizes_init;

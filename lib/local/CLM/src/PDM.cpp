@@ -206,6 +206,31 @@ void PDM::CalcParams(Vec6d& out_params_global, const Rect_<double>& bounding_box
 }
 
 //===========================================================================
+// provided the model parameters, compute the bounding box of a face
+// The bounding box describes face from left outline to right outline of the face and chin to eyebrows
+void PDM::CalcBoundingBox(Rect& out_bounding_box, const Vec6d& params_global, const Mat_<double>& params_local)
+{
+	
+	// get the shape instance based on local params
+	Mat_<double> current_shape;
+	CalcShape2D(current_shape, params_local, params_global);
+	
+	// Get the width of expected shape
+	double min_x;
+	double max_x;
+	cv::minMaxLoc(current_shape(Rect(0, 0, 1, this->NumberOfPoints())), &min_x, &max_x);
+
+	double min_y;
+	double max_y;
+	cv::minMaxLoc(current_shape(Rect(0, this->NumberOfPoints(), 1, this->NumberOfPoints())), &min_y, &max_y);
+
+	double width = abs(min_x - max_x);
+	double height = abs(min_y - max_y);
+
+	out_bounding_box = Rect((int)min_x, (int)min_y, (int)width, (int)height);
+}
+
+//===========================================================================
 // Calculate the PDM's Jacobian over rigid parameters (rotation, translation and scaling), the additional input W represents trust for each of the landmarks and is part of Non-Uniform RLMS 
 void PDM::ComputeRigidJacobian(const Mat_<double>& p_local, const Vec6d& params_global, cv::Mat_<double> &Jacob, const Mat_<double> W, cv::Mat_<double> &Jacob_t_w)
 {

@@ -124,9 +124,12 @@ public:
 	double				model_likelihood;
 	Mat_<double>		landmark_likelihoods;
 	
-	// Keeping track of how many frames the tracker has failed in so far
+	// Keeping track of how many frames the tracker has failed in so far when tracking in videos
 	// This is useful for knowing when to initialise and reinitialise tracking
 	int failures_in_a_row;
+
+	// A template of a face that last succeeded with tracking (useful for large motions in video) TODO
+	Mat_<uchar> face_template;
 
 	// A default constructor
 	CLM()
