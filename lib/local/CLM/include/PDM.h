@@ -98,6 +98,9 @@ class PDM{
 		// provided the bounding box of a face and the local parameters (with optional rotation), generates the global parameters that can generate the face with the provided bounding box
 		void CalcParams(Vec6d& out_params_global, const Rect_<double>& bounding_box, const Mat_<double>& params_local, const Vec3d rotation = Vec3d(0.0));
 
+		// provided the model parameters, compute the bounding box of a face
+		void CalcBoundingBox(Rect& out_bounding_box, const Vec6d& params_global, const Mat_<double>& params_local);
+
 		// Helpers for computing Jacobians, and Jacobians with the weight matrix
 		void ComputeRigidJacobian(const Mat_<double>& params_local, const Vec6d& params_global, Mat_<double> &Jacob, const Mat_<double> W, cv::Mat_<double> &Jacob_t_w);
 		void ComputeJacobian(const Mat_<double>& params_local, const Vec6d& params_global, Mat_<double> &Jacobian, const Mat_<double> W, cv::Mat_<double> &Jacob_t_w);

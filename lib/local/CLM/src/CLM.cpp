@@ -248,7 +248,7 @@ void CLM::Reset()
 	params_global = Vec6d(1, 0, 0, 0, 0, 0);
 
 	failures_in_a_row = -1;
-
+	face_template = Mat_<uchar>();
 }
 
 // The main internal landmark detection call (should not be used externally?)

@@ -35,7 +35,7 @@ intraface_wild_error = compute_error(labels_all, shapes_all);
 
 [error_x, error_y] = cummErrorCurve(intraface_wild_error);
 
-plot(error_x, error_y, '.-g','DisplayName', 'Intraface (CVPR 13)', 'LineWidth',line_width);
+plot(error_x, error_y, '.-g','DisplayName', 'SDM (CVPR 13)', 'LineWidth',line_width);
 
 load('results/zhu_wild.mat');
 labels_all = labels_all(18:end,:,:);

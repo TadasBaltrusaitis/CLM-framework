@@ -429,53 +429,41 @@ void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<c
 void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<CCNF_patch_expert> >& patches, double& patchScaling)
 {
 
-	ifstream patchesFile(patchesFileLocation.c_str());
+	ifstream patchesFile(patchesFileLocation.c_str(), ios::in | ios::binary);
 
 	if(patchesFile.is_open())
 	{
-		CLMTracker::SkipComments(patchesFile);
-
-		patchesFile >> patchScaling;
-
-		CLMTracker::SkipComments(patchesFile);
-
+		patchesFile.read ((char*)&patchScaling, 8);
+		
 		int numberViews;		
-
-		patchesFile >> numberViews; 
+		patchesFile.read ((char*)&numberViews, 4);
 
 		// read the visibility
 		centers.resize(numberViews);
 		visibility.resize(numberViews);
   
 		patches.resize(numberViews);
-
-		CLMTracker::SkipComments(patchesFile);
-
+		
 		// centers of each view (which view corresponds to which orientation)
 		for(size_t i = 0; i < centers.size(); i++)
 		{
 			cv::Mat center;
-			CLMTracker::ReadMat(patchesFile, center);	
+			CLMTracker::ReadMatBin(patchesFile, center);	
 			center.copyTo(centers[i]);
 			centers[i] = centers[i] * M_PI / 180.0;
 		}
 
-		CLMTracker::SkipComments(patchesFile);
-
 		// the visibility of points for each of the views (which verts are visible at a specific view
 		for(size_t i = 0; i < visibility.size(); i++)
 		{
-			CLMTracker::ReadMat(patchesFile, visibility[i]);				
+			CLMTracker::ReadMatBin(patchesFile, visibility[i]);				
 		}
 		int numberOfPoints = visibility[0].rows;
-
-		CLMTracker::SkipComments(patchesFile);
 
 		// Read the possible SigmaInvs (without beta), this will be followed by patch reading (this assumes all of them have the same type, and number of betas)
 		int num_win_sizes;
 		int num_sigma_comp;
-		patchesFile >> num_win_sizes;
-		CLMTracker::SkipComments(patchesFile);
+		patchesFile.read ((char*)&num_win_sizes, 4);
 
 		vector<int> windows;
 		windows.resize(num_win_sizes);
@@ -485,16 +473,15 @@ void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vec
 
 		for (int w=0; w < num_win_sizes; ++w)
 		{
-			CLMTracker::SkipComments(patchesFile);
-			patchesFile >> windows[w];			
-			CLMTracker::SkipComments(patchesFile);
-			patchesFile >> num_sigma_comp;
+			patchesFile.read ((char*)&windows[w], 4);
+
+			patchesFile.read ((char*)&num_sigma_comp, 4);
 
 			sigma_components[w].resize(num_sigma_comp);
 
 			for(int s=0; s < num_sigma_comp; ++s)
 			{
-				CLMTracker::ReadMat(patchesFile, sigma_components[w][s]);
+				CLMTracker::ReadMatBin(patchesFile, sigma_components[w][s]);
 			}
 		}
 		
@@ -503,7 +490,6 @@ void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vec
 		// read the patches themselves
 		for(size_t i = 0; i < patches.size(); i++)
 		{
-			CLMTracker::SkipComments(patchesFile);
 			// number of patches for each view
 			patches[i].resize(numberOfPoints);
 			// read in each patch

@@ -210,6 +210,62 @@ Vec6d CLMTracker::GetCorrectedPoseCamera(CLM& clm_model, double fx, double fy, d
 	}
 }
 
+// If landmark detection in video succeeded create a template for use in simple tracking
+void UpdateTemplate(const Mat_<uchar> &grayscale_image, CLM& clm_model)
+{
+	Rect bounding_box;
+	clm_model.pdm.CalcBoundingBox(bounding_box, clm_model.params_global, clm_model.params_local);
+	// Make sure the box is not out of bounds
+	bounding_box = bounding_box & Rect(0, 0, grayscale_image.cols, grayscale_image.rows);
+
+	clm_model.face_template = grayscale_image(bounding_box).clone();
+}
+
+// This method uses basic template matching in order to allow for better tracking of fast moving faces
+void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, const CLMParameters& params)
+{
+	Rect init_box;
+	clm_model.pdm.CalcBoundingBox(init_box, clm_model.params_global, clm_model.params_local);
+
+	Rect roi(init_box.x - init_box.width/2, init_box.y - init_box.height/2, init_box.width * 2, init_box.height * 2);
+	roi = roi & Rect(0, 0, grayscale_image.cols, grayscale_image.rows);			
+
+	int off_x = roi.x;
+	int off_y = roi.y;
+
+	double scaling = params.face_template_scale / clm_model.params_global[0];
+	Mat_<uchar> image;
+	if(scaling < 1)
+	{
+		cv::resize(clm_model.face_template, clm_model.face_template, Size(), scaling, scaling);
+		cv::resize(grayscale_image(roi), image, Size(), scaling, scaling);
+	}
+	else
+	{
+		scaling = 1;
+		image = grayscale_image(roi).clone();
+	}
+		
+	// Resizing the template			
+	Mat corr_out;
+	cv::matchTemplate(image, clm_model.face_template, corr_out, CV_TM_CCOEFF_NORMED);
+
+	// Actually matching it
+	//double min, max;
+	int max_loc[2];
+
+	cv::minMaxIdx(corr_out, NULL, NULL, NULL, max_loc);
+
+	Rect_<double> out_bbox(max_loc[1]/scaling + off_x, max_loc[0]/scaling + off_y, clm_model.face_template.rows / scaling, clm_model.face_template.cols / scaling);
+
+	double shift_x = out_bbox.x - (double)init_box.x;
+	double shift_y = out_bbox.y - (double)init_box.y;
+			
+	clm_model.params_global[4] = clm_model.params_global[4] + shift_x;
+	clm_model.params_global[5] = clm_model.params_global[5] + shift_y;
+	
+}
+
 bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, CLMParameters& params)
 {
 	// First need to decide if the landmarks should be "detected" or "tracked"
@@ -233,6 +289,12 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 			params.window_sizes_current = params.window_sizes_small;
 		}
 
+		// Before the expensive landmark detection step apply a quick template tracking approach TODO parameters
+		if(params.use_face_template && !clm_model.face_template.empty() && clm_model.detection_success)
+		{
+			CorrectGlobalParametersVideo(grayscale_image, clm_model, params);
+		}
+
 		bool track_success = clm_model.DetectLandmarks(grayscale_image, depth_image, params);
 		if(!track_success)
 		{
@@ -242,7 +304,8 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		else
 		{
 			// indicate that tracking is a success
-			clm_model.failures_in_a_row = -1;
+			clm_model.failures_in_a_row = -1;			
+			UpdateTemplate(grayscale_image, clm_model);
 		}
 	}
 
@@ -303,7 +366,8 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 			}
 			else
 			{
-				clm_model.failures_in_a_row = -1;
+				clm_model.failures_in_a_row = -1;				
+				UpdateTemplate(grayscale_image, clm_model);
 				return true;
 			}
 		}

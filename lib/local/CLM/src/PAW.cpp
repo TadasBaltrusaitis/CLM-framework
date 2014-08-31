@@ -132,28 +132,24 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 //===========================================================================
 void PAW::Read(std::ifstream& stream)
 {
-	CLMTracker::SkipComments(stream);
-	stream >> number_of_pixels >> min_x >> min_y;
 
-	CLMTracker::SkipComments(stream);
-	CLMTracker::ReadMat(stream, destination_landmarks);
+	stream.read ((char*)&number_of_pixels, 4);
+	stream.read ((char*)&min_x, 8);
+	stream.read ((char*)&min_y, 8);
 
-	CLMTracker::SkipComments(stream);
-	CLMTracker::ReadMat(stream, triangulation);
+	CLMTracker::ReadMatBin(stream, destination_landmarks);
 
-	CLMTracker::SkipComments(stream);
-	CLMTracker::ReadMat(stream, triangle_id);
+	CLMTracker::ReadMatBin(stream, triangulation);
+
+	CLMTracker::ReadMatBin(stream, triangle_id);
 	
-	cv::Mat tmpMask;
-	CLMTracker::SkipComments(stream);		
-	CLMTracker::ReadMat(stream, tmpMask);	
+	cv::Mat tmpMask;	
+	CLMTracker::ReadMatBin(stream, tmpMask);	
 	tmpMask.convertTo(pixel_mask, CV_8U);	
+	
+	CLMTracker::ReadMatBin(stream, alpha);
 
-	CLMTracker::SkipComments(stream);
-	CLMTracker::ReadMat(stream, alpha);
-
-	CLMTracker::SkipComments(stream);
-	CLMTracker::ReadMat(stream, beta);
+	CLMTracker::ReadMatBin(stream, beta);
 
 	map_x.create(pixel_mask.rows,pixel_mask.cols);
 	map_y.create(pixel_mask.rows,pixel_mask.cols);

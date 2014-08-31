@@ -1,4 +1,4 @@
-This requires cmake, OpenCV 2.4.6 and boost.
+This requires cmake, OpenCV 2.4.6 (or newer) and boost.
 
 Need to do the following:
 
@@ -28,8 +28,8 @@ Need to do the following:
 5. Get Boost: sudo apt-get install libboost1.53-all-dev
 	alternatively: sudo apt-get install libboost-all-dev
 
-6. Make the actual CLM_framework and compile it using
-	cd clm_framework	
+6. Make the actual CLM-framework and compile it using
+	cd CLM-framework	
 	cmake .
 	make
 
@@ -42,6 +42,10 @@ for videos:
 for images:
 	cd bin
 	./SimpleCLMImg -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+
+for multiple faces:
+	cd bin
+	./MultiTrackCLM -f ../videos/multi_face.avi
 
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
