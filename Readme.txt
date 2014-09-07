@@ -36,14 +36,14 @@ The best way to understand how landmark detection is performed in videos or imag
 
 A minimal code example for landmark detection is as follows:
 
-CLMTracker::CLMParameters clm_parameters();
+CLMTracker::CLMParameters clm_parameters;
 CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
 CLMTracker::DetectLandmarksInImage(grayscale_image, Mat_<float>(), clm_model, clm_parameters);
 
 A minimal code example for landmark tracking is as follows:
 
-CLMTracker::CLMParameters clm_parameters();
+CLMTracker::CLMParameters clm_parameters;
 CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
 while(video)
