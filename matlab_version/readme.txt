@@ -25,7 +25,7 @@ Copyright can be found in the copyright.txt
 ./face_detection - Provides utilities for face detection, possible choices between three detectors: Matlab inbuild one, Zhu and Ramanan, and Yu et al.
     ./face_detection_yu - The face detector from Xiang Yu, more details in ./face_detection_yu/README.txt. Only tested on windows machines
     ./face_detection_zhu - The face detector from Zhu and Ramanan, might need to compile it using ./face_detection_yu/face-release1.0-basic/compile.m
-./face_validation_svr - A module for validating face detections (training and inference), it is used for tracking in videos so as to know when reinitialisation is needed
+./face_validation - A module for validating face detections (training and inference), it is used for tracking in videos so as to know when reinitialisation is needed
 ./PDM_helpers - utility functions that deal with PDM fitting, Jacobians and other shape manipulations
 ./bounding_box_mapping - learning the mapping from face detector bounding box to one suitable for landmark detection initialisation
 
