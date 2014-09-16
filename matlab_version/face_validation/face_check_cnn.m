@@ -1,5 +1,5 @@
 function [ decision ] = face_check_cnn( img, shape, global_params, cnns )
-%FACE_CHECK_WILD Summary of this function goes here
+%FACE_CHECK_CNN Summary of this function goes here
 %   Detailed explanation goes here
 
 %%
