@@ -230,3 +230,5 @@ Debug/SimplePuppets_vs2012.exe
 Debug/SimplePuppets_vs2012.ilk
 matlab_version/face_validation_svr/DeepLearnToolbox/data/mnist_uint8.mat
 Release/multi_face_both.avi
+exe/FeatureExtraction/Debug/
+exe/FeatureExtraction/Release/
