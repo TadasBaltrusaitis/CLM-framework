@@ -263,7 +263,7 @@ int main (int argc, char **argv)
 		if(!output_similarity_align_files.empty())
 		{
 			double fps = video_capture.get(CV_CAP_PROP_FPS);
-			output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('D','I','V','X'), fps, Size(sim_size, sim_size), true);
+			output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
 		}
 		
 		// saving the videos
@@ -332,8 +332,6 @@ int main (int argc, char **argv)
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 			}
 
-
-
 			Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
 			Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
@@ -355,7 +353,9 @@ int main (int argc, char **argv)
 			warp_matrix(1,2) = -T(1) + sim_size/2;
 
 			Mat sim_warped_img;
-			cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size));
+			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_CUBIC);
+			cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LINEAR);
+			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
 			cv::imshow("sim_warp", sim_warped_img);
 
 			// Write the similarity normalised output
