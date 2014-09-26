@@ -7,6 +7,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-fdir "../videos/"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-fdir "F:\datasets\ibug_raw/" -clmwild</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiTrackCLM_vs2012", "exe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLM", "lib\local\CLM\CLM_vs2012.vcxproj", "{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlib", "lib\3rdParty\dlib\dlib.vcxproj", "{B47A5F12-2567-44E9-AE49-35763EC82149}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,8 +41,15 @@ Global
 		{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}.Debug|Win32.Build.0 = Debug|Win32
 		{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}.Release|Win32.ActiveCfg = Release|Win32
 		{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}.Release|Win32.Build.0 = Release|Win32
+		{B47A5F12-2567-44E9-AE49-35763EC82149}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B47A5F12-2567-44E9-AE49-35763EC82149}.Debug|Win32.Build.0 = Debug|Win32
+		{B47A5F12-2567-44E9-AE49-35763EC82149}.Release|Win32.ActiveCfg = Release|Win32
+		{B47A5F12-2567-44E9-AE49-35763EC82149}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

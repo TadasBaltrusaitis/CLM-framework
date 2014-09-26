@@ -116,7 +116,7 @@ int main (int argc, char **argv)
 	int num_faces_max = 3;
 
 	CLMTracker::CLM clm_model(clm_parameters.model_location);
-	clm_model.face_detector.load(clm_parameters.face_detector_location);
+	clm_model.face_detector_HAAR.load(clm_parameters.face_detector_location);
 	clm_model.face_detector_location = clm_parameters.face_detector_location;
 	
 	clm_models.reserve(num_faces_max);
@@ -262,7 +262,14 @@ int main (int argc, char **argv)
 			// Get the detections (every 8th frame for efficiency)
 			if(frame_count % 8 == 0)
 			{				
-				CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector);				
+				if(clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				{
+					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);				
+				}
+				else
+				{
+					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG);				
+				}
 			}
 
 			// Go over the model and eliminate detections that are not informative (there already is a tracker there)

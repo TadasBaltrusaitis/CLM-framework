@@ -59,6 +59,10 @@
 
 #include "CLM.h"
 
+// Used for face detection
+#include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/opencv.h>
+
 using namespace std;
 using namespace cv;
 
@@ -132,6 +136,11 @@ namespace CLMTracker
 	bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity);
 	bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, CascadeClassifier& classifier);
 	bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity, CascadeClassifier& classifier);
+
+	// Face detection using HOG-SVM classifier
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences = std::vector<double>());
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, std::vector<double>& confidences = std::vector<double>());
+	bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, double* confidence = 0);
 
 	//============================================================================
 	// Matrix reading functionality

@@ -317,13 +317,21 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		Rect_<double> bounding_box;
 
 		// If the face detector has not been initialised read it in
-		if(clm_model.face_detector.empty())
+		if(clm_model.face_detector_HAAR.empty())
 		{
-			clm_model.face_detector.load(params.face_detector_location);
+			clm_model.face_detector_HAAR.load(params.face_detector_location);
 			clm_model.face_detector_location = params.face_detector_location;
 		}
 
-		bool face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector);
+		bool face_detection_success;
+		if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+		{
+			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG);
+		}
+		else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+		{
+			face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
+		}
 
 		// Attempt to detect landmarks using the detected face (if unseccessful the detection will be ignored)
 		if(face_detection_success)
@@ -480,15 +488,22 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	Rect_<double> bounding_box;
 
 	// If the face detector has not been initialised read it in
-	if(clm_model.face_detector.empty())
+	if(clm_model.face_detector_HAAR.empty())
 	{
-		clm_model.face_detector.load(params.face_detector_location);
+		clm_model.face_detector_HAAR.load(params.face_detector_location);
 		clm_model.face_detector_location = params.face_detector_location;
 	}
 		
-	// Initialise the face detector
-	CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector);
-	
+	// Detect the face first
+	if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+	{
+		CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG);
+	}
+	else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+	{
+		CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
+	}
+
 	return DetectLandmarksInImage(grayscale_image, depth_image, bounding_box, clm_model, params);
 
 }
