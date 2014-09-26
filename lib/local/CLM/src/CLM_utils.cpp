@@ -1115,20 +1115,14 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 		}
 
 		o_region = face_detections[bestIndex];
-		if(confidence != NULL)
-		{
-			confidence = best_confidence;
-		}
+		confidence = best_confidence;
 	}
 	else
 	{
 		// if not detected
 		o_region = Rect_<double>(0,0,0,0);
-		if(confidence != NULL)
-		{
-			// A completely unreliable detection (shouldn't really matter what is returned here)
-			confidence = -2;
-		}
+		// A completely unreliable detection (shouldn't really matter what is returned here)
+		confidence = -2;		
 	}
 	return detect_success;
 }
