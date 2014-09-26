@@ -1,8 +1,8 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps. Finally the Visual Studio 2010 version seems to be slightly faster.
+For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps.
 
-For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt.
+For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt. NOTE the Ubuntu version of dlib face detector seems to be quite slow.
 
-You have to respect boost, Eigen, TBB, and OpenCV licenses.
+You have to respect boost, Eigen, TBB, dlib, and OpenCV licenses.
 
 ---------------------- Copyright information ----------------------
 
@@ -16,8 +16,8 @@ Copyright can be found in the Copyright.txt
 	3rdParty - place for 3rd party libraries
 		boost - prepackaged relevant parts of the boost library
 		Eigen- prepackaged Eigen library used for some matrix computations
-		OpenCV - prepackaged OpenCV 2.4.0 library that is used extensively internally to provide support for basic computer vision functionallity
-
+		OpenCV - prepackaged OpenCV 2.4.9 library that is used extensively internally to provide support for basic computer vision functionallity
+		dlib - a header only dlib library (includes the face detector used for in-the-wild images)
 ./exe - the runner and executables that show how to use the libraries for facial expression and head pose tracking, these best demonstrate how to use the libraries
 	SimpleCLM/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
 	SimpleCLMImg/ - running clm or clm-z on a images, individual or in a folder
@@ -87,7 +87,7 @@ Head Pose:
 
 --------------------------- CLM Matlab runners ---------------------------------
 
-These are provided for recreation of some of the experiments described in the papers and to demonstrate the command line interface.
+These are provided for recreation of some of the experiments described in the papers and to demonstrate the command line interface for Windows.
 
 To run them you will need to change the dataset locations to those on your disc
 
@@ -120,7 +120,7 @@ Parameters for output
 	-of <location of output landmark points file>
 	-ov <location of tracked video>
 
-TODO -cp
+    -cp <1/0, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
 
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
@@ -141,6 +141,9 @@ For more examples of how to run the code, please refer to the Matlab runner code
 ------------ Command line parameters for images (SimpleCLMImg) ----------------
 
 Parameters for input
+
+Flags:
+	-clmwild - specify when the images are more difficult, this makes the landmark detector use a different face detector, and also makes it consider different hypotheses for landmark detection together with an extended search region
 
 Single image analysis:
 	-f <filename> - the image file being input
@@ -172,7 +175,13 @@ Can run these after compiling the code in Release mode.
 
 Just running SimpleCLM.exe or MultiTrackCLM.exe will track either a single face or multiple (in the case of the latter executable) from the webcam connected to the computer.
 
-Basic landmark detection in images. From Matlab run "matlab_runners/run_demo_images.m", alternatively go to Release folder and from command line execute: SimpleCLMImg.exe -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+Basic landmark detection in images. From Matlab run "matlab_runners/run_demo_images.m", alternatively go to Release folder and from command line execute:
+
+SimpleCLMImg.exe -clmwild -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+
+or
+
+SimpleCLMImg.exe -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
 
 Basic landmark tracking in videos. From Matlab run "matlab_runners/run_demo_video.m", alternatively go to Release folder and from command line execute: SimpleCLM.exe -f "../videos/changeLighting.wmv" -f "../videos/0188_03_021_al_pacino.avi" -f "../videos/0217_03_006_alanis_morissette.avi" -f "../videos/0244_03_004_anderson_cooper.avi" -f "../videos/0294_02_004_angelina_jolie.avi" -f "../videos/0417_02_003_bill_clinton.avi" -f "../videos/0490_03_007_bill_gates.avi" -f "../videos/0686_02_003_gloria_estefan.avi" -f "../videos/1034_03_006_jet_li.avi" -f "../videos/1192_01_006_julia_roberts.avi" -f "../videos/1461_01_021_noam_chomsky.avi" -f "../videos/1804_03_006_sylvester_stallone.avi" -f "../videos/1815_01_008_tony_blair.avi" -f "../videos/1869_03_009_victoria_beckham.avi" -f "../videos/1878_01_002_vladimir_putin.avi"
 		
