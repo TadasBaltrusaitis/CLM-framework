@@ -189,7 +189,7 @@ namespace dlib
             std::istream& in 
         );
 
-    private:
+    public:
 
         bool overlaps_any_box (
             const std::vector<rect_detection>& rects,

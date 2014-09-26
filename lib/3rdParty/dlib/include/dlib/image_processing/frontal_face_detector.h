@@ -19,6 +19,10 @@ namespace dlib
         std::istringstream sin(get_serialized_frontal_faces());
         frontal_face_detector detector;
         deserialize(detector, sin);
+		
+		// A corrected overlap threshold that leads to better precision face detection
+		detector.boxes_overlap.overlap_thresh = 0.3;
+
         return detector;
     }
 

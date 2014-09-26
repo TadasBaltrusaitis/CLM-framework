@@ -66,7 +66,7 @@ namespace dlib
             return match_thresh;
         }
 
-    private:
+    public:
         double match_thresh;
         double overlap_thresh;
     };
