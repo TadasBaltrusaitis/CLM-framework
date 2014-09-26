@@ -1089,7 +1089,7 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double* confidence)
+bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence)
 {
 	// The tracker can return multiple faces
 	vector<Rect_<double> > face_detections;
@@ -1117,7 +1117,7 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 		o_region = face_detections[bestIndex];
 		if(confidence != NULL)
 		{
-			*confidence = best_confidence;
+			confidence = best_confidence;
 		}
 	}
 	else
@@ -1127,7 +1127,7 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 		if(confidence != NULL)
 		{
 			// A completely unreliable detection (shouldn't really matter what is returned here)
-			*confidence = -2;
+			confidence = -2;
 		}
 	}
 	return detect_success;

@@ -227,7 +227,8 @@ int main (int argc, char **argv)
 
 			if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
 			{
-				CLMTracker::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog);
+				vector<double> confidences;
+				CLMTracker::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog, confidences);
 			}
 			else
 			{

@@ -326,7 +326,8 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		bool face_detection_success;
 		if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
 		{
-			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG);
+			double confidence;
+			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
 		}
 		else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
 		{
@@ -497,7 +498,8 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	// Detect the face first
 	if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
 	{
-		CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG);
+		double confidence;
+		CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
 	}
 	else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
 	{

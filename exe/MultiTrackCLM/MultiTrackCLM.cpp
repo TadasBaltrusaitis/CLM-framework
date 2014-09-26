@@ -268,7 +268,8 @@ int main (int argc, char **argv)
 				}
 				else
 				{
-					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG);				
+					vector<double> confidences;
+					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
 				}
 			}
 

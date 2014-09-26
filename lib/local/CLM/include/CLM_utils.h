@@ -138,9 +138,9 @@ namespace CLMTracker
 	bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity, CascadeClassifier& classifier);
 
 	// Face detection using HOG-SVM classifier
-	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences = std::vector<double>());
-	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, std::vector<double>& confidences = std::vector<double>());
-	bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, double* confidence = 0);
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences);
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, std::vector<double>& confidences);
+	bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, double& confidence);
 
 	//============================================================================
 	// Matrix reading functionality
