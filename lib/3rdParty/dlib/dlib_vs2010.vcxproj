@@ -98,75 +98,7 @@
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;DLIB_PNG_SUPPORT;DLIB_JPEG_SUPPORT;NDEBUG;DLIB_HAVE_SSE2;DLIB_HAVE_SSE3;DLIB_HAVE_SSE41;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/dlib/..;$(SolutionDir)/dlib/external/libpng;$(SolutionDir)/dlib/external/zlib;$(SolutionDir)/dlib/external/libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)/dlib/..;$(SolutionDir)/dlib/external/libpng;$(SolutionDir)/dlib/external/zlib;$(SolutionDir)/dlib/external/libjpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OutputDirectory>$(IntDir)</OutputDirectory>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-    </Midl>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <CustomBuild Include="F:\dlib\dlib\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule F:/dlib/dlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HF:/dlib/examples -BF:/dlib/examples/build --check-stamp-file F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:/dlib/dlib/CMakeLists.txt;F:\dlib\dlib\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPNG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindZLIB.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindJPEG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForSTDNamespace.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForANSIStreamHeaders.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFileCXX.cmake;F:\dlib\dlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule F:/dlib/dlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HF:/dlib/examples -BF:/dlib/examples/build --check-stamp-file F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:/dlib/dlib/CMakeLists.txt;F:\dlib\dlib\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPNG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindZLIB.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindJPEG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForSTDNamespace.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForANSIStreamHeaders.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFileCXX.cmake;F:\dlib\dlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule F:/dlib/dlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HF:/dlib/examples -BF:/dlib/examples/build --check-stamp-file F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:/dlib/dlib/CMakeLists.txt;F:\dlib\dlib\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPNG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindZLIB.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindJPEG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForSTDNamespace.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForANSIStreamHeaders.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFileCXX.cmake;F:\dlib\dlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule F:/dlib/dlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HF:/dlib/examples -BF:/dlib/examples/build --check-stamp-file F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:/dlib/dlib/CMakeLists.txt;F:\dlib\dlib\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPNG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindZLIB.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindJPEG.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeParseArguments.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForSTDNamespace.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\TestForANSIStreamHeaders.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CheckIncludeFileCXX.cmake;F:\dlib\dlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\dlib\examples\build\dlib_build\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
-    </CustomBuild>
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\base64\base64_kernel_1.cpp" />
     <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\bigint\bigint_kernel_1.cpp" />
