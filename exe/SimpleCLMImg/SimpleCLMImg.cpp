@@ -218,7 +218,7 @@ int main (int argc, char **argv)
 		Mat_<uchar> grayscale_image;		
 		convert_to_grayscale(read_image, grayscale_image);
 					
-		// if no pose defined we just use OpenCV
+		// if no pose defined we just use a face detector
 		if(bounding_boxes.empty())
 		{
 			

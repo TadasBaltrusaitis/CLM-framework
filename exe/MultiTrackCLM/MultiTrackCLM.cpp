@@ -215,6 +215,8 @@ int main (int argc, char **argv)
 		int64 t1,t0 = cv::getTickCount();
 		double fps = 10;
 
+		clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR;
+
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
 		{		
@@ -262,7 +264,7 @@ int main (int argc, char **argv)
 			// Get the detections (every 8th frame for efficiency)
 			if(frame_count % 8 == 0)
 			{				
-				if(clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
 				{
 					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);				
 				}
