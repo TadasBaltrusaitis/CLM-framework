@@ -264,8 +264,8 @@ int main (int argc, char **argv)
 			// Get the detections (every 8th frame for efficiency)
 			if(frame_count % 8 == 0)
 			{				
-				if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
-				{
+				if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HAAR_DETECTOR)
+				{					
 					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);				
 				}
 				else
