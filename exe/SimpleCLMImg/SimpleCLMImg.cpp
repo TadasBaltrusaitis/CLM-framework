@@ -52,6 +52,8 @@
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
+#include <dlib/image_processing/frontal_face_detector.h>
+
 using namespace std;
 using namespace cv;
 
@@ -188,8 +190,9 @@ int main (int argc, char **argv)
 	cout << "Loading the model" << endl;
 	CLMTracker::CLM clm_model(clm_parameters.model_location);
 	cout << "Model loaded" << endl;
-
-	CascadeClassifier classifier(clm_parameters.face_detector_location);
+	
+	CascadeClassifier classifier(clm_parameters.face_detector_location);	
+	dlib::frontal_face_detector face_detector_hog = dlib::get_frontal_face_detector();
 
 	bool visualise = !clm_parameters.quiet_mode;
 
@@ -215,14 +218,22 @@ int main (int argc, char **argv)
 		Mat_<uchar> grayscale_image;		
 		convert_to_grayscale(read_image, grayscale_image);
 					
-		// if no pose defined we just use OpenCV
+		// if no pose defined we just use a face detector
 		if(bounding_boxes.empty())
 		{
 			
 			// Detect faces in an image
 			vector<Rect_<double> > face_detections;
 
-			CLMTracker::DetectFaces(face_detections, grayscale_image, classifier);
+			if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+			{
+				vector<double> confidences;
+				CLMTracker::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog, confidences);
+			}
+			else
+			{
+				CLMTracker::DetectFaces(face_detections, grayscale_image, classifier);
+			}
 
 			// Detect landmarks around detected faces
 

@@ -48,6 +48,10 @@
 #include "DetectionValidator.h"
 #include "CLMParameters.h"
 
+// Used for face detection
+#include <dlib/opencv.h>
+#include <dlib/image_processing/frontal_face_detector.h>
+
 #include <vector>
 #include <cv.h>
 
@@ -96,8 +100,12 @@ public:
 	//==================== Helpers for face detection and landmark detection validation =========================================
 
 	// Haar cascade classifier for face detection
-	CascadeClassifier face_detector;
+	CascadeClassifier face_detector_HAAR;
 	string			  face_detector_location;
+
+	// A HOG SVM-struct based face detector
+	dlib::frontal_face_detector face_detector_HOG;
+
 
 	// Validate if the detected landmarks are correct using an SVR regressor
 	DetectionValidator	landmark_validator; 
@@ -157,7 +165,7 @@ public:
 		// Load the CascadeClassifier (as it does not have a proper copy constructor)
 		if(!face_detector_location.empty())
 		{
-			this->face_detector.load(face_detector_location);
+			this->face_detector_HAAR.load(face_detector_location);
 		}
 		// Make sure the matrices are allocated properly
 		this->triangulations.resize(other.triangulations.size());
@@ -173,6 +181,8 @@ public:
 			// Make sure the matrix is copied.
 			this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
 		}
+
+		this->face_detector_HOG = dlib::get_frontal_face_detector();
 	}
 
 	// Assignment operator for lvalues (makes a deep copy of CLM)
@@ -199,7 +209,7 @@ public:
 			// Load the CascadeClassifier (as it does not have a proper copy constructor)
 			if(!face_detector_location.empty())
 			{
-				this->face_detector.load(face_detector_location);
+				this->face_detector_HAAR.load(face_detector_location);
 			}
 			// Make sure the matrices are allocated properly
 			this->triangulations.resize(other.triangulations.size());
@@ -216,6 +226,9 @@ public:
 				this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
 			}
 		}
+
+		face_detector_HOG = dlib::get_frontal_face_detector();
+
 		return *this;
 	}
 	// Empty Destructor	as the memory of every object will be managed by the corresponding libraries (no pointers)
@@ -239,10 +252,13 @@ public:
 		landmark_validator = other.landmark_validator;
 		face_detector_location = other.face_detector_location;
 
-		face_detector = other.face_detector;
+		face_detector_HAAR = other.face_detector_HAAR;
 
 		triangulations = other.triangulations;
 		kde_resp_precalc = other.kde_resp_precalc;
+
+		face_detector_HOG = dlib::get_frontal_face_detector();
+
 	}
 
 	// Assignment operator for rvalues
@@ -263,10 +279,13 @@ public:
 		landmark_validator = other.landmark_validator;
 		face_detector_location = other.face_detector_location;
 
-		face_detector = other.face_detector;
+		face_detector_HAAR = other.face_detector_HAAR;
 
 		triangulations = other.triangulations;
 		kde_resp_precalc = other.kde_resp_precalc;
+
+		face_detector_HOG = dlib::get_frontal_face_detector();
+
 		return *this;
 	}
 

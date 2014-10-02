@@ -1046,6 +1046,86 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	return detect_success;
 }
 
+bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences)
+{
+	dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
+
+	return DetectFacesHOG(o_regions, intensity, detector, confidences);
+
+}
+
+bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& detector, std::vector<double>& o_confidences)
+{
+		
+	dlib::cv_image<uchar> cv_grayscale(intensity);
+
+	std::vector<dlib::full_detection> face_detections;
+	detector(cv_grayscale, face_detections, -0.2);
+
+	// Convert from int bounding box do a double one with corrections
+	o_regions.resize(face_detections.size());
+	o_confidences.resize(face_detections.size());
+
+	for( size_t face = 0; face < o_regions.size(); ++face)
+	{
+		// CLM expect the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
+
+		// The scalings were learned using the Face Detections on LFPW and Helen using ground truth and detections from the HOG detector
+
+		// Move the face slightly to the right (as the width was made smaller)
+		o_regions[face].x = face_detections[face].rect.get_rect().tl_corner().x() + 0.0389 * face_detections[face].rect.get_rect().width();
+		// Shift face down as OpenCV Haar Cascade detects the forehead as well, and we're not interested
+		o_regions[face].y = face_detections[face].rect.get_rect().tl_corner().y() + 0.1278 * face_detections[face].rect.get_rect().height();
+
+		// Correct for scale
+		o_regions[face].width = face_detections[face].rect.get_rect().width() * 0.9611; 
+		o_regions[face].height = face_detections[face].rect.get_rect().height() * 0.9388;
+
+		o_confidences[face] = face_detections[face].detection_confidence;
+		
+		
+	}
+	return o_regions.size() > 0;
+}
+
+bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence)
+{
+	// The tracker can return multiple faces
+	vector<Rect_<double> > face_detections;
+	vector<double> confidences;
+
+	bool detect_success = CLMTracker::DetectFacesHOG(face_detections, intensity_img, detector, confidences);
+					
+	if(detect_success)
+	{
+		
+		// keep the most confident one
+		double best_confidence = confidences[0];
+		int bestIndex = 0;
+
+		for( size_t i = 1; i < face_detections.size(); ++i)
+		{
+			// Pick a closest face
+			if(confidences[i] > best_confidence)
+			{
+				bestIndex = i;
+				best_confidence = confidences[i];
+			}									
+		}
+
+		o_region = face_detections[bestIndex];
+		confidence = best_confidence;
+	}
+	else
+	{
+		// if not detected
+		o_region = Rect_<double>(0,0,0,0);
+		// A completely unreliable detection (shouldn't really matter what is returned here)
+		confidence = -2;		
+	}
+	return detect_success;
+}
+
 //============================================================================
 // Matrix reading functionality
 //============================================================================

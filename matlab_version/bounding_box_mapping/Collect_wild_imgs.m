@@ -1,10 +1,5 @@
-function [images, detections, labels] = Collect_wild_imgs(root_test_data)
-       
-    use_afw = true;
-    use_lfpw = true;
-    use_helen = true;
-    use_ibug = true;
-    
+function [images, detections, labels] = Collect_wild_imgs(root_test_data, use_afw, use_lfpw, use_helen, use_ibug)
+           
     use_68 = true;           
     
     images = [];

@@ -169,6 +169,12 @@ endif()
 # Eigen
 include_directories(lib/3rdParty/Eigen)
 
+# dlib
+include_directories(lib/3rdParty/dlib/include)
+
+# dlib library
+add_subdirectory(lib/3rdParty/dlib)
+
 # CLM library (ordering matters)
 add_subdirectory(lib/local/CLM)
 

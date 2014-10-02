@@ -7,6 +7,8 @@ include_directories(../../lib/local/CLM/include)
 			
 target_link_libraries(SimpleCLM CLM)
 
+target_link_libraries(SimpleCLM dlib)
+
 if(WIN32)
 	target_link_libraries(SimpleCLM ${OpenCVLibraries})
 endif(WIN32)

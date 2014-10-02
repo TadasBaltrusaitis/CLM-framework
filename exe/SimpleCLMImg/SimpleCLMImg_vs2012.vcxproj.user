@@ -3,10 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-mloc model/main_ccnf_wild.txt  -multi_view 1 -clm_sigma 1.5 -reg 25 -w_reg 5 -fdir "F:/Dropbox/Dropbox/AAM/test data//AFW/" -ofdir "C:\Users\tb346\Documents\CLM-framework\matlab_runners/out_wild_clnf_wild/" -oidir "C:\Users\tb346\Documents\CLM-framework\matlab_runners/out_wild_clnf_wild/"  -clmwild </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

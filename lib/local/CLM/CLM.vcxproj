@@ -34,12 +34,14 @@
     <Import Project="..\..\3rdParty\OpenCV\openCV_vs2010.props" />
     <Import Project="..\..\3rdParty\Eigen\Eigen.props" />
     <Import Project="..\..\3rdParty\boost\boost_vs2010.props" />
+    <Import Project="..\..\3rdParty\dlib\dlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\3rdParty\Eigen\Eigen.props" />
     <Import Project="..\..\3rdParty\boost\boost_vs2010d.props" />
     <Import Project="..\..\3rdParty\OpenCV\openCVd_vs2010.props" />
+    <Import Project="..\..\3rdParty\dlib\dlib.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -118,6 +120,11 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV\classifiers" "$(OutDir)clas
     <ClInclude Include="include\PAW.h" />
     <ClInclude Include="include\PDM.h" />
     <ClInclude Include="include\SVR_patch_expert.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdParty\dlib\dlib_vs2010.vcxproj">
+      <Project>{b47a5f12-2567-44e9-ae49-35763ec82149}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
