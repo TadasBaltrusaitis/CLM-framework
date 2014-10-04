@@ -86,6 +86,37 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
+void NonOverlapingDetections(const vector<CLMTracker::CLM>& clm_models, vector<Rect_<double> >& face_detections)
+{
+
+	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
+	for(size_t model = 0; model < clm_models.size(); ++model)
+	{
+		Mat_<double> xs = clm_models[model].detected_landmarks(Rect(0,0,1,clm_models[model].detected_landmarks.rows/2));
+		Mat_<double> ys = clm_models[model].detected_landmarks(Rect(0,clm_models[model].detected_landmarks.rows/2, 1, clm_models[model].detected_landmarks.rows/2));
+
+		double min_x, max_x;
+		double min_y, max_y;
+		cv::minMaxLoc(xs, &min_x, &max_x);
+		cv::minMaxLoc(ys, &min_y, &max_y);
+
+		// See if the detections intersect
+		Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
+		
+		for(int detection = face_detections.size()-1; detection >=0; --detection)
+		{
+			double intersection_area = (model_rect & face_detections[detection]).area();
+			double union_area = model_rect.area() + face_detections[detection].area() - 2 * intersection_area;
+
+			// If the model is already tracking what we're detecting ignore the detection, this is determined by amount of overlap
+			if( intersection_area/union_area > 0.5)
+			{
+				face_detections.erase(face_detections.begin() + detection);
+			}
+		}
+	}
+}
+
 int main (int argc, char **argv)
 {
 
@@ -100,8 +131,15 @@ int main (int argc, char **argv)
 	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
     float fx = 600, fy = 600, cx = 0, cy = 0;
 			
-	CLMTracker::CLMParameters clm_parameters(arguments);
-	clm_parameters.use_face_template = true;
+	CLMTracker::CLMParameters clm_params(arguments);
+	clm_params.use_face_template = true;	
+	// This is so that the model would not try re-initialising itself
+	clm_params.reinit_video_every = -1;
+
+	clm_params.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR;
+
+	vector<CLMTracker::CLMParameters> clm_parameters;
+	clm_parameters.push_back(clm_params);	
 
 	// Get the input output file parameters
 	bool use_camera_plane_pose;
@@ -115,9 +153,9 @@ int main (int argc, char **argv)
 
 	int num_faces_max = 3;
 
-	CLMTracker::CLM clm_model(clm_parameters.model_location);
-	clm_model.face_detector_HAAR.load(clm_parameters.face_detector_location);
-	clm_model.face_detector_location = clm_parameters.face_detector_location;
+	CLMTracker::CLM clm_model(clm_parameters[0].model_location);
+	clm_model.face_detector_HAAR.load(clm_parameters[0].face_detector_location);
+	clm_model.face_detector_location = clm_parameters[0].face_detector_location;
 	
 	clm_models.reserve(num_faces_max);
 
@@ -128,6 +166,7 @@ int main (int argc, char **argv)
 	{
 		clm_models.push_back(clm_model);
 		active_models.push_back(false);
+		clm_parameters.push_back(clm_params);
 	}
 	
 	// If multiple video files are tracked, use this to indicate if we are done
@@ -140,9 +179,6 @@ int main (int argc, char **argv)
 	{
 		cx_undefined = true;
 	}		
-
-	// This is so that the model would not try re-initialising itself
-	clm_parameters.reinit_video_every = -1;
 	
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -215,7 +251,6 @@ int main (int argc, char **argv)
 		int64 t1,t0 = cv::getTickCount();
 		double fps = 10;
 
-		clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR;
 
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
@@ -257,57 +292,35 @@ int main (int argc, char **argv)
 					WARN_STREAM( "Can't find depth image" );
 				}
 			}
-			bool detection_success = false;
 
-			vector<Rect_<double>> face_detections;
+			vector<Rect_<double> > face_detections;
 
 			// Get the detections (every 8th frame for efficiency)
 			if(frame_count % 8 == 0)
 			{				
-				if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				if(clm_parameters[0].curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
 				{
-					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);				
+					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
 				}
 				else
 				{
 					vector<double> confidences;
 					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
 				}
+
 			}
 
-			// Go over the model and eliminate detections that are not informative (there already is a tracker there)
-			for(size_t model = 0; model < clm_models.size(); ++model)
-			{
-				Mat_<double> xs = clm_models[model].detected_landmarks(Rect(0,0,1,clm_models[model].detected_landmarks.rows/2));
-				Mat_<double> ys = clm_models[model].detected_landmarks(Rect(0,clm_models[model].detected_landmarks.rows/2, 1, clm_models[model].detected_landmarks.rows/2));
+			// Keep only non overlapping detections (also convert to a concurrent vector
+			NonOverlapingDetections(clm_models, face_detections);
 
-				double min_x, max_x;
-				double min_y, max_y;
-				cv::minMaxLoc(xs, &min_x, &max_x);
-				cv::minMaxLoc(ys, &min_y, &max_y);
+			vector<bool> face_detections_used(face_detections.size(), false);
 
-				// See if the detections intersect
-				Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
-
-				//cv::rectangle(disp_image, model_rect, Scalar(0,0,255), 2);
-
-				for(int detection = face_detections.size()-1; detection >=0; --detection)
-				{
-				
-					//cv::rectangle(disp_image, face_detections[detection], Scalar(0,255,0), 2);
-
-					// If the model is already tracking what we're detecting ignore the detection, this is determined by intersection area
-					if((model_rect & face_detections[detection]).area() > 0)
-					{
-						//cv::rectangle(disp_image, face_detections[detection], Scalar(255,0,0), 2);
-						face_detections.erase(face_detections.begin() + detection);
-					}
-				}
-			}
-			
 			// Go through every model
-			for(size_t model = 0; model < clm_models.size(); ++model)
+			for(int model = 0; model < clm_models.size(); ++model)
 			{
+
+				bool detection_success = false;
+
 				// If the current model has failed more than 5 times in a row, remove it
 				if(clm_models[model].failures_in_a_row > 5)
 				{				
@@ -319,33 +332,39 @@ int main (int argc, char **argv)
 				// If the model is inactive reactivate it with new detections
 				if(!active_models[model])
 				{
-					if(face_detections.size() > 0)
+					
+					for(size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
 					{
-						// Reinitialise the model
-						clm_models[model].Reset();
+						// if it was not taken by another tracker take it
+						if(!face_detections_used[detection_ind])
+						{
+							// Reinitialise the model
+							clm_models[model].Reset();
 
-						// This ensures that a wider window is used for the initial landmark localisation
-						clm_models[model].detection_success = false;
-						detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[0], clm_models[model], clm_parameters);
+							// This ensures that a wider window is used for the initial landmark localisation
+							clm_models[model].detection_success = false;
+							detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clm_models[model], clm_parameters[model]);
+													
+							// This activates the model
+							active_models[model] = true;
+							face_detections_used[detection_ind] = true;
 
-						// Visualise the reinitialisation
-						cv::rectangle(disp_image, face_detections[0], Scalar(255,255,0), 2);
-
-						// Remove the face detection as it has been used
-						face_detections.erase(face_detections.begin());
-						
-						// This activates the model
-						active_models[model] = true;
+							// break out of the loop as the tracker has been reinitialised
+							break;
+						}
 
 					}
 				}
 				else
 				{
 					// The actual facial landmark detection / tracking
-					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters);
+					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
 				}
-
-											
+			}
+								
+			// Go through every model
+			for(size_t model = 0; model < clm_models.size(); ++model)
+			{						
 				// Visualising the results
 				// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
 				double detection_certainty = clm_models[model].detection_certainty;
@@ -368,7 +387,7 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy, clm_parameters);
+					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy, clm_parameters[model]);
 					
 					// Draw it in reddish if uncertain, blueish if certain
 					CLMTracker::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
@@ -406,7 +425,7 @@ int main (int argc, char **argv)
 			active_models_st += active_m_C;
 			cv::putText(disp_image, active_models_st, cv::Point(10,60), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
 			
-			if(!clm_parameters.quiet_mode)
+			if(!clm_parameters[0].quiet_mode)
 			{
 				namedWindow("tracking_result",1);		
 				imshow("tracking_result", disp_image);
