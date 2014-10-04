@@ -300,12 +300,12 @@ int main (int argc, char **argv)
 			{				
 				if(clm_parameters[0].curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
 				{
-					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
+					vector<double> confidences;
+					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
 				}
 				else
 				{
-					vector<double> confidences;
-					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
+					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
 				}
 
 			}
