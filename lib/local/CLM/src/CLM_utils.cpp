@@ -78,8 +78,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		if (arguments[i].compare("-root") == 0) 
 		{                    
 			root = arguments[i + 1];
-			valid[i] = false;
-			valid[i+1] = false;			
+			// Do not discard root as it might be used in other later steps
 			i++;
 		}		
 	}
