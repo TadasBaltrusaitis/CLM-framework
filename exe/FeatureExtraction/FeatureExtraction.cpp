@@ -53,6 +53,9 @@
 
 #include <cv.h>
 
+#include <filesystem.hpp>
+#include <filesystem/fstream.hpp>
+
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
 
@@ -87,22 +90,36 @@ vector<string> get_arguments(int argc, char **argv)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, double &similarity_scale, int &similarity_size, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
+	video = false;
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
 		valid[i] = true;
 	}
 
-	string root = "";
+	string input_root = "";
+	string output_root = "";
+
 	// First check if there is a root argument (so that videos and outputs could be defined more easilly)
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
 		if (arguments[i].compare("-root") == 0) 
 		{                    
-			root = arguments[i + 1];
+			input_root = arguments[i + 1];
+			output_root = arguments[i + 1];
+			i++;
+		}
+		if (arguments[i].compare("-inroot") == 0) 
+		{                    
+			input_root = arguments[i + 1];
+			i++;
+		}
+		if (arguments[i].compare("-outroot") == 0) 
+		{                    
+			output_root = arguments[i + 1];
 			i++;
 		}
 	}
@@ -111,11 +128,21 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 	{
 		if (arguments[i].compare("-simalign") == 0) 
 		{                    
-			output_similarity_aligned_files.push_back(root + arguments[i + 1]);
+			output_similarity_aligned_files.push_back(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
 		}		
+		else if(arguments[i].compare("-vid") == 0) 
+		{
+			video = true;
+			valid[i] = false;
+		}
+		else if(arguments[i].compare("-g") == 0) 
+		{
+			grayscale = true;
+			valid[i] = false;
+		}
 		else if (arguments[i].compare("-simscale") == 0) 
 		{                    
 			similarity_scale = stod(arguments[i + 1]);
@@ -178,7 +205,9 @@ int main (int argc, char **argv)
 	vector<string> output_similarity_align_files;
 	double sim_scale = 0.75;
 	int sim_size = 120;
-	get_output_feature_params(output_similarity_align_files, sim_scale, sim_size, arguments);
+	bool video_output;
+	bool grayscale;
+	get_output_feature_params(output_similarity_align_files, sim_scale, sim_size, video_output, grayscale, arguments);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -262,8 +291,26 @@ int main (int argc, char **argv)
 		VideoWriter output_similarity_aligned_video;
 		if(!output_similarity_align_files.empty())
 		{
-			double fps = video_capture.get(CV_CAP_PROP_FPS);
-			output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
+			if(video_output)
+			{
+				double fps = video_capture.get(CV_CAP_PROP_FPS);
+				output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
+			}			
+			else
+			{
+				if(!boost::filesystem::exists(boost::filesystem::path(output_similarity_align_files[f_n])))
+				{
+					bool success = boost::filesystem::create_directory(output_similarity_align_files[f_n]);
+
+					if(!success)
+					{
+						cout << "Failed to create a directory... exiting";
+						cin.get();
+						return 0;
+					}
+				}
+			}
+
 		}
 		
 		// saving the videos
@@ -358,10 +405,33 @@ int main (int argc, char **argv)
 			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
 			cv::imshow("sim_warp", sim_warped_img);
 
-			// Write the similarity normalised output
-			if(output_similarity_aligned_video.isOpened())
+			if(grayscale && sim_warped_img.channels() == 3)
 			{
-				output_similarity_aligned_video << sim_warped_img;
+				cv::cvtColor(sim_warped_img, sim_warped_img, CV_BGR2GRAY);
+			}
+
+			// Write the similarity normalised output
+			if(video_output)
+			{
+				if(output_similarity_aligned_video.isOpened())
+				{
+					output_similarity_aligned_video << sim_warped_img;
+				}
+			}
+			else
+			{
+				char name[100];
+					
+				// output the frame number
+				sprintf(name, "frame_det_%06d.png", frame_count);
+
+				// Construct the output filename
+				boost::filesystem::path slash("/");
+					
+				std::string preferredSlash = slash.make_preferred().string();
+				
+				string out_file = output_similarity_align_files[f_n] + preferredSlash + string(name);
+				imwrite(out_file, sim_warped_img);
 			}
 
 			// Visualising the results
