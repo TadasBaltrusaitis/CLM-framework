@@ -616,6 +616,73 @@ namespace dlib
                 }
             }
         }
+
+        template <
+            typename pyramid_type,
+            typename image_type,
+            typename feature_extractor_type
+            >
+        void create_fhog_pyramid_parallel (
+            const image_type& img,
+            const feature_extractor_type& fe,
+            array<array<array2d<float> > >& feats,
+            int cell_size,
+            int filter_rows_padding,
+            int filter_cols_padding,
+            unsigned long min_pyramid_layer_width,
+            unsigned long min_pyramid_layer_height,
+            unsigned long max_pyramid_levels
+        )
+        {
+            unsigned long levels = 0;
+            rectangle rect = get_rect(img);
+
+            // figure out how many pyramid levels we should be using based on the image size
+            pyramid_type pyr;
+            do
+            {
+                rect = pyr.rect_down(rect);
+                ++levels;
+            } while (rect.width() >= min_pyramid_layer_width && rect.height() >= min_pyramid_layer_height &&
+                levels < max_pyramid_levels);
+
+            if (feats.max_size() < levels)
+                feats.set_max_size(levels);
+            feats.set_size(levels);
+			
+			typedef typename image_traits<image_type>::pixel_type pixel_type;
+			
+			// First create the pyramids
+			array<array2d<pixel_type> > image_pyramid;
+			image_pyramid.set_max_size(levels-1);
+            image_pyramid.set_size(levels-1);
+
+			for(unsigned int pyr_level = 0; pyr_level < levels - 1; ++pyr_level)
+			{
+				array2d<pixel_type> temp;
+				if(pyr_level == 0)
+				{
+					pyr(img, temp);
+				}
+				else
+				{
+					pyr(image_pyramid[pyr_level-1], temp);
+				}
+				swap(temp, image_pyramid[pyr_level]);
+			}
+
+			tbb::parallel_for(0, (int)levels, [&](int pyr_level){
+				if(pyr_level == 0)
+				{
+					fe(img, feats[pyr_level], cell_size,filter_rows_padding,filter_cols_padding);
+				}
+				else
+				{
+					fe(image_pyramid[pyr_level-1], feats[pyr_level], cell_size,filter_rows_padding,filter_cols_padding);
+				}
+			});
+        }
+
     }
 
 // ----------------------------------------------------------------------------------------
@@ -634,9 +701,14 @@ namespace dlib
     {
         unsigned long width, height;
         compute_fhog_window_size(width,height);
-        impl::create_fhog_pyramid<Pyramid_type>(img, fe, feats, cell_size, height,
+        //impl::create_fhog_pyramid<Pyramid_type>(img, fe, feats, cell_size, height,
+        //    width, min_pyramid_layer_width, min_pyramid_layer_height,
+        //    max_pyramid_levels);
+
+		impl::create_fhog_pyramid_parallel<Pyramid_type>(img, fe, feats, cell_size, height,
             width, min_pyramid_layer_width, min_pyramid_layer_height,
             max_pyramid_levels);
+
     }
 
 // ----------------------------------------------------------------------------------------

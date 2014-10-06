@@ -316,7 +316,7 @@ int main (int argc, char **argv)
 			vector<bool> face_detections_used(face_detections.size(), false);
 
 			// Go through every model
-			for(int model = 0; model < clm_models.size(); ++model)
+			for(unsigned int model = 0; model < clm_models.size(); ++model)
 			{
 
 				bool detection_success = false;
