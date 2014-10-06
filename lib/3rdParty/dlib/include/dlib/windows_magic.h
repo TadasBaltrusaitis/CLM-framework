@@ -39,10 +39,10 @@
 
 // This is something stupid you have to do to make visual studio include the right
 // stuff.  I don't really know what the deal is with this.
-#if _WIN32_WINNT < 0x0500
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
-#endif
+//#if _WIN32_WINNT < 0x0500
+//#undef _WIN32_WINNT
+//#define _WIN32_WINNT 0x0500
+//#endif
 
 #endif // WIN32
 

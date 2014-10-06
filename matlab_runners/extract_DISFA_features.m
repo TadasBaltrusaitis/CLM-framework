@@ -2,14 +2,14 @@
 oldDir = chdir('../Release/');
 features_exe = '"FeatureExtraction.exe"';
 
-% DISFA_loc = 'D:/Databases/DISFA/';
-DISFA_loc =  'E:/datasets/DISFA/';
+DISFA_loc = 'D:/Databases/DISFA/';
+% DISFA_loc =  'E:/datasets/DISFA/';
 
 DISFA_loc_1 = [DISFA_loc, 'Videos_LeftCamera/'];
 DISFA_loc_2 = [DISFA_loc, 'Video_RightCamera/'];
 
-% output = 'D:/Databases/DISFA/aligned/';
-output = 'E:/datasets/DISFA/aligned/';
+output = 'D:/Databases/DISFA/aligned/';
+% output = 'E:/datasets/DISFA/aligned/';
 if(~exist(output, 'dir'))
     mkdir(output);
 end

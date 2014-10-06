@@ -1,5 +1,6 @@
 // Copyright (C) 2013  Davis E. King (davis@dlib.net)
 // License: Boost Software License   See LICENSE.txt for the full license.
+
 #ifndef DLIB_SCAN_fHOG_PYRAMID_Hh_
 #define DLIB_SCAN_fHOG_PYRAMID_Hh_
 
@@ -9,6 +10,8 @@
 #include "../array.h"
 #include "../array2d.h"
 #include "object_detector.h"
+
+#include <tbb/tbb.h>
 
 namespace dlib
 {
@@ -442,6 +445,7 @@ namespace dlib
                 while (i < w.row_filters.size() && w.row_filters[i].size() == 0) 
                     ++i;
 
+				// TODO this could be parallelised
                 for (; i < w.row_filters.size(); ++i)
                 {
                     for (unsigned long j = 0; j < w.row_filters[i].size(); ++j)
@@ -806,6 +810,63 @@ namespace dlib
             std::sort(dets.rbegin(), dets.rend(), compare_pair_rect);
         }
 
+ template <
+            typename pyramid_type,
+            typename feature_extractor_type,
+            typename fhog_filterbank
+            >
+        void detect_from_fhog_pyramid_parallel (
+            const array<array<array2d<float> > >& feats,
+            const feature_extractor_type& fe,
+            const fhog_filterbank& w,
+            const double thresh,
+            const unsigned long det_box_height,
+            const unsigned long det_box_width,
+            const int cell_size,
+            const int filter_rows_padding,
+            const int filter_cols_padding,
+            std::vector<std::pair<double, rectangle> >& dets
+        ) 
+        {
+            dets.clear();
+
+            pyramid_type pyr;
+
+			tbb::concurrent_vector<std::pair<double, rectangle>> dets_conc;
+
+			int num_features = feats.size();
+
+			tbb::parallel_for(0, num_features, [&](int l){
+
+				array2d<float> saliency_image;
+
+				const rectangle area = apply_filters_to_fhog(w, feats[l], saliency_image);
+
+                // now search the saliency image for any detections
+                for (long r = area.top(); r <= area.bottom(); ++r)
+                {
+                    for (long c = area.left(); c <= area.right(); ++c)
+                    {
+                        // if we found a detection
+                        if (saliency_image[r][c] >= thresh)
+                        {
+                            rectangle rect = fe.feats_to_image(centered_rect(point(c,r),det_box_width,det_box_height), 
+                                cell_size, filter_rows_padding, filter_cols_padding);
+                            rect = pyr.rect_up(rect, l);
+                            dets_conc.push_back(std::make_pair(saliency_image[r][c], rect));
+                        }
+                    }
+                }
+			});	
+
+			for(size_t i = 0; i < dets_conc.size(); ++i)
+			{
+				dets.push_back(dets_conc[i]);
+			}
+
+            std::sort(dets.rbegin(), dets.rend(), compare_pair_rect);
+        }
+
         inline bool overlaps_any_box (
             const test_box_overlap& tester,
             const std::vector<rect_detection>& rects,
@@ -851,7 +912,10 @@ namespace dlib
         unsigned long width, height;
         compute_fhog_window_size(width,height);
 
-        impl::detect_from_fhog_pyramid<pyramid_type>(feats, fe, w, thresh,
+        //impl::detect_from_fhog_pyramid<pyramid_type>(feats, fe, w, thresh,
+        //    height-2*padding, width-2*padding, cell_size, height, width, dets);
+
+        impl::detect_from_fhog_pyramid_parallel<pyramid_type>(feats, fe, w, thresh,
             height-2*padding, width-2*padding, cell_size, height, width, dets);
     }
 

@@ -54,6 +54,8 @@
 
 #include <dlib/image_processing/frontal_face_detector.h>
 
+#include <tbb/tbb.h>
+
 using namespace std;
 using namespace cv;
 
@@ -171,7 +173,7 @@ void create_display_image(const Mat& orig, Mat& display_image, CLMTracker::CLM& 
 
 int main (int argc, char **argv)
 {
-
+		
 	//Convert arguments to more convenient vector form
 	vector<string> arguments = get_arguments(argc, argv);
 

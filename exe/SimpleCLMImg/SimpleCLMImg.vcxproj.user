@@ -8,6 +8,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-fdir "F:\datasets\afw_raw/" -clmwild</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
