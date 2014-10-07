@@ -334,10 +334,9 @@ int main (int argc, char **argv)
 				if(!active_models[model])
 				{
 					
-					// TODO not parallel safe
 					for(size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
 					{
-						// if it was not taken by another tracker take it (if it is false swap it to true and enter detection
+						// if it was not taken by another tracker take it (if it is false swap it to true and enter detection, this makes it parallel safe)
 						if(face_detections_used[detection_ind].compare_and_swap(true, false) == false)
 						{
 					
