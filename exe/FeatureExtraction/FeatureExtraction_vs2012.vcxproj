@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}</ProjectGuid>
+    <ProjectGuid>{8A23C00D-767D-422D-89A3-CF225E3DAB4B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleGavamWithCLM</RootNamespace>
   </PropertyGroup>
@@ -36,11 +36,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\lib\3rdParty\boost\boost_vs2012d.props" />
     <Import Project="..\..\lib\3rdParty\OpenCV\openCVd_vs2012.props" />
+    <Import Project="..\..\lib\3rdParty\dlib\dlib.props" />
+    <Import Project="..\..\lib\3rdParty\tbb\tbb_2012.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\lib\3rdParty\boost\boost_vs2012.props" />
     <Import Project="..\..\lib\3rdParty\OpenCV\openCV_vs2012.props" />
+    <Import Project="..\..\lib\3rdParty\dlib\dlib.props" />
+    <Import Project="..\..\lib\3rdParty\tbb\tbb_2012.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
