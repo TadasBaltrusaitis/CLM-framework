@@ -56,6 +56,8 @@
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
+#include <dlib/gui_widgets.h>
+
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
 
@@ -90,7 +92,7 @@ vector<string> get_arguments(int argc, char **argv)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 	video = false;
@@ -133,6 +135,13 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 			valid[i+1] = false;			
 			i++;
 		}		
+		else if(arguments[i].compare("-hogalign") == 0) 
+		{
+			output_hog_aligned_files.push_back(output_root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i+1] = false;			
+			i++;
+		}
 		else if(arguments[i].compare("-vid") == 0) 
 		{
 			video = true;
@@ -173,6 +182,29 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
+void output_HOG_frame(std::ofstream hog_file, dlib::array2d<dlib::matrix<float,31,1> > hog)
+{
+	int num_cols = hog.nc();
+	int num_rows = hog.nr();
+
+	int num_channels = 31;
+
+	hog_file.write((char*)(&num_cols), 4);
+	hog_file.write((char*)(&num_rows), 4);
+	hog_file.write((char*)(&num_channels), 4);
+
+	for(unsigned int y = 0; y < num_cols; ++y)
+	{
+		for(unsigned int x = 0; x < num_rows; ++x)
+		{
+			for(unsigned int o = 0; o < 31; ++o)
+			{
+				float hog_data = hog[y][x](o);
+				hog_file.write ((char*)&hog_data, 4);
+			}
+		}
+	}
+}
 
 int main (int argc, char **argv)
 {
@@ -203,11 +235,13 @@ int main (int argc, char **argv)
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
 	vector<string> output_similarity_align_files;
-	double sim_scale = 0.75;
-	int sim_size = 120;
+	vector<string> output_hog_align_files;
+
+	double sim_scale = 0.6;
+	int sim_size = 96;
 	bool video_output;
 	bool grayscale;
-	get_output_feature_params(output_similarity_align_files, sim_scale, sim_size, video_output, grayscale, arguments);
+	get_output_feature_params(output_similarity_align_files, output_hog_align_files, sim_scale, sim_size, video_output, grayscale, arguments);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -224,6 +258,9 @@ int main (int argc, char **argv)
 	{
 		cx_undefined = true;
 	}		
+	
+	dlib::image_window hogwin;
+	hogwin.set_title("HOG image");
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -404,36 +441,50 @@ int main (int argc, char **argv)
 			cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LINEAR);
 			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
 			cv::imshow("sim_warp", sim_warped_img);
+			
+			Mat_<uchar> sim_warped_img_gray;
 
+			cv::cvtColor(sim_warped_img, sim_warped_img_gray, CV_BGR2GRAY);
+				
 			if(grayscale && sim_warped_img.channels() == 3)
 			{
-				cv::cvtColor(sim_warped_img, sim_warped_img, CV_BGR2GRAY);
+				sim_warped_img = sim_warped_img_gray.clone();
 			}
+
+			// TODO use colour here?
+			dlib::cv_image<uchar> dlib_warped_img(sim_warped_img_gray);
+
+			dlib::array2d<dlib::matrix<float,31,1> > hog;
+			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
+			
+			hogwin.set_image(dlib::draw_fhog(hog));
 
 			// Write the similarity normalised output
-			if(video_output)
+			if(!output_similarity_align_files.empty())
 			{
-				if(output_similarity_aligned_video.isOpened())
+				if(video_output)
 				{
-					output_similarity_aligned_video << sim_warped_img;
+					if(output_similarity_aligned_video.isOpened())
+					{
+						output_similarity_aligned_video << sim_warped_img;
+					}
+				}
+				else
+				{
+					char name[100];
+					
+					// output the frame number
+					sprintf(name, "frame_det_%06d.png", frame_count);
+
+					// Construct the output filename
+					boost::filesystem::path slash("/");
+					
+					std::string preferredSlash = slash.make_preferred().string();
+				
+					string out_file = output_similarity_align_files[f_n] + preferredSlash + string(name);
+					imwrite(out_file, sim_warped_img);
 				}
 			}
-			else
-			{
-				char name[100];
-					
-				// output the frame number
-				sprintf(name, "frame_det_%06d.png", frame_count);
-
-				// Construct the output filename
-				boost::filesystem::path slash("/");
-					
-				std::string preferredSlash = slash.make_preferred().string();
-				
-				string out_file = output_similarity_align_files[f_n] + preferredSlash + string(name);
-				imwrite(out_file, sim_warped_img);
-			}
-
 			// Visualising the results
 			// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
 			double detection_certainty = clm_model.detection_certainty;

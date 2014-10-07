@@ -151,7 +151,7 @@ int main (int argc, char **argv)
 	vector<CLMTracker::CLM> clm_models;
 	vector<bool> active_models;
 
-	int num_faces_max = 3;
+	int num_faces_max = 4;
 
 	CLMTracker::CLM clm_model(clm_parameters[0].model_location);
 	clm_model.face_detector_HAAR.load(clm_parameters[0].face_detector_location);
@@ -295,8 +295,17 @@ int main (int argc, char **argv)
 
 			vector<Rect_<double> > face_detections;
 
-			// Get the detections (every 8th frame for efficiency)
-			if(frame_count % 8 == 0)
+			bool all_models_active = true;
+			for(unsigned int model = 0; model < clm_models.size(); ++model)
+			{
+				if(!active_models[model])
+				{
+					all_models_active = false;
+				}
+			}
+						
+			// Get the detections (every 8th frame and when there are free models available for tracking)
+			if(frame_count % 8 == 0 && !all_models_active)
 			{				
 				if(clm_parameters[0].curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
 				{
@@ -322,8 +331,8 @@ int main (int argc, char **argv)
 
 				bool detection_success = false;
 
-				// If the current model has failed more than 5 times in a row, remove it
-				if(clm_models[model].failures_in_a_row > 5)
+				// If the current model has failed more than 4 times in a row, remove it
+				if(clm_models[model].failures_in_a_row > 4)
 				{				
 					active_models[model] = false;
 					clm_models[model].Reset();

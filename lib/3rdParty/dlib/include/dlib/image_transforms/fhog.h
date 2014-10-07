@@ -411,7 +411,8 @@ namespace dlib
 
                     v = sqrt(v);
 
-					// TODO this should be optimised
+					// TODO this should/cood be optimised
+
                     // Now snap the gradient to one of 18 orientations
                     simd4f best_dot = 0;
                     simd4f best_o = 0;

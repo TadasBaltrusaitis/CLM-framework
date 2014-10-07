@@ -445,7 +445,6 @@ namespace dlib
                 while (i < w.row_filters.size() && w.row_filters[i].size() == 0) 
                     ++i;
 
-				// TODO this could be parallelised
                 for (; i < w.row_filters.size(); ++i)
                 {
                     for (unsigned long j = 0; j < w.row_filters[i].size(); ++j)
@@ -488,8 +487,6 @@ namespace dlib
             }
             else
             {
-                saliency_image.clear();
-                array2d<float> scratch;
 
                 // find the first filter to apply
                 unsigned long i = 0;
@@ -515,19 +512,23 @@ namespace dlib
 
 				i = start_filter;
 
-				// TODO this could be parallelised
-                for (; i < w.row_filters.size(); ++i)
-                {
-                    for (unsigned long j = 0; j < w.row_filters[i].size(); ++j)
+				tbb::parallel_for((int)i, (int)w.row_filters.size(), [&](int k)
+				{
+					array2d<float> saliency_tmp;
+					array2d<float> scratch;
+                    for (unsigned long j = 0; j < w.row_filters[k].size(); ++j)
                     {
-						area = float_spatially_filter_image_separable(feats[i], saliency_image, w.row_filters[i][j], w.col_filters[i][j], scratch, false);
-						swap(saliency_image, saliency_images[filters_before[i]-start_filter+j]);
+						area = float_spatially_filter_image_separable(feats[k], saliency_tmp, w.row_filters[k][j], w.col_filters[k][j], scratch, false);
+						swap(saliency_tmp, saliency_images[filters_before[k]-start_filter+j]);
                     }
-                }
+                });
 				
+                saliency_image.clear();
+
 				saliency_image.set_size(feats[0].nr(), feats[0].nc());
 				assign_all_pixels(saliency_image, 0);
 
+				// TODO this could be optimised?
 				// Sum across the saliency images
 				for(unsigned int i = 0; i < saliency_images.size(); ++i)
 				{
@@ -991,10 +992,10 @@ namespace dlib
 
 				array2d<float> saliency_image;
 
-				const rectangle area = apply_filters_to_fhog(w, feats[l], saliency_image);
+				//const rectangle area = apply_filters_to_fhog(w, feats[l], saliency_image);
 				
 				// TODO does not seem to help much?
-				//const rectangle area = apply_filters_to_fhog_parallel(w, feats[l], saliency_image);
+				const rectangle area = apply_filters_to_fhog_parallel(w, feats[l], saliency_image);
 				
                 // now search the saliency image for any detections
                 for (long r = area.top(); r <= area.bottom(); ++r)
