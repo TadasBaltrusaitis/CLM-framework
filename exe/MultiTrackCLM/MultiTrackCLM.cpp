@@ -313,11 +313,12 @@ int main (int argc, char **argv)
 			// Keep only non overlapping detections (also convert to a concurrent vector
 			NonOverlapingDetections(clm_models, face_detections);
 
-			vector<bool> face_detections_used(face_detections.size(), false);
+			vector<tbb::atomic<bool> > face_detections_used(face_detections.size());
 
-			// Go through every model
-			for(unsigned int model = 0; model < clm_models.size(); ++model)
-			{
+			// Go through every model and update the tracking TODO pull out as a separate parallel/non-parallel method
+			tbb::parallel_for(0, (int)clm_models.size(), [&](int model){
+			//for(unsigned int model = 0; model < clm_models.size(); ++model)
+			//{
 
 				bool detection_success = false;
 
@@ -333,11 +334,13 @@ int main (int argc, char **argv)
 				if(!active_models[model])
 				{
 					
+					// TODO not parallel safe
 					for(size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
 					{
-						// if it was not taken by another tracker take it
-						if(!face_detections_used[detection_ind])
+						// if it was not taken by another tracker take it (if it is false swap it to true and enter detection
+						if(face_detections_used[detection_ind].compare_and_swap(true, false) == false)
 						{
+					
 							// Reinitialise the model
 							clm_models[model].Reset();
 
@@ -347,7 +350,6 @@ int main (int argc, char **argv)
 													
 							// This activates the model
 							active_models[model] = true;
-							face_detections_used[detection_ind] = true;
 
 							// break out of the loop as the tracker has been reinitialised
 							break;
@@ -360,9 +362,9 @@ int main (int argc, char **argv)
 					// The actual facial landmark detection / tracking
 					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
 				}
-			}
+			});
 								
-			// Go through every model
+			// Go through every model and visualise the results
 			for(size_t model = 0; model < clm_models.size(); ++model)
 			{						
 				// Visualising the results
