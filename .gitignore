@@ -239,3 +239,4 @@ matlab_runners/demo_vid/
 matlab_runners/demo_img/
 Debug/dlib.lib
 Debug/tbb.dll
+Release/FeatureExtraction.exe

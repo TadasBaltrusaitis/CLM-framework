@@ -8,6 +8,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-f "F:\tv shows\The Wire\The.Wire.S01E01.720p.HDTV.x264-IMMERSE/The.Wire.S01E01.720p.HDTV.x264-IMMERSE.mkv"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-f "../videos/multi_face.avi"</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

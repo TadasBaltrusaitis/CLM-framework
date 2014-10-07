@@ -464,6 +464,85 @@ namespace dlib
             }
             return area;
         }
+
+
+		template <typename fhog_filterbank>
+        rectangle apply_filters_to_fhog_parallel (
+            const fhog_filterbank& w,
+            const array<array2d<float> >& feats,
+            array2d<float>& saliency_image
+        )
+        {
+            const unsigned long num_separable_filters = w.num_separable_filters();
+            rectangle area;
+            // use the separable filters if they would be faster than running the regular filters.
+            if (num_separable_filters > w.filters.size()*std::min(w.filters[0].nr(),w.filters[0].nc())/3.0)
+            {
+                area = spatially_filter_image(feats[0], saliency_image, w.filters[0]);
+                for (unsigned long i = 1; i < w.filters.size(); ++i)
+                {
+                    // now we filter but the output adds to saliency_image rather than
+                    // overwriting it.
+                    spatially_filter_image(feats[i], saliency_image, w.filters[i], 1, false, true);
+                }
+            }
+            else
+            {
+                saliency_image.clear();
+                array2d<float> scratch;
+
+                // find the first filter to apply
+                unsigned long i = 0;
+                while (i < w.row_filters.size() && w.row_filters[i].size() == 0) 
+                    ++i;
+				
+				int start_filter = i;
+
+				int num_filters = 0;
+				std::vector<int> filters_before;
+				filters_before.push_back(0);
+
+				// count the number of filters that will be used
+				for (; i < w.row_filters.size(); ++i)
+                {
+					num_filters += w.row_filters[i].size();
+					filters_before.push_back(num_filters);
+				}
+
+				array<array2d<float> > saliency_images;
+				saliency_images.set_max_size(num_filters);
+				saliency_images.set_size(num_filters);
+
+				i = start_filter;
+
+				// TODO this could be parallelised
+                for (; i < w.row_filters.size(); ++i)
+                {
+                    for (unsigned long j = 0; j < w.row_filters[i].size(); ++j)
+                    {
+						area = float_spatially_filter_image_separable(feats[i], saliency_image, w.row_filters[i][j], w.col_filters[i][j], scratch, false);
+						swap(saliency_image, saliency_images[filters_before[i]-start_filter+j]);
+                    }
+                }
+				
+				saliency_image.set_size(feats[0].nr(), feats[0].nc());
+				assign_all_pixels(saliency_image, 0);
+
+				// Sum across the saliency images
+				for(unsigned int i = 0; i < saliency_images.size(); ++i)
+				{
+					for(int y = 0; y < saliency_image.nr(); ++y)
+					{
+						for(int x = 0; x < saliency_image.nc(); ++x)
+						{
+							saliency_image[y][x] += saliency_images[i][y][x];
+						}
+					}					
+				}
+				
+            }
+            return area;
+        }
     }
 
 // ----------------------------------------------------------------------------------------
@@ -913,7 +992,10 @@ namespace dlib
 				array2d<float> saliency_image;
 
 				const rectangle area = apply_filters_to_fhog(w, feats[l], saliency_image);
-
+				
+				// TODO does not seem to help much?
+				//const rectangle area = apply_filters_to_fhog_parallel(w, feats[l], saliency_image);
+				
                 // now search the saliency image for any detections
                 for (long r = area.top(); r <= area.bottom(); ++r)
                 {

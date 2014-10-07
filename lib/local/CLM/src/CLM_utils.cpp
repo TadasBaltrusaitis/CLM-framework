@@ -1057,7 +1057,13 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& detector, std::vector<double>& o_confidences)
 {
 		
-	dlib::cv_image<uchar> cv_grayscale(intensity);
+	Mat_<uchar> upsampled_intensity;
+
+	double scaling = 1.4;
+
+	cv::resize(intensity, upsampled_intensity, cv::Size((int)(intensity.cols * scaling), (int)(intensity.rows * scaling)));
+
+	dlib::cv_image<uchar> cv_grayscale(upsampled_intensity);
 
 	std::vector<dlib::full_detection> face_detections;
 	detector(cv_grayscale, face_detections, -0.2);
@@ -1073,13 +1079,13 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 		// The scalings were learned using the Face Detections on LFPW and Helen using ground truth and detections from the HOG detector
 
 		// Move the face slightly to the right (as the width was made smaller)
-		o_regions[face].x = face_detections[face].rect.get_rect().tl_corner().x() + 0.0389 * face_detections[face].rect.get_rect().width();
+		o_regions[face].x = (face_detections[face].rect.get_rect().tl_corner().x() + 0.0389 * face_detections[face].rect.get_rect().width())/scaling;
 		// Shift face down as OpenCV Haar Cascade detects the forehead as well, and we're not interested
-		o_regions[face].y = face_detections[face].rect.get_rect().tl_corner().y() + 0.1278 * face_detections[face].rect.get_rect().height();
+		o_regions[face].y = (face_detections[face].rect.get_rect().tl_corner().y() + 0.1278 * face_detections[face].rect.get_rect().height())/scaling;
 
 		// Correct for scale
-		o_regions[face].width = face_detections[face].rect.get_rect().width() * 0.9611; 
-		o_regions[face].height = face_detections[face].rect.get_rect().height() * 0.9388;
+		o_regions[face].width = (face_detections[face].rect.get_rect().width() * 0.9611)/scaling; 
+		o_regions[face].height = (face_detections[face].rect.get_rect().height() * 0.9388)/scaling;
 
 		o_confidences[face] = face_detections[face].detection_confidence;
 		
