@@ -182,25 +182,25 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
-void output_HOG_frame(std::ofstream hog_file, dlib::array2d<dlib::matrix<float,31,1> > hog)
+void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,31,1> >* hog)
 {
-	int num_cols = hog.nc();
-	int num_rows = hog.nr();
+	int num_cols = hog->nc();
+	int num_rows = hog->nr();
 
 	int num_channels = 31;
 
-	hog_file.write((char*)(&num_cols), 4);
-	hog_file.write((char*)(&num_rows), 4);
-	hog_file.write((char*)(&num_channels), 4);
+	hog_file->write((char*)(&num_cols), 4);
+	hog_file->write((char*)(&num_rows), 4);
+	hog_file->write((char*)(&num_channels), 4);
 
-	for(unsigned int y = 0; y < num_cols; ++y)
+	for(int y = 0; y < num_cols; ++y)
 	{
-		for(unsigned int x = 0; x < num_rows; ++x)
+		for(int x = 0; x < num_rows; ++x)
 		{
 			for(unsigned int o = 0; o < 31; ++o)
 			{
-				float hog_data = hog[y][x](o);
-				hog_file.write ((char*)&hog_data, 4);
+				float hog_data = (*hog)[y][x](o);
+				hog_file->write ((char*)&hog_data, 4);
 			}
 		}
 	}
@@ -350,6 +350,13 @@ int main (int argc, char **argv)
 
 		}
 		
+		// Saving the HOG features
+		std::ofstream hog_output_file;
+		if(!output_hog_align_files.empty())
+		{
+			hog_output_file.open(output_hog_align_files[f_n], ios_base::out | ios_base::binary);
+		}
+
 		// saving the videos
 		VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
@@ -458,6 +465,11 @@ int main (int argc, char **argv)
 			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
 			
 			hogwin.set_image(dlib::draw_fhog(hog));
+
+			if(hog_output_file.is_open())
+			{
+				output_HOG_frame(&hog_output_file, &hog);
+			}
 
 			// Write the similarity normalised output
 			if(!output_similarity_align_files.empty())
