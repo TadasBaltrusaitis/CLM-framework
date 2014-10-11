@@ -259,8 +259,9 @@ int main (int argc, char **argv)
 		cx_undefined = true;
 	}		
 	
-	dlib::image_window hogwin;
-	hogwin.set_title("HOG image");
+	// TODO rem
+	//dlib::image_window hogwin;
+	//hogwin.set_title("HOG image");
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -464,7 +465,7 @@ int main (int argc, char **argv)
 			dlib::array2d<dlib::matrix<float,31,1> > hog;
 			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
 			
-			hogwin.set_image(dlib::draw_fhog(hog));
+			//hogwin.set_image(dlib::draw_fhog(hog));
 
 			if(hog_output_file.is_open())
 			{
