@@ -11,5 +11,6 @@ The stable versions of the framework have been tagged, the latest version of CLM
 
 Some examples of the system in action:
 http://youtu.be/V7rV0uy7heQ
+http://youtu.be/vYOa8Pif5lY
 
 FAME framework is still somewhat experimental and not as stable, it can be accessed in the FAME branch of the repository.
