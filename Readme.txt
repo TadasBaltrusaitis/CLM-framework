@@ -1,6 +1,6 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps.
+For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps on 320x240px videos.
 
-For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt. NOTE the Ubuntu version of dlib face detector seems to be quite slow.
+For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt. NOTE the Ubuntu version of dlib face detector seems to be quite slow, so using HAAR face detector is recommended (by setting clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HAAR_DETECTOR) for now.
 
 You have to respect boost, Eigen, TBB, dlib, and OpenCV licenses.
 
@@ -22,7 +22,7 @@ Copyright can be found in the Copyright.txt
 	SimpleCLM/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
 	SimpleCLMImg/ - running clm or clm-z on a images, individual or in a folder
 	MultiTrackCLM/ - tracking multiple faces using the CLM libraries
-		
+	FeatureExtraction/ - a utility executable for extracting similarity normalised faces and HOG features for further facial expression analysis (experimental)	
 ./matlab_runners
 	helper scripts for running the experiments and demos
 ./Release
@@ -84,7 +84,6 @@ Head Pose:
 
 	// fx,fy,cx,cy are camera callibration parameters needed to infer the 3D position of the head with respect to camera, a good assumption for webcams providing 640x480 images is 500, 500, img_width/2, img_height/2	
 	
-
 --------------------------- CLM Matlab runners ---------------------------------
 
 These are provided for recreation of some of the experiments described in the papers and to demonstrate the command line interface for Windows.
@@ -99,7 +98,6 @@ run_demo_images - runs CLNF on some sample images that come with the code
 
 run_demo_videos - runs CLNF on some sample videos that come with the code (some taken from the Youtube celebrity dataset)
 	
-
 -------- Command line parameters for video (SimpleCLM) --------------------------
 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
@@ -116,8 +114,8 @@ Parameters for input (if nothing is specified attempts to read from a webcam wit
 	-cy <optical centre in y>
 
 Parameters for output
-	-op <location of output pose file>
-	-of <location of output landmark points file>
+	-op <location of output pose file>, the file format is as follows: frame_number timestamp detection_success X Y Z Rx Ry Rz
+	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
 	-ov <location of tracked video>
 
     -cp <1/0, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
@@ -134,7 +132,7 @@ Model parameters (apply to images and videos)
 	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
 	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
 	
-All of the models (except CLM-Z	) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
+All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
 	
 For more examples of how to run the code, please refer to the Matlab runner code which calls the compiled executables with the command line parameters.
 	
@@ -148,7 +146,7 @@ Flags:
 Single image analysis:
 	-f <filename> - the image file being input
 	-fd <depth file> - the corresoinding depth file location
-	-of <location of output landmark points file>
+	-of <location of output landmark points file> the file format is same as 300 faces in the wild challenge annotations (http://ibug.doc.ic.ac.uk/resources/facial-point-annotations/)
 	-oi <location of tracked video>
 
 Batch image analysis:	

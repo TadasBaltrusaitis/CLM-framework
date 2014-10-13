@@ -286,8 +286,8 @@ struct CLMParameters
 
 			quiet_mode = false;
 
-			// By default use HAAR
-			curr_face_detector = HAAR_DETECTOR;
+			// By default use HOG SVM
+			curr_face_detector = HOG_SVM_DETECTOR;
 		}
 };
 
