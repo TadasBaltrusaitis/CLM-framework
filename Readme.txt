@@ -209,7 +209,6 @@ matlab_runners/results/landmark_detections.txt - the results on landmark detecti
 matlab_runners/results/Pose_clm_ccnf_v1.txt - the results of head pose tracking using CLNF on 3 datasets (BU, BIWI and ICT-3DHP)
 matlab_runners/results/Pose_clm_svr_v1.txt - the results of head pose tracking uding CLM and CLM-Zon 3 datasets (BU, BIWI and ICT-3DHP)
 
-
 --------------------------------------- Final remarks -----------------------------------------------------------------------------	
 
 I did my best to make sure that the code runs out of the box but there are always issues and I would be grateful for your understanding that this is research code and not a commercial level product. However, if you encounter any probles please contact me at Tadas.Baltrusaitis@cl.cam.ac.uk for any bug reports/questions/suggestions. 

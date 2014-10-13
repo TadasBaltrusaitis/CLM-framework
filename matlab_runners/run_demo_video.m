@@ -39,14 +39,13 @@ for i=1:numel(in_files)
     outputFile_pose = [output name '_pose.txt'];
     outputFile_fp = [output name '_fp.txt'];
     
-    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' '" -of "' outputFile_fp '"']);
+    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"']);
     
     if(verbose)
         outputVideo = ['"' output name '.avi' '"'];
         command = cat(2, command, [' -ov ' outputVideo]);
     end
-             
-    
+                 
 end
 
 dos(command);

@@ -9,4 +9,7 @@ Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute
 
 The stable versions of the framework have been tagged, the latest version of CLM-framework is is 0.9.2 and I recommend you download it.
 
+Some examples of the system in action:
+http://youtu.be/V7rV0uy7heQ
+
 FAME framework is still somewhat experimental and not as stable, it can be accessed in the FAME branch of the repository.
