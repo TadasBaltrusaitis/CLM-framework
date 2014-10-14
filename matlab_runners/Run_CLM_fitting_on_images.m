@@ -130,13 +130,11 @@ for i=1:numel(dirs)
     for g=1:numel(gt_labels)
         curr = curr+1;
         
-        gt_landmarks = importdata([dirs{i}, gt_labels(g).name], ' ', 3);
-        gt_landmarks = gt_landmarks.data;
         
-        % find the corresponding detection
-        
-        landmark_det = importdata([landmark_det_dir, gt_labels(g).name], ' ', 3);
-        landmark_det = landmark_det.data;
+        gt_landmarks = dlmread([dirs{i}, gt_labels(g).name], ' ', 'A4..B71');
+       
+        % find the corresponding detection       
+        landmark_det = dlmread([landmark_det_dir, gt_labels(g).name], ' ', 'A4..B71');
         
         labels(:,:,curr) = gt_landmarks;
             
