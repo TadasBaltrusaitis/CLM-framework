@@ -238,19 +238,19 @@ int main (int argc, char **argv)
 			}
 
 			// Detect landmarks around detected faces
-
+			int face_det = 0;
 			// perform landmark detection for every face detected
 			for(size_t face=0; face < face_detections.size(); ++face)
 			{
 				// if there are multiple detections go through them
-				CLMTracker::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
+				bool success = CLMTracker::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
 
 				// Writing out the detected landmarks (in an OS independent manner)
 				if(!output_landmark_locations.empty())
 				{
 					char name[100];
 					// append detection number (in case multiple faces are detected)
-					sprintf(name, "_det_%d", face);
+					sprintf(name, "_det_%d", face_det);
 
 					// Construct the output filename
 					boost::filesystem::path slash("/");
@@ -268,20 +268,20 @@ int main (int argc, char **argv)
 				Mat display_image;
 				create_display_image(read_image, display_image, clm_model);
 
-				if(visualise)
+				if(visualise && success)
 				{
 					imshow("colour", display_image);
 					cv::waitKey(1);
 				}
 
 				// Saving the display images (in an OS independent manner)
-				if(!output_images.empty())
+				if(!output_images.empty() && success)
 				{
 					string outimage = output_images.at(i);
 					if(!outimage.empty())
 					{
 						char name[100];
-						sprintf(name, "_det_%d", face);
+						sprintf(name, "_det_%d", face_det);
 
 						boost::filesystem::path slash("/");
 						std::string preferredSlash = slash.make_preferred().string();
@@ -294,9 +294,15 @@ int main (int argc, char **argv)
 						outimage = dir.string() + preferredSlash + fname.string() + string(name) + ext.string();
 
 						imwrite(outimage, display_image);	
+						
 					}
+
 				}
 
+				if(success)
+				{
+					face_det++;
+				}
 
 			}
 		}
@@ -333,6 +339,7 @@ int main (int argc, char **argv)
 		}				
 
 	}
+	
 	return 0;
 }
 
