@@ -6,7 +6,6 @@ include_directories(../../lib/local/CLM/include)
 add_executable(SimpleCLMImg SimpleCLMImg.cpp)
 target_link_libraries(SimpleCLMImg CLM)
 target_link_libraries(SimpleCLMImg dlib)
-target_link_libraries(SimpleCLMImg TBB)
 
 if(WIN32)
 	target_link_libraries(SimpleCLMImg ${OpenCVLibraries})
