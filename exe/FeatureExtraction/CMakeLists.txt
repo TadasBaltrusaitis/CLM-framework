@@ -12,7 +12,7 @@ if(WIN32)
 endif(WIN32)
 if(UNIX)
 	target_link_libraries(FeatureExtraction ${OpenCV_LIBS} ${Boost_LIBRARIES})
-	target_link_libraries(SimpleCLMImg libtbb.so)
+	target_link_libraries(FeatureExtraction libtbb.so)
 endif(UNIX)
 
 install (TARGETS FeatureExtraction DESTINATION ${CMAKE_BINARY_DIR}/bin)

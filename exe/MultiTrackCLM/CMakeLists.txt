@@ -12,7 +12,7 @@ if(WIN32)
 endif(WIN32)
 if(UNIX)
 	target_link_libraries(MultiTrackCLM ${OpenCV_LIBS} ${Boost_LIBRARIES})
-	target_link_libraries(SimpleCLMImg libtbb.so)
+	target_link_libraries(MultiTrackCLM libtbb.so)
 endif(UNIX)
 
 install (TARGETS MultiTrackCLM DESTINATION ${CMAKE_BINARY_DIR}/bin)
