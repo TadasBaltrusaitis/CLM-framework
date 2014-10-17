@@ -55,7 +55,7 @@ for i=1:numel(disfa_loc_2_files)
     
     output_hog = [output_hog_root name '.hog'];
     
-    command = cat(2, command, [' -f "' input_file '" -simalign "' output_file  '" -simscale 0.6 -simsize 100 -g']);  
+    command = cat(2, command, [' -f "' input_file '" -simalign "' output_file  '" -simscale 0.6 -simsize 96 -g']);  
     command = cat(2, command, [' -hogalign "' output_hog ]);
     
     dos(command);

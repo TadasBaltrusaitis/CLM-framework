@@ -79,6 +79,8 @@ printErrorAndAbort( std::string( "Fatal error: " ) + stream )
 using namespace std;
 using namespace cv;
 
+using namespace boost::filesystem;
+
 vector<string> get_arguments(int argc, char **argv)
 {
 
@@ -182,6 +184,73 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
+// Can process images via directories creating a separate output file per directory
+void get_image_input_output_params_feats(vector<vector<string> > &input_image_files, bool& as_video, vector<string> &arguments)
+{
+	bool* valid = new bool[arguments.size()];
+		
+	for(size_t i = 0; i < arguments.size(); ++i)
+	{
+		valid[i] = true;
+		if (arguments[i].compare("-fdir") == 0) 
+		{                    
+
+			// parse the -fdir directory by reading in all of the .png and .jpg files in it
+			path image_directory (arguments[i+1]); 
+
+			try
+			{
+				 // does the file exist and is it a directory
+				if (exists(image_directory) && is_directory(image_directory))   
+				{
+					
+					vector<path> file_in_directory;                                
+					copy(directory_iterator(image_directory), directory_iterator(), back_inserter(file_in_directory));
+
+					vector<string> curr_dir_files;
+
+					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
+					{
+						// Possible image extension .jpg and .png
+						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0)
+						{																
+							curr_dir_files.push_back(file_iterator->string());															
+						}
+					}
+
+					input_image_files.push_back(curr_dir_files);
+				}
+			}
+			catch (const filesystem_error& ex)
+			{
+				cout << ex.what() << '\n';
+			}
+
+			valid[i] = false;
+			valid[i+1] = false;		
+			i++;
+		}
+		else if (arguments[i].compare("-asvid") == 0) 
+		{
+			as_video = true;
+		}
+		else if (arguments[i].compare("-help") == 0)
+		{
+			cout << "Input output files are defined as: -fdir <image directory (can have multiple ones)> -asvid <the images in a folder are assumed to come from a video (consecutive)>" << endl; // Inform the user of how to use the program				
+		}
+	}
+	
+	// Clear up the argument list
+	for(int i=arguments.size()-1; i >= 0; --i)
+	{
+		if(!valid[i])
+		{
+			arguments.erase(arguments.begin()+i);
+		}
+	}
+
+}
+
 void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,31,1> >* hog)
 {
 	int num_cols = hog->nc();
@@ -228,6 +297,25 @@ int main (int argc, char **argv)
 	bool use_camera_plane_pose;
 	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
 
+	bool video = true;
+	bool images_as_video = false;
+
+	vector<vector<string> > input_image_files;
+
+	// Adding image support for reading in the files
+	if(files.empty())
+	{
+		vector<string> d_files;
+		vector<string> o_img;
+		vector<Rect_<double>> bboxes;
+		get_image_input_output_params_feats(input_image_files, images_as_video, arguments);	
+
+		if(!input_image_files.empty())
+		{
+			video = false;
+		}
+
+	}
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -240,7 +328,7 @@ int main (int argc, char **argv)
 	double sim_scale = 0.6;
 	int sim_size = 96;
 	bool video_output;
-	bool grayscale;
+	bool grayscale = false;
 	get_output_feature_params(output_similarity_align_files, output_hog_align_files, sim_scale, sim_size, video_output, grayscale, arguments);
 
 	// Will warp to scaled mean shape
@@ -251,6 +339,7 @@ int main (int argc, char **argv)
 	// If multiple video files are tracked, use this to indicate if we are done
 	bool done = false;	
 	int f_n = -1;
+	int curr_img = -1;
 
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
@@ -267,43 +356,60 @@ int main (int argc, char **argv)
 	{
 		
 		string current_file;
-
-		// We might specify multiple video files as arguments
-		if(files.size() > 0)
-		{
-			f_n++;			
-		    current_file = files[f_n];
-		}
-		else
-		{
-			// If we want to write out from webcam
-			f_n = 0;
-		}
-
-		bool use_depth = !depth_directories.empty();	
-
-		// Do some grabbing
+		
 		VideoCapture video_capture;
-		if( current_file.size() > 0 )
+		
+		Mat captured_image;
+
+		if(video)
 		{
-			INFO_STREAM( "Attempting to read from file: " << current_file );
-			video_capture = VideoCapture( current_file );
+			// We might specify multiple video files as arguments
+			if(files.size() > 0)
+			{
+				f_n++;			
+				current_file = files[f_n];
+			}
+			else
+			{
+				// If we want to write out from webcam
+				f_n = 0;
+			}
+			// Do some grabbing
+			if( current_file.size() > 0 )
+			{
+				INFO_STREAM( "Attempting to read from file: " << current_file );
+				video_capture = VideoCapture( current_file );
+			}
+			else
+			{
+				INFO_STREAM( "Attempting to capture from device: " << device );
+				video_capture = VideoCapture( device );
+
+				// Read a first frame often empty in camera
+				Mat captured_image;
+				video_capture >> captured_image;
+			}
+
+			if( !video_capture.isOpened() ) FATAL_STREAM( "Failed to open video source" );
+			else INFO_STREAM( "Device or file opened");
+
+			video_capture >> captured_image;	
 		}
 		else
 		{
-			INFO_STREAM( "Attempting to capture from device: " << device );
-			video_capture = VideoCapture( device );
+			f_n++;	
+			curr_img++;
+			if(!input_image_files[f_n].empty())
+			{
+				string curr_img_file = input_image_files[f_n][curr_img];
+				captured_image = imread(curr_img_file, -1);
+			}
+			else
+			{
+				FATAL_STREAM( "No .jpg or .png images in a specified drectory" );
+			}
 
-			// Read a first frame often empty in camera
-			Mat captured_image;
-			video_capture >> captured_image;
-		}
-
-		if( !video_capture.isOpened() ) FATAL_STREAM( "Failed to open video source" );
-		else INFO_STREAM( "Device or file opened");
-
-		Mat captured_image;
-		video_capture >> captured_image;		
+		}	
 		
 		// If optical centers are not defined just use center of image
 		if(cx_undefined)
@@ -376,7 +482,6 @@ int main (int argc, char **argv)
 		{		
 
 			// Reading the images
-			Mat_<float> depth_image;
 			Mat_<uchar> grayscale_image;
 
 			if(captured_image.channels() == 3)
@@ -388,30 +493,17 @@ int main (int argc, char **argv)
 				grayscale_image = captured_image.clone();				
 			}
 		
-			// Get depth image
-			if(use_depth)
-			{
-				char* dst = new char[100];
-				std::stringstream sstream;
-
-				sstream << depth_directories[f_n] << "\\depth%05d.png";
-				sprintf(dst, sstream.str().c_str(), frame_count + 1);
-				// Reading in 16-bit png image representing depth
-				Mat_<short> depth_image_16_bit = imread(string(dst), -1);
-
-				// Convert to a floating point depth image
-				if(!depth_image_16_bit.empty())
-				{
-					depth_image_16_bit.convertTo(depth_image, CV_32F);
-				}
-				else
-				{
-					WARN_STREAM( "Can't find depth image" );
-				}
-			}
-			
 			// The actual facial landmark detection / tracking
-			bool detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);
+			bool detection_success;
+			
+			if(video || images_as_video)
+			{
+				detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
+			}
+			else
+			{
+				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
+			}
 
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
@@ -450,13 +542,20 @@ int main (int argc, char **argv)
 			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
 			cv::imshow("sim_warp", sim_warped_img);
 			
+
 			Mat_<uchar> sim_warped_img_gray;
 
-			cv::cvtColor(sim_warped_img, sim_warped_img_gray, CV_BGR2GRAY);
-				
-			if(grayscale && sim_warped_img.channels() == 3)
+			if(sim_warped_img.channels() == 3)
 			{
-				sim_warped_img = sim_warped_img_gray.clone();
+				cv::cvtColor(sim_warped_img, sim_warped_img_gray, CV_BGR2GRAY);
+				if(grayscale)
+				{					
+					sim_warped_img = sim_warped_img_gray.clone();
+				}
+			}	
+			else
+			{
+				sim_warped_img_gray = sim_warped_img.clone();
 			}
 
 			// TODO use colour here?
@@ -545,12 +644,6 @@ int main (int argc, char **argv)
 			{
 				namedWindow("tracking_result",1);		
 				imshow("tracking_result", captured_image);
-
-				if(!depth_image.empty())
-				{
-					// Division needed for visualisation purposes
-					imshow("depth", depth_image/2000.0);
-				}
 			}
 
 			// Output the detected facial landmarks
@@ -576,8 +669,23 @@ int main (int argc, char **argv)
 				writerFace << captured_image;
 			}
 
-			video_capture >> captured_image;
-		
+			if(video)
+			{
+				video_capture >> captured_image;
+			}
+			else
+			{
+				curr_img++;
+				if(curr_img < input_image_files[f_n].size())
+				{
+					string curr_img_file = input_image_files[f_n][curr_img];
+					captured_image = imread(curr_img_file, -1);
+				}
+				else
+				{
+					captured_image = Mat();
+				}
+			}
 			// detect key presses
 			char character_press = cv::waitKey(1);
 			
@@ -598,6 +706,7 @@ int main (int argc, char **argv)
 		}
 		
 		frame_count = 0;
+		curr_img = -1;
 
 		// Reset the model, for the next video
 		clm_model.Reset();
