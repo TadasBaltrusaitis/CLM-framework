@@ -94,7 +94,7 @@ vector<string> get_arguments(int argc, char **argv)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 	video = false;
@@ -144,6 +144,10 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 			valid[i+1] = false;			
 			i++;
 		}
+		else if(arguments[i].compare("-rigid") == 0) 
+		{
+			rigid = true;
+		}
 		else if(arguments[i].compare("-vid") == 0) 
 		{
 			video = true;
@@ -182,6 +186,49 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		}
 	}
 
+}
+
+// Pick only the more stable/rigid points under changes of expression
+void extract_rigid_points(Mat_<double>& source_points, Mat_<double>& destination_points)
+{
+	if(source_points.rows == 68)
+	{
+		Mat_<double> tmp_source = source_points.clone();
+		source_points = Mat_<double>();
+
+		// Push back the rigid points (some face outline, eyes, and nose)
+		source_points.push_back(tmp_source.row(0));
+		source_points.push_back(tmp_source.row(2));
+		source_points.push_back(tmp_source.row(14));
+		source_points.push_back(tmp_source.row(16));
+		source_points.push_back(tmp_source.row(36));
+		source_points.push_back(tmp_source.row(39));
+		source_points.push_back(tmp_source.row(43));
+		source_points.push_back(tmp_source.row(38));
+		source_points.push_back(tmp_source.row(42));
+		source_points.push_back(tmp_source.row(45));
+		source_points.push_back(tmp_source.row(31));
+		source_points.push_back(tmp_source.row(33));
+		source_points.push_back(tmp_source.row(35));
+
+		Mat_<double> tmp_dest = destination_points.clone();
+		destination_points = Mat_<double>();
+
+		// Push back the rigid points
+		destination_points.push_back(tmp_dest.row(0));
+		destination_points.push_back(tmp_dest.row(2));
+		destination_points.push_back(tmp_dest.row(14));
+		destination_points.push_back(tmp_dest.row(16));
+		destination_points.push_back(tmp_dest.row(36));
+		destination_points.push_back(tmp_dest.row(39));
+		destination_points.push_back(tmp_dest.row(43));
+		destination_points.push_back(tmp_dest.row(38));
+		destination_points.push_back(tmp_dest.row(42));
+		destination_points.push_back(tmp_dest.row(45));
+		destination_points.push_back(tmp_dest.row(31));
+		destination_points.push_back(tmp_dest.row(33));
+		destination_points.push_back(tmp_dest.row(35));
+	}
 }
 
 // Can process images via directories creating a separate output file per directory
@@ -329,7 +376,8 @@ int main (int argc, char **argv)
 	int sim_size = 96;
 	bool video_output;
 	bool grayscale = false;
-	get_output_feature_params(output_similarity_align_files, output_hog_align_files, sim_scale, sim_size, video_output, grayscale, arguments);
+	bool rigid = false;
+	get_output_feature_params(output_similarity_align_files, output_hog_align_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -519,6 +567,12 @@ int main (int argc, char **argv)
 			Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
 			Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
+			// Pick only rigid points
+			if(rigid)
+			{
+				 extract_rigid_points(source_landmarks, destination_landmarks);
+			}
+
 			Matx22d scale_rot_matrix = CLMTracker::AlignShapesWithScale(source_landmarks, destination_landmarks);
 			Matx23d warp_matrix;
 			warp_matrix(0,0) = scale_rot_matrix(0,0);
@@ -606,7 +660,8 @@ int main (int argc, char **argv)
 			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 			if(detection_certainty < visualisation_boundary)
 			{
-				CLMTracker::Draw(captured_image, clm_model);
+				CLMTracker::Draw(captured_image, source_landmarks);
+				//CLMTracker::Draw(captured_image, clm_model);
 
 				if(detection_certainty > 1)
 					detection_certainty = 1;
@@ -676,7 +731,7 @@ int main (int argc, char **argv)
 			else
 			{
 				curr_img++;
-				if(curr_img < input_image_files[f_n].size())
+				if(curr_img < (int)input_image_files[f_n].size())
 				{
 					string curr_img_file = input_image_files[f_n][curr_img];
 					captured_image = imread(curr_img_file, -1);

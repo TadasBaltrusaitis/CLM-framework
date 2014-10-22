@@ -850,12 +850,29 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 // Drawing landmarks on a face image
 void Draw(cv::Mat img, const Mat_<double>& shape2D)
 {
-	int n = shape2D.rows/2;
+	
+	int n;
+	
+	if(shape2D.cols == 2)
+	{
+		n = shape2D.rows;
+	}
+	else if(shape2D.cols == 1)
+	{
+		n = shape2D.rows/2;
+	}
 
 	for( int i = 0; i < n; ++i)
 	{		
-		Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
-
+		Point featurePoint;
+		if(shape2D.cols == 1)
+		{
+			featurePoint = Point((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+		}
+		else
+		{
+			featurePoint = Point((int)shape2D.at<double>(i, 0), (int)shape2D.at<double>(i, 1));
+		}
 		// A rough heuristic for drawn point size
 		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
 		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
