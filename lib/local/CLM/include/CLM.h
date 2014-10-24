@@ -296,6 +296,9 @@ public:
 	// Can only be called after a call to DetectLandmarksInVideo or DetectLandmarksInImage
 	Mat_<double> GetShape(double fx, double fy, double cx, double cy);
 
+	// A utility bounding box function
+	Rect_<double> GetBoundingBox() const;
+
 	// Reset the model (useful if we want to completelly reinitialise, or we want to track another video)
 	void Reset();
 

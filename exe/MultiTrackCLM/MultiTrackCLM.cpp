@@ -92,16 +92,9 @@ void NonOverlapingDetections(const vector<CLMTracker::CLM>& clm_models, vector<R
 	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
 	for(size_t model = 0; model < clm_models.size(); ++model)
 	{
-		Mat_<double> xs = clm_models[model].detected_landmarks(Rect(0,0,1,clm_models[model].detected_landmarks.rows/2));
-		Mat_<double> ys = clm_models[model].detected_landmarks(Rect(0,clm_models[model].detected_landmarks.rows/2, 1, clm_models[model].detected_landmarks.rows/2));
-
-		double min_x, max_x;
-		double min_y, max_y;
-		cv::minMaxLoc(xs, &min_x, &max_x);
-		cv::minMaxLoc(ys, &min_y, &max_y);
 
 		// See if the detections intersect
-		Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
+		Rect_<double> model_rect = clm_models[model].GetBoundingBox();
 		
 		for(int detection = face_detections.size()-1; detection >=0; --detection)
 		{

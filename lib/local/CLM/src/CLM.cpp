@@ -866,6 +866,22 @@ Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy)
 	
 }
 
+// A utility bounding box function
+Rect_<double> CLM::GetBoundingBox() const
+{
+	Mat_<double> xs = this->detected_landmarks(Rect(0,0,1,this->detected_landmarks.rows/2));
+	Mat_<double> ys = this->detected_landmarks(Rect(0,this->detected_landmarks.rows/2, 1, this->detected_landmarks.rows/2));
+
+	double min_x, max_x;
+	double min_y, max_y;
+	cv::minMaxLoc(xs, &min_x, &max_x);
+	cv::minMaxLoc(ys, &min_y, &max_y);
+
+	// See if the detections intersect
+	Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
+	return model_rect;
+}
+
 // Legacy function not used at the moment
 void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
 {
