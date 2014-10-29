@@ -94,8 +94,12 @@ vector<string> get_arguments(int argc, char **argv)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, vector<string> &arguments)
 {
+	output_similarity_aligned_files.clear();
+	output_hog_aligned_files.clear();
+	output_model_param_files.clear();
+
 	bool* valid = new bool[arguments.size()];
 	video = false;
 
@@ -140,6 +144,13 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-hogalign") == 0) 
 		{
 			output_hog_aligned_files.push_back(output_root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i+1] = false;			
+			i++;
+		}
+		else if(arguments[i].compare("-oparams") == 0) 
+		{
+			output_model_param_files.push_back(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -371,13 +382,14 @@ int main (int argc, char **argv)
 
 	vector<string> output_similarity_align_files;
 	vector<string> output_hog_align_files;
+	vector<string> params_output_files;
 
 	double sim_scale = 0.6;
 	int sim_size = 96;
 	bool video_output;
 	bool grayscale = false;
 	bool rigid = false;
-	get_output_feature_params(output_similarity_align_files, output_hog_align_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
+	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -477,6 +489,13 @@ int main (int argc, char **argv)
 		if(!landmark_output_files.empty())
 		{
 			landmarks_output_file.open(landmark_output_files[f_n]);
+		}
+
+		// Outputting model parameters (rigid and non-rigid), the first parameters are the 6 rigid shape parameters, they are followed by the non rigid shape parameters
+		std::ofstream params_output_file;		
+		if(!params_output_files.empty())
+		{
+			params_output_file.open(params_output_files[f_n]);
 		}
 
 		// saving the videos
@@ -705,11 +724,25 @@ int main (int argc, char **argv)
 			if(!landmark_output_files.empty())
 			{
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
-				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++ i)
+				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++i)
 				{
 					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
 				}
 				landmarks_output_file << endl;
+			}
+			
+			if(!params_output_files.empty())
+			{
+				params_output_file << frame_count + 1 << " " << detection_success;
+				for (int i = 0; i < 6; ++i)
+				{
+					params_output_file << " " << clm_model.params_global[i] << " "; 
+				}
+				for (int i = 0; i < clm_model.pdm.NumberOfModes(); ++i)
+				{
+					params_output_file << " " << clm_model.params_local.at<double>(i,0) << " "; 
+				}
+				params_output_file << endl;
 			}
 
 			// Output the estimated head pose
