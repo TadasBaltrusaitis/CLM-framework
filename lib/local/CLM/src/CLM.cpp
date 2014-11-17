@@ -50,6 +50,8 @@
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
+#include <dlib/opencv.h>
+
 #include "CLM_utils.h"
 
 using namespace CLMTracker;
@@ -57,6 +59,156 @@ using namespace CLMTracker;
 
 //=============================================================================
 //=============================================================================
+
+// Constructors
+// A default constructor
+CLM::CLM()
+{
+	CLMParameters parameters;
+	this->Read(parameters.model_location);
+}
+
+// Constructor from a model file
+CLM::CLM(string fname)
+{
+	this->Read(fname);
+}
+
+// Copy constructor (makes a deep copy of CLM)
+CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
+	landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+
+	// Load the CascadeClassifier (as it does not have a proper copy constructor)
+	if(!face_detector_location.empty())
+	{
+		this->face_detector_HAAR.load(face_detector_location);
+	}
+	// Make sure the matrices are allocated properly
+	this->triangulations.resize(other.triangulations.size());
+	for(size_t i = 0; i < other.triangulations.size(); ++i)
+	{
+		// Make sure the matrix is copied.
+		this->triangulations[i] = other.triangulations[i].clone();
+	}
+
+	// Make sure the matrices are allocated properly
+	for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
+	}
+
+	this->face_detector_HOG = dlib::get_frontal_face_detector();
+}
+
+// Assignment operator for lvalues (makes a deep copy of CLM)
+CLM & CLM::operator= (const CLM& other)
+{
+	if (this != &other) // protect against invalid self-assignment
+	{
+		pdm = PDM(other.pdm);
+		params_local = other.params_local.clone();
+		params_global = other.params_global;
+		detected_landmarks = other.detected_landmarks.clone();
+		
+		landmark_likelihoods =other.landmark_likelihoods.clone();
+		patch_experts = Patch_experts(other.patch_experts);
+		landmark_validator = DetectionValidator(other.landmark_validator);
+		face_detector_location = other.face_detector_location;
+
+		this->detection_success = other.detection_success;
+		this->tracking_initialised = other.tracking_initialised;
+		this->detection_certainty = other.detection_certainty;
+		this->model_likelihood = other.model_likelihood;
+		this->failures_in_a_row = other.failures_in_a_row;
+
+		// Load the CascadeClassifier (as it does not have a proper copy constructor)
+		if(!face_detector_location.empty())
+		{
+			this->face_detector_HAAR.load(face_detector_location);
+		}
+		// Make sure the matrices are allocated properly
+		this->triangulations.resize(other.triangulations.size());
+		for(size_t i = 0; i < other.triangulations.size(); ++i)
+		{
+			// Make sure the matrix is copied.
+			this->triangulations[i] = other.triangulations[i].clone();
+		}
+
+		// Make sure the matrices are allocated properly
+		for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+		{
+			// Make sure the matrix is copied.
+			this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
+		}
+	}
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	return *this;
+}
+
+// Move constructor
+CLM::CLM(const CLM&& other)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+
+	pdm = other.pdm;
+	params_local = other.params_local;
+	params_global = other.params_global;
+	detected_landmarks = other.detected_landmarks;
+	landmark_likelihoods = other.landmark_likelihoods;
+	patch_experts = other.patch_experts;
+	landmark_validator = other.landmark_validator;
+	face_detector_location = other.face_detector_location;
+
+	face_detector_HAAR = other.face_detector_HAAR;
+
+	triangulations = other.triangulations;
+	kde_resp_precalc = other.kde_resp_precalc;
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+}
+
+// Assignment operator for rvalues
+CLM & CLM::operator= (const CLM&& other)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+
+	pdm = other.pdm;
+	params_local = other.params_local;
+	params_global = other.params_global;
+	detected_landmarks = other.detected_landmarks;
+	landmark_likelihoods = other.landmark_likelihoods;
+	patch_experts = other.patch_experts;
+	landmark_validator = other.landmark_validator;
+	face_detector_location = other.face_detector_location;
+
+	face_detector_HAAR = other.face_detector_HAAR;
+
+	triangulations = other.triangulations;
+	kde_resp_precalc = other.kde_resp_precalc;
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	return *this;
+}
+
 
 void CLM::Read_CLM(string clm_location)
 {
@@ -252,6 +404,19 @@ void CLM::Reset()
 
 	failures_in_a_row = -1;
 	face_template = Mat_<uchar>();
+}
+
+// Resetting the model, choosing the face nearest (x,y)
+void CLM::Reset(double x, double y)
+{
+
+	// First reset the model overall
+	this->Reset();
+
+	// Now in the following frame when face detection takes place this is the point at which it will be preffered
+	this->preference_det.x = x;
+	this->preference_det.y = y;
+
 }
 
 // The main internal landmark detection call (should not be used externally?)

@@ -39,27 +39,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifndef __CLM_h_
-#define __CLM_h_
-
-#include "PDM.h"
-#include "Patch_experts.h"
-#include "DetectionValidator.h"
-#include "CLMParameters.h"
-
-// Used for face detection
-#include <dlib/opencv.h>
-#include <dlib/image_processing/frontal_face_detector.h>
-
-#include <vector>
-#include <cv.h>
-
-using namespace std;
-using namespace cv;
-
-namespace CLMTracker
-{
   //===========================================================================
 
 //      The Constrained Local Model landmark detector, the implementation is mainly based off of the following three papers:
@@ -75,6 +54,25 @@ namespace CLMTracker
 //       J. M. Saragih, S. Lucey, and J. F. Cohn. Face Alignment through 
 //       Subspace Constrained Mean-Shifts. International Conference of Computer 
 //       Vision (ICCV), September, 2009.
+
+#ifndef __CLM_h_
+#define __CLM_h_
+
+#include "PDM.h"
+#include "Patch_experts.h"
+#include "DetectionValidator.h"
+#include "CLMParameters.h"
+
+#include <vector>
+#include <cv.h>
+
+#include <dlib/image_processing/frontal_face_detector.h>
+
+using namespace std;
+using namespace cv;
+
+namespace CLMTracker
+{
 
 class CLM{
 
@@ -136,158 +134,32 @@ public:
 	// This is useful for knowing when to initialise and reinitialise tracking
 	int failures_in_a_row;
 
-	// A template of a face that last succeeded with tracking (useful for large motions in video) TODO
+	// A template of a face that last succeeded with tracking (useful for large motions in video)
 	Mat_<uchar> face_template;
 
+	// Useful when resetting or initialising the model closer to a specific location (when multiple faces are present)
+	cv::Point_<double> preference_det;
+
 	// A default constructor
-	CLM()
-	{
-		CLMParameters parameters;
-		this->Read(parameters.model_location);
-	}
+	CLM();
 
 	// Constructor from a model file
-	CLM(string fname)
-	{
-		this->Read(fname);
-	}
+	CLM(string fname);
 	
 	// Copy constructor (makes a deep copy of CLM)
-	CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
-		landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
-	{
-		this->detection_success = other.detection_success;
-		this->tracking_initialised = other.tracking_initialised;
-		this->detection_certainty = other.detection_certainty;
-		this->model_likelihood = other.model_likelihood;
-		this->failures_in_a_row = other.failures_in_a_row;
-
-		// Load the CascadeClassifier (as it does not have a proper copy constructor)
-		if(!face_detector_location.empty())
-		{
-			this->face_detector_HAAR.load(face_detector_location);
-		}
-		// Make sure the matrices are allocated properly
-		this->triangulations.resize(other.triangulations.size());
-		for(size_t i = 0; i < other.triangulations.size(); ++i)
-		{
-			// Make sure the matrix is copied.
-			this->triangulations[i] = other.triangulations[i].clone();
-		}
-
-		// Make sure the matrices are allocated properly
-		for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
-		{
-			// Make sure the matrix is copied.
-			this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
-		}
-
-		this->face_detector_HOG = dlib::get_frontal_face_detector();
-	}
+	CLM(const CLM& other);
 
 	// Assignment operator for lvalues (makes a deep copy of CLM)
-	CLM & operator= (const CLM& other)
-	{
-		if (this != &other) // protect against invalid self-assignment
-		{
-			pdm = PDM(other.pdm);
-			params_local = other.params_local.clone();
-			params_global = other.params_global;
-			detected_landmarks = other.detected_landmarks.clone();
-		
-			landmark_likelihoods =other.landmark_likelihoods.clone();
-			patch_experts = Patch_experts(other.patch_experts);
-			landmark_validator = DetectionValidator(other.landmark_validator);
-			face_detector_location = other.face_detector_location;
+	CLM & operator= (const CLM& other);
 
-			this->detection_success = other.detection_success;
-			this->tracking_initialised = other.tracking_initialised;
-			this->detection_certainty = other.detection_certainty;
-			this->model_likelihood = other.model_likelihood;
-			this->failures_in_a_row = other.failures_in_a_row;
-
-			// Load the CascadeClassifier (as it does not have a proper copy constructor)
-			if(!face_detector_location.empty())
-			{
-				this->face_detector_HAAR.load(face_detector_location);
-			}
-			// Make sure the matrices are allocated properly
-			this->triangulations.resize(other.triangulations.size());
-			for(size_t i = 0; i < other.triangulations.size(); ++i)
-			{
-				// Make sure the matrix is copied.
-				this->triangulations[i] = other.triangulations[i].clone();
-			}
-
-			// Make sure the matrices are allocated properly
-			for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
-			{
-				// Make sure the matrix is copied.
-				this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
-			}
-		}
-
-		face_detector_HOG = dlib::get_frontal_face_detector();
-
-		return *this;
-	}
 	// Empty Destructor	as the memory of every object will be managed by the corresponding libraries (no pointers)
 	~CLM(){}
 
 	// Move constructor
-	CLM(const CLM&& other)
-	{
-		this->detection_success = other.detection_success;
-		this->tracking_initialised = other.tracking_initialised;
-		this->detection_certainty = other.detection_certainty;
-		this->model_likelihood = other.model_likelihood;
-		this->failures_in_a_row = other.failures_in_a_row;
-
-		pdm = other.pdm;
-		params_local = other.params_local;
-		params_global = other.params_global;
-		detected_landmarks = other.detected_landmarks;
-		landmark_likelihoods = other.landmark_likelihoods;
-		patch_experts = other.patch_experts;
-		landmark_validator = other.landmark_validator;
-		face_detector_location = other.face_detector_location;
-
-		face_detector_HAAR = other.face_detector_HAAR;
-
-		triangulations = other.triangulations;
-		kde_resp_precalc = other.kde_resp_precalc;
-
-		face_detector_HOG = dlib::get_frontal_face_detector();
-
-	}
+	CLM(const CLM&& other);
 
 	// Assignment operator for rvalues
-	CLM & operator= (const CLM&& other)
-	{
-		this->detection_success = other.detection_success;
-		this->tracking_initialised = other.tracking_initialised;
-		this->detection_certainty = other.detection_certainty;
-		this->model_likelihood = other.model_likelihood;
-		this->failures_in_a_row = other.failures_in_a_row;
-
-		pdm = other.pdm;
-		params_local = other.params_local;
-		params_global = other.params_global;
-		detected_landmarks = other.detected_landmarks;
-		landmark_likelihoods = other.landmark_likelihoods;
-		patch_experts = other.patch_experts;
-		landmark_validator = other.landmark_validator;
-		face_detector_location = other.face_detector_location;
-
-		face_detector_HAAR = other.face_detector_HAAR;
-
-		triangulations = other.triangulations;
-		kde_resp_precalc = other.kde_resp_precalc;
-
-		face_detector_HOG = dlib::get_frontal_face_detector();
-
-		return *this;
-	}
+	CLM & operator= (const CLM&& other);
 
 	// Does the actual work - landmark detection
 	bool DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CLMParameters& params);
@@ -302,14 +174,15 @@ public:
 	// Reset the model (useful if we want to completelly reinitialise, or we want to track another video)
 	void Reset();
 
+	// Reset the model, choosing the face nearest (x,y) where x and y are between 0 and 1.
+	void Reset(double x, double y);
+
 	// Reading the model in
 	void Read(string name);
 
 	// Helper reading function
 	void Read_CLM(string clm_location);
 	
-
-
 private:
 
 	// the speedup of RLMS using precalculated KDE responses (described in Saragih 2011 RLMS paper)

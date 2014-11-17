@@ -1021,7 +1021,7 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_image, CascadeClassifier& classifier)
+bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_image, CascadeClassifier& classifier, cv::Point preference)
 {
 	// The tracker can return multiple faces
 	vector<Rect_<double> > face_detections;
@@ -1031,18 +1031,35 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	if(detect_success)
 	{
 		
+		bool use_preferred = (preference.x != -1) && (preference.y != -1);
+
 		if(face_detections.size() > 1)
 		{
-			// keep the closest one (this is a hack for the experiment)
+			// keep the closest one if preference point not set
 			double best = -1;
 			int bestIndex = -1;
 			for( size_t i = 0; i < face_detections.size(); ++i)
 			{
-				// Pick a closest face
-				if(i == 0 || face_detections[i].width > best)
+				double dist;
+				bool better;
+
+				if(use_preferred)
 				{
-					bestIndex = i;
-					best = face_detections[i].width;
+					dist = sqrt((preference.x) * (face_detections[i].width/2 + face_detections[i].x) + 
+								(preference.y) * (face_detections[i].height/2 + face_detections[i].y));
+					better = dist < best;
+				}
+				else
+				{
+					dist = face_detections[i].width;
+					better = face_detections[i].width > best;
+				}
+
+				// Pick a closest face to preffered point or the biggest face
+				if(i == 0 || better)
+				{
+					bestIndex = i;	
+					best = dist;
 				}									
 			}
 
@@ -1111,7 +1128,7 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence)
+bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence, cv::Point preference)
 {
 	// The tracker can return multiple faces
 	vector<Rect_<double> > face_detections;
@@ -1121,23 +1138,50 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 					
 	if(detect_success)
 	{
-		
-		// keep the most confident one
-		double best_confidence = confidences[0];
+
+		bool use_preferred = (preference.x != -1) && (preference.y != -1);
+
+		// keep the most confident one or the one closest to preference point if set
+		double best_so_far;
+		if(use_preferred)
+		{			
+			best_so_far = sqrt((preference.x - (face_detections[0].width/2 + face_detections[0].x)) * (preference.x - (face_detections[0].width/2 + face_detections[0].x)) + 
+							   (preference.y - (face_detections[0].height/2 + face_detections[0].y)) * (preference.y - (face_detections[0].height/2 + face_detections[0].y)));
+		}
+		else
+		{
+			best_so_far = confidences[0];
+		}
 		int bestIndex = 0;
 
 		for( size_t i = 1; i < face_detections.size(); ++i)
 		{
-			// Pick a closest face
-			if(confidences[i] > best_confidence)
+
+			double dist;
+			bool better;
+
+			if(use_preferred)
 			{
+				dist = sqrt((preference.x - (face_detections[0].width/2 + face_detections[0].x)) * (preference.x - (face_detections[0].width/2 + face_detections[0].x)) + 
+							   (preference.y - (face_detections[0].height/2 + face_detections[0].y)) * (preference.y - (face_detections[0].height/2 + face_detections[0].y)));
+				better = dist < best_so_far;
+			}
+			else
+			{
+				dist = confidences[i];
+				better = dist > best_so_far;
+			}
+
+			// Pick a closest face
+			if(better)
+			{
+				best_so_far = dist;
 				bestIndex = i;
-				best_confidence = confidences[i];
 			}									
 		}
 
 		o_region = face_detections[bestIndex];
-		confidence = best_confidence;
+		confidence = confidences[bestIndex];
 	}
 	else
 	{

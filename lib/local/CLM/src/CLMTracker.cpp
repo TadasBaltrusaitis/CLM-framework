@@ -277,7 +277,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 	// Only do it if there was a face detection at all
 	if(clm_model.tracking_initialised)
-	{		
+	{
 
 		// The area of interest search size will depend if the previous track was successful
 		if(!clm_model.detection_success)
@@ -323,15 +323,23 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 			clm_model.face_detector_location = params.face_detector_location;
 		}
 
+		Point preference_det(-1, -1);
+		if(clm_model.preference_det.x != -1 && clm_model.preference_det.y != -1)
+		{
+			preference_det.x = clm_model.preference_det.x * grayscale_image.cols;
+			preference_det.y = clm_model.preference_det.y * grayscale_image.rows;
+			clm_model.preference_det = Point(-1, -1);
+		}
+
 		bool face_detection_success;
 		if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
 		{
 			double confidence;
-			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
+			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence, preference_det);
 		}
 		else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
 		{
-			face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
+			face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR, preference_det);
 		}
 
 		// Attempt to detect landmarks using the detected face (if unseccessful the detection will be ignored)
