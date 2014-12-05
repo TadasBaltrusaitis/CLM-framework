@@ -199,6 +199,56 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
+void Visualise_FHOG(const cv::Mat_<double>& descriptor, int num_rows, int num_cols, cv::Mat& visualisation)
+{
+
+	// First convert to dlib format
+	dlib::array2d<dlib::matrix<float,31,1> > hog(num_rows, num_cols);
+		
+	cv::MatConstIterator_<double> descriptor_it = descriptor.begin();
+	for(int y = 0; y < num_cols; ++y)
+	{
+		for(int x = 0; x < num_rows; ++x)
+		{
+			for(unsigned int o = 0; o < 31; ++o)
+			{
+				hog[y][x](o) = *descriptor_it++;
+			}
+		}
+	}
+
+	// Draw the FHOG to OpenCV format
+	auto fhog_vis = dlib::draw_fhog(hog);
+	visualisation = dlib::toMat(fhog_vis).clone();
+}
+
+// Create a row vector Felzenszwalb HOG descriptor from a given image
+void Extract_FHOG_descriptor(cv::Mat_<double>& descriptor, const cv::Mat_<uchar>& image, int cell_size)
+{
+	dlib::cv_image<uchar> dlib_warped_img(image);
+
+	dlib::array2d<dlib::matrix<float,31,1> > hog;
+	dlib::extract_fhog_features(dlib_warped_img, hog, cell_size);
+
+	// Convert to a usable format
+	int num_cols = hog.nc();
+	int num_rows = hog.nr();
+
+	descriptor = Mat_<double>(1, num_cols * num_rows * 31);
+	cv::MatIterator_<double> descriptor_it = descriptor.begin();
+	for(int y = 0; y < num_cols; ++y)
+	{
+		for(int x = 0; x < num_rows; ++x)
+		{
+			for(unsigned int o = 0; o < 31; ++o)
+			{
+				*descriptor_it++ = (double)hog[y][x](o);
+			}
+		}
+	}
+}
+
+
 // Pick only the more stable/rigid points under changes of expression
 void extract_rigid_points(Mat_<double>& source_points, Mat_<double>& destination_points)
 {
@@ -636,7 +686,15 @@ int main (int argc, char **argv)
 
 			dlib::array2d<dlib::matrix<float,31,1> > hog;
 			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
-			
+		
+			//Mat_<double> hog_desc;
+			//Extract_FHOG_descriptor(hog_desc, sim_warped_img_gray, 8);
+			//Mat visual;
+			//Visualise_FHOG(hog_desc, 10, 10, visual);
+
+			//imshow("HOG", visual);
+			//cv::waitKey(0);
+
 			//hogwin.set_image(dlib::draw_fhog(hog));
 
 			if(hog_output_file.is_open())

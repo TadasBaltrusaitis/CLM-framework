@@ -1,0 +1,58 @@
+﻿<Window x:Class="CLM_framework_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
+        Title="CLM Framework" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+               
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="File">
+                <MenuItem Header="Open video file" Click="fileOpenClick">
+                </MenuItem>
+                <MenuItem Header="Open webcam" Click="openWebcamClick">
+
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Recording settings">
+                <MenuItem Header="Set Location"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record pose"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record 2D landmarks"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record 3D landmarks"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record HOG"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record model parameters"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record video"></MenuItem>
+                <MenuItem IsCheckable="True" Header="Record aligned faces"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tracker settings">
+                <MenuItem Header="Sth"></MenuItem>
+            </MenuItem>
+        </Menu>
+        
+        <CLM_framework_GUI:OverlayImage x:Name="video" Grid.Row="1" Grid.Column="0"/>
+        <Border Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0">
+            <Label Name="fpsLabel">0 FPS</Label>
+        </Border>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <Label Name="headOrientationLabel"></Label>
+            <Label Name="headPoseLabel"></Label>
+            <Label Name="landmarks3DLabel"></Label>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Grid.Column="0">
+            <Button>Pause/Play</Button>
+            <Button>Replay</Button>
+            <Button>Stop</Button>
+        </StackPanel>
+        
+    </Grid>
+</Window>

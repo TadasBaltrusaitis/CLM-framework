@@ -37,3 +37,9 @@ exe/FeatureExtraction/Debug/
 exe/FeatureExtraction/Release/
 matlab_runners/demo_vid/
 matlab_runners/demo_img/
+lib/local/CLM_Interop/Release/
+lib/local/OpenCVWrappers/Debug/
+lib/local/CLM_Interop/Debug/
+exe/CLM-framework-GUI/obj/
+lib/local/OpenCVWrappers/Release/
+exe/CLM-framework-GUI/bin/
