@@ -8,6 +8,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-rigid</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-rigid -f "../videos/default.wmv" -simalign "./output/" -hogalign out.hog</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

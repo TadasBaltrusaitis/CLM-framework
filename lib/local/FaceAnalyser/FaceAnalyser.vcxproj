@@ -58,8 +58,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreLinkEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_regressors" "$(OutDir)AU_regressors"
-xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AV_regressors" "$(OutDir)AV_regressors"</Command>
+      <Command>
+      </Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
