@@ -37,3 +37,4 @@ exe/FeatureExtraction/Debug/
 exe/FeatureExtraction/Release/
 matlab_runners/demo_vid/
 matlab_runners/demo_img/
+lib/local/FaceAnalyser/Release/

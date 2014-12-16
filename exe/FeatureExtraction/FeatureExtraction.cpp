@@ -60,10 +60,10 @@
 
 #include <cv.h>
 
+#include <Face_utils.h>
+
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
-
-#include <dlib/gui_widgets.h>
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -206,49 +206,6 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
-// Pick only the more stable/rigid points under changes of expression
-void extract_rigid_points(Mat_<double>& source_points, Mat_<double>& destination_points)
-{
-	if(source_points.rows == 68)
-	{
-		Mat_<double> tmp_source = source_points.clone();
-		source_points = Mat_<double>();
-
-		// Push back the rigid points (some face outline, eyes, and nose)
-		source_points.push_back(tmp_source.row(0));
-		source_points.push_back(tmp_source.row(2));
-		source_points.push_back(tmp_source.row(14));
-		source_points.push_back(tmp_source.row(16));
-		source_points.push_back(tmp_source.row(36));
-		source_points.push_back(tmp_source.row(39));
-		source_points.push_back(tmp_source.row(43));
-		source_points.push_back(tmp_source.row(38));
-		source_points.push_back(tmp_source.row(42));
-		source_points.push_back(tmp_source.row(45));
-		source_points.push_back(tmp_source.row(31));
-		source_points.push_back(tmp_source.row(33));
-		source_points.push_back(tmp_source.row(35));
-
-		Mat_<double> tmp_dest = destination_points.clone();
-		destination_points = Mat_<double>();
-
-		// Push back the rigid points
-		destination_points.push_back(tmp_dest.row(0));
-		destination_points.push_back(tmp_dest.row(2));
-		destination_points.push_back(tmp_dest.row(14));
-		destination_points.push_back(tmp_dest.row(16));
-		destination_points.push_back(tmp_dest.row(36));
-		destination_points.push_back(tmp_dest.row(39));
-		destination_points.push_back(tmp_dest.row(43));
-		destination_points.push_back(tmp_dest.row(38));
-		destination_points.push_back(tmp_dest.row(42));
-		destination_points.push_back(tmp_dest.row(45));
-		destination_points.push_back(tmp_dest.row(31));
-		destination_points.push_back(tmp_dest.row(33));
-		destination_points.push_back(tmp_dest.row(35));
-	}
-}
-
 // Can process images via directories creating a separate output file per directory
 void get_image_input_output_params_feats(vector<vector<string> > &input_image_files, bool& as_video, vector<string> &arguments)
 {
@@ -316,16 +273,26 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 
 }
 
-void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,31,1> >* hog)
+void output_HOG_frame(std::ofstream* hog_file, bool good_frame, const Mat_<double>& hog_descriptor, int num_rows, int num_cols)
 {
-	int num_cols = hog->nc();
-	int num_rows = hog->nr();
 
+	// Using FHOGs, hence 31 channels
 	int num_channels = 31;
 
 	hog_file->write((char*)(&num_cols), 4);
 	hog_file->write((char*)(&num_rows), 4);
 	hog_file->write((char*)(&num_channels), 4);
+
+	// Not the best way to store a bool, but will be much easier to read it
+	float good_frame_float;
+	if(good_frame)
+		good_frame_float = 1;
+	else
+		good_frame_float = -1;
+
+	hog_file->write((char*)(&good_frame_float), 4);
+
+	cv::MatConstIterator_<double> descriptor_it = hog_descriptor.begin();
 
 	for(int y = 0; y < num_cols; ++y)
 	{
@@ -333,7 +300,8 @@ void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,
 		{
 			for(unsigned int o = 0; o < 31; ++o)
 			{
-				float hog_data = (*hog)[y][x](o);
+
+				float hog_data = (float)(*descriptor_it++);
 				hog_file->write ((char*)&hog_data, 4);
 			}
 		}
@@ -391,12 +359,20 @@ int main (int argc, char **argv)
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
 
-	double sim_scale = 0.6;
-	int sim_size = 96;
+	double sim_scale = 0.7;
+	int sim_size = 112;
 	bool video_output;
 	bool grayscale = false;
-	bool rigid = false;
+	bool rigid = false;	
+	int num_hog_rows;
+	int num_hog_cols;
+
 	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
+	
+	// Used for image masking
+	std::ifstream triangulation_file("model/tris_68_full.txt");
+	Mat_<int> triangulation;
+	CLMTracker::ReadMat(triangulation_file, triangulation);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -413,11 +389,7 @@ int main (int argc, char **argv)
 	if(cx == 0 || cy == 0)
 	{
 		cx_undefined = true;
-	}		
-	
-	// TODO rem
-	//dlib::image_window hogwin;
-	//hogwin.set_title("HOG image");
+	}			
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -528,7 +500,6 @@ int main (int argc, char **argv)
 					}
 				}
 			}
-
 		}
 		
 		// Saving the HOG features
@@ -547,9 +518,15 @@ int main (int argc, char **argv)
 
 		int frame_count = 0;
 		
+		// This is useful for a second pass run (if want AU predictions)
+		vector<Vec6d> params_global_video;
+		vector<bool> successes_video;
+		vector<Mat_<double>> params_local_video;
+		vector<Mat_<double>> detected_landmarks_video;
+
 		// For measuring the timings
 		int64 t1,t0 = cv::getTickCount();
-		double fps = 10;
+		double fps = 10;		
 
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
@@ -579,6 +556,20 @@ int main (int argc, char **argv)
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 
+			
+			// Do face alignment
+			Mat sim_warped_img;			
+			Mat_<double> hog_descriptor;
+
+			FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);
+			FaceAnalyser::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
+
+			cv::imshow("sim_warp", sim_warped_img);			
+			
+			Mat_<double> hog_descriptor_vis;
+			FaceAnalyser::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
+			cv::imshow("hog", hog_descriptor_vis);	
+
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -590,65 +581,9 @@ int main (int argc, char **argv)
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 			}
 
-			Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
-			Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
-
-			// Pick only rigid points
-			if(rigid)
-			{
-				 extract_rigid_points(source_landmarks, destination_landmarks);
-			}
-
-			Matx22d scale_rot_matrix = CLMTracker::AlignShapesWithScale(source_landmarks, destination_landmarks);
-			Matx23d warp_matrix;
-			warp_matrix(0,0) = scale_rot_matrix(0,0);
-			warp_matrix(0,1) = scale_rot_matrix(0,1);
-			warp_matrix(1,0) = scale_rot_matrix(1,0);
-			warp_matrix(1,1) = scale_rot_matrix(1,1);
-
-			double tx = clm_model.params_global[4];
-			double ty = clm_model.params_global[5];
-
-			Vec2d T(tx, ty);
-			T = scale_rot_matrix * T;
-
-			// Make sure centering is correct
-			warp_matrix(0,2) = -T(0) + sim_size/2;
-			warp_matrix(1,2) = -T(1) + sim_size/2;
-
-			Mat sim_warped_img;
-			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_CUBIC);
-			cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LINEAR);
-			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
-			cv::imshow("sim_warp", sim_warped_img);
-			
-
-			Mat_<uchar> sim_warped_img_gray;
-
-			if(sim_warped_img.channels() == 3)
-			{
-				cv::cvtColor(sim_warped_img, sim_warped_img_gray, CV_BGR2GRAY);
-				if(grayscale)
-				{					
-					sim_warped_img = sim_warped_img_gray.clone();
-				}
-			}	
-			else
-			{
-				sim_warped_img_gray = sim_warped_img.clone();
-			}
-
-			// TODO use colour here?
-			dlib::cv_image<uchar> dlib_warped_img(sim_warped_img_gray);
-
-			dlib::array2d<dlib::matrix<float,31,1> > hog;
-			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
-			
-			//hogwin.set_image(dlib::draw_fhog(hog));
-
 			if(hog_output_file.is_open())
 			{
-				output_HOG_frame(&hog_output_file, &hog);
+				output_HOG_frame(&hog_output_file, detection_success, hog_descriptor, num_hog_rows, num_hog_cols);
 			}
 
 			// Write the similarity normalised output
@@ -686,7 +621,7 @@ int main (int argc, char **argv)
 			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 			if(detection_certainty < visualisation_boundary)
 			{
-				CLMTracker::Draw(captured_image, source_landmarks);
+				CLMTracker::Draw(captured_image, clm_model);
 				//CLMTracker::Draw(captured_image, clm_model);
 
 				if(detection_certainty > 1)
@@ -705,7 +640,7 @@ int main (int argc, char **argv)
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 
 			}
-
+			
 			// Work out the framerate
 			if(frame_count % 10 == 0)
 			{      
@@ -799,7 +734,7 @@ int main (int argc, char **argv)
 			frame_count++;
 
 		}
-		
+
 		frame_count = 0;
 		curr_img = -1;
 
@@ -818,4 +753,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-
