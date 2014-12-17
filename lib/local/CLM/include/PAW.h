@@ -122,6 +122,7 @@ public:
 	// Construct a warp from a destination shape and triangulation
 	PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation);
 
+	// The final optional argument allows for optimisation if the triangle indices from previous frame are known (for tracking in video)
 	PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y);
 
 	// Copy constructor

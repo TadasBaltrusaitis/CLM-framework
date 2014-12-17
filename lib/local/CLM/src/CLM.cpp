@@ -220,7 +220,7 @@ CLM & CLM::operator= (const CLM&& other)
 void CLM::Read_CLM(string clm_location)
 {
 	// Location of modules
-	ifstream locations(clm_location.c_str());
+	ifstream locations(clm_location.c_str(), ios_base::in);
 
 	if(!locations.is_open())
 	{
@@ -276,7 +276,7 @@ void CLM::Read_CLM(string clm_location)
 		else if (module.compare("Triangulations") == 0) 
 		{       
 			cout << "Reading the Triangulations module from: " << location << "....";
-			ifstream triangulationFile(location.c_str());
+			ifstream triangulationFile(location.c_str(), ios_base::in);
 
 			CLMTracker::SkipComments(triangulationFile);
 
@@ -320,7 +320,7 @@ void CLM::Read(string main_location)
 
 	cout << "Reading the CLM landmark detector/tracker from: " << main_location << endl;
 	
-	ifstream locations(main_location.c_str());
+	ifstream locations(main_location.c_str(), ios_base::in);
 	if(!locations.is_open())
 	{
 		cout << "Couldn't open the model file, aborting" << endl;

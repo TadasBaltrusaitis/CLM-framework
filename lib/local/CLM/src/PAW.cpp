@@ -199,6 +199,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
+			// TODO make this neater
 			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
@@ -207,8 +208,8 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
                 pixel_mask.at<uchar>(y, x) = 1;
 			}	
 		}
-	}
-    	
+	}    	
+
 	// Preallocate maps and coefficients
 	coefficients.create(num_tris, 6);
 	map_x.create(pixel_mask.rows,pixel_mask.cols);
@@ -427,6 +428,7 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		}
 	}
 
+
     for (int i = 0; i < num_tris; ++i)
 	{
 		int j = triangles.at<int>(i, 0);
@@ -436,6 +438,14 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
 		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
 		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
+
+		// Skip the check if the point is outside the bounding box of the triangle
+
+		if( (v1.x > point.x && v2.x > point.x && v3.x > point.x) || (v1.x < point.x && v2.x < point.x && v3.x < point.x) ||
+			(v1.y > point.y && v2.y > point.y && v3.y > point.y) || (v1.y < point.y && v2.y < point.y && v3.y < point.y)    )
+		{
+			continue;
+		}
 
 		bool in_triangle = pointInTriangle(point, v1, v2, v3);
 

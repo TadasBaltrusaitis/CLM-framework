@@ -101,7 +101,7 @@ vector<string> get_arguments(int argc, char **argv)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
 {
 	output_similarity_aligned_files.clear();
 	output_hog_aligned_files.clear();
@@ -154,6 +154,10 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
+		}
+		else if(arguments[i].compare("-verbose") == 0) 
+		{
+			verbose = true;
 		}
 		else if(arguments[i].compare("-oparams") == 0) 
 		{
@@ -314,7 +318,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files;
+	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -328,9 +332,10 @@ int main (int argc, char **argv)
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
 
-	bool video = true;
+	bool video_input = true;
+	bool verbose = true;
 	bool images_as_video = false;
 
 	vector<vector<string> > input_image_files;
@@ -345,7 +350,7 @@ int main (int argc, char **argv)
 
 		if(!input_image_files.empty())
 		{
-			video = false;
+			video_input = false;
 		}
 
 	}
@@ -367,7 +372,7 @@ int main (int argc, char **argv)
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
+	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
 	std::ifstream triangulation_file("model/tris_68_full.txt");
@@ -400,7 +405,7 @@ int main (int argc, char **argv)
 		
 		Mat captured_image;
 
-		if(video)
+		if(video_input)
 		{
 			// We might specify multiple video files as arguments
 			if(files.size() > 0)
@@ -461,20 +466,26 @@ int main (int argc, char **argv)
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
-			pose_output_file.open (pose_output_files[f_n]);
+			pose_output_file.open (pose_output_files[f_n], ios_base::out);
 		}
 	
 		std::ofstream landmarks_output_file;		
 		if(!landmark_output_files.empty())
 		{
-			landmarks_output_file.open(landmark_output_files[f_n]);
+			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
+		}
+
+		std::ofstream landmarks_3D_output_file;		
+		if(!landmark_3D_output_files.empty())
+		{
+			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 		}
 
 		// Outputting model parameters (rigid and non-rigid), the first parameters are the 6 rigid shape parameters, they are followed by the non rigid shape parameters
 		std::ofstream params_output_file;		
 		if(!params_output_files.empty())
 		{
-			params_output_file.open(params_output_files[f_n]);
+			params_output_file.open(params_output_files[f_n], ios_base::out);
 		}
 
 		// saving the videos
@@ -527,6 +538,7 @@ int main (int argc, char **argv)
 		// For measuring the timings
 		int64 t1,t0 = cv::getTickCount();
 		double fps = 10;		
+		bool visualise_hog = verbose;
 
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
@@ -547,7 +559,7 @@ int main (int argc, char **argv)
 			// The actual facial landmark detection / tracking
 			bool detection_success;
 			
-			if(video || images_as_video)
+			if(video_input || images_as_video)
 			{
 				detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
 			}
@@ -561,15 +573,25 @@ int main (int argc, char **argv)
 			Mat sim_warped_img;			
 			Mat_<double> hog_descriptor;
 
-			FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);
-			FaceAnalyser::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
-
-			cv::imshow("sim_warp", sim_warped_img);			
+			// But only if needed in output
+			if(!output_similarity_align_files.empty() || hog_output_file.is_open())
+			{
+				FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
+				cv::imshow("sim_warp", sim_warped_img);			
 			
-			Mat_<double> hog_descriptor_vis;
-			FaceAnalyser::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
-			cv::imshow("hog", hog_descriptor_vis);	
+				if(hog_output_file.is_open())
+				{
+					FaceAnalyser::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
 
+					if(visualise_hog)
+					{
+						Mat_<double> hog_descriptor_vis;
+						FaceAnalyser::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
+						cv::imshow("hog", hog_descriptor_vis);	
+					}
+				}
+			}
+			
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -668,21 +690,33 @@ int main (int argc, char **argv)
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
+					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
 			
+			// Output the detected facial landmarks
+			if(!landmark_3D_output_files.empty())
+			{
+				landmarks_3D_output_file << frame_count + 1 << " " << detection_success;
+				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
+				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
+				{
+					landmarks_3D_output_file << " " << shape_3D.at<double>(i);
+				}
+				landmarks_3D_output_file << endl;
+			}
+
 			if(!params_output_files.empty())
 			{
 				params_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < 6; ++i)
 				{
-					params_output_file << " " << clm_model.params_global[i] << " "; 
+					params_output_file << " " << clm_model.params_global[i]; 
 				}
 				for (int i = 0; i < clm_model.pdm.NumberOfModes(); ++i)
 				{
-					params_output_file << " " << clm_model.params_local.at<double>(i,0) << " "; 
+					params_output_file << " " << clm_model.params_local.at<double>(i,0); 
 				}
 				params_output_file << endl;
 			}
@@ -699,7 +733,7 @@ int main (int argc, char **argv)
 				writerFace << captured_image;
 			}
 
-			if(video)
+			if(video_input)
 			{
 				video_capture >> captured_image;
 			}

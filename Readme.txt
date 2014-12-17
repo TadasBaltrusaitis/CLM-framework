@@ -98,6 +98,8 @@ run_demo_images - runs CLNF on some sample images that come with the code
 
 run_demo_videos - runs CLNF on some sample videos that come with the code (some taken from the Youtube celebrity dataset)
 	
+feature_extraction_demo.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from videos and how to read those features into Matlab.	
+	
 -------- Command line parameters for video (SimpleCLM) --------------------------
 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
@@ -116,6 +118,7 @@ Parameters for input (if nothing is specified attempts to read from a webcam wit
 Parameters for output
 	-op <location of output pose file>, the file format is as follows: frame_number timestamp detection_success X Y Z Rx Ry Rz
 	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
+	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
 	-ov <location of tracked video>
 
     -cp <1/0, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
@@ -129,6 +132,61 @@ Model parameters (apply to images and videos)
 		"model/main_svr_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
 		"model/main_svr_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 		"model/main_clm-z.txt" - trained on Multi-PIE and BU-4DFE datasets, works with both intensity and depth signals (CLM-Z)
+	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
+	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
+	
+All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
+	
+For more examples of how to run the code, please refer to the Matlab runner code which calls the compiled executables with the command line parameters.
+	
+-------- Command line parameters for feature extraction from images, image sequences and videos (FeatureExtraction) --------------------------
+
+Parameters for input (if nothing is specified attempts to read from a webcam with default values). This module is still under development and experimental, let me know if something goes wrong.
+
+	-root
+
+	-f <filename> - the video file being input
+	-device <device_num> the webcam from which to read images (default 0)
+	-fdir <directory> run the feature extraction on every image (.jpg and .png) in a directory (the output will be stored in individual files for the whole directory)
+	-asvid (if this flag is specified the images in -fdir directory will be treated as if they came from a video, that is they form a sequence, so tracking will be done instead of detection per videos)
+	
+	optional camera parameters for proper head pose visualisation
+
+	-fx <focal length in x>
+	-fy <focal length in y>
+	-cx <optical centre in x> 
+	-cy <optical centre in y>
+	
+Parameters for output
+	-outroot <the root directory relevant to which the output files are created> (optional)
+	
+	-op <location of output pose file>, the file format is as follows: frame_number timestamp detection_success X Y Z Rx Ry Rz
+	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
+	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
+	-ov <location of tracked video>
+
+	-simalign <directory> output similarity aligned face images into the following directory
+	-vid (specifies that aligned images are to be output as video file as opposed to individual images)
+	-hogalign <filename> output file for HOG features (FHOG of cell size 8) extracted from similarity aligned face images
+	-oparams <filename> output file for rigid and non-rigid shape parameters
+	-cp <1/0>, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
+
+	Additional parameters for output
+	
+	-verbose visualise the HOG features if they are being output
+	-rigid use a slightly more robust version of similarity alignment. This uses and experimentally determined set of more stable feature points instead of all of them for determining similarity alignment
+	-simscale <default 0.7> scale of the face for similarity alignment
+	-simsize <default 112> width and height of image in pixels when similarity aligned
+	-g output images should be grayscale (for saving space)
+	
+Model parameters (apply to images and videos)
+	-mloc <the location of CLM model>
+		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
+		"model/main_ccnf_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
+		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
+		"model/main_svr_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
+		"model/main_svr_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
+		"model/main_svr_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
 	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
 	

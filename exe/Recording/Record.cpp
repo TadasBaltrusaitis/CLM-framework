@@ -137,7 +137,7 @@ int main (int argc, char **argv)
         }
         else if( strcmp( arguments[i].c_str(), "-dev") == 0 )
         {
-            std::stringstream ss;
+			std::stringstream ss;
             ss << arguments[i+1].c_str();
             ss >> device;
         }
@@ -174,7 +174,7 @@ int main (int argc, char **argv)
 	cv::VideoWriter video_writer(out_file, CV_FOURCC('D','I','V','X'), 30, img.size(), true);
 
 	ofstream outlog;
-	outlog.open((outroot + outfile + ".log").c_str());
+	outlog.open((outroot + outfile + ".log").c_str(), ios_base::out);
 
 	int frameProc = 0;
 	while(!img.empty())

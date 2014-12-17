@@ -66,7 +66,7 @@ namespace CLMTracker
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
-	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_features_files, bool& camera_plane_pose, vector<string> &arguments)
+	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 
@@ -115,7 +115,14 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		} 
 		else if (arguments[i].compare("-of") == 0)
 		{
-			output_features_files.push_back(root + arguments[i + 1]);
+			output_2d_landmark_files.push_back(root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i+1] = false;
+			i++;
+		} 
+		else if (arguments[i].compare("-of3D") == 0)
+		{
+			output_3D_landmark_files.push_back(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -266,7 +273,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 							if(exists(bbox))
 							{
 
-								std::ifstream in_bbox(bbox.string().c_str());
+								std::ifstream in_bbox(bbox.string().c_str(), ios_base::in);
 
 								double min_x, min_y, max_x, max_y;
 

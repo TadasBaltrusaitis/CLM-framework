@@ -483,7 +483,7 @@ void PDM::UpdateModelParameters(const Mat_<double>& delta_p, Mat_<double>& param
 void PDM::Read(string location)
 {
   	
-	ifstream pdmLoc(location);
+	ifstream pdmLoc(location, ios_base::in);
 
 	CLMTracker::SkipComments(pdmLoc);
 

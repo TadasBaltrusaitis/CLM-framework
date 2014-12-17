@@ -82,7 +82,7 @@ namespace CLMTracker
 	// Helper functions for parsing the inputs
 	//=============================================================================================
 	void get_video_input_output_params(vector<string> &input_video_file, vector<string> &depth_dir,
-		vector<string> &output_pose_file, vector<string> &output_video_file, vector<string> &output_features_file, bool& camera_plane_pose, vector<string> &arguments);
+		vector<string> &output_pose_file, vector<string> &output_video_file, vector<string> &output_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments);
 
 	void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, vector<string> &arguments);
 

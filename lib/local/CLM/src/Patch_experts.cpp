@@ -369,7 +369,7 @@ void Patch_experts::Read(vector<string> intensity_svr_expert_locations, vector<s
 void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale)
 {
 
-	ifstream patchesFile(expert_location.c_str());
+	ifstream patchesFile(expert_location.c_str(), ios_base::in);
 
 	if(patchesFile.is_open())
 	{

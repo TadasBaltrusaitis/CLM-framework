@@ -98,7 +98,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files;
+	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -112,7 +112,7 @@ int main (int argc, char **argv)
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -183,13 +183,19 @@ int main (int argc, char **argv)
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
-			pose_output_file.open (pose_output_files[f_n]);
+			pose_output_file.open (pose_output_files[f_n], ios_base::out);
 		}
 	
 		std::ofstream landmarks_output_file;		
 		if(!landmark_output_files.empty())
 		{
-			landmarks_output_file.open(landmark_output_files[f_n]);
+			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
+		}
+
+		std::ofstream landmarks_3D_output_file;
+		if(!landmark_3D_output_files.empty())
+		{
+			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 		}
 	
 		int frame_count = 0;
@@ -322,6 +328,18 @@ int main (int argc, char **argv)
 					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
 				}
 				landmarks_output_file << endl;
+			}
+
+			// Output the detected facial landmarks
+			if(!landmark_3D_output_files.empty())
+			{
+				landmarks_3D_output_file << frame_count + 1 << " " << detection_success;
+				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
+				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
+				{
+					landmarks_3D_output_file << " " << shape_3D.at<double>(i);
+				}
+				landmarks_3D_output_file << endl;
 			}
 
 			// Output the estimated head pose
