@@ -180,7 +180,8 @@ namespace FaceAnalyser
 
 		CLMTracker::PAW paw(destination_landmarks, triangulation, 0, 0, aligned_face.cols-1, aligned_face.rows-1);
 		
-		vector<Mat> aligned_face_channels;
+		vector<Mat> aligned_face_channels(aligned_face.channels());
+		
 		cv::split(aligned_face, aligned_face_channels);
 
 		for(size_t i = 0; i < aligned_face_channels.size(); ++i)

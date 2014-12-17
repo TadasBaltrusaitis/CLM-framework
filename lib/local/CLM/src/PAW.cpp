@@ -199,7 +199,6 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			// TODO make this neater
 			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
