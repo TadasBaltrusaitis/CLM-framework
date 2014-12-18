@@ -64,6 +64,25 @@ using namespace std;
 namespace CLMTracker
 {
 
+// Useful utility for creating directories for storing the output files
+void create_directory_from_file(string output_path)
+{
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(path(output_path).parent_path());
+
+	if(!boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
 	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments)
@@ -94,7 +113,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 	{
 		if (arguments[i].compare("-f") == 0) 
 		{                    
-			input_video_files.push_back(root + arguments[i + 1]);
+			input_video_files.push_back(root + arguments[i + 1]);			
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -109,6 +128,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-op") == 0)
 		{
 			output_pose_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -116,6 +136,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-of") == 0)
 		{
 			output_2d_landmark_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -123,6 +144,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-of3D") == 0)
 		{
 			output_3D_landmark_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -130,6 +152,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-ov") == 0)
 		{
 			output_video_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;

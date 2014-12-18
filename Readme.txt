@@ -98,7 +98,9 @@ run_demo_images - runs CLNF on some sample images that come with the code
 
 run_demo_videos - runs CLNF on some sample videos that come with the code (some taken from the Youtube celebrity dataset)
 	
-feature_extraction_demo.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from videos and how to read those features into Matlab.	
+feature_extraction_demo_img_seq.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a sequence of images in a folder and how to read those features into Matlab.	
+
+feature_extraction_demo_vid.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a video and how to read those features into Matlab.	
 	
 -------- Command line parameters for video (SimpleCLM) --------------------------
 
@@ -165,8 +167,8 @@ Parameters for output
 	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
 	-ov <location of tracked video>
 
-	-simalign <directory> output similarity aligned face images into the following directory
-	-vid (specifies that aligned images are to be output as video file as opposed to individual images)
+	-simaligndir <directory> output similarity aligned face images into the following directory
+	-simalignvid <filename> output similarity aligned face images into the following video
 	-hogalign <filename> output file for HOG features (FHOG of cell size 8) extracted from similarity aligned face images
 	-oparams <filename> output file for rigid and non-rigid shape parameters
 	-cp <1/0>, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>

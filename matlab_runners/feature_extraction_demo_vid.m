@@ -1,13 +1,13 @@
 oldDir = chdir('../Release/');
 clm_exe = '"FeatureExtraction.exe"';
 
-output = '../matlab_runners/output_features/';
+output = '../matlab_runners/output_features_vid/';
 
 if(~exist(output, 'file'))
     mkdir(output)
 end
     
-in_files = dir('../videos/default.wmv');
+in_files = dir('../videos/1815_01_008_tony_blair.avi');
 % some parameters
 verbose = true;
 
@@ -33,7 +33,7 @@ for i=1:numel(in_files)
         mkdir([output name]);
     end
     
-    outputDir_aligned = [output name '.avi'];
+    outputDir_aligned = [output name];
     
     outputHOG_aligned = [output name '.hog'];
     
@@ -41,7 +41,7 @@ for i=1:numel(in_files)
     
     command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"' ' -of3D "' outputFile_3Dfp '"']);
     
-    command = cat(2, command, [' -simalign "' outputDir_aligned '" -hogalign "' outputHOG_aligned '"' ' -oparams "' output_shape_params '"']);    
+    command = cat(2, command, [' -simaligndir "' outputDir_aligned '" -hogalign "' outputHOG_aligned '"' ' -oparams "' output_shape_params '"']);    
                  
 end
 

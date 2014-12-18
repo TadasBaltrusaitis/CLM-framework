@@ -100,15 +100,51 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-// Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+// Useful utility for creating directories for storing the output files
+void create_directory_from_file(string output_path)
 {
-	output_similarity_aligned_files.clear();
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(path(output_path).parent_path());
+
+	if(!boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
+void create_directory(string output_path)
+{
+
+	// Creating the right directory structure
+	auto p = path(output_path);
+
+	if(!boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		
+		if(!success)
+		{
+			cout << "Failed to create a directory..." << p.string() << endl;
+		}
+	}
+}
+
+// Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
+void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+{
+	output_similarity_aligned.clear();
+	vid_output = false;
 	output_hog_aligned_files.clear();
 	output_model_param_files.clear();
 
 	bool* valid = new bool[arguments.size()];
-	video = false;
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
@@ -141,9 +177,20 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
-		if (arguments[i].compare("-simalign") == 0) 
+		if (arguments[i].compare("-simalignvid") == 0) 
 		{                    
-			output_similarity_aligned_files.push_back(output_root + arguments[i + 1]);
+			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
+			vid_output = true;
+			valid[i] = false;
+			valid[i+1] = false;			
+			i++;
+		}		
+		if (arguments[i].compare("-simaligndir") == 0) 
+		{                    
+			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
+			create_directory(output_root + arguments[i + 1]);
+			vid_output = false;
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -151,6 +198,7 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-hogalign") == 0) 
 		{
 			output_hog_aligned_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -162,6 +210,7 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-oparams") == 0) 
 		{
 			output_model_param_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -169,11 +218,6 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-rigid") == 0) 
 		{
 			rigid = true;
-		}
-		else if(arguments[i].compare("-vid") == 0) 
-		{
-			video = true;
-			valid[i] = false;
 		}
 		else if(arguments[i].compare("-g") == 0) 
 		{
@@ -360,19 +404,19 @@ int main (int argc, char **argv)
 	// The modules that are being used for tracking
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
-	vector<string> output_similarity_align_files;
+	vector<string> output_similarity_align;
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
 
 	double sim_scale = 0.7;
 	int sim_size = 112;
-	bool video_output;
-	bool grayscale = false;
+	bool grayscale = false;	
+	bool video_output = false;
 	bool rigid = false;	
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, verbose, arguments);
+	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
 	std::ifstream triangulation_file("model/tris_68_full.txt");
@@ -490,27 +534,21 @@ int main (int argc, char **argv)
 
 		// saving the videos
 		VideoWriter output_similarity_aligned_video;
-		if(!output_similarity_align_files.empty())
+		if(!output_similarity_align.empty())
 		{
 			if(video_output)
 			{
-				double fps = video_capture.get(CV_CAP_PROP_FPS);
-				output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
-			}			
-			else
-			{
-				if(!boost::filesystem::exists(boost::filesystem::path(output_similarity_align_files[f_n])))
+				if(video_input)
 				{
-					bool success = boost::filesystem::create_directory(output_similarity_align_files[f_n]);
-
-					if(!success)
-					{
-						cout << "Failed to create a directory... exiting";
-						cin.get();
-						return 0;
-					}
+					double fps = video_capture.get(CV_CAP_PROP_FPS);
+					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
 				}
-			}
+				else
+				{
+					// Use 30 fps if input is sequence
+					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), 30, Size(sim_size, sim_size), true);
+				}
+			}			
 		}
 		
 		// Saving the HOG features
@@ -574,7 +612,7 @@ int main (int argc, char **argv)
 			Mat_<double> hog_descriptor;
 
 			// But only if needed in output
-			if(!output_similarity_align_files.empty() || hog_output_file.is_open())
+			if(!output_similarity_align.empty() || hog_output_file.is_open())
 			{
 				FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
 				cv::imshow("sim_warp", sim_warped_img);			
@@ -609,7 +647,7 @@ int main (int argc, char **argv)
 			}
 
 			// Write the similarity normalised output
-			if(!output_similarity_align_files.empty())
+			if(!output_similarity_align.empty())
 			{
 				if(video_output)
 				{
@@ -630,7 +668,7 @@ int main (int argc, char **argv)
 					
 					std::string preferredSlash = slash.make_preferred().string();
 				
-					string out_file = output_similarity_align_files[f_n] + preferredSlash + string(name);
+					string out_file = output_similarity_align[f_n] + preferredSlash + string(name);
 					imwrite(out_file, sim_warped_img);
 				}
 			}

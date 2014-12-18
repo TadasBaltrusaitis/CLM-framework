@@ -47,6 +47,10 @@ for multiple faces:
 	cd bin
 	./MultiTrackCLM -f ../videos/multi_face.avi
 
+for feature extraction (i.e. HOG and similarity aligned faces):
+	cd bin
+	./FeatureExtraction -rigid  -verbose  -f "../videos/default.wmv" -simalign "/output_features/default" -hogalign "/output_features/default.hog"
+
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
 
