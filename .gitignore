@@ -6,6 +6,7 @@ ipch/
 *.ipch
 *.psess
 *.pdb
+*.a
 matlab runners/out_wild_clnf/
 matlab runners/out_wild_clnf_wild/
 matlab runners/out_wild_svr/
@@ -43,3 +44,8 @@ matlab_runners/output_features/
 matlab_runners/output_features_vid/1815_01_008_tony_blair/
 matlab_runners/output_features_seq/
 matlab_runners/output_features_vid/
+CMakeFiles/
+/bin/
+Makefile
+cmake_install.cmake
+CMakeCache.txt

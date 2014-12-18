@@ -3,6 +3,8 @@ project (CLM_framework)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
 # OpenCV
 if(WIN32)
 	include_directories(lib/3rdParty/OpenCV/include)
@@ -82,6 +84,8 @@ if(UNIX)
 	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS}/boost)
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})	
 endif(UNIX)
+
+find_package(TBB REQUIRED)
 
 # Move CLM model
 file(GLOB files "lib/local/CLM/model/*.txt")
@@ -177,7 +181,7 @@ add_subdirectory(lib/3rdParty/dlib)
 
 # CLM library (ordering matters)
 add_subdirectory(lib/local/CLM)
-
+add_subdirectory(lib/local/FaceAnalyser)
 # executables
 add_subdirectory(exe/SimpleCLMImg)
 add_subdirectory(exe/SimpleCLM)
