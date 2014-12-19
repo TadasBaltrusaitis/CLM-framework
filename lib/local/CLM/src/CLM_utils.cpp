@@ -73,7 +73,7 @@ void create_directory_from_file(string output_path)
 	// First get rid of the file
 	auto p = path(path(output_path).parent_path());
 
-	if(!boost::filesystem::exists(p))		
+	if(!p.empty() && !boost::filesystem::exists(p))		
 	{
 		bool success = boost::filesystem::create_directories(p);
 		if(!success)
