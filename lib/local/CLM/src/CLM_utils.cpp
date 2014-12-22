@@ -83,6 +83,25 @@ void create_directory_from_file(string output_path)
 	}
 }
 
+// Useful utility for creating directories for storing the output files
+void create_directories(string output_path)
+{
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(output_path);
+
+	if(!p.empty() && !boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
 	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments)
@@ -322,6 +341,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 		else if (arguments[i].compare("-ofdir") == 0) 
 		{
 			out_pts_dir = arguments[i + 1];
+			create_directories(out_pts_dir);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -329,6 +349,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 		else if (arguments[i].compare("-oidir") == 0) 
 		{
 			out_img_dir = arguments[i + 1];
+			create_directories(out_img_dir);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -363,7 +384,9 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			path fname = image_loc.filename();
 			fname = fname.replace_extension("jpg");
 			output_image_files.push_back(out_img_dir + "/" + fname.string());
+			
 		}
+		create_directory_from_file(output_image_files[0]);
 	}
 
 	if(!out_pts_dir.empty())
@@ -374,8 +397,9 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 			path fname = image_loc.filename();
 			fname = fname.replace_extension("pts");
-			output_feature_files.push_back(out_pts_dir + "/" + fname.string());
+			output_feature_files.push_back(out_pts_dir + "/" + fname.string());			
 		}
+		create_directory_from_file(output_feature_files[0]);
 	}
 
 	// Make sure the same number of images and bounding boxes is present, if any bounding boxes are defined
