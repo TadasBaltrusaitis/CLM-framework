@@ -296,13 +296,16 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 					vector<path> file_in_directory;                                
 					copy(directory_iterator(image_directory), directory_iterator(), back_inserter(file_in_directory));
+					
+					// Sort the images in the directory first
+					sort(file_in_directory.begin(), file_in_directory.end()); 
 
 					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 					{
 						// Possible image extension .jpg and .png
 						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0)
 						{
-								
+							
 								
 							input_image_files.push_back(file_iterator->string());
 								

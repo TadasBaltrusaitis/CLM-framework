@@ -277,6 +277,9 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 					vector<path> file_in_directory;                                
 					copy(directory_iterator(image_directory), directory_iterator(), back_inserter(file_in_directory));
 
+					// Sort the images in the directory first
+					sort(file_in_directory.begin(), file_in_directory.end()); 
+
 					vector<string> curr_dir_files;
 
 					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
