@@ -40,6 +40,7 @@
     <Import Project="..\..\3rdParty\tbb\tbb_2012.props" />
     <Import Project="..\..\3rdParty\boost\boost_vs2012d.props" />
     <Import Project="..\..\3rdParty\OpenCV\openCVd_vs2012.props" />
+    <Import Project="..\CamCom\CamCom.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -47,6 +48,7 @@
     <Import Project="..\..\3rdParty\OpenCV\openCV_vs2012.props" />
     <Import Project="..\..\3rdParty\tbb\tbb_2012.props" />
     <Import Project="..\..\3rdParty\boost\boost_vs2012.props" />
+    <Import Project="..\CamCom\CamCom.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -61,7 +63,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -74,7 +76,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -110,6 +112,9 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CamCom\CamCom.vcxproj">
+      <Project>{de6f7dff-8aae-4908-82f7-245d62cab8c9}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\CLM\CLM_vs2012.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>

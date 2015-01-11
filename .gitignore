@@ -43,3 +43,5 @@ lib/local/CLM_Interop/Debug/
 exe/CLM-framework-GUI/obj/
 lib/local/OpenCVWrappers/Release/
 exe/CLM-framework-GUI/bin/
+lib/local/CamCom/Release/
+lib/local/CamCom/Debug/

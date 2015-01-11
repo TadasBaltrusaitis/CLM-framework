@@ -9,6 +9,10 @@
 #include "cv.h"
 #include "highgui.h"
 
+// For camera listings
+#include "comet_auto_mf.h"
+#include "camera_helper.h"
+
 #pragma managed
 
 #include <msclr\marshal.h>
@@ -29,6 +33,7 @@ namespace CLM_Interop {
 
 	public ref class CaptureFailedException : System::Exception { };
 
+	
 	public ref class Capture
 	{
 	private:
@@ -42,14 +47,20 @@ namespace CLM_Interop {
 		double fps;
 
 	public:
-		
-		Capture(int device)
+
+
+		Capture(int device, int width, int height)
 		{
 			latestFrame = gcnew RawImage();
 			mirroredFrame = gcnew RawImage();
 
 			vc = new VideoCapture(device);
 			fps = vc->get(CV_CAP_PROP_FPS);
+			vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
+			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
+
+			std::cout << vc->get(CV_CAP_PROP_FRAME_WIDTH) << " " << vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+
 		}
 
 		Capture(System::String^ videoFile)
@@ -59,6 +70,75 @@ namespace CLM_Interop {
 
 			vc = new VideoCapture(marshal_as<std::string>(videoFile));
 			fps = vc->get(CV_CAP_PROP_FPS);
+		}
+
+
+		//System::Collections::Generic::Dictionary<System::String^, double>^
+
+		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
+		{
+
+			
+			//Tuple<System::String^, int> a;//(gcnew System::String("a"), 0);
+
+			//List<System::Tuple<Double,Double>> a;
+			auto managed_camera_list = gcnew List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>();
+
+		    comet::auto_mf auto_mf;
+
+			std::vector<camera> cameras = camera_helper::get_all_cameras();
+			
+			for (int i = 0; i < cameras.size(); ++i)
+			{
+				cameras[i].activate();
+				
+				std::string name = cameras[i].name(); 
+
+				// List camera media types
+				auto media_types = cameras[i].media_types();
+
+				auto resolutions = gcnew List<Tuple<int,int>^>();
+
+				set<pair<pair<int, int>, media_type>> res_set;
+
+				for (int m = 0; m < media_types.size(); ++m)
+				{
+					auto media_type_curr = media_types[m];
+					// For now only allow mjpeg
+					if(media_type_curr.format() == MediaFormat::MJPG)
+					{
+						res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+					}
+				}
+
+				int num_res = res_set.size();
+				int curr_res = 0;
+				Mat sample_img;
+				RawImage^ sample_img_managed = gcnew RawImage();
+
+				for (auto beg = res_set.begin(); beg != res_set.end(); ++beg)
+				{
+					auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
+
+					if(curr_res >= num_res / 2 && sample_img.empty())	
+					{
+						cameras[i].set_media_type(beg->second);
+						
+						// read several images (to avoid overexposure)
+						for (int k = 0; k < 30; ++k)
+							cameras[i].read_frame();
+						
+						sample_img = cameras[i].read_frame();
+
+						sample_img.copyTo(sample_img_managed->Mat);
+					}
+					resolutions->Add(resolution);
+
+					curr_res++;
+				}
+				managed_camera_list->Add(gcnew Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>(gcnew System::String(name.c_str()), resolutions, sample_img_managed));
+			}
+			return managed_camera_list;
 		}
 
 		RawImage^ GetNextFrame()

@@ -229,20 +229,56 @@ namespace CLM_framework_GUI
 
                     // Display message box
                     MessageBox.Show(messageBoxText, caption, button, icon);
-
                 }
-
             }
         }
 
         private void openWebcamClick(object sender, RoutedEventArgs e)
         {
-            capture = new Capture(0);
 
-            // TODO repetition here, need code that stops the old thread and then start the new one
-            processing_thread = new Thread(VideoLoop);
-            processing_thread.Start();
+            // First close the cameras that might be open
+            if(capture != null)
+            {
+                capture.Dispose();
+            }
 
+            CameraSelection cam_sec = new CameraSelection();
+            cam_sec.ShowDialog();
+            if (cam_sec.camera_selected)
+            {
+                int cam_id = cam_sec.selected_camera.Item1;
+                int width = cam_sec.selected_camera.Item2;
+                int height = cam_sec.selected_camera.Item3;
+
+                capture = new Capture(cam_id, width, height);
+
+                // TODO repetition here, need code that stops the old thread and then start the new one
+                if (capture.isOpened())
+                {
+                    if (processing_thread != null)
+                    {
+                        // Let the other thread finish first
+                        while (processing_thread.IsAlive)
+                            thread_running = false;
+                    }
+
+                    thread_running = true;
+
+                    processing_thread = new Thread(VideoLoop);
+                    processing_thread.Start();
+                }
+                else
+                {
+
+                    string messageBoxText = "Failed to open a webcam";
+                    string caption = "Webcam failure";
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+
+                    // Display message box
+                    MessageBox.Show(messageBoxText, caption, button, icon);
+                }
+            }
         }
 
     }
