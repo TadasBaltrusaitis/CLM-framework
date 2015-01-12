@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,16 +45,6 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <PAW.h>
@@ -126,6 +133,86 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 	map_x.create(pixel_mask.rows,pixel_mask.cols);
 	map_y.create(pixel_mask.rows,pixel_mask.cols);
 
+
+}
+
+// Manually define min and max values
+PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y)
+{
+	// Initialise some variables directly
+	this->destination_landmarks = destination_shape;
+	this->triangulation = triangulation;
+
+	int num_points = destination_shape.rows/2;
+
+	int num_tris = triangulation.rows;
+	
+	// Pre-compute the rest
+    alpha = Mat_<double>(num_tris, 3);
+    beta = Mat_<double>(num_tris, 3);
+    
+    Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
+    Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
+    
+	for (int tri = 0; tri < num_tris; ++tri)
+	{	
+		int j = triangulation.at<int>(tri, 0);
+		int k = triangulation.at<int>(tri, 1);
+		int l = triangulation.at<int>(tri, 2);
+
+        double c1 = ys.at<double>(l) - ys.at<double>(j);
+        double c2 = xs.at<double>(l) - xs.at<double>(j);
+        double c4 = ys.at<double>(k) - ys.at<double>(j);
+        double c3 = xs.at<double>(k) - xs.at<double>(j);
+        		
+        double c5 = c3*c1 - c2*c4;
+
+        alpha.at<double>(tri, 0) = (ys.at<double>(j) * c2 - xs.at<double>(j) * c1) / c5;
+        alpha.at<double>(tri, 1) = c1/c5;
+        alpha.at<double>(tri, 2) = -c2/c5;
+
+        beta.at<double>(tri, 0) = (xs.at<double>(j) * c4 - ys.at<double>(j) * c3)/c5;
+        beta.at<double>(tri, 1) = -c4/c5;
+        beta.at<double>(tri, 2) = c3/c5;
+	}
+
+	double max_x;
+	double max_y;
+
+	min_x = in_min_x;
+	min_y = in_min_y;
+
+	max_x = in_max_x;
+	max_y = in_max_y;
+
+	int w = (int)(max_x - min_x + 1.5);
+    int h = (int)(max_y - min_y + 1.5);
+    
+	// Round the min_x and min_y for simplicity?
+
+    pixel_mask = Mat_<uchar>(h, w, (uchar)0);
+    triangle_id = Mat_<int>(h, w, -1);
+        
+	int curr_tri = -1;
+
+	for(int y = 0; y < pixel_mask.rows; y++)
+	{
+		for(int x = 0; x < pixel_mask.cols; x++)
+		{
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
+			// If there is a triangle at this location
+            if(curr_tri != -1)
+			{
+				triangle_id.at<int>(y, x) = curr_tri;
+                pixel_mask.at<uchar>(y, x) = 1;
+			}	
+		}
+	}    	
+
+	// Preallocate maps and coefficients
+	coefficients.create(num_tris, 6);
+	map_x.create(pixel_mask.rows,pixel_mask.cols);
+	map_y.create(pixel_mask.rows,pixel_mask.cols);
 
 }
 
@@ -340,6 +427,7 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		}
 	}
 
+
     for (int i = 0; i < num_tris; ++i)
 	{
 		int j = triangles.at<int>(i, 0);
@@ -349,6 +437,14 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
 		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
 		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
+
+		// Skip the check if the point is outside the bounding box of the triangle
+
+		if( (v1.x > point.x && v2.x > point.x && v3.x > point.x) || (v1.x < point.x && v2.x < point.x && v3.x < point.x) ||
+			(v1.y > point.y && v2.y > point.y && v3.y > point.y) || (v1.y < point.y && v2.y < point.y && v3.y < point.y)    )
+		{
+			continue;
+		}
 
 		bool in_triangle = pointInTriangle(point, v1, v2, v3);
 

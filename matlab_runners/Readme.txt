@@ -1,12 +1,16 @@
 --------------------------------------- CLM Matlab runners -----------------------------------------------------------------------------	
 
-These are provided for recreation of some of the experiments described in the publications and to demonstrate the command line interface by calling the C++ executables from matlab.
+These are provided for recreation of some of the experiments described in the publications and to demonstrate the command line interface by calling the C++ executables from matlab. This is intended to test the Windows version of the code.
 
 ======================== Demos ==================================
 
 run_demo_images.m - running the SimpleCLMImg landmark detection on the demo images packaged with the code
 run_demo_videos.m - running the SimpleCLM landmark detection and tracking on prepackaged demo videos
 
+feature_extraction_demo_img_seq.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a sequence of images in a folder and how to read those features into Matlab.	
+
+feature_extraction_demo_vid.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a video and how to read those features into Matlab.	
+	
 The demos are configured to use CCNF patch experts trained on in-the-wild and Multi-PIE datasets, it is possible to uncomment other model file definitions in the scripts to run them instead.
 
 ======================== Experiments ============================

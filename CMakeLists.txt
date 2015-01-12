@@ -3,6 +3,8 @@ project (CLM_framework)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
 # OpenCV
 if(WIN32)
 	include_directories(lib/3rdParty/OpenCV/include)
@@ -83,6 +85,8 @@ if(UNIX)
 	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})	
 endif(UNIX)
 
+find_package(TBB REQUIRED)
+
 # Move CLM model
 file(GLOB files "lib/local/CLM/model/*.txt")
 foreach(file ${files})
@@ -149,12 +153,12 @@ endforeach()
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     if (GCC_VERSION VERSION_LESS 4.7)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -msse -msse2 -msse3")
     else ()
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -msse -msse2 -msse3")
     endif ()
 else ()
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -msse -msse2 -msse3")
 endif ()
 
 # Boost
@@ -177,7 +181,7 @@ add_subdirectory(lib/3rdParty/dlib)
 
 # CLM library (ordering matters)
 add_subdirectory(lib/local/CLM)
-
+add_subdirectory(lib/local/FaceAnalyser)
 # executables
 add_subdirectory(exe/SimpleCLMImg)
 add_subdirectory(exe/SimpleCLM)

@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,20 +45,10 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
 
-// SimpleCLM.cpp : Defines the entry point for the console application.
+// FeatureExtraction.cpp : Defines the entry point for the feature extraction console application.
 
 #include <CLM.h>
 #include <CLMTracker.h>
@@ -53,10 +60,10 @@
 
 #include <cv.h>
 
+#include <Face_utils.h>
+
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
-
-#include <dlib/gui_widgets.h>
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -93,15 +100,51 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-// Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &video, bool &grayscale, bool &rigid, vector<string> &arguments)
+// Useful utility for creating directories for storing the output files
+void create_directory_from_file(string output_path)
 {
-	output_similarity_aligned_files.clear();
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(path(output_path).parent_path());
+
+	if(!p.empty() && !boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
+void create_directory(string output_path)
+{
+
+	// Creating the right directory structure
+	auto p = path(output_path);
+
+	if(!boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		
+		if(!success)
+		{
+			cout << "Failed to create a directory..." << p.string() << endl;
+		}
+	}
+}
+
+// Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
+void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+{
+	output_similarity_aligned.clear();
+	vid_output = false;
 	output_hog_aligned_files.clear();
 	output_model_param_files.clear();
 
 	bool* valid = new bool[arguments.size()];
-	video = false;
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
@@ -134,9 +177,20 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
-		if (arguments[i].compare("-simalign") == 0) 
+		if (arguments[i].compare("-simalignvid") == 0) 
 		{                    
-			output_similarity_aligned_files.push_back(output_root + arguments[i + 1]);
+			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
+			vid_output = true;
+			valid[i] = false;
+			valid[i+1] = false;			
+			i++;
+		}		
+		if (arguments[i].compare("-simaligndir") == 0) 
+		{                    
+			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
+			create_directory(output_root + arguments[i + 1]);
+			vid_output = false;
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -144,13 +198,19 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-hogalign") == 0) 
 		{
 			output_hog_aligned_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
 		}
+		else if(arguments[i].compare("-verbose") == 0) 
+		{
+			verbose = true;
+		}
 		else if(arguments[i].compare("-oparams") == 0) 
 		{
 			output_model_param_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -158,11 +218,6 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 		else if(arguments[i].compare("-rigid") == 0) 
 		{
 			rigid = true;
-		}
-		else if(arguments[i].compare("-vid") == 0) 
-		{
-			video = true;
-			valid[i] = false;
 		}
 		else if(arguments[i].compare("-g") == 0) 
 		{
@@ -199,99 +254,6 @@ void get_output_feature_params(vector<string> &output_similarity_aligned_files, 
 
 }
 
-void Visualise_FHOG(const cv::Mat_<double>& descriptor, int num_rows, int num_cols, cv::Mat& visualisation)
-{
-
-	// First convert to dlib format
-	dlib::array2d<dlib::matrix<float,31,1> > hog(num_rows, num_cols);
-		
-	cv::MatConstIterator_<double> descriptor_it = descriptor.begin();
-	for(int y = 0; y < num_cols; ++y)
-	{
-		for(int x = 0; x < num_rows; ++x)
-		{
-			for(unsigned int o = 0; o < 31; ++o)
-			{
-				hog[y][x](o) = *descriptor_it++;
-			}
-		}
-	}
-
-	// Draw the FHOG to OpenCV format
-	auto fhog_vis = dlib::draw_fhog(hog);
-	visualisation = dlib::toMat(fhog_vis).clone();
-}
-
-// Create a row vector Felzenszwalb HOG descriptor from a given image
-void Extract_FHOG_descriptor(cv::Mat_<double>& descriptor, const cv::Mat_<uchar>& image, int cell_size)
-{
-	dlib::cv_image<uchar> dlib_warped_img(image);
-
-	dlib::array2d<dlib::matrix<float,31,1> > hog;
-	dlib::extract_fhog_features(dlib_warped_img, hog, cell_size);
-
-	// Convert to a usable format
-	int num_cols = hog.nc();
-	int num_rows = hog.nr();
-
-	descriptor = Mat_<double>(1, num_cols * num_rows * 31);
-	cv::MatIterator_<double> descriptor_it = descriptor.begin();
-	for(int y = 0; y < num_cols; ++y)
-	{
-		for(int x = 0; x < num_rows; ++x)
-		{
-			for(unsigned int o = 0; o < 31; ++o)
-			{
-				*descriptor_it++ = (double)hog[y][x](o);
-			}
-		}
-	}
-}
-
-
-// Pick only the more stable/rigid points under changes of expression
-void extract_rigid_points(Mat_<double>& source_points, Mat_<double>& destination_points)
-{
-	if(source_points.rows == 68)
-	{
-		Mat_<double> tmp_source = source_points.clone();
-		source_points = Mat_<double>();
-
-		// Push back the rigid points (some face outline, eyes, and nose)
-		source_points.push_back(tmp_source.row(0));
-		source_points.push_back(tmp_source.row(2));
-		source_points.push_back(tmp_source.row(14));
-		source_points.push_back(tmp_source.row(16));
-		source_points.push_back(tmp_source.row(36));
-		source_points.push_back(tmp_source.row(39));
-		source_points.push_back(tmp_source.row(43));
-		source_points.push_back(tmp_source.row(38));
-		source_points.push_back(tmp_source.row(42));
-		source_points.push_back(tmp_source.row(45));
-		source_points.push_back(tmp_source.row(31));
-		source_points.push_back(tmp_source.row(33));
-		source_points.push_back(tmp_source.row(35));
-
-		Mat_<double> tmp_dest = destination_points.clone();
-		destination_points = Mat_<double>();
-
-		// Push back the rigid points
-		destination_points.push_back(tmp_dest.row(0));
-		destination_points.push_back(tmp_dest.row(2));
-		destination_points.push_back(tmp_dest.row(14));
-		destination_points.push_back(tmp_dest.row(16));
-		destination_points.push_back(tmp_dest.row(36));
-		destination_points.push_back(tmp_dest.row(39));
-		destination_points.push_back(tmp_dest.row(43));
-		destination_points.push_back(tmp_dest.row(38));
-		destination_points.push_back(tmp_dest.row(42));
-		destination_points.push_back(tmp_dest.row(45));
-		destination_points.push_back(tmp_dest.row(31));
-		destination_points.push_back(tmp_dest.row(33));
-		destination_points.push_back(tmp_dest.row(35));
-	}
-}
-
 // Can process images via directories creating a separate output file per directory
 void get_image_input_output_params_feats(vector<vector<string> > &input_image_files, bool& as_video, vector<string> &arguments)
 {
@@ -314,6 +276,9 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 					
 					vector<path> file_in_directory;                                
 					copy(directory_iterator(image_directory), directory_iterator(), back_inserter(file_in_directory));
+
+					// Sort the images in the directory first
+					sort(file_in_directory.begin(), file_in_directory.end()); 
 
 					vector<string> curr_dir_files;
 
@@ -359,16 +324,26 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 
 }
 
-void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,31,1> >* hog)
+void output_HOG_frame(std::ofstream* hog_file, bool good_frame, const Mat_<double>& hog_descriptor, int num_rows, int num_cols)
 {
-	int num_cols = hog->nc();
-	int num_rows = hog->nr();
 
+	// Using FHOGs, hence 31 channels
 	int num_channels = 31;
 
 	hog_file->write((char*)(&num_cols), 4);
 	hog_file->write((char*)(&num_rows), 4);
 	hog_file->write((char*)(&num_channels), 4);
+
+	// Not the best way to store a bool, but will be much easier to read it
+	float good_frame_float;
+	if(good_frame)
+		good_frame_float = 1;
+	else
+		good_frame_float = -1;
+
+	hog_file->write((char*)(&good_frame_float), 4);
+
+	cv::MatConstIterator_<double> descriptor_it = hog_descriptor.begin();
 
 	for(int y = 0; y < num_cols; ++y)
 	{
@@ -376,7 +351,8 @@ void output_HOG_frame(std::ofstream* hog_file, dlib::array2d<dlib::matrix<float,
 		{
 			for(unsigned int o = 0; o < 31; ++o)
 			{
-				float hog_data = (*hog)[y][x](o);
+
+				float hog_data = (float)(*descriptor_it++);
 				hog_file->write ((char*)&hog_data, 4);
 			}
 		}
@@ -389,7 +365,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files;
+	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -403,9 +379,10 @@ int main (int argc, char **argv)
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
 
-	bool video = true;
+	bool video_input = true;
+	bool verbose = true;
 	bool images_as_video = false;
 
 	vector<vector<string> > input_image_files;
@@ -420,7 +397,7 @@ int main (int argc, char **argv)
 
 		if(!input_image_files.empty())
 		{
-			video = false;
+			video_input = false;
 		}
 
 	}
@@ -430,16 +407,24 @@ int main (int argc, char **argv)
 	// The modules that are being used for tracking
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
-	vector<string> output_similarity_align_files;
+	vector<string> output_similarity_align;
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
 
-	double sim_scale = 0.6;
-	int sim_size = 96;
-	bool video_output;
-	bool grayscale = false;
-	bool rigid = false;
-	get_output_feature_params(output_similarity_align_files, output_hog_align_files, params_output_files, sim_scale, sim_size, video_output, grayscale, rigid, arguments);
+	double sim_scale = 0.7;
+	int sim_size = 112;
+	bool grayscale = false;	
+	bool video_output = false;
+	bool rigid = false;	
+	int num_hog_rows;
+	int num_hog_cols;
+
+	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
+	
+	// Used for image masking
+	std::ifstream triangulation_file("model/tris_68_full.txt");
+	Mat_<int> triangulation;
+	CLMTracker::ReadMat(triangulation_file, triangulation);
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -456,11 +441,7 @@ int main (int argc, char **argv)
 	if(cx == 0 || cy == 0)
 	{
 		cx_undefined = true;
-	}		
-	
-	// TODO rem
-	//dlib::image_window hogwin;
-	//hogwin.set_title("HOG image");
+	}			
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -471,7 +452,7 @@ int main (int argc, char **argv)
 		
 		Mat captured_image;
 
-		if(video)
+		if(video_input)
 		{
 			// We might specify multiple video files as arguments
 			if(files.size() > 0)
@@ -532,46 +513,45 @@ int main (int argc, char **argv)
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
-			pose_output_file.open (pose_output_files[f_n]);
+			pose_output_file.open (pose_output_files[f_n], ios_base::out);
 		}
 	
 		std::ofstream landmarks_output_file;		
 		if(!landmark_output_files.empty())
 		{
-			landmarks_output_file.open(landmark_output_files[f_n]);
+			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
+		}
+
+		std::ofstream landmarks_3D_output_file;		
+		if(!landmark_3D_output_files.empty())
+		{
+			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 		}
 
 		// Outputting model parameters (rigid and non-rigid), the first parameters are the 6 rigid shape parameters, they are followed by the non rigid shape parameters
 		std::ofstream params_output_file;		
 		if(!params_output_files.empty())
 		{
-			params_output_file.open(params_output_files[f_n]);
+			params_output_file.open(params_output_files[f_n], ios_base::out);
 		}
 
 		// saving the videos
 		VideoWriter output_similarity_aligned_video;
-		if(!output_similarity_align_files.empty())
+		if(!output_similarity_align.empty())
 		{
 			if(video_output)
 			{
-				double fps = video_capture.get(CV_CAP_PROP_FPS);
-				output_similarity_aligned_video = VideoWriter(output_similarity_align_files[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
-			}			
-			else
-			{
-				if(!boost::filesystem::exists(boost::filesystem::path(output_similarity_align_files[f_n])))
+				if(video_input)
 				{
-					bool success = boost::filesystem::create_directory(output_similarity_align_files[f_n]);
-
-					if(!success)
-					{
-						cout << "Failed to create a directory... exiting";
-						cin.get();
-						return 0;
-					}
+					double fps = video_capture.get(CV_CAP_PROP_FPS);
+					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
 				}
-			}
-
+				else
+				{
+					// Use 30 fps if input is sequence
+					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), 30, Size(sim_size, sim_size), true);
+				}
+			}			
 		}
 		
 		// Saving the HOG features
@@ -590,9 +570,16 @@ int main (int argc, char **argv)
 
 		int frame_count = 0;
 		
+		// This is useful for a second pass run (if want AU predictions)
+		vector<Vec6d> params_global_video;
+		vector<bool> successes_video;
+		vector<Mat_<double>> params_local_video;
+		vector<Mat_<double>> detected_landmarks_video;
+
 		// For measuring the timings
 		int64 t1,t0 = cv::getTickCount();
-		double fps = 10;
+		double fps = 10;		
+		bool visualise_hog = verbose;
 
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
@@ -613,7 +600,7 @@ int main (int argc, char **argv)
 			// The actual facial landmark detection / tracking
 			bool detection_success;
 			
-			if(video || images_as_video)
+			if(video_input || images_as_video)
 			{
 				detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
 			}
@@ -622,6 +609,30 @@ int main (int argc, char **argv)
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 
+			
+			// Do face alignment
+			Mat sim_warped_img;			
+			Mat_<double> hog_descriptor;
+
+			// But only if needed in output
+			if(!output_similarity_align.empty() || hog_output_file.is_open())
+			{
+				FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
+				cv::imshow("sim_warp", sim_warped_img);			
+			
+				if(hog_output_file.is_open())
+				{
+					FaceAnalyser::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
+
+					if(visualise_hog)
+					{
+						Mat_<double> hog_descriptor_vis;
+						FaceAnalyser::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
+						cv::imshow("hog", hog_descriptor_vis);	
+					}
+				}
+			}
+			
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -633,77 +644,13 @@ int main (int argc, char **argv)
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 			}
 
-			Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
-			Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
-
-			// Pick only rigid points
-			if(rigid)
-			{
-				 extract_rigid_points(source_landmarks, destination_landmarks);
-			}
-
-			Matx22d scale_rot_matrix = CLMTracker::AlignShapesWithScale(source_landmarks, destination_landmarks);
-			Matx23d warp_matrix;
-			warp_matrix(0,0) = scale_rot_matrix(0,0);
-			warp_matrix(0,1) = scale_rot_matrix(0,1);
-			warp_matrix(1,0) = scale_rot_matrix(1,0);
-			warp_matrix(1,1) = scale_rot_matrix(1,1);
-
-			double tx = clm_model.params_global[4];
-			double ty = clm_model.params_global[5];
-
-			Vec2d T(tx, ty);
-			T = scale_rot_matrix * T;
-
-			// Make sure centering is correct
-			warp_matrix(0,2) = -T(0) + sim_size/2;
-			warp_matrix(1,2) = -T(1) + sim_size/2;
-
-			Mat sim_warped_img;
-			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_CUBIC);
-			cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LINEAR);
-			//cv::warpAffine(captured_image, sim_warped_img, warp_matrix, Size(sim_size, sim_size), INTER_LANCZOS4);
-			cv::imshow("sim_warp", sim_warped_img);
-			
-
-			Mat_<uchar> sim_warped_img_gray;
-
-			if(sim_warped_img.channels() == 3)
-			{
-				cv::cvtColor(sim_warped_img, sim_warped_img_gray, CV_BGR2GRAY);
-				if(grayscale)
-				{					
-					sim_warped_img = sim_warped_img_gray.clone();
-				}
-			}	
-			else
-			{
-				sim_warped_img_gray = sim_warped_img.clone();
-			}
-
-			// TODO use colour here?
-			dlib::cv_image<uchar> dlib_warped_img(sim_warped_img_gray);
-
-			dlib::array2d<dlib::matrix<float,31,1> > hog;
-			dlib::extract_fhog_features(dlib_warped_img, hog, 8);
-		
-			//Mat_<double> hog_desc;
-			//Extract_FHOG_descriptor(hog_desc, sim_warped_img_gray, 8);
-			//Mat visual;
-			//Visualise_FHOG(hog_desc, 10, 10, visual);
-
-			//imshow("HOG", visual);
-			//cv::waitKey(0);
-
-			//hogwin.set_image(dlib::draw_fhog(hog));
-
 			if(hog_output_file.is_open())
 			{
-				output_HOG_frame(&hog_output_file, &hog);
+				output_HOG_frame(&hog_output_file, detection_success, hog_descriptor, num_hog_rows, num_hog_cols);
 			}
 
 			// Write the similarity normalised output
-			if(!output_similarity_align_files.empty())
+			if(!output_similarity_align.empty())
 			{
 				if(video_output)
 				{
@@ -724,7 +671,7 @@ int main (int argc, char **argv)
 					
 					std::string preferredSlash = slash.make_preferred().string();
 				
-					string out_file = output_similarity_align_files[f_n] + preferredSlash + string(name);
+					string out_file = output_similarity_align[f_n] + preferredSlash + string(name);
 					imwrite(out_file, sim_warped_img);
 				}
 			}
@@ -737,7 +684,7 @@ int main (int argc, char **argv)
 			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 			if(detection_certainty < visualisation_boundary)
 			{
-				CLMTracker::Draw(captured_image, source_landmarks);
+				CLMTracker::Draw(captured_image, clm_model);
 				//CLMTracker::Draw(captured_image, clm_model);
 
 				if(detection_certainty > 1)
@@ -756,7 +703,7 @@ int main (int argc, char **argv)
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 
 			}
-
+			
 			// Work out the framerate
 			if(frame_count % 10 == 0)
 			{      
@@ -784,21 +731,33 @@ int main (int argc, char **argv)
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
+					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
 			
+			// Output the detected facial landmarks
+			if(!landmark_3D_output_files.empty())
+			{
+				landmarks_3D_output_file << frame_count + 1 << " " << detection_success;
+				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
+				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
+				{
+					landmarks_3D_output_file << " " << shape_3D.at<double>(i);
+				}
+				landmarks_3D_output_file << endl;
+			}
+
 			if(!params_output_files.empty())
 			{
 				params_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < 6; ++i)
 				{
-					params_output_file << " " << clm_model.params_global[i] << " "; 
+					params_output_file << " " << clm_model.params_global[i]; 
 				}
 				for (int i = 0; i < clm_model.pdm.NumberOfModes(); ++i)
 				{
-					params_output_file << " " << clm_model.params_local.at<double>(i,0) << " "; 
+					params_output_file << " " << clm_model.params_local.at<double>(i,0); 
 				}
 				params_output_file << endl;
 			}
@@ -815,7 +774,7 @@ int main (int argc, char **argv)
 				writerFace << captured_image;
 			}
 
-			if(video)
+			if(video_input)
 			{
 				video_capture >> captured_image;
 			}
@@ -850,7 +809,7 @@ int main (int argc, char **argv)
 			frame_count++;
 
 		}
-		
+
 		frame_count = 0;
 		curr_img = -1;
 
@@ -869,4 +828,3 @@ int main (int argc, char **argv)
 
 	return 0;
 }
-

@@ -6,6 +6,7 @@ ipch/
 *.ipch
 *.psess
 *.pdb
+*.a
 matlab runners/out_wild_clnf/
 matlab runners/out_wild_clnf_wild/
 matlab runners/out_wild_svr/
@@ -45,3 +46,14 @@ lib/local/OpenCVWrappers/Release/
 exe/CLM-framework-GUI/bin/
 lib/local/CamCom/Release/
 lib/local/CamCom/Debug/
+lib/local/FaceAnalyser/Release/
+lib/local/FaceAnalyser/Debug/
+matlab_runners/output_features/
+matlab_runners/output_features_vid/
+matlab_runners/output_features_seq/
+CMakeFiles/
+/bin/
+Makefile
+cmake_install.cmake
+CMakeCache.txt
+videos/images_track/

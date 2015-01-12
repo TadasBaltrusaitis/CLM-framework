@@ -39,13 +39,17 @@ for videos:
 	cd bin
 	./SimpleCLM -f "../videos/changeLighting.wmv" -f "../videos/0188_03_021_al_pacino.avi" -f "../videos/0217_03_006_alanis_morissette.avi" -f "../videos/0244_03_004_anderson_cooper.avi" -f "../videos/0294_02_004_angelina_jolie.avi" -f "../videos/0417_02_003_bill_clinton.avi" -f "../videos/0490_03_007_bill_gates.avi" -f "../videos/0686_02_003_gloria_estefan.avi" -f "../videos/1034_03_006_jet_li.avi" -f "../videos/1192_01_006_julia_roberts.avi" -f "../videos/1461_01_021_noam_chomsky.avi" -f "../videos/1804_03_006_sylvester_stallone.avi" -f "../videos/1815_01_008_tony_blair.avi" -f "../videos/1869_03_009_victoria_beckham.avi" -f "../videos/1878_01_002_vladimir_putin.avi"
 	
-for images:
+for images (slow due to dlib face detection in Unix being slow):
 	cd bin
-	./SimpleCLMImg -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+	./SimpleCLMImg -fdir "../videos/" -ofdir "./demo_img/" -oidir "./demo_img/"
 
-for multiple faces:
+for multiple faces (face detection slows it a bit):
 	cd bin
 	./MultiTrackCLM -f ../videos/multi_face.avi
+
+for feature extraction (i.e. HOG and similarity aligned faces):
+	cd bin
+	./FeatureExtraction -rigid  -verbose  -f "../videos/default.wmv" -simalign "./output_features/default" -hogalign "./output_features/default.hog"
 
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server

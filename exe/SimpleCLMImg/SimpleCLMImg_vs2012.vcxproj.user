@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild -oidir "../videos/images_track/" -ofdir "../videos/images_track/</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-fdir "../videos/" -clmwild -oidir "../videos/images_track/" -ofdir "../videos/images_track/</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
