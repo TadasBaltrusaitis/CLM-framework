@@ -38,7 +38,12 @@ namespace CLM_Interop {
 	{
 	private:
 
+		// OpenCV based video capture for reading from files
 		VideoCapture* vc;
+
+		// Using DirectShow for capturing from webcams			
+		camera* webcam;
+		comet::auto_mf* this_auto_mf;
 
 		RawImage^ latestFrame;
 		RawImage^ mirroredFrame;
@@ -51,15 +56,36 @@ namespace CLM_Interop {
 
 		Capture(int device, int width, int height)
 		{
+			assert(device >= 0);
+
 			latestFrame = gcnew RawImage();
 			mirroredFrame = gcnew RawImage();
+			
+			this_auto_mf = new comet::auto_mf();
 
-			vc = new VideoCapture(device);
-			fps = vc->get(CV_CAP_PROP_FPS);
-			vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
-			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
+			// Grab the cameras
+			webcam = new camera(camera_helper::get_all_cameras()[device]);
+			webcam->activate();
 
-			std::cout << vc->get(CV_CAP_PROP_FRAME_WIDTH) << " " << vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+			auto media_types = webcam->media_types();
+
+			for (int m = 0; m < media_types.size(); ++m)
+			{
+				auto media_type_curr = media_types[m];
+				// For now only allow mjpeg
+				if(media_type_curr.format() == MediaFormat::MJPG)
+				{
+					if(media_type_curr.resolution().width == width && media_type_curr.resolution().height == height)
+					{
+						webcam->set_media_type(media_type_curr);
+						break;
+					}
+				}
+			}
+
+			// TODO rem
+			//webcam->activate();
+			webcam->read_frame();
 
 		}
 
@@ -72,16 +98,9 @@ namespace CLM_Interop {
 			fps = vc->get(CV_CAP_PROP_FPS);
 		}
 
-
-		//System::Collections::Generic::Dictionary<System::String^, double>^
-
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
 		{
 
-			
-			//Tuple<System::String^, int> a;//(gcnew System::String("a"), 0);
-
-			//List<System::Tuple<Double,Double>> a;
 			auto managed_camera_list = gcnew List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>();
 
 		    comet::auto_mf auto_mf;
@@ -143,10 +162,18 @@ namespace CLM_Interop {
 
 		RawImage^ GetNextFrame()
 		{
-			bool success = vc->read(mirroredFrame->Mat);
+			if(vc != nullptr)
+			{
+				bool success = vc->read(mirroredFrame->Mat);
 
-			if (!success)
-				throw gcnew CaptureFailedException();
+				if (!success)
+					throw gcnew CaptureFailedException();
+
+			}
+			else
+			{
+				webcam->read_frame().copyTo(mirroredFrame->Mat);
+			}
 
 			flip(mirroredFrame->Mat, latestFrame->Mat, 1);
 
@@ -165,7 +192,12 @@ namespace CLM_Interop {
 
 		bool isOpened()
 		{
-			return vc->isOpened();
+			if(vc != nullptr)
+				return vc->isOpened();
+			else if(webcam != nullptr)
+				return webcam->is_active();
+			else
+				return false;
 		}
 
 		RawImage^ GetCurrentFrameGray() {
@@ -182,6 +214,8 @@ namespace CLM_Interop {
 		!Capture()
 		{
 			delete vc; // Automatically closes capture object before freeing memory.
+			delete webcam;			
+			delete this_auto_mf;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

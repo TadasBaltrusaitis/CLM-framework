@@ -244,6 +244,7 @@ namespace CLM_framework_GUI
 
             CameraSelection cam_sec = new CameraSelection();
             cam_sec.ShowDialog();
+            
             if (cam_sec.camera_selected)
             {
                 int cam_id = cam_sec.selected_camera.Item1;

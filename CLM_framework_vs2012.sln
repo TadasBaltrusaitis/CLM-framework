@@ -18,6 +18,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FeatureExtraction_vs2012", "exe\FeatureExtraction\FeatureExtraction_vs2012.vcxproj", "{8A23C00D-767D-422D-89A3-CF225E3DAB4B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLM_Interop", "lib\local\CLM_Interop\CLM_Interop.vcxproj", "{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalyser", "lib\local\FaceAnalyser\FaceAnalyser.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLM-framework-GUI", "exe\CLM-framework-GUI\CLM-framework-GUI.csproj", "{2542A0F9-7047-435C-9DE6-FFB4E725735E}"
@@ -111,13 +112,18 @@ Global
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Debug|Win32.Build.0 = Debug|Win32
-		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.ActiveCfg = Release|Win32
-		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.Build.0 = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Any CPU.ActiveCfg = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Win32.ActiveCfg = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Win32.Build.0 = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Any CPU.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Win32.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Any CPU.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.Build.0 = Release|Win32
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
