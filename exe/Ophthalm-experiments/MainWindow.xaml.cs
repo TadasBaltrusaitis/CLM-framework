@@ -96,6 +96,8 @@ namespace Ophthalm_experiments
                 // Get the entry dialogue now for the patient ID
                 TextEntryWindow patient_id_window = new TextEntryWindow();
                 patient_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                
+                String output_root_orig = output_root;
 
                 if (patient_id_window.ShowDialog() == true)
                 {
@@ -103,6 +105,20 @@ namespace Ophthalm_experiments
                     patient_id = patient_id_window.ResponseText;
 
                     output_root = output_root + patient_id + "/";
+
+                    if (System.IO.Directory.Exists(output_root))
+                    {
+                        string messageBoxText = "The recording for patient already exists, are you sure you want to continue?";
+                        string caption = "Directory exists!";
+                        MessageBoxButton button = MessageBoxButton.YesNo;
+                        MessageBoxImage icon = MessageBoxImage.Warning;
+                        MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
+                        if (result == MessageBoxResult.No)
+                        {
+                            this.Close();
+                        }
+                    }
+
                     System.IO.Directory.CreateDirectory(output_root);
 
                     record_video = patient_id_window.RecordVideo;
@@ -439,6 +455,11 @@ namespace Ophthalm_experiments
                     });
                 }).Start();
             }
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            reset = true;
         }
 
     }
