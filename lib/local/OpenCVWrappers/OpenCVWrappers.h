@@ -229,7 +229,6 @@ namespace OpenCVWrappers {
 			if(vc != nullptr)
 			{
 				vc->~VideoWriter();
-				delete vc;
 			}
 		}
 
