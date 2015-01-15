@@ -32,7 +32,6 @@ using namespace msclr::interop;
 namespace CLM_Interop {
 
 	public ref class CaptureFailedException : System::Exception { };
-
 	
 	public ref class Capture
 	{
@@ -41,7 +40,7 @@ namespace CLM_Interop {
 		// OpenCV based video capture for reading from files
 		VideoCapture* vc;
 
-		// Using DirectShow for capturing from webcams			
+		// Using DirectShow for capturing from webcams (for MJPG as has issues with other formats)
 		camera* webcam;
 		comet::auto_mf* this_auto_mf;
 
@@ -69,6 +68,8 @@ namespace CLM_Interop {
 
 			auto media_types = webcam->media_types();
 
+			bool found = false;
+
 			for (int m = 0; m < media_types.size(); ++m)
 			{
 				auto media_type_curr = media_types[m];
@@ -77,16 +78,24 @@ namespace CLM_Interop {
 				{
 					if(media_type_curr.resolution().width == width && media_type_curr.resolution().height == height)
 					{
+						found = true;
 						webcam->set_media_type(media_type_curr);
+						webcam->read_frame();
 						break;
 					}
 				}
 			}
 
-			// TODO rem
-			//webcam->activate();
-			webcam->read_frame();
-
+			if(!found)
+			{
+				this_auto_mf->~auto_mf();
+				delete this_auto_mf;
+				webcam->~camera();
+				delete webcam;
+				vc = new VideoCapture(device);
+				vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
+				vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
+			}
 		}
 
 		Capture(System::String^ videoFile)
@@ -118,43 +127,68 @@ namespace CLM_Interop {
 
 				auto resolutions = gcnew List<Tuple<int,int>^>();
 
-				set<pair<pair<int, int>, media_type>> res_set;
+				set<pair<pair<int, int>, media_type>> res_set_mjpg;
+				set<pair<pair<int, int>, media_type>> res_set_rgb;
 
-				for (int m = 0; m < media_types.size(); ++m)
-				{
-					auto media_type_curr = media_types[m];
-					// For now only allow mjpeg
-					if(media_type_curr.format() == MediaFormat::MJPG)
-					{
-						res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
-					}
-				}
-
-				int num_res = res_set.size();
-				int curr_res = 0;
 				Mat sample_img;
 				RawImage^ sample_img_managed = gcnew RawImage();
 
-				for (auto beg = res_set.begin(); beg != res_set.end(); ++beg)
+				for (int m = 0; m < media_types.size(); ++m)
+				{
+					auto media_type_curr = media_types[m];		
+					if(media_type_curr.format() == MediaFormat::MJPG)
+					{
+						res_set_mjpg.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+					}
+					else if(media_type_curr.format() == MediaFormat::RGB24)
+					{
+						res_set_rgb.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+					}
+				}
+				
+				bool found = false;
+
+				for (auto beg = res_set_mjpg.begin(); beg != res_set_mjpg.end(); ++beg)
 				{
 					auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
+					resolutions->Add(resolution);
 
-					if(curr_res >= num_res / 2 && sample_img.empty())	
+					if((resolution->Item1 >= 640) && (resolution->Item2 >= 480) && !found)
 					{
+						found = true;
 						cameras[i].set_media_type(beg->second);
 						
-						// read several images (to avoid overexposure)
-						for (int k = 0; k < 30; ++k)
+						// read several images (to avoid overexposure)						
+						for (int k = 0; k < 5; ++k)
 							cameras[i].read_frame();
 						
 						sample_img = cameras[i].read_frame();
-
-						sample_img.copyTo(sample_img_managed->Mat);
 					}
-					resolutions->Add(resolution);
-
-					curr_res++;
 				}
+
+				// If we didn't find any MJPG resolutions revert to RGB24
+				if(resolutions->Count == 0)
+				{
+					for (auto beg = res_set_rgb.begin(); beg != res_set_rgb.end(); ++beg)
+					{
+						auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
+						resolutions->Add(resolution);
+
+						if((resolution->Item1 >= 640) && (resolution->Item2 >= 480) && !found)
+						{
+							found = true;
+							VideoCapture cap1(i);
+							cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
+							cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
+
+							for (int k = 0; k < 5; ++k)
+								cap1.read(sample_img);
+						}
+					}
+				}
+				sample_img.copyTo(sample_img_managed->Mat);					
+
+
 				managed_camera_list->Add(gcnew Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>(gcnew System::String(name.c_str()), resolutions, sample_img_managed));
 			}
 			return managed_camera_list;
@@ -214,8 +248,15 @@ namespace CLM_Interop {
 		!Capture()
 		{
 			delete vc; // Automatically closes capture object before freeing memory.
-			delete webcam;			
-			delete this_auto_mf;
+			if(this_auto_mf != nullptr)
+			{
+				this_auto_mf->~auto_mf();
+				delete this_auto_mf;				
+			}
+			//if(webcam != nullptr)
+			//{
+			//	webcam->~camera();
+			//}
 		}
 
 		// Destructor. Called on explicit Dispose() only.

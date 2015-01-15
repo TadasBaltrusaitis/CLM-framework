@@ -38,6 +38,8 @@ namespace CLM_framework_GUI
         {
             InitializeComponent();
 
+            this.KeyDown += new KeyEventHandler(CameraSelection_KeyDown);
+
             // Finding the cameras here
             var cams = Capture.GetCameras();
             
@@ -63,17 +65,29 @@ namespace CLM_framework_GUI
                     int idx = i;
                     Image img = new Image();
                     img.Source = b;
-                    img.Margin = new Thickness(20);
-                    camerasPanel.ColumnDefinitions.Add(new ColumnDefinition());
+                    img.Margin = new Thickness(5);
 
-                    Border img_border = new Border();
+                    ColumnDefinition col_def = new ColumnDefinition();
+                    ThumbnailPanel.ColumnDefinitions.Add(col_def);
+                    
+                    Border img_border = new Border();                    
                     img_border.SetValue(Grid.ColumnProperty, i);
-                    img_border.SetValue(Grid.RowProperty, 1);
+                    img_border.SetValue(Grid.RowProperty, 0);
                     img_border.CornerRadius = new CornerRadius(5);
-                    img_border.Child = img;
+
+                    StackPanel img_panel = new StackPanel();
+                    
+                    Label camera_name_label = new Label();
+                    camera_name_label.Content = s.Item1;
+                    camera_name_label.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    img_panel.Children.Add(camera_name_label);
+                    img.Height = 200;
+                    img_panel.Children.Add(img);                    
+                    img_border.Child = img_panel;                    
+
                     sample_images.Add(img_border);
 
-                    camerasPanel.Children.Add(img_border);
+                    ThumbnailPanel.Children.Add(img_border);
 
                     ComboBox resolutions = new ComboBox();
                     resolutions.Width = 80;
@@ -88,15 +102,21 @@ namespace CLM_framework_GUI
                         
                     }
 
-                    resolutions.SelectedIndex = (int)(s.Item2.Count / 2);
-
+                    resolutions.SelectedIndex = 0;
+                    for (int res = 0; res < s.Item2.Count; ++res)
+                    {
+                        if (s.Item2[res].Item1 >= 640 && s.Item2[res].Item2 >= 480)
+                        {
+                            resolutions.SelectedIndex = res;
+                            break;
+                        }
+                    }
                     resolutions.SetValue(Grid.ColumnProperty, i);
-                    resolutions.SetValue(Grid.RowProperty, 2);
-                    camerasPanel.Children.Add(resolutions);
+                    resolutions.SetValue(Grid.RowProperty, 2);                    
+                    ThumbnailPanel.Children.Add(resolutions);
 
                     img.MouseDown += (sender, e) =>
                     {
-                        camera_selected = true;
                         ChooseCamera(idx);
                     };
 
@@ -128,17 +148,28 @@ namespace CLM_framework_GUI
 
             foreach (var img in sample_images)
             {
-                img.BorderThickness = new Thickness(2);
-                img.Background = Brushes.SkyBlue;
-                img.BorderBrush = Brushes.Black;
+                img.BorderThickness = new Thickness(1);
+                img.BorderBrush = Brushes.Gray;
             }
-            sample_images[idx].BorderThickness = new Thickness(5);
-            sample_images[idx].Background = Brushes.Honeydew;
+            sample_images[idx].BorderThickness = new Thickness(4);
             sample_images[idx].BorderBrush = Brushes.Green;
 
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Select();
+        }
+
+        private void CameraSelection_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Select();
+            }
+        }
+
+        private void Select()
         {
             camera_selected = true;
 
@@ -150,5 +181,6 @@ namespace CLM_framework_GUI
             this.Close();
 
         }
+
     }
 }

@@ -4,8 +4,11 @@
 #pragma unmanaged
 
 #include "cv.h"
+#include "highgui.h"
 
 #pragma managed
+
+#include <msclr\marshal_cppstd.h>
 
 #pragma make_public(cv::Mat)
 
@@ -185,4 +188,57 @@ namespace OpenCVWrappers {
 		}
 
 	};
+	
+	public ref class VideoWriter
+	{
+	private:
+		// OpenCV based video capture for reading from files
+		cv::VideoWriter* vc;
+
+	public:
+
+		VideoWriter(String^ location, int width, int height, double fps, bool colour)
+		{
+
+			msclr::interop::marshal_context context;
+			std::string location_std_string = context.marshal_as<std::string>(location);
+
+			vc = new cv::VideoWriter(location_std_string, CV_FOURCC('D','I','V','X'), fps, cv::Size(width, height), colour);
+
+		}
+		
+		// Return success
+		bool Write(RawImage^ img)
+		{
+			if(vc != nullptr && vc->isOpened())
+			{
+				vc->write(img->Mat);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// Finalizer. Definitely called before Garbage Collection,
+		// but not automatically called on explicit Dispose().
+		// May be called multiple times.
+		!VideoWriter()
+		{
+			if(vc != nullptr)
+			{
+				vc->~VideoWriter();
+				delete vc;
+			}
+		}
+
+		// Destructor. Called on explicit Dispose() only.
+		~VideoWriter()
+		{
+			this->!VideoWriter();
+		}
+
+	};
+
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CLM_framework_GUI
 {
-    class FpsTracker
+    public class FpsTracker
     {
         public TimeSpan HistoryLength { get; set; }
         public FpsTracker()

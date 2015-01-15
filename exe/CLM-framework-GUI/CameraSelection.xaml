@@ -1,19 +1,31 @@
 ﻿<Window x:Class="CLM_framework_GUI.CameraSelection"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CameraSelection" Height="400" Width="400">
+        Title="CameraSelection" Height="460" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Grid Name="camerasPanel">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="60" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="320" />
+            <RowDefinition Height="*" />            
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
         <Label Grid.Row="0" Grid.ColumnSpan="10" HorizontalContentAlignment="Center" FontSize="20">Choose Video Source</Label>
+        
+        <Grid Grid.Row="1" Grid.Column="0" Name="ThumbnailPanel" HorizontalAlignment="Center">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            
+        </Grid>
         <!--  Click="OpenFile_Click" -->
-        <Button Width="150" Grid.Row="4" Grid.ColumnSpan="10" FontSize="20" Click="Button_Click">Select camera</Button>
+        <Button Width="150" Grid.Row="3" Height="35" Grid.ColumnSpan="10" FontSize="20" Click="Button_Click">Select camera</Button>
     </Grid>
 
 </Window>
