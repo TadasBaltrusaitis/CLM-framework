@@ -67,7 +67,8 @@ namespace Ophthalm_experiments
         bool reset = false;
 
         // For recording
-        string output_root = "./recorded/patient ";
+        string record_root = "./recorded/patient ";
+        string output_root;
         private Object recording_lock = new Object();
         int trial_id = 0;
         bool recording = false;
@@ -80,6 +81,57 @@ namespace Ophthalm_experiments
 
         ConcurrentQueue<Tuple<RawImage, bool, List<double>>> recording_objects;
 
+        public void StartExperiment()
+        {
+            // Inquire more from the user
+
+            // Get the entry dialogue now for the patient ID
+            trial_id = 0;
+            TextEntryWindow patient_id_window = new TextEntryWindow();
+            patient_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            
+            if (patient_id_window.ShowDialog() == true)
+            {
+
+                patient_id = patient_id_window.ResponseText;
+
+                output_root = record_root + patient_id + "/";
+
+                if (System.IO.Directory.Exists(output_root))
+                {
+                    string messageBoxText = "The recording for patient already exists, are you sure you want to continue?";
+                    string caption = "Directory exists!";
+                    MessageBoxButton button = MessageBoxButton.YesNo;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
+                    if (result == MessageBoxResult.No)
+                    {
+                        this.Close();
+                    }
+
+                    // Else find the latest trial from which to continu
+                    int trial_id_not_found = 0;
+                    while (System.IO.File.Exists(output_root + '/' + "trial_" + trial_id_not_found + ".avi"))
+                    {
+                        trial_id_not_found++;
+                    }
+                    trial_id = trial_id_not_found;
+                }
+
+                System.IO.Directory.CreateDirectory(output_root);
+
+                record_video = patient_id_window.RecordVideo;
+                record_head_pose = patient_id_window.RecordHeadPose;
+                RecordingButton.Content = "Record trial: " + trial_id;
+
+            }
+            else
+            {
+                this.Close();
+            }
+
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -90,52 +142,6 @@ namespace Ophthalm_experiments
 
             if (cam_select.camera_selected)
             {
-
-                // First inquire more from the user
-
-                // Get the entry dialogue now for the patient ID
-                TextEntryWindow patient_id_window = new TextEntryWindow();
-                patient_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                
-                String output_root_orig = output_root;
-
-                if (patient_id_window.ShowDialog() == true)
-                {
-
-                    patient_id = patient_id_window.ResponseText;
-
-                    output_root = output_root + patient_id + "/";
-
-                    if (System.IO.Directory.Exists(output_root))
-                    {
-                        string messageBoxText = "The recording for patient already exists, are you sure you want to continue?";
-                        string caption = "Directory exists!";
-                        MessageBoxButton button = MessageBoxButton.YesNo;
-                        MessageBoxImage icon = MessageBoxImage.Warning;
-                        MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
-                        if (result == MessageBoxResult.No)
-                        {
-                            this.Close();
-                        }
-                    }
-
-                    System.IO.Directory.CreateDirectory(output_root);
-
-                    record_video = patient_id_window.RecordVideo;
-                    record_head_pose = patient_id_window.RecordHeadPose;
-
-                    // Create an overlay image for display purposes
-                    webcam_img = new CLM_framework_GUI.OverlayImage();
-
-                    webcam_img.SetValue(Grid.ColumnProperty, 0);
-                    webcam_img.SetValue(Grid.RowProperty, 1);
-                    MainGrid.Children.Add(webcam_img);                   
-
-                }
-                else
-                {
-                    this.Close();
-                }
 
                 // Create the capture device
                 int cam_id = cam_select.selected_camera.Item1;
@@ -154,7 +160,7 @@ namespace Ophthalm_experiments
                 cx = img_width / 2.0;
                 cy = img_height / 2.0;
 
-                if (capture.isOpened())                
+                if (capture.isOpened())
                 {
                     processing_thread = new Thread(VideoLoop);
                     processing_thread.Start();
@@ -171,6 +177,15 @@ namespace Ophthalm_experiments
                     MessageBox.Show(messageBoxText, caption, button, icon);
                     this.Close();
                 }
+
+                // Create an overlay image for display purposes
+                webcam_img = new CLM_framework_GUI.OverlayImage();
+
+                webcam_img.SetValue(Grid.ColumnProperty, 0);
+                webcam_img.SetValue(Grid.RowProperty, 1);
+                MainGrid.Children.Add(webcam_img);
+
+                StartExperiment();
                 
             }
             else
@@ -340,8 +355,15 @@ namespace Ophthalm_experiments
                         List<double> pose = new List<double>();
                         clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
-                        headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
-                        headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
+                        //headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
+                        YawLabel.Content = (int)(pose[4] * 180 / Math.PI + 0.5) + "°";
+                        RollLabel.Content = (int)(pose[5] * 180 / Math.PI + 0.5) + "°";
+                        PitchLabel.Content = (int)(pose[3] * 180 / Math.PI + 0.5) + "°";
+
+                        XPoseLabel.Content = (int)pose[0] + " mm";
+                        YPoseLabel.Content = (int)pose[1] + " mm";
+                        ZPoseLabel.Content = (int)pose[2] + " mm";
+                        //headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
 
                         frame.UpdateWriteableBitmap(latest_img);
                         webcam_img.Source = latest_img;
@@ -373,6 +395,7 @@ namespace Ophthalm_experiments
             lock (recording_lock)
             {
                 RecordingButton.IsEnabled = false;
+                CompleteButton.IsEnabled = false;
                 recording_objects = new ConcurrentQueue<Tuple<RawImage, bool, List<double>>>();
 
                 recording = true;
@@ -420,8 +443,6 @@ namespace Ophthalm_experiments
                         lock (recording_lock)
                         {
 
-                            RecordingButton.Content = "Record";
-
                             // Wait for the recording thread to finish before enabling
                             rec_thread.Join();
 
@@ -431,9 +452,9 @@ namespace Ophthalm_experiments
                             MessageBoxImage icon = MessageBoxImage.Question;
                             MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
 
-                            if (trial_id == 0)
+                            if (recording_success_file == null)
                             {
-                                recording_success_file = new System.IO.StreamWriter(output_root + "/recording_success.txt");
+                                recording_success_file = new System.IO.StreamWriter(output_root + "/recording_success.txt", true);
                             }
 
                             if (result == MessageBoxResult.Yes)
@@ -447,9 +468,9 @@ namespace Ophthalm_experiments
                             recording_success_file.Flush();
 
                             trial_id++;
-                            RecordLabel.Content = "Recording trial:" + trial_id;
+                            RecordingButton.Content = "Record trial: " + trial_id;
                             RecordingButton.IsEnabled = true;
-
+                            CompleteButton.IsEnabled = true;
                         }
 
                     });
@@ -460,6 +481,11 @@ namespace Ophthalm_experiments
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             reset = true;
+        }
+
+        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartExperiment();
         }
 
     }
