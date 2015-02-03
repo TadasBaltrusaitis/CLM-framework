@@ -62,7 +62,7 @@
             <Button FontSize="11" HorizontalAlignment="Center" Click="CompleteButton_Click" Name="CompleteButton" >Start new patient</Button>
         </StackPanel>
 
-        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1">
             <Image RenderOptions.BitmapScalingMode="Fant" RenderOptions.EdgeMode="Aliased" Name="logoLabel" Source="/logo1.png"  />
         </StackPanel>
 

@@ -152,7 +152,11 @@ namespace Ophthalm_experiments
 
             // First make the user chooose a webcam
             CLM_framework_GUI.CameraSelection cam_select = new CLM_framework_GUI.CameraSelection();
-            cam_select.ShowDialog();
+
+            if (!cam_select.no_cameras_found)
+            {
+                cam_select.ShowDialog();
+            }
 
             if (cam_select.camera_selected)
             {
@@ -421,7 +425,7 @@ namespace Ophthalm_experiments
                             webcam_img.Confidence = 1;
 
                             // Publish the information for other applications
-                            String str = String.Format("%s:%.4f,%.4f,%.4f,%.4f,%.4f,%.4f", "HeadPose", pose[0], pose[1], pose[2],
+                            String str = String.Format("{0}:{1:F2}, {2:F2}, {3:F2}, {4:F2}, {5:F2}, {6:F2}", "HeadPose", pose[0], pose[1], pose[2],
                                 pose[3] * 180 / Math.PI, pose[4] * 180 / Math.PI, pose[5] * 180 / Math.PI);
 
                             zero_mq_socket.Send(str, Encoding.UTF8);

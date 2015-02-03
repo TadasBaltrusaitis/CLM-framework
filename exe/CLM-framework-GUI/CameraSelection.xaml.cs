@@ -34,6 +34,8 @@ namespace CLM_framework_GUI
         // indicate if user clicked on camera
         public bool camera_selected = false;
 
+        public bool no_cameras_found = false;
+
         public CameraSelection()
         {
             InitializeComponent();
@@ -128,6 +130,7 @@ namespace CLM_framework_GUI
             }
             if (cams.Count > 0)
             {
+                no_cameras_found = false;
                 ChooseCamera(0);
             }
             else
@@ -138,6 +141,7 @@ namespace CLM_framework_GUI
                 MessageBoxImage icon = MessageBoxImage.Warning;
                 MessageBox.Show(messageBoxText, caption, button, icon);
                 selected_camera_idx = -1;
+                no_cameras_found = true;
                 this.Close();
             }
         }
