@@ -2,39 +2,39 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
         xmlns:Ophthalm_experiments="clr-namespace:Ophthalm_experiments"
-        Title="Head Pose Experiments" Height="380" Width="525" WindowStartupLocation="CenterScreen">
-    <Grid Name="MainGrid">
+        Title="Cambridge Face Tracker - Head Pose Experiments" Height="400" Width="640" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" UseLayoutRounding="True">
+    <Grid Name="MainGrid" HorizontalAlignment="Stretch" Width="600">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-
-        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center"></Label>
-
-        <Border Canvas.ZIndex="1" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0">
-            <Label Name="fpsLabel">0 FPS</Label>
-        </Border>
+        <Canvas Name="ImageCanvas" Grid.Column="1" Grid.Row="1" Width="400" Height="300">
+            <Label Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset" MouseEnter="ResetButton_MouseEnter"/>
+            <Border Name="FPSCounter" Canvas.Left="175" Width="50" Height="23" Canvas.ZIndex="1"  Canvas.Bottom="0" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0">
+                <Label HorizontalContentAlignment="Center" Name="fpsLabel">0 FPS</Label>                
+            </Border>
+            <Border Height="20" Name="ConfLabel" Canvas.Right="0" Width="80" Canvas.ZIndex="1"  Canvas.Bottom="0" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,0,0,0">
+                <Label FontSize="9" HorizontalContentAlignment="Center" Name="confidenceLabel">Confidence 0</Label>
+            </Border>
+        </Canvas>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button  Width="100" Height="21" Click="startRecordingButton_Click" Name="RecordingButton">Record trial 0</Button>
+        </StackPanel>
         
-        <StackPanel Canvas.ZIndex="1"  Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-            <Button Background="DarkSalmon" Margin="200,0,0,0" Click="ResetButton_Click" Name="ResetButton">Reset</Button>
-        </StackPanel>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button  Margin="0,5,0,5" Click="startRecordingButton_Click" Name="RecordingButton">Record trial 0</Button>            
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,15,0">
+        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Label Name="headOrientationLabel" Margin="0,0,0,0" FontSize="12"  HorizontalContentAlignment="Left">Orientation</Label>
             <StackPanel Orientation="Horizontal">
                 <Label Margin="5,0,0,0" FontSize="10" Width="35" HorizontalContentAlignment="Left">Yaw:</Label>
                 <Label Name="YawLabel" FontSize="10" Width="30" HorizontalContentAlignment="Right">0°</Label>
-            </StackPanel>
+            </StackPanel>            
             <StackPanel Orientation="Horizontal">
                 <Label Margin="5,0,0,0" FontSize="10"  Width="35" HorizontalContentAlignment="Left">Pitch:</Label>
                 <Label Name="PitchLabel" FontSize="10" Width="30" HorizontalContentAlignment="Right">0°</Label>
@@ -57,8 +57,13 @@
                 <Label Name="ZPoseLabel" FontSize="10" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="3" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <Button  Margin="0,5,0,5" Click="CompleteButton_Click" Name="CompleteButton" >Finish collection</Button>
+        
+        <StackPanel Grid.Row="2" Grid.Column="2" VerticalAlignment="Bottom">
+            <Button FontSize="11" HorizontalAlignment="Center" Click="CompleteButton_Click" Name="CompleteButton" >Start new patient</Button>
+        </StackPanel>
+
+        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+            <Image RenderOptions.BitmapScalingMode="Fant" RenderOptions.EdgeMode="Aliased" Name="logoLabel" Source="/logo1.png"  />
         </StackPanel>
 
     </Grid>

@@ -22,6 +22,8 @@ using CLM_Interop.CLMTracker;
 using CLM_framework_GUI;
 using System.Collections.Concurrent;
 
+using ZeroMQ;
+
 namespace Ophthalm_experiments
 {
     /// <summary>
@@ -81,6 +83,10 @@ namespace Ophthalm_experiments
 
         ConcurrentQueue<Tuple<RawImage, bool, List<double>>> recording_objects;
 
+        // For broadcasting the results
+        ZmqContext zero_mq_context;
+        ZmqSocket zero_mq_socket;
+
         public void StartExperiment()
         {
             // Inquire more from the user
@@ -135,7 +141,15 @@ namespace Ophthalm_experiments
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            BitmapImage src = new BitmapImage();
+            src.BeginInit();
+            src.UriSource = new Uri("logo1.png", UriKind.RelativeOrAbsolute);
+            src.CacheOption = BitmapCacheOption.OnLoad;
+            src.EndInit();
+
+            logoLabel.Source = src;
+
             // First make the user chooose a webcam
             CLM_framework_GUI.CameraSelection cam_select = new CLM_framework_GUI.CameraSelection();
             cam_select.ShowDialog();
@@ -162,6 +176,15 @@ namespace Ophthalm_experiments
 
                 if (capture.isOpened())
                 {
+
+                    // Create the ZeroMQ context for broadcasting the results
+                    zero_mq_context = ZmqContext.Create();
+                    zero_mq_socket = zero_mq_context.CreateSocket(SocketType.PUB);
+
+                    // Bind on localhost port 5000
+                    zero_mq_socket.Bind("tcp://127.0.0.1:5000");
+                    
+                    // Start the tracking now
                     processing_thread = new Thread(VideoLoop);
                     processing_thread.Start();
                 }
@@ -181,10 +204,18 @@ namespace Ophthalm_experiments
                 // Create an overlay image for display purposes
                 webcam_img = new CLM_framework_GUI.OverlayImage();
 
-                webcam_img.SetValue(Grid.ColumnProperty, 0);
-                webcam_img.SetValue(Grid.RowProperty, 1);
-                MainGrid.Children.Add(webcam_img);
+                webcam_img.Stretch = Stretch.Uniform;
+                webcam_img.Width = 400;
+                webcam_img.Height = (int)(((double)(img_height) / (double)img_width) * 400.0);
+                
+                webcam_img.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
+                FPSCounter.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
+                ConfLabel.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
+                ResetButton.SetValue(Canvas.TopProperty, (300 - webcam_img.Height) / 2);
 
+                webcam_img.SetValue(Canvas.ZIndexProperty, 0);
+
+                ImageCanvas.Children.Add(webcam_img);
                 StartExperiment();
                 
             }
@@ -355,7 +386,6 @@ namespace Ophthalm_experiments
                         List<double> pose = new List<double>();
                         clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
-                        //headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
                         YawLabel.Content = (int)(pose[4] * 180 / Math.PI + 0.5) + "°";
                         RollLabel.Content = (int)(pose[5] * 180 / Math.PI + 0.5) + "°";
                         PitchLabel.Content = (int)(pose[3] * 180 / Math.PI + 0.5) + "°";
@@ -363,7 +393,18 @@ namespace Ophthalm_experiments
                         XPoseLabel.Content = (int)pose[0] + " mm";
                         YPoseLabel.Content = (int)pose[1] + " mm";
                         ZPoseLabel.Content = (int)pose[2] + " mm";
-                        //headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
+
+                        double confidence = (- clm_model.GetConfidence() + 0.6) /2.0;
+
+                        if (confidence < 0)
+                            confidence = 0;
+                        else if (confidence > 1)
+                            confidence = 1;
+
+                        confidenceLabel.Content = "Confidence: " + confidence;
+                        // TODO proper colours here
+                        //confidenceLabel.Background = Brushes.Crimson;
+                            //Color.FromRgb((byte)((1 - confidence) * 255), (byte)(confidence * 255), (byte)20);
 
                         frame.UpdateWriteableBitmap(latest_img);
                         webcam_img.Source = latest_img;
@@ -378,7 +419,15 @@ namespace Ophthalm_experiments
                             webcam_img.OverlayLines = lines;
                             webcam_img.OverlayPoints = landmarks;
                             webcam_img.Confidence = 1;
+
+                            // Publish the information for other applications
+                            String str = String.Format("%s:%.4f,%.4f,%.4f,%.4f,%.4f,%.4f", "HeadPose", pose[0], pose[1], pose[2],
+                                pose[3] * 180 / Math.PI, pose[4] * 180 / Math.PI, pose[5] * 180 / Math.PI);
+
+                            zero_mq_socket.Send(str, Encoding.UTF8);
+
                         }
+
                     });
                 }
                 catch (TaskCanceledException)
@@ -396,6 +445,7 @@ namespace Ophthalm_experiments
             {
                 RecordingButton.IsEnabled = false;
                 CompleteButton.IsEnabled = false;
+                
                 recording_objects = new ConcurrentQueue<Tuple<RawImage, bool, List<double>>>();
 
                 recording = true;
@@ -486,6 +536,11 @@ namespace Ophthalm_experiments
         private void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
             StartExperiment();
+        }
+
+        private void ResetButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+
         }
 
     }

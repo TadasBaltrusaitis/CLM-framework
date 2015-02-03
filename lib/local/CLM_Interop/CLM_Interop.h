@@ -317,6 +317,11 @@ namespace CLM_Interop {
 			}
 
 
+			double GetConfidence()
+			{
+				return clm->detection_certainty;
+			}
+
 			bool DetectLandmarksInVideo(RawImage^ image, CLMParameters^ clmParams) {
 				return ::CLMTracker::DetectLandmarksInVideo(image->Mat, *clm, *clmParams->getParams());
 			}
