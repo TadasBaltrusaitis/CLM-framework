@@ -142,6 +142,10 @@ namespace Ophthalm_experiments
         {
             InitializeComponent();
 
+            // Set the icon
+            Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
+            this.Icon = BitmapFrame.Create(iconUri);
+
             BitmapImage src = new BitmapImage();
             src.BeginInit();
             src.UriSource = new Uri("logo1.png", UriKind.RelativeOrAbsolute);
@@ -406,9 +410,7 @@ namespace Ophthalm_experiments
                             confidence = 1;
 
                         confidenceLabel.Content = "Confidence: " + confidence;
-                        // TODO proper colours here
-                        //confidenceLabel.Background = Brushes.Crimson;
-                            //Color.FromRgb((byte)((1 - confidence) * 255), (byte)(confidence * 255), (byte)20);
+                        ConfLabel.Background = new SolidColorBrush(Color.FromRgb((byte)((1 - confidence) * 255), (byte)(confidence * 255), (byte)40));
 
                         frame.UpdateWriteableBitmap(latest_img);
                         webcam_img.Source = latest_img;
