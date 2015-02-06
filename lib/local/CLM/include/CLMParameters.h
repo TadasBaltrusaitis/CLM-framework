@@ -61,6 +61,8 @@
 #include <vector>
 #include <iostream>
 
+#include <filesystem.hpp>
+
 using namespace cv;
 using namespace std;
 
@@ -97,7 +99,7 @@ struct CLMParameters
 
 	// Where to load the model from
 	string model_location;
-	
+
 	// this is used for the smooting of response maps (KDE sigma)
 	double sigma;
 
@@ -132,20 +134,24 @@ struct CLMParameters
 		// initialise the default values
 	    init(); 
 
+		// The location of the executable, useful for locating models
+		boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
+
 		bool* valid = new bool[arguments.size()];
-		for(size_t i = 0; i < arguments.size(); ++i)
+		for(size_t i = 1; i < arguments.size(); ++i)
 		{
 			valid[i] = true;
 
 			if (arguments[i].compare("-mloc") == 0) 
 			{                    
 				string model_loc = arguments[i + 1];
+
 				model_location = model_loc;
 				valid[i] = false;
 				valid[i+1] = false;
 				i++;
-
 			}
+
 			if (arguments[i].compare("-clm_sigma") == 0) 
 			{                    
 				stringstream data(arguments[i + 1]);
@@ -237,6 +243,16 @@ struct CLMParameters
 			if(!valid[i])
 			{
 				arguments.erase(arguments.begin()+i);
+			}
+		}
+
+		// Make sure model_location is valid
+		if(!boost::filesystem::exists(boost::filesystem::path(model_location)))
+		{
+			model_location = (root / model_location).string();
+			if(!boost::filesystem::exists(boost::filesystem::path(model_location)))
+			{
+				std::cout << "Could not find the landmark detection model to load" << std::endl;
 			}
 		}
 
