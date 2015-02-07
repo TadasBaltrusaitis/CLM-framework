@@ -303,7 +303,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 					{
 						// Possible image extension .jpg and .png
-						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0)
+						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") || file_iterator->extension().string().compare(".bmp") == 0)
 						{
 							
 								
@@ -389,7 +389,10 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			output_image_files.push_back(out_img_dir + "/" + fname.string());
 			
 		}
-		create_directory_from_file(output_image_files[0]);
+		if(!input_image_files.empty())
+		{
+			create_directory_from_file(output_image_files[0]);
+		}
 	}
 
 	if(!out_pts_dir.empty())

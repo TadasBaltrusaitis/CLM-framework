@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\dlib\all\source.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGUID>{B47A5F12-2567-44E9-AE49-35763EC82149}</ProjectGUID>
     <Keyword>Win32Proj</Keyword>
@@ -45,11 +48,11 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dlib</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dlib</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
   </PropertyGroup>
@@ -67,7 +70,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;ENABLE_ASSERTS;DLIB_HAVE_SSE2;DLIB_HAVE_SSE3;DLIB_HAVE_SSE41;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;WIN32;_WINDOWS;_DEBUG;ENABLE_ASSERTS;DLIB_HAVE_SSE2;DLIB_HAVE_SSE3;DLIB_HAVE_SSE41;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>Debug</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
@@ -90,7 +93,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DLIB_HAVE_SSE2;DLIB_HAVE_SSE3;DLIB_HAVE_SSE41;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;WIN32;_WINDOWS;NDEBUG;DLIB_HAVE_SSE2;DLIB_HAVE_SSE3;DLIB_HAVE_SSE41;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>Release</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
@@ -111,57 +114,6 @@
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\base64\base64_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\bigint\bigint_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\bigint\bigint_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\bit_stream\bit_stream_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\entropy_decoder\entropy_decoder_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\entropy_decoder\entropy_decoder_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\entropy_encoder\entropy_encoder_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\entropy_encoder\entropy_encoder_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\md5\md5_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\tokenizer\tokenizer_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\unicode\unicode.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\data_io\image_dataset_metadata.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\sockets\sockets_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\bsp\bsp.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\dir_nav\dir_nav_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\dir_nav\dir_nav_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\dir_nav\dir_nav_extensions.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\linker\linker_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\logger\extra_logger_headers.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\logger\logger_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\logger\logger_config_file.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\misc_api\misc_api_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\misc_api\misc_api_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\sockets\sockets_extensions.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\sockets\sockets_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\sockstreambuf\sockstreambuf.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\sockstreambuf\sockstreambuf_unbuffered.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\server\server_kernel.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\server\server_iostream.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\server\server_http.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\multithreaded_object_extension.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\threaded_object_extension.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\threads_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\threads_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\threads_kernel_shared.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\threads\thread_pool_extension.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\timer\timer.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\stack_trace.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\fonts.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\widgets.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\drawable.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\canvas_drawing.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\style.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_widgets\base_widgets.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_core\gui_core_kernel_1.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\gui_core\gui_core_kernel_2.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\image_loader\png_loader.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\image_saver\save_png.cpp" />
-    <ClCompile Include="$(SolutionDir)lib\3rdParty\dlib\include\dlib\image_loader\jpeg_loader.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
