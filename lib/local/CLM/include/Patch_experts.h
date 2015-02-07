@@ -46,15 +46,12 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __Patch_experts_h_
 #define __Patch_experts_h_
 
 #include "SVR_patch_expert.h"
 #include "CCNF_patch_expert.h"
 #include "PDM.h"
-
-#include <vector>
 
 namespace CLMTracker
 {

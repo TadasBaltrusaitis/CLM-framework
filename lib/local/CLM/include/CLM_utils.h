@@ -52,22 +52,10 @@
 //
 //  Tadas Baltrusaitis
 //  28/03/2014
-
 #ifndef __CLM_UTILS_h_
 #define __CLM_UTILS_h_
 
-#include <cv.h>
-#include <highgui.h>
-
-#include <stdio.h>
-#include <fstream>
-#include <iostream>
-
 #include "CLM.h"
-
-// Used for face detection
-#include <dlib/image_processing/frontal_face_detector.h>
-#include <dlib/opencv.h>
 
 using namespace std;
 using namespace cv;

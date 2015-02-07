@@ -46,11 +46,8 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __PDM_h_
 #define __PDM_h_
-
-#include <cv.h>
 
 #include "CLMParameters.h"
 

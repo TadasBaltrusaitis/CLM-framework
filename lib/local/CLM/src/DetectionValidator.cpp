@@ -46,14 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
-#include <DetectionValidator.h>
-
-#include <highgui.h>
-
-#define _USE_MATH_DEFINES
-#include <math.h>
-
+#include "DetectionValidator.h"
 #include "CLM_utils.h"
 
 using namespace CLMTracker;

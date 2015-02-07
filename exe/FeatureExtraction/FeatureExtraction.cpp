@@ -49,11 +49,7 @@
 
 
 // FeatureExtraction.cpp : Defines the entry point for the feature extraction console application.
-
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
-#include <CLM_utils.h>
+#include "CLM_core.h"
 
 #include <fstream>
 #include <sstream>

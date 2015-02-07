@@ -46,12 +46,8 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __SVR_PATCH_EXPERT_h_
 #define __SVR_PATCH_EXPERT_h_
-
-#include <map>
-#include <cv.h>
 
 using namespace cv;
 

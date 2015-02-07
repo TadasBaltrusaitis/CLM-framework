@@ -46,15 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLM_utils.h>
-
-#include <math.h>
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
-
-#include <iostream>
-#include <sstream>
 
 using namespace boost::filesystem;
 

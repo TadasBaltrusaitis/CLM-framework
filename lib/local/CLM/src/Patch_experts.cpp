@@ -46,16 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
-#include <Patch_experts.h>
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
-
-// For PI definition
-#define _USE_MATH_DEFINES
-#include <math.h>
-
+#include "Patch_experts.h"
 #include "CLM_utils.h"
 
 using namespace cv;

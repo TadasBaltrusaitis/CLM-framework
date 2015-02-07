@@ -46,23 +46,12 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLM.h>
-
-#include <stdio.h>
-#include <iostream>
-
-#include <highgui.h>
-
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
-
-#include <dlib/opencv.h>
-
-#include "CLM_utils.h"
+#include <CLM_utils.h>
 
 using namespace CLMTracker;
-
 
 //=============================================================================
 //=============================================================================

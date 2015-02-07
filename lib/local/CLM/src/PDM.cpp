@@ -46,14 +46,10 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include "stdafx.h"
 
 #include <PDM.h>
 #include <CLM_utils.h>
-
-#include <iostream>
 
 using namespace CLMTracker;
 //===========================================================================

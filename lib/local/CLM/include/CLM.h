@@ -46,7 +46,6 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __CLM_h_
 #define __CLM_h_
 
@@ -54,11 +53,6 @@
 #include "Patch_experts.h"
 #include "DetectionValidator.h"
 #include "CLMParameters.h"
-
-#include <vector>
-#include <cv.h>
-
-#include <dlib/image_processing/frontal_face_detector.h>
 
 using namespace std;
 using namespace cv;

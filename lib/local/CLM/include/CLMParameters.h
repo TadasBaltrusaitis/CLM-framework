@@ -51,15 +51,8 @@
 //
 //  Tadas Baltrusaitis
 //  01/05/2012
-
 #ifndef __CLM_PARAM_H
 #define __CLM_PARAM_H
-
-#include <cv.h>
-#include <highgui.h>
-
-#include <vector>
-#include <iostream>
 
 using namespace cv;
 using namespace std;

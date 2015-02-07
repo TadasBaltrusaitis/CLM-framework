@@ -42,14 +42,11 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include "CCNF_patch_expert.h"
 
 #include "CLM_utils.h"
-
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
 
 using namespace CLMTracker;
 

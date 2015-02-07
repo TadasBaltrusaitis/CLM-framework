@@ -46,15 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLMTracker.h>
-
-#include "highgui.h"
-#include "cv.h"
-
-// For PI definition
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 using namespace CLMTracker;
 using namespace cv;

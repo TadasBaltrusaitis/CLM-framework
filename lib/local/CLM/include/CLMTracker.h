@@ -52,18 +52,12 @@
 //
 //  Tadas Baltrusaitis
 //  01/05/2012
-
 #ifndef __CLM_TRACKER_h_
 #define __CLM_TRACKER_h_
 
 #include <CLMParameters.h>
 #include <CLM_utils.h>
-
 #include <CLM.h>
-
-#include <cv.h>
-
-#include <iostream>
 
 using namespace std;
 using namespace cv;
