@@ -50,10 +50,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <highgui.h>
-#include <Eigen/Dense>
-#include <opencv2/core/eigen.hpp>
-
-using Eigen::MatrixXf;
 
 using namespace CLMTracker;
 
@@ -89,18 +85,8 @@ void CCNF_patch_expert::ComputeSigmas(std::vector<Mat_<float> > sigma_components
 
 	Mat_<float> SigmaInv = 2 * (q1 + q2);
 	
-	// Eigen is faster in release mode, but OpenCV in debug
-	#ifdef _DEBUG
-		Mat Sigma_f;
-		invert(SigmaInv, Sigma_f, DECOMP_CHOLESKY);
-	#else
-		MatrixXf SigmaInvEig_f;
-		cv2eigen(SigmaInv,SigmaInvEig_f);
-		MatrixXf eye_f = MatrixXf::Identity(SigmaInv.rows, SigmaInv.cols);
-		SigmaInvEig_f.llt().solveInPlace(eye_f);		
-		Mat Sigma_f;
-		eigen2cv(eye_f, Sigma_f);
-	#endif
+	Mat Sigma_f;
+	invert(SigmaInv, Sigma_f, DECOMP_CHOLESKY);
 
 	window_sizes.push_back(window_size);
 	Sigmas.push_back(Sigma_f);
