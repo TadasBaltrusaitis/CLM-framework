@@ -52,7 +52,9 @@
 
 #include <fstream>
 #include <sstream>
-#include <cv.h>
+
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -102,7 +104,7 @@ int main (int argc, char **argv)
     float fx = 500, fy = 500, cx = 0, cy = 0;
 			
 	CLMTracker::CLMParameters clm_parameters(arguments);
-			
+
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera

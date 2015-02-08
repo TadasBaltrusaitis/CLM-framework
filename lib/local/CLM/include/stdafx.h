@@ -1,8 +1,16 @@
 // Precompiled headers stuff
 
 // OpenCV stuff
-#include <cv.h>
-#include <highgui.h>
+#include <opencv2/core/core.hpp>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/calib3d.hpp"
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+// IplImage stuff (get rid of it? TODO)
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
 
 // C++ stuff
 #include <stdio.h>

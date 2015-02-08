@@ -160,12 +160,10 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 	{
 		// In case of depth we use per area, rather than per patch normalisation
 		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, neuron_response, CV_TM_CCOEFF); // the linear multiplication, efficient calc of response
-
 	}
 	else
 	{
 		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, neuron_response, CV_TM_CCOEFF_NORMED); // the linear multiplication, efficient calc of response
-
 	}
 
 	// output
@@ -184,7 +182,7 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 }
 
 //===========================================================================
-void CCNF_patch_expert::Read(ifstream &stream, vector<int> window_sizes, vector<vector<Mat_<float> > > sigma_components)
+void CCNF_patch_expert::Read(ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<Mat_<float> > > sigma_components)
 {
 
 	// Sanity check
@@ -277,12 +275,13 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<double> &re
 		}
 	}
 
+	// TODO see how this affects it?
 	Mat resp_vec = response.reshape(1, response_height * response_width);
 	Mat_<float> resp_vec_f;
 	resp_vec.convertTo(resp_vec_f, CV_32F);
 
 	Mat out = Sigmas[s_to_use] * resp_vec_f;
-
+	
 	response = out.reshape(1, response_height);
 	response.convertTo(response, CV_64F);
 

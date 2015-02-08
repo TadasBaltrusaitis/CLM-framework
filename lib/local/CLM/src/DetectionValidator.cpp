@@ -421,8 +421,9 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					if(cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second.empty())
 					{
 						std::map<int, Mat_<double> > precomputed_dft;
+						
 						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel, precomputed_dft, output, CV_TM_CCORR);
-
+						
 						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first = precomputed_dft.begin()->first;
 						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second = precomputed_dft.begin()->second;
 					}
@@ -430,7 +431,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					{
 						std::map<int, Mat_<double> > precomputed_dft;
 						precomputed_dft[cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first] = cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second;
-						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);
+						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);						
 					}
 
 					// Combining the maps

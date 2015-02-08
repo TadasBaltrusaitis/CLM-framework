@@ -79,7 +79,7 @@ CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clon
 	this->detection_certainty = other.detection_certainty;
 	this->model_likelihood = other.model_likelihood;
 	this->failures_in_a_row = other.failures_in_a_row;
-
+	
 	// Load the CascadeClassifier (as it does not have a proper copy constructor)
 	if(!face_detector_location.empty())
 	{

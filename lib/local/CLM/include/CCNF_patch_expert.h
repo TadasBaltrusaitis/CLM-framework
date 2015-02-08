@@ -117,8 +117,8 @@ public:
 
 	// Information about the vertex features (association potentials)
 	std::vector<int>				window_sizes;
-	std::vector<Mat_<float> >		Sigmas;
-	vector<double>					betas;
+	std::vector<cv::Mat_<float> >	Sigmas;
+	std::vector<double>				betas;
 
 	// How confident we are in the patch
 	double   patch_confidence;
@@ -143,7 +143,7 @@ public:
 	}
 
 
-	void Read(std::ifstream &stream, vector<int> window_sizes, vector<vector<Mat_<float> > > sigma_components);
+	void Read(std::ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<Mat_<float> > > sigma_components);
 
 	// actual work (can pass in an image and a potential depth image, if the CCNF is trained with depth)
 	void Response(Mat_<float> &area_of_interest, Mat_<double> &response);    

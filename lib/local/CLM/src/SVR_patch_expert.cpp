@@ -174,7 +174,7 @@ void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double
 
 	// Efficient calc of patch expert SVR response across the area of interest
 	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF_NORMED); 
-
+	
 	response.create(svr_response.size());
 	MatIterator_<double> p = response.begin();
 
@@ -239,8 +239,9 @@ void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Ma
 	Mat_<float> empty_matrix_2(0,0,0.0);
 
 	// Efficient calc of patch expert response across the area of interest
-	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
 
+	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
+	
 	response.create(svr_response.size());
 	MatIterator_<double> p = response.begin();
 

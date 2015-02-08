@@ -83,7 +83,7 @@ namespace CLMTracker
 	// This is a modified version of openCV code that allows for precomputed dfts of templates and for precomputed dfts of an image
 	// _img is the input img, _img_dft it's dft (optional), _integral_img the images integral image (optional), squared integral image (optional), 
 	// templ is the template we are convolving with, templ_dfts it's dfts at varying windows sizes (optional),  _result - the output, method the type of convolution
-	void matchTemplate_m( const Mat_<float>& input_img, Mat_<double>& img_dft, Mat& _integral_img, Mat& _integral_img_sq, const Mat_<float>& templ, map<int, Mat_<double> >& _templ_dfts, cv::Mat_<float>& result, int method );
+	void matchTemplate_m( const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method );
 
 	//===========================================================================
 	// Point set and landmark manipulation functions
