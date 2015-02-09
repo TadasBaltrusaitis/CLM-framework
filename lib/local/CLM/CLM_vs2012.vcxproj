@@ -74,7 +74,7 @@
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV\classifiers" "$(OutDir)classifiers"</Command>
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -98,7 +98,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV\classifiers" "$(OutDir)clas
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV\classifiers" "$(OutDir)classifiers"</Command>
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

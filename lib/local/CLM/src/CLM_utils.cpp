@@ -496,58 +496,50 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 {
 	// Our model will always be under min block size so can ignore this
     //const double blockScale = 4.5;
-    const int minBlockSize = 256;
-
-    Mat templ = _templ;
-    
-    CV_Assert( corrsize.height <= img.rows + templ.rows - 1 &&
-               corrsize.width <= img.cols + templ.cols - 1 );
+    //const int minBlockSize = 256;
+	    
+    CV_Assert( corrsize.height <= img.rows + _templ.rows - 1 &&
+               corrsize.width <= img.cols + _templ.cols - 1 );
 	
     corr.create(corrsize);
 
 	int maxDepth = CV_64F;
 
-    Size blocksize, dftsize;
+	Size dftsize;
+	
+    dftsize.width = getOptimalDFTSize(corr.cols + _templ.cols - 1);
+    dftsize.height = getOptimalDFTSize(corr.rows + _templ.rows - 1);
 
-    blocksize.width = std::max( blocksize.width, minBlockSize - templ.cols + 1 );
-    blocksize.width = std::min( blocksize.width, corr.cols );
-    blocksize.height = std::max( blocksize.height, minBlockSize - templ.rows + 1 );
-    blocksize.height = std::min( blocksize.height, corr.rows );
-
-    dftsize.width = std::max(getOptimalDFTSize(blocksize.width + templ.cols - 1), 2);
-    dftsize.height = getOptimalDFTSize(blocksize.height + templ.rows - 1);
-    if( dftsize.width <= 0 || dftsize.height <= 0 )
-        CV_Error( CV_StsOutOfRange, "the input arrays are too big" );
-
-    // recompute block size
-    blocksize.width = dftsize.width - templ.cols + 1;
+    // Compute block size
+    Size blocksize;
+    blocksize.width = dftsize.width - _templ.cols + 1;
     blocksize.width = MIN( blocksize.width, corr.cols );
-    blocksize.height = dftsize.height - templ.rows + 1;
+    blocksize.height = dftsize.height - _templ.rows + 1;
     blocksize.height = MIN( blocksize.height, corr.rows );
 	
-	cv::Mat_<double> dftImg(dftsize, 0.0);
 	cv::Mat_<double> dftTempl( dftsize.height, dftsize.width);
 
-	// if this has not been precomputer, precompute it, otherwise use it
+	// if this has not been precomputed, precompute it, otherwise use it
 	if(_templ_dfts.find(dftsize.width) == _templ_dfts.end())
 	{
-		cv::Mat_<float> src = templ;
+		cv::Mat_<float> src = _templ;
 
 		// TODO simplify no need for rect?
 		cv::Mat_<double> dst(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
-		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, templ.cols, templ.rows));
+		
+		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, _templ.cols, _templ.rows));
 			
 		if( dst1.data != src.data )
 			src.convertTo(dst1, dst1.depth());
 
-		if( dst.cols > templ.cols )
+		if( dst.cols > _templ.cols )
 		{
-			cv::Mat_<double> part(dst, cv::Range(0, templ.rows), cv::Range(templ.cols, dst.cols));
+			cv::Mat_<double> part(dst, cv::Range(0, _templ.rows), cv::Range(_templ.cols, dst.cols));
 			part.setTo(0);
 		}
 
 		// Perform DFT of the template
-		dft(dst, dst, 0, templ.rows);
+		dft(dst, dst, 0, _templ.rows);
 		
 		_templ_dfts[dftsize.width] = dftTempl;
 
@@ -558,105 +550,48 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 		dftTempl = _templ_dfts.find(dftsize.width)->second;
 	}
 
-    int tileCountX = (corr.cols + blocksize.width - 1)/blocksize.width;
-    int tileCountY = (corr.rows + blocksize.height - 1)/blocksize.height;
-    int tileCount = tileCountX * tileCountY;
+	Size bsz(std::min(blocksize.width, corr.cols), std::min(blocksize.height, corr.rows));
+	Mat src;
 
-    Size wholeSize = img.size();
+	Mat cdst(corr, Rect(0, 0, bsz.width, bsz.height));
+	
+	cv::Mat_<double> dftImg;
 
-    Mat img0 = img;
-
-	if(tileCount > 1)
+	if(img_dft.empty())
 	{
-		Point roiofs(0,0);
+		dftImg.create(dftsize);
+		dftImg.setTo(0.0);
 
-		// calculate correlation by blocks
-		for( int i = 0; i < tileCount; i++ )
-		{
-			int x = (i%tileCountX)*blocksize.width;
-			int y = (i/tileCountX)*blocksize.height;
+		Size dsz(bsz.width + _templ.cols - 1, bsz.height + _templ.rows - 1);
 
-			Size bsz(std::min(blocksize.width, corr.cols - x),
-					 std::min(blocksize.height, corr.rows - y));
-			Size dsz(bsz.width + templ.cols - 1, bsz.height + templ.rows - 1);
-			int x0 = x - roiofs.x, y0 = y - + roiofs.y;
-			int x1 = std::max(0, x0), y1 = std::max(0, y0);
-			int x2 = std::min(img0.cols, x0 + dsz.width);
-			int y2 = std::min(img0.rows, y0 + dsz.height);
-			Mat src0(img0, Range(y1, y2), Range(x1, x2));
-			Mat dst(dftImg, Rect(0, 0, dsz.width, dsz.height));
-			Mat dst1(dftImg, Rect(x1-x0, y1-y0, x2-x1, y2-y1));
-			Mat cdst(corr, Rect(x, y, bsz.width, bsz.height));
+		int x2 = std::min(img.cols, dsz.width);
+		int y2 = std::min(img.rows, dsz.height);
 
-			Mat src = src0;
-			dftImg.setTo(0.0);
-		
-			if( dst1.data != src.data )
-				src.convertTo(dst1, dst1.depth());
-		
-			if(img_dft.empty())
-			{
-				dft( dftImg, dftImg, 0, dsz.height );
-				img_dft = dftImg.clone();
-			}
-			else
-			{
-				dftImg = img_dft.clone();
-			}
-
-			//dft( dftImg, dftImg, 0, dsz.height );
-
-			Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
-			mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
-			dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
-
-			src = dftImg(Rect(0, 0, bsz.width, bsz.height));
-
-			src.convertTo(cdst, CV_32F);
-            
-		}
-	}
-	else
-	{
-
-		Size bsz(std::min(blocksize.width, corr.cols),
-					std::min(blocksize.height, corr.rows));
-		Size dsz(bsz.width + templ.cols - 1, bsz.height + templ.rows - 1);
-
-
-		int x2 = std::min(img0.cols, dsz.width);
-		int y2 = std::min(img0.rows, dsz.height);
-
-		Mat src0(img0, Range(0, y2), Range(0, x2));
+		Mat src0(img, Range(0, y2), Range(0, x2));
 		Mat dst(dftImg, Rect(0, 0, dsz.width, dsz.height));
 		Mat dst1(dftImg, Rect(0, 0, x2, y2));
 
-		Mat cdst(corr, Rect(0, 0, bsz.width, bsz.height));
-
-		Mat src = src0;
+		src = src0;
 		
 		if( dst1.data != src.data )
 			src.convertTo(dst1, dst1.depth());
-		
-		if(img_dft.empty())
-		{
-			dft( dftImg, dftImg, 0, dsz.height );
-			img_dft = dftImg.clone();
-		}
-		else
-		{
-			dftImg = img_dft.clone();
-		}
 
-		Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
-		mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
-		dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
-
-		src = dftImg(Rect(0, 0, bsz.width, bsz.height));
-
-		src.convertTo(cdst, CV_32F);
-            
+		dft( dftImg, dftImg, 0, dsz.height );
+		img_dft = dftImg.clone();
 	}
+	else
+	{
+		dftImg = img_dft.clone();
+	}
+
+	Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
+	mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
+	dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
+
+	src = dftImg(Rect(0, 0, bsz.width, bsz.height));
+
+	src.convertTo(cdst, CV_32F);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
