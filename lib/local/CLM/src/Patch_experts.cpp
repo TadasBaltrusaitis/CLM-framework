@@ -60,7 +60,7 @@ using namespace CLMTracker;
 // Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 // The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 // Also need to provide the size of the area of interest and the desired scale of analysis
-void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22d& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
+void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22f& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
 							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale)
 {
 
@@ -86,11 +86,16 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 	Mat_<double> image_shape_2D = landmark_locations.reshape(1, 2).t();
 
 	sim_img_to_ref = AlignShapesWithScale(image_shape_2D, reference_shape_2D);
-	sim_ref_to_img = sim_img_to_ref.inv(DECOMP_LU);
+	Matx22d sim_ref_to_img_d = sim_img_to_ref.inv(DECOMP_LU);
 
-	double a1 = sim_ref_to_img(0,0);
-	double b1 = -sim_ref_to_img(0,1);
+	double a1 = sim_ref_to_img_d(0,0);
+	double b1 = -sim_ref_to_img_d(0,1);
 		
+	sim_ref_to_img(0,0) = (float)sim_ref_to_img_d(0,0);
+	sim_ref_to_img(0,1) = (float)sim_ref_to_img_d(0,1);
+	sim_ref_to_img(1,0) = (float)sim_ref_to_img_d(1,0);
+	sim_ref_to_img(1,1) = (float)sim_ref_to_img_d(1,1);
+
 	// Indicates the legal pixels in a depth image, if available (used for CLM-Z area of interest (window) interpolation)
 	Mat_<uchar> mask;
 	if(!depth_image.empty())

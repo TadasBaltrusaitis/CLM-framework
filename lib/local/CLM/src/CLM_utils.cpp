@@ -511,11 +511,13 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
     blocksize.height = dftsize.height - _templ.rows + 1;
     blocksize.height = MIN( blocksize.height, corr.rows );
 	
-	cv::Mat_<double> dftTempl( dftsize.height, dftsize.width);
+	cv::Mat_<double> dftTempl;
 
 	// if this has not been precomputed, precompute it, otherwise use it
 	if(_templ_dfts.find(dftsize.width) == _templ_dfts.end())
 	{
+		dftTempl.create(dftsize.height, dftsize.width);
+
 		cv::Mat_<float> src = _templ;
 
 		// TODO simplify no need for rect?

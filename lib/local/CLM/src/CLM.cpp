@@ -94,10 +94,10 @@ CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clon
 	}
 
 	// Make sure the matrices are allocated properly
-	for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+	for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
 	{
 		// Make sure the matrix is copied.
-		this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
+		this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
 	}
 
 	this->face_detector_HOG = dlib::get_frontal_face_detector();
@@ -138,10 +138,10 @@ CLM & CLM::operator= (const CLM& other)
 		}
 
 		// Make sure the matrices are allocated properly
-		for(std::map<int, Mat_<double>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+		for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
 		{
 			// Make sure the matrix is copied.
-			this->kde_resp_precalc.insert(std::pair<int, Mat_<double>>(it->first, it->second.clone()));
+			this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
 		}
 	}
 
@@ -503,7 +503,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	vector<Mat_<float> > patch_expert_responses(n);
 
 	// Converting from image space to patch expert space (normalised for rotation and scale)
-	Matx22d sim_ref_to_img;
+	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
@@ -552,29 +552,29 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	return true;
 }
 
-void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& kde_resp_precalc)
+void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& kde_resp_precalc)
 {
 	
 	int n = dxs.rows;
 	
-	Mat_<double> kde_resp;
-	double step_size = 0.1;
+	Mat_<float> kde_resp;
+	float step_size = 0.1;
 
 	// if this has not been precomputer, precompute it, otherwise use it
 	if(kde_resp_precalc.find(resp_size) == kde_resp_precalc.end())
 	{		
-		kde_resp = Mat_<double>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
-		MatIterator_<double> kde_it = kde_resp.begin();
+		kde_resp = Mat_<float>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
+		MatIterator_<float> kde_it = kde_resp.begin();
 
 		for(int x = 0; x < resp_size/step_size; x++)
 		{
-			double dx = x * step_size;
+			float dx = x * step_size;
 			for(int y = 0; y < resp_size/step_size; y++)
 			{
-				double dy = y * step_size;
+				float dy = y * step_size;
 
 				int ii,jj;
-				double v,vx,vy;
+				float v,vx,vy;
 			
 				for(ii = 0; ii < resp_size; ii++)
 				{
@@ -605,14 +605,14 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 	{
 		if(patch_experts.visibilities[scale][view_id].at<int>(i,0) == 0)
 		{
-			out_mean_shifts.at<double>(i,0) = 0;
-			out_mean_shifts.at<double>(i+n,0) = 0;
+			out_mean_shifts.at<float>(i,0) = 0;
+			out_mean_shifts.at<float>(i+n,0) = 0;
 			continue;
 		}
 
 		// indices of dx, dy
-		double dx = dxs.at<double>(i);
-		double dy = dys.at<double>(i);
+		float dx = dxs.at<float>(i);
+		float dy = dys.at<float>(i);
 
 		// Ensure that we are within bounds (important for precalculation)
 		if(dx < 0)
@@ -630,11 +630,11 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 		
 		int idx = closest_row * ((int)(resp_size/step_size + 0.5)) + closest_col; // Plus 0.5 is there, as C++ rounds down with int cast
 
-		MatIterator_<double> kde_it = kde_resp.begin() + kde_resp.cols*idx;
+		MatIterator_<float> kde_it = kde_resp.begin() + kde_resp.cols*idx;
 		
-		double mx=0.0;
-		double my=0.0;
-		double sum=0.0;
+		float mx=0.0;
+		float my=0.0;
+		float sum=0.0;
 
 		// Iterate over the patch responses here
 		MatConstIterator_<float> p = patch_expert_responses[i].begin();
@@ -645,7 +645,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 			{
 
 				// the KDE evaluation of that point multiplied by the probability at the current, xi, yi
-				double v = (*p++) * (*kde_it++);
+				float v = (*p++) * (*kde_it++);
 
 				sum += v;
 
@@ -656,24 +656,24 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 			}
 		}
 		
-		double msx = (mx/sum - dx);
-		double msy = (my/sum - dy);
+		float msx = (mx/sum - dx);
+		float msy = (my/sum - dy);
 
-		out_mean_shifts.at<double>(i,0) = msx;
-		out_mean_shifts.at<double>(i+n,0) = msy;
+		out_mean_shifts.at<float>(i,0) = msx;
+		out_mean_shifts.at<float>(i+n,0) = msy;
 
 	}
 
 }
 
-void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
+void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
 {
 	int n = pdm.NumberOfPoints();  
 
 	// Is the weight matrix needed at all
 	if(parameters.weight_factor > 0)
 	{
-		WeightMatrix = Mat_<double>::zeros(n*2, n*2);
+		WeightMatrix = Mat_<float>::zeros(n*2, n*2);
 
 		for (int p=0; p < n; p++)
 		{
@@ -681,10 +681,10 @@ void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, co
 			{
 
 				// for the x dimension
-				WeightMatrix.at<double>(p,p) = WeightMatrix.at<double>(p,p)  + patch_experts.ccnf_expert_intensity[scale][view_id][p].patch_confidence;
+				WeightMatrix.at<float>(p,p) = WeightMatrix.at<float>(p,p)  + patch_experts.ccnf_expert_intensity[scale][view_id][p].patch_confidence;
 				
 				// for they y dimension
-				WeightMatrix.at<double>(p+n,p+n) = WeightMatrix.at<double>(p,p);
+				WeightMatrix.at<float>(p+n,p+n) = WeightMatrix.at<float>(p,p);
 
 			}
 			else
@@ -693,24 +693,24 @@ void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, co
 				for(size_t pc=0; pc < patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.size(); pc++)
 				{
 					// for the x dimension
-					WeightMatrix.at<double>(p,p) = WeightMatrix.at<double>(p,p)  + patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.at(pc).confidence;
+					WeightMatrix.at<float>(p,p) = WeightMatrix.at<float>(p,p)  + patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.at(pc).confidence;
 				}	
 				// for the y dimension
-				WeightMatrix.at<double>(p+n,p+n) = WeightMatrix.at<double>(p,p);
+				WeightMatrix.at<float>(p+n,p+n) = WeightMatrix.at<float>(p,p);
 			}
 		}
 		WeightMatrix = parameters.weight_factor * WeightMatrix;
 	}
 	else
 	{
-		WeightMatrix = Mat_<double>::eye(n*2, n*2);
+		WeightMatrix = Mat_<float>::eye(n*2, n*2);
 	}
 
 }
 
 //=============================================================================
 double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
-		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22d& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
+		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const CLMParameters& parameters)
 {
 	
@@ -724,17 +724,19 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 	int m = pdm.NumberOfModes();
 	
 	Vec6d current_global(initial_global);
-	Mat_<double> current_local = initial_local.clone();
+
+	Mat_<float> current_local;
+	initial_local.convertTo(current_local, CV_32F);
 
 	Mat_<double> current_shape;
 	Mat_<double> previous_shape;
 
 	// Pre-calculate the regularisation term
-	Mat_<double> regTerm;
+	Mat_<float> regTerm;
 
 	if(rigid)
 	{
-		regTerm = Mat_<double>::zeros(6,6);
+		regTerm = Mat_<float>::zeros(6,6);
 	}
 	else
 	{
@@ -742,16 +744,17 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 
 		// Setting the regularisation to the inverse of eigenvalues
 		Mat(parameters.reg_factor / E).copyTo(regularisations(Rect(6, 0, m, 1)));			
-		regTerm = Mat::diag(regularisations.t());
+		Mat_<double> regTerm_d = Mat::diag(regularisations.t());
+		regTerm_d.convertTo(regTerm, CV_32F);
 	}	
 
-	Mat_<double> WeightMatrix;
+	Mat_<float> WeightMatrix;
 	GetWeightMatrix(WeightMatrix, scale, view_id, parameters);
 
-	Mat_<double> dxs, dys;
+	Mat_<float> dxs, dys;
 	
 	// The preallocated memory for the mean shifts
-	Mat_<double> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
+	Mat_<float> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
 
 	// Number of iterations
 	for(int iter = 0; iter < parameters.num_optimisation_iteration; iter++)
@@ -772,7 +775,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		current_shape.copyTo(previous_shape);
 		
 		// Jacobian, and transposed weighted jacobian
-		Mat_<double> J, J_w_t;
+		Mat_<float> J, J_w_t;
 
 		// calculate the appropriate Jacobians in 2D, even though the actual behaviour is in 3D, using small angle approximation and oriented shape
 		if(rigid)
@@ -783,13 +786,15 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		{
 			pdm.ComputeJacobian(current_local, current_global, J, WeightMatrix, J_w_t);
 		}
-
+		
 		// useful for mean shift calculation
-		double a = -0.5/(parameters.sigma * parameters.sigma);
+		float a = -0.5/(parameters.sigma * parameters.sigma);
 
 		Mat_<double> current_shape_2D = current_shape.reshape(1, 2).t();
 		Mat_<double> base_shape_2D = base_shape.reshape(1, 2).t();
-		Mat_<double> offsets = (current_shape_2D - base_shape_2D) * Mat(sim_img_to_ref).t();
+
+		Mat_<float> offsets;
+		Mat((current_shape_2D - base_shape_2D) * Mat(sim_img_to_ref).t()).convertTo(offsets, CV_32F);
 		
 		dxs = offsets.col(0) + (resp_size-1)/2;
 		dys = offsets.col(1) + (resp_size-1)/2;
@@ -797,7 +802,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		NonVectorisedMeanShift_precalc_kde(mean_shifts, patch_expert_responses, dxs, dys, resp_size, a, scale, view_id, kde_resp_precalc);
 
 		// Now transform the mean shifts to the the image reference frame, as opposed to one of ref shape (object space)
-		Mat_<double> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
+		Mat_<float> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
 		
 		mean_shifts_2D = mean_shifts_2D * Mat(sim_ref_to_img).t();
 		mean_shifts = Mat(mean_shifts_2D.t()).reshape(1, n*2);		
@@ -812,13 +817,13 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 				Jx = cvScalar(0);
 				Mat Jy = J.row(i+n);
 				Jy = cvScalar(0);
-				mean_shifts.at<double>(i,0) = 0.0;
-				mean_shifts.at<double>(i+n,0) = 0.0;
+				mean_shifts.at<float>(i,0) = 0.0f;
+				mean_shifts.at<float>(i+n,0) = 0.0f;
 			}
 		}
 
 		// projection of the meanshifts onto the jacobians (using the weighted Jacobian, see Baltrusaitis 2013)
-		Mat_<double> J_w_t_m = J_w_t * mean_shifts;
+		Mat_<float> J_w_t_m = J_w_t * mean_shifts;
 
 		// Add the regularisation term
 		if(!rigid)
@@ -827,13 +832,13 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		}
 
 		// Calculating the Hessian approximation
-		Mat_<double> Hessian = J_w_t * J;
+		Mat_<float> Hessian = J_w_t * J;
 
 		// Add the Tikhonov regularisation
 		Hessian = Hessian + regTerm;
 
 		// Solve for the parameter update (from Baltrusaitis 2013 based on eq (36) Saragih 2011)
-		Mat_<double> param_update;
+		Mat_<float> param_update;
 		solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
 		
 		// update the reference
@@ -856,11 +861,11 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		{
 			continue;
 		}
-		double dx = dxs.at<double>(i);
-		double dy = dys.at<double>(i);
+		float dx = dxs.at<float>(i);
+		float dy = dys.at<float>(i);
 
 		int ii,jj;
-		double v,vx,vy,sum=0.0;
+		float v,vx,vy,sum=0.0;
 
 		// Iterate over the patch responses here
 		MatConstIterator_<float> p = patch_expert_responses[i].begin();
@@ -881,7 +886,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 				sum += v;
 			}
 		}
-		landmark_lhoods.at<double>(i,0) = sum;
+		landmark_lhoods.at<double>(i,0) = (double)sum;
 
 		// the offset is there for numerical stability
 		loglhood += log(sum + 1e-8);

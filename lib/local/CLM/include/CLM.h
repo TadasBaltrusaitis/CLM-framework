@@ -172,23 +172,23 @@ public:
 private:
 
 	// the speedup of RLMS using precalculated KDE responses (described in Saragih 2011 RLMS paper)
-	map<int, Mat_<double> >		kde_resp_precalc; 
+	map<int, Mat_<float> >		kde_resp_precalc; 
 
 	// The model fitting: patch response computation and optimisation steps
     bool Fit(const Mat_<uchar>& intensity_image, const Mat_<float>& depth_image, const std::vector<int>& window_sizes, const CLMParameters& parameters);
 
 	// Mean shift computation that uses precalculated kernel density estimators (the one actually used)
-	void NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& mean_shifts);
+	void NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& mean_shifts);
 
 	// The actual model optimisation (update step), returns the model likelihood
     double NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
-		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22d& sim_ref_to_img, int resp_size, int view_idx, bool rigid, int scale, Mat_<double>& landmark_lhoods, const CLMParameters& parameters);
+		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_idx, bool rigid, int scale, Mat_<double>& landmark_lhoods, const CLMParameters& parameters);
 
 	// Removing background image from the depth
 	bool RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& depth_image);
 
 	// Generating the weight matrix for the Weighted least squares
-	void GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters);
+	void GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters);
 
 	//=======================================================
 	// Legacy functions that are not used at the moment
