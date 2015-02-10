@@ -140,106 +140,107 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-	for(int i = 0; i < n; i++)
+	tbb::parallel_for(0, (int)n, [&](int i){
+	//for(int i = 0; i < n; i++)
 	{
 			
 		if(visibilities[scale][view_id].rows == n)
 		{
-			if(visibilities[scale][view_id].at<int>(i,0) == 0)
+			if(visibilities[scale][view_id].at<int>(i,0) != 0)
 			{
-				continue;
-			}
-		}
 
-		// Work out how big the area of interest has to be to get a response of window size
-		int area_of_interest_width;
-		int area_of_interest_height;
+				// Work out how big the area of interest has to be to get a response of window size
+				int area_of_interest_width;
+				int area_of_interest_height;
 
-		if(use_ccnf)
-		{
-			area_of_interest_width = window_size + ccnf_expert_intensity[scale][view_id][i].width - 1; 
-			area_of_interest_height = window_size + ccnf_expert_intensity[scale][view_id][i].height - 1;				
-		}
-		else
-		{
-			area_of_interest_width = window_size + svr_expert_intensity[scale][view_id][i].width - 1; 
-			area_of_interest_height = window_size + svr_expert_intensity[scale][view_id][i].height - 1;
-		}
+				if(use_ccnf)
+				{
+					area_of_interest_width = window_size + ccnf_expert_intensity[scale][view_id][i].width - 1; 
+					area_of_interest_height = window_size + ccnf_expert_intensity[scale][view_id][i].height - 1;				
+				}
+				else
+				{
+					area_of_interest_width = window_size + svr_expert_intensity[scale][view_id][i].width - 1; 
+					area_of_interest_height = window_size + svr_expert_intensity[scale][view_id][i].height - 1;
+				}
 			
-		// scale and rotate to mean shape to reference frame
-		Mat sim = (Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
+				// scale and rotate to mean shape to reference frame
+				Mat sim = (Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
 
-		// Extract the region of interest around the current landmark location
-		Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
+				// Extract the region of interest around the current landmark location
+				Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
 
-		// Using C style openCV as it does what we need
-		CvMat area_of_interest_o = area_of_interest;
-		CvMat sim_o = sim;
-		IplImage im_o = grayscale_image;			
-		cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
+				// Using C style openCV as it does what we need
+				CvMat area_of_interest_o = area_of_interest;
+				CvMat sim_o = sim;
+				IplImage im_o = grayscale_image;			
+				cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
 			
-		// get the correct size response window			
-		patch_expert_responses[i] = Mat_<float>(window_size, window_size);
+				// get the correct size response window			
+				patch_expert_responses[i] = Mat_<float>(window_size, window_size);
 
-		// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
-		if(!ccnf_expert_intensity.empty())
-		{				
+				// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
+				if(!ccnf_expert_intensity.empty())
+				{				
 
-			ccnf_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
-		}
-		else
-		{
-			svr_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
-		}
+					ccnf_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
+				}
+				else
+				{
+					svr_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
+				}
 			
-		// if we have a corresponding depth patch and it is visible		
-		if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
-		{
+				// if we have a corresponding depth patch and it is visible		
+				if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
+				{
 
-			Mat_<float> dProb = patch_expert_responses[i].clone();
-			Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
+					Mat_<float> dProb = patch_expert_responses[i].clone();
+					Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
 			
 
-			CvMat dimg_o = depthWindow;
-			Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
-			CvMat mimg_o = maskWindow;
+					CvMat dimg_o = depthWindow;
+					Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
+					CvMat mimg_o = maskWindow;
 
-			IplImage d_o = depth_image;
-			IplImage m_o = mask;
+					IplImage d_o = depth_image;
+					IplImage m_o = mask;
 
-			cvGetQuadrangleSubPix(&d_o,&dimg_o,&sim_o);
+					cvGetQuadrangleSubPix(&d_o,&dimg_o,&sim_o);
 				
-			cvGetQuadrangleSubPix(&m_o,&mimg_o,&sim_o);
+					cvGetQuadrangleSubPix(&m_o,&mimg_o,&sim_o);
 
-			depthWindow.setTo(0, maskWindow < 1);
+					depthWindow.setTo(0, maskWindow < 1);
 
-			svr_expert_depth[scale][view_id][i].ResponseDepth(depthWindow, dProb);
+					svr_expert_depth[scale][view_id][i].ResponseDepth(depthWindow, dProb);
 							
-			// Sum to one
-			double sum = cv::sum(patch_expert_responses[i])[0];
+					// Sum to one
+					double sum = cv::sum(patch_expert_responses[i])[0];
 
-			// To avoid division by 0 issues
-			if(sum == 0)
-			{
-				sum = 1;
+					// To avoid division by 0 issues
+					if(sum == 0)
+					{
+						sum = 1;
+					}
+
+					patch_expert_responses[i] /= sum;
+
+					// Sum to one
+					sum = cv::sum(dProb)[0];
+					// To avoid division by 0 issues
+					if(sum == 0)
+					{
+						sum = 1;
+					}
+
+					dProb /= sum;
+
+					patch_expert_responses[i] = patch_expert_responses[i] + dProb;
+
+				}
 			}
-
-			patch_expert_responses[i] /= sum;
-
-			// Sum to one
-			sum = cv::sum(dProb)[0];
-			// To avoid division by 0 issues
-			if(sum == 0)
-			{
-				sum = 1;
-			}
-
-			dProb /= sum;
-
-			patch_expert_responses[i] = patch_expert_responses[i] + dProb;
-
 		}
 	}
+	});
 
 }
 
