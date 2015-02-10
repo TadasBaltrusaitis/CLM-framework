@@ -491,17 +491,11 @@ static bool ipp_sqrDistance(const Mat& src, const Mat& tpl, Mat& dst)
 
 #endif
 
-void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, Mat_<float>& corr,
-                Size corrsize)
+void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, Mat_<float>& corr)
 {
 	// Our model will always be under min block size so can ignore this
     //const double blockScale = 4.5;
     //const int minBlockSize = 256;
-	    
-    CV_Assert( corrsize.height <= img.rows + _templ.rows - 1 &&
-               corrsize.width <= img.cols + _templ.cols - 1 );
-	
-    corr.create(corrsize);
 
 	int maxDepth = CV_64F;
 
@@ -599,19 +593,19 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method )
 {
 
-    CV_Assert( CV_TM_SQDIFF <= method && method <= CV_TM_CCOEFF_NORMED );
-    CV_Assert( input_img.dims <= 2 );
-	
-    int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
+        int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
                   method == CV_TM_CCOEFF || method == CV_TM_CCOEFF_NORMED ? 1 : 2;
     bool isNormed = method == CV_TM_CCORR_NORMED ||
                     method == CV_TM_SQDIFF_NORMED ||
                     method == CV_TM_CCOEFF_NORMED;
 	
-    Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
-    result.create(corrSize);
-	
-    CLMTracker::crossCorr_m( input_img, img_dft, templ, templ_dfts, result, result.size());
+	// Assume result is defined properly
+	if(result.empty())
+	{
+		Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
+		result.create(corrSize);
+	}
+    CLMTracker::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
 
     if( method == CV_TM_CCORR )
         return;

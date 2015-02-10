@@ -500,7 +500,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	int num_scales = patch_experts.patch_scaling.size();
 
 	// Storing the patch expert response maps
-	vector<Mat_<double> > patch_expert_responses(n);
+	vector<Mat_<float> > patch_expert_responses(n);
 
 	// Converting from image space to patch expert space (normalised for rotation and scale)
 	Matx22d sim_ref_to_img;
@@ -552,7 +552,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	return true;
 }
 
-void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& kde_resp_precalc)
+void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& kde_resp_precalc)
 {
 	
 	int n = dxs.rows;
@@ -637,7 +637,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 		double sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(int ii = 0; ii < resp_size; ii++)
 		{
@@ -709,7 +709,7 @@ void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, co
 }
 
 //=============================================================================
-double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<double> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
+double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22d& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const CLMParameters& parameters)
 {
@@ -863,7 +863,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		double v,vx,vy,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{
@@ -1044,7 +1044,7 @@ Rect_<double> CLM::GetBoundingBox() const
 }
 
 // Legacy function not used at the moment
-void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
+void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
 {
 	
 	int n = dxs.rows;
@@ -1067,7 +1067,7 @@ void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat
 		double v,vx,vy,mx=0.0,my=0.0,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{

@@ -100,8 +100,8 @@ class SVR_patch_expert{
 		void Read(std::ifstream &stream);
 
 		// The actual response computation from intensity or depth (for CLM-Z)
-		void Response(const Mat_<float> &area_of_interest, Mat_<double> &response);    
-		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<double> &response);
+		void Response(const Mat_<float> &area_of_interest, Mat_<float> &response);    
+		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<float> &response);
 
 };
 //===========================================================================
@@ -131,8 +131,8 @@ class Multi_SVR_patch_expert{
 		void Read(std::ifstream &stream);
 
 		// actual response computation from intensity of depth (for CLM-Z)
-		void Response(const Mat_<float> &area_of_interest, Mat_<double> &response);
-		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<double> &response);
+		void Response(const Mat_<float> &area_of_interest, Mat_<float> &response);
+		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<float> &response);
 
 };
 }

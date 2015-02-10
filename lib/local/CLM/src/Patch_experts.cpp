@@ -60,7 +60,7 @@ using namespace CLMTracker;
 // Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 // The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 // Also need to provide the size of the area of interest and the desired scale of analysis
-void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, Matx22d& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
+void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22d& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
 							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale)
 {
 
@@ -174,7 +174,7 @@ void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, 
 		cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
 			
 		// get the correct size response window			
-		patch_expert_responses[i] = Mat_<double>(window_size, window_size);
+		patch_expert_responses[i] = Mat_<float>(window_size, window_size);
 
 		// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
 		if(!ccnf_expert_intensity.empty())
@@ -191,7 +191,7 @@ void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, 
 		if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
 		{
 
-			Mat_<double> dProb = patch_expert_responses[i].clone();
+			Mat_<float> dProb = patch_expert_responses[i].clone();
 			Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
 			
 

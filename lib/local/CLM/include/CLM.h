@@ -178,10 +178,10 @@ private:
     bool Fit(const Mat_<uchar>& intensity_image, const Mat_<float>& depth_image, const std::vector<int>& window_sizes, const CLMParameters& parameters);
 
 	// Mean shift computation that uses precalculated kernel density estimators (the one actually used)
-	void NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& mean_shifts);
+	void NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& mean_shifts);
 
 	// The actual model optimisation (update step), returns the model likelihood
-    double NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<double> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
+    double NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22d& sim_ref_to_img, int resp_size, int view_idx, bool rigid, int scale, Mat_<double>& landmark_lhoods, const CLMParameters& parameters);
 
 	// Removing background image from the depth
@@ -195,10 +195,10 @@ private:
 	//=======================================================
 
 	// Mean shift computation	
-	void NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id);
+	void NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id);
 
 	// A vectorised version of mean shift (Not actually used)
-	void VectorisedMeanShift(Mat_<double>& meanShifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &iis, const Mat_<double> &jjs, const Mat_<double> &dxs, const Mat_<double> &dys, const Size patchSize, double sigma, int scale, int view_id);		
+	void VectorisedMeanShift(Mat_<double>& meanShifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &iis, const Mat_<double> &jjs, const Mat_<double> &dxs, const Mat_<double> &dys, const Size patchSize, double sigma, int scale, int view_id);		
 
   };
   //===========================================================================
