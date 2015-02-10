@@ -39,9 +39,7 @@
         </Menu>
         
         <CLM_framework_GUI:OverlayImage x:Name="video" Grid.Row="1" Grid.Column="0"/>
-        <Border Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0">
-            <Label Name="fpsLabel">0 FPS</Label>
-        </Border>
+        <Border Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0"/>
         <StackPanel Grid.Row="1" Grid.Column="1">
             <Label Name="headOrientationLabel"></Label>
             <Label Name="headPoseLabel"></Label>

@@ -8,6 +8,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-rigid  -verbose -f "../videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

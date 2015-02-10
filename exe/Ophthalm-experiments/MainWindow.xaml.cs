@@ -217,8 +217,6 @@ namespace Ophthalm_experiments
                 webcam_img.Height = (int)(((double)(img_height) / (double)img_width) * 400.0);
                 
                 webcam_img.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
-                FPSCounter.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
-                ConfLabel.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
                 ResetButton.SetValue(Canvas.TopProperty, (300 - webcam_img.Height) / 2);
 
                 webcam_img.SetValue(Canvas.ZIndexProperty, 0);
@@ -390,7 +388,6 @@ namespace Ophthalm_experiments
                         if (latest_img == null)
                             latest_img = frame.CreateWriteableBitmap();
 
-                        fpsLabel.Content = "FPS: " + processing_fps.GetFPS().ToString("0");
                         List<double> pose = new List<double>();
                         clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
@@ -409,12 +406,11 @@ namespace Ophthalm_experiments
                         else if (confidence > 1)
                             confidence = 1;
 
-                        confidenceLabel.Content = "Confidence: " + confidence;
-                        ConfLabel.Background = new SolidColorBrush(Color.FromRgb((byte)((1 - confidence) * 255), (byte)(confidence * 255), (byte)40));
-
                         frame.UpdateWriteableBitmap(latest_img);
+                        
                         webcam_img.Source = latest_img;
-
+                        webcam_img.Confidence = confidence;
+                        webcam_img.FPS = processing_fps.GetFPS();
                         if (!detectionSucceeding)
                         {
                             webcam_img.OverlayLines.Clear();
@@ -424,7 +420,7 @@ namespace Ophthalm_experiments
                         {
                             webcam_img.OverlayLines = lines;
                             webcam_img.OverlayPoints = landmarks;
-                            webcam_img.Confidence = 1;
+                        
 
                             // Publish the information for other applications
                             String str = String.Format("{0}:{1:F2}, {2:F2}, {3:F2}, {4:F2}, {5:F2}, {6:F2}", "HeadPose", pose[0], pose[1], pose[2],

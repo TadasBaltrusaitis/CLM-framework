@@ -17,13 +17,7 @@
         </Grid.RowDefinitions>
 
         <Canvas Name="ImageCanvas" Grid.Column="1" Grid.Row="1" Width="400" Height="300">
-            <Label Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset" MouseEnter="ResetButton_MouseEnter"/>
-            <Border Name="FPSCounter" Canvas.Left="175" Width="50" Height="23" Canvas.ZIndex="1"  Canvas.Bottom="0" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,8,0,0">
-                <Label HorizontalContentAlignment="Center" Name="fpsLabel">0 FPS</Label>                
-            </Border>
-            <Border Height="20" Name="ConfLabel" Canvas.Right="0" Width="80" Canvas.ZIndex="1"  Canvas.Bottom="0" Background="#ccc" BorderBrush="#FF000000" BorderThickness="0" CornerRadius="8,0,0,0">
-                <Label FontSize="9" HorizontalContentAlignment="Center" Name="confidenceLabel">Confidence 0</Label>
-            </Border>
+            <Label Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset" MouseEnter="ResetButton_MouseEnter"/>            
         </Canvas>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button  Width="100" Height="21" Click="startRecordingButton_Click" Name="RecordingButton">Record trial 0</Button>

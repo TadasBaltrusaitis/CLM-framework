@@ -158,7 +158,6 @@ namespace CLM_framework_GUI
                         if (latest_img == null)
                             latest_img = frame.CreateWriteableBitmap();
 
-                        fpsLabel.Content = "Processing: " + processing_fps.GetFPS().ToString("0");
                         List<double> pose = new List<double>();
                         clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
@@ -170,20 +169,28 @@ namespace CLM_framework_GUI
 
                         //landmarks3DLabel.Content = "X:" + landmarks_3D[0].X + "Y:" + landmarks_3D[0].Y + "Z:" + landmarks_3D[0].Z + "X:" + landmarks_3D[30].X + "Y:" + landmarks_3D[30].Y + "Z:" + landmarks_3D[30].Z;
 
+                        double confidence = (-clm_model.GetConfidence() + 0.6) / 2.0;
+
+                        if (confidence < 0)
+                            confidence = 0;
+                        else if (confidence > 1)
+                            confidence = 1;
+
                         frame.UpdateWriteableBitmap(latest_img);
                         video.Source = latest_img;
+                        video.Confidence = confidence;
+                        video.FPS = processing_fps.GetFPS();
 
                         if (!detectionSucceeding)
                         {
                             video.OverlayLines.Clear();
                             video.OverlayPoints.Clear();
+                        
                         }
                         else
                         {
                             video.OverlayLines = lines;
-                            video.OverlayPoints = landmarks;
-                            // TODO edit
-                            video.Confidence = 1;
+                            video.OverlayPoints = landmarks;                        
                         }
                     });
                 }
