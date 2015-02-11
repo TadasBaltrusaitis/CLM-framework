@@ -151,6 +151,7 @@ namespace Ophthalm_experiments
             src.UriSource = new Uri("logo1.png", UriKind.RelativeOrAbsolute);
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();
+            
 
             logoLabel.Source = src;
 

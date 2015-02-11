@@ -3,6 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
         xmlns:Ophthalm_experiments="clr-namespace:Ophthalm_experiments"
         Title="Cambridge Face Tracker - Head Pose Experiments" Height="400" Width="640" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" UseLayoutRounding="True">
+    <Window.Resources>
+        <Style TargetType="{x:Type Image}">
+            <Setter Property="RenderOptions.BitmapScalingMode" 
+               Value="Fant" />
+        </Style>
+    </Window.Resources>
     <Grid Name="MainGrid" HorizontalAlignment="Stretch" Width="600">
 
         <Grid.ColumnDefinitions>
@@ -56,8 +62,8 @@
             <Button FontSize="11" HorizontalAlignment="Center" Click="CompleteButton_Click" Name="CompleteButton" >Start new patient</Button>
         </StackPanel>
 
-        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1">
-            <Image RenderOptions.BitmapScalingMode="Fant" RenderOptions.EdgeMode="Aliased" Name="logoLabel" Source="/logo1.png"  />
+        <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+            <Image RenderOptions.BitmapScalingMode="Fant"  RenderOptions.EdgeMode="Aliased"  x:Name="logoLabel" Source="/logo1.png"  Stretch="Uniform" />
         </StackPanel>
 
     </Grid>

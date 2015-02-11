@@ -40,8 +40,6 @@ namespace CLM_framework_GUI
             if (Source == null || !(Source is WriteableBitmap))
                 return;
 
-            Console.WriteLine("Rendering");
-
             var width = ((WriteableBitmap)Source).PixelWidth;
             var height = ((WriteableBitmap)Source).PixelHeight;
 
@@ -65,21 +63,21 @@ namespace CLM_framework_GUI
             // TODO this should be scalable
             double scaling = ActualWidth / 400.0;
 
-            int confidence_width = (int)(100.0 * scaling);
-            int confidence_height = (int)(15.0 * scaling);
+            int confidence_width = (int)(107.0 * scaling);
+            int confidence_height = (int)(18.0 * scaling);
 
             Brush conf_brush = new SolidColorBrush(Color.FromRgb((byte)((1 - Confidence) * 255), (byte)(Confidence * 255), (byte)40));
             dc.DrawRoundedRectangle(conf_brush, new Pen(Brushes.Black, 0.5 * scaling), new Rect(ActualWidth - confidence_width - 1, 0, confidence_width, confidence_height), 3.0 * scaling, 3.0 * scaling);
 
-            FormattedText txt = new FormattedText("Confidence: " + (int)(100 * Confidence) + "%", System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 10.0 * scaling, Brushes.Black);
+            FormattedText txt = new FormattedText("Confidence: " + (int)(100 * Confidence) + "%", System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 12.0 * scaling, Brushes.Black);
             dc.DrawText(txt, new Point(ActualWidth - confidence_width + 2, 2));
 
-            int fps_width = (int)(45.0 * scaling);
-            int fps_height = (int)(15.0 * scaling);
+            int fps_width = (int)(48.0 * scaling);
+            int fps_height = (int)(18.0 * scaling);
 
             dc.DrawRoundedRectangle(Brushes.WhiteSmoke, new Pen(Brushes.Black, 0.5 * scaling), new Rect(ActualWidth / 2 - fps_width/2, ActualHeight - fps_height, fps_width, fps_height), 3.0 * scaling, 3.0 * scaling);
-            FormattedText fps_txt = new FormattedText("FPS: " + (int)FPS, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 10.0 * scaling, Brushes.Black);
-            dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 2.0 * scaling, ActualHeight - fps_height + 1.0 * scaling));
+            FormattedText fps_txt = new FormattedText("FPS: " + (int)FPS, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 12.0 * scaling, Brushes.Black);
+            dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 3.0 * scaling, ActualHeight - fps_height + 1.0 * scaling));
 
             old_width = width;
             old_height = height;
