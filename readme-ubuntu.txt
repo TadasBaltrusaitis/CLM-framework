@@ -1,4 +1,4 @@
-This requires cmake, OpenCV 2.4.6 (or newer) and boost.
+This requires cmake, OpenCV 3.0.0 (or newer), tbb and boost.
 
 Need to do the following:
 
@@ -6,24 +6,27 @@ Need to do the following:
 
 2. Cmake: sudo apt-get install cmake
 
-3. Get checkinstall: sudo apt-get install checkinstall
 
-4. OpenCV 2.4.6, Based on tutorial from http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html
-4.1 Install OpenCV dependencies: sudo apt-get install git libgtk2.0-dev pkg-config python-dev python-numpy libtbb-dev libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libqt4-dev
-4.2 Download OpenCV 2.4.6 from https://github.com/itseez/opencv/archive/2.4.6.zip
+4. OpenCV 3.0.0, Based on tutorial from http://docs.opencv.org/trunk/doc/tutorials/introduction/linux_install/linux_install.html
+4.1 Install OpenCV dependencies:
+	sudo apt-get install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+    sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall
+4.2 Download OpenCV 3.0.0 https://github.com/Itseez/opencv/archive/3.0.0-beta.zip
 4.3 Unzip it and create a build folder there:
 	
-	unzip 2.4.6.zip
-	cd opencv-2.4.6
+	unzip 3.0.0-beta.zip
+	cd opencv-3.0.0-beta
 	mkdir build
 	cd build
 
 4.4 Build it using: 
-	cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D WITH_QT=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_OPENGL=ON ..
+	cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_SHARED_LIBS=OFF ..
 	make -j2
-	sudo checkinstall (and follow the instructions)
-	sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
-	sudo ldconfig
+	sudo make install
+	
+	//sudo checkinstall (and follow the instructions)
+	//sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+	//sudo ldconfig
 	
 5. Get Boost: sudo apt-get install libboost1.53-all-dev
 	alternatively: sudo apt-get install libboost-all-dev
