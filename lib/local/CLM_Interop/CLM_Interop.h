@@ -50,6 +50,8 @@ namespace CLM_Interop {
 
 		double fps;
 
+		bool is_webcam;
+
 	public:
 
 
@@ -96,6 +98,8 @@ namespace CLM_Interop {
 				vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
 				vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 			}
+
+			is_webcam = true;
 		}
 
 		Capture(System::String^ videoFile)
@@ -105,6 +109,7 @@ namespace CLM_Interop {
 
 			vc = new VideoCapture(marshal_as<std::string>(videoFile));
 			fps = vc->get(CV_CAP_PROP_FPS);
+			is_webcam = false;
 		}
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
@@ -161,8 +166,9 @@ namespace CLM_Interop {
 						// read several images (to avoid overexposure)						
 						for (int k = 0; k < 5; ++k)
 							cameras[i].read_frame();
-						
-						sample_img = cameras[i].read_frame();
+
+						// Flip horizontally
+						cv::flip(cameras[i].read_frame(), sample_img, 1);
 					}
 				}
 
@@ -183,6 +189,10 @@ namespace CLM_Interop {
 
 							for (int k = 0; k < 5; ++k)
 								cap1.read(sample_img);
+
+							// Flip horizontally
+						cv::flip(sample_img, sample_img, 1);
+
 						}
 					}
 				}
@@ -198,6 +208,7 @@ namespace CLM_Interop {
 		{
 			if(vc != nullptr)
 			{
+				
 				bool success = vc->read(mirroredFrame->Mat);
 
 				if (!success)
@@ -209,7 +220,14 @@ namespace CLM_Interop {
 				webcam->read_frame().copyTo(mirroredFrame->Mat);
 			}
 
-			flip(mirroredFrame->Mat, latestFrame->Mat, 1);
+			if(is_webcam)
+			{
+				flip(mirroredFrame->Mat, latestFrame->Mat, 1);
+			}
+			else
+			{
+				mirroredFrame->Mat.copyTo(latestFrame->Mat);
+			}
 
 			if (grayFrame == nullptr) {
 				if (latestFrame->Width > 0) {
@@ -253,10 +271,11 @@ namespace CLM_Interop {
 				this_auto_mf->~auto_mf();
 				delete this_auto_mf;				
 			}
-			//if(webcam != nullptr)
-			//{
-			//	webcam->~camera();
-			//}
+			
+			if(webcam != nullptr)
+			{
+				webcam->~camera();
+			}
 		}
 
 		// Destructor. Called on explicit Dispose() only.

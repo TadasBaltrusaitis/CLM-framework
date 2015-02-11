@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using OpenCVWrappers;
 using CLM_Interop;
 using CLM_Interop.CLMTracker;
+using System.Windows.Threading;
 
 namespace CLM_framework_GUI
 {
@@ -67,11 +68,20 @@ namespace CLM_framework_GUI
         volatile bool detectionSucceeding = false;
         volatile bool reset = false;
 
+        // For tracking
+        CLMParameters clm_params;
+        CLM clm_model;
+
+        // For updating the GUI
+        // TODO
+        private Object update_lock = new Object();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            //new Thread(ProcessLoop).Start();
+            clm_params = new CLMParameters();
+            clm_model = new CLM();
         }
 
         private bool ProcessFrame(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
@@ -86,21 +96,20 @@ namespace CLM_framework_GUI
         {
             Thread.CurrentThread.IsBackground = true;
 
-            CLMParameters clm_params = new CLMParameters();
-            CLM clm_model = new CLM();
+            // TODO set these properly
             double fx = 500, fy = 500, cx = 0, cy = 0;
 
             DateTime? startTime = CurrentTime;
 
             var lastFrameTime = CurrentTime;
 
+            clm_model.Reset();
+            
             while (thread_running)
             {
-
                 //////////////////////////////////////////////
                 // CAPTURE FRAME AND DETECT LANDMARKS FOLLOWED BY THE REQUIRED IMAGE PROCESSING
                 //////////////////////////////////////////////
-
                 if (fpsLimit > 0)
                 {
                     while (CurrentTime < lastFrameTime + TimeSpan.FromSeconds(1 / fpsLimit))
@@ -110,20 +119,24 @@ namespace CLM_framework_GUI
                 RawImage frame = null;
                 try
                 {
-                    frame = capture.GetNextFrame();
+                    frame = new RawImage(capture.GetNextFrame());
                 }
                 catch (CLM_Interop.CaptureFailedException)
                 {
+                    Console.WriteLine("Capture failed");
                     break;
                 }
 
                 lastFrameTime = CurrentTime;
                 processing_fps.AddFrame();
 
-                var grayFrame = capture.GetCurrentFrameGray();
+                var grayFrame = new RawImage(capture.GetCurrentFrameGray());
 
                 if (grayFrame == null)
+                {
+                    Console.WriteLine("Gray is empty");
                     continue;
+                }
 
                 if (cx == 0 && cy == 0)
                 {
@@ -135,92 +148,87 @@ namespace CLM_framework_GUI
 
                 List<Tuple<Point, Point>> lines = null;
                 List<Point> landmarks = null;
+                
                 if (detectionSucceeding)
                 {
                     landmarks = clm_model.CalculateLandmarks();
                     lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
                 }
+                
+                // TODO rem?
+                var landmarks_3D = clm_model.Calculate3DLandmarks(fx, fy, cx, cy);
+
+                double confidence = (-clm_model.GetConfidence() + 0.6) / 2.0;
+
+                if (confidence < 0)
+                    confidence = 0;
+                else if (confidence > 1)
+                    confidence = 1;
+
+                List<double> pose = new List<double>();
+                clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+
+                // Visualisation
+                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
+                {
+                    if (latest_img == null)
+                        latest_img = frame.CreateWriteableBitmap();
+
+                    headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
+                    headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
+
+                    frame.UpdateWriteableBitmap(latest_img);
+
+                    Console.WriteLine("Source updating");
+                    video.Source = latest_img;
+                    video.Confidence = confidence;
+                    video.FPS = processing_fps.GetFPS();
+
+                    if (!detectionSucceeding)
+                    {
+                        video.OverlayLines.Clear();
+                        video.OverlayPoints.Clear();
+                    }
+                    else
+                    {
+                        video.OverlayLines = lines;
+                        video.OverlayPoints = landmarks;
+                    }
+                }));
 
                 if (reset)
                 {
-                    clm_model.Reset();                    
+                    clm_model.Reset();
                     reset = false;
                 }
 
-                // The actual frame processing
 
-
-                // Visualisation
-                try
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (latest_img == null)
-                            latest_img = frame.CreateWriteableBitmap();
-
-                        List<double> pose = new List<double>();
-                        clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
-
-                        headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
-                        headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
-                        
-                        // TODO rem?
-                        var landmarks_3D = clm_model.Calculate3DLandmarks(fx, fy, cx, cy);
-
-                        //landmarks3DLabel.Content = "X:" + landmarks_3D[0].X + "Y:" + landmarks_3D[0].Y + "Z:" + landmarks_3D[0].Z + "X:" + landmarks_3D[30].X + "Y:" + landmarks_3D[30].Y + "Z:" + landmarks_3D[30].Z;
-
-                        double confidence = (-clm_model.GetConfidence() + 0.6) / 2.0;
-
-                        if (confidence < 0)
-                            confidence = 0;
-                        else if (confidence > 1)
-                            confidence = 1;
-
-                        frame.UpdateWriteableBitmap(latest_img);
-                        video.Source = latest_img;
-                        video.Confidence = confidence;
-                        video.FPS = processing_fps.GetFPS();
-
-                        if (!detectionSucceeding)
-                        {
-                            video.OverlayLines.Clear();
-                            video.OverlayPoints.Clear();
-                        
-                        }
-                        else
-                        {
-                            video.OverlayLines = lines;
-                            video.OverlayPoints = landmarks;                        
-                        }
-                    });
-                }
-                catch (TaskCanceledException)
-                {
-                    // Quitting
-                    break;
-                }
             }
             System.Console.Out.WriteLine("Thread finished");
+            latest_img = null;
         }
 
         private void fileOpenClick(object sender, RoutedEventArgs e)
         {
+
             var d = new OpenFileDialog();
             if (d.ShowDialog(this) == true)
             {
                 videoFile = d.FileName;
 
+                // First complete the running of the thread
+                if (processing_thread != null)
+                {
+                    // Let the other thread finish first
+                    thread_running = false;
+
+                    processing_thread.Join();
+                }
+
                 capture = new Capture(d.FileName);
 
                 if (capture.isOpened())
                 {
-                    if (processing_thread != null)
-                    {
-                        // Let the other thread finish first
-                        while (processing_thread.IsAlive)
-                            thread_running = false;
-                    }
-
                     thread_running = true;
 
                     processing_thread = new Thread(VideoLoop);
@@ -237,21 +245,31 @@ namespace CLM_framework_GUI
                     // Display message box
                     MessageBox.Show(messageBoxText, caption, button, icon);
                 }
+                video.InvalidateArrange();
+
             }
         }
 
         private void openWebcamClick(object sender, RoutedEventArgs e)
         {
+            // First complete the running of the thread
+            if (processing_thread != null)
+            {
+                // Let the other thread finish first
+                thread_running = false;
+
+                processing_thread.Join();
+            }
 
             // First close the cameras that might be open
-            if(capture != null)
+            if (capture != null)
             {
                 capture.Dispose();
             }
 
             CameraSelection cam_sec = new CameraSelection();
             cam_sec.ShowDialog();
-            
+
             if (cam_sec.camera_selected)
             {
                 int cam_id = cam_sec.selected_camera.Item1;
@@ -260,15 +278,8 @@ namespace CLM_framework_GUI
 
                 capture = new Capture(cam_id, width, height);
 
-                // TODO repetition here, need code that stops the old thread and then start the new one
                 if (capture.isOpened())
                 {
-                    if (processing_thread != null)
-                    {
-                        // Let the other thread finish first
-                        while (processing_thread.IsAlive)
-                            thread_running = false;
-                    }
 
                     thread_running = true;
 
@@ -288,6 +299,5 @@ namespace CLM_framework_GUI
                 }
             }
         }
-
     }
 }

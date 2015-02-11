@@ -74,7 +74,7 @@ namespace OpenCVWrappers {
 
 		RawImage(const cv::Mat& m)
 		{
-			mat = new cv::Mat(m);
+			mat = new cv::Mat(m.clone());
 			refCount++;
 		}
 
@@ -115,7 +115,6 @@ namespace OpenCVWrappers {
 		{
 			this->!RawImage();
 		}
-
 
 		property int Width
 		{

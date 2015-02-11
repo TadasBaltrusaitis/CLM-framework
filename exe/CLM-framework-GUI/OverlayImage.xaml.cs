@@ -40,6 +40,8 @@ namespace CLM_framework_GUI
             if (Source == null || !(Source is WriteableBitmap))
                 return;
 
+            Console.WriteLine("Rendering");
+
             var width = ((WriteableBitmap)Source).PixelWidth;
             var height = ((WriteableBitmap)Source).PixelHeight;
 
@@ -79,11 +81,17 @@ namespace CLM_framework_GUI
             FormattedText fps_txt = new FormattedText("FPS: " + (int)FPS, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 10.0 * scaling, Brushes.Black);
             dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 2.0 * scaling, ActualHeight - fps_height + 1.0 * scaling));
 
+            old_width = width;
+            old_height = height;
+
         }
 
         public List<Tuple<Point, Point>> OverlayLines { get; set; }
         public List<Point> OverlayPoints { get; set; }        
         public double Confidence { get; set; }
         public double FPS { get; set; }
+
+        int old_width;
+        int old_height;
     }
 }
