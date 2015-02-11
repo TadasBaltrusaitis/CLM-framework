@@ -46,15 +46,12 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __Patch_experts_h_
 #define __Patch_experts_h_
 
 #include "SVR_patch_expert.h"
 #include "CCNF_patch_expert.h"
 #include "PDM.h"
-
-#include <vector>
 
 namespace CLMTracker
 {
@@ -126,7 +123,7 @@ public:
 	// Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 	// The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 	// Also need to provide the size of the area of interest and the desired scale of analysis
-	void Response(vector<cv::Mat_<double> >& patch_expert_responses, Matx22d& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
+	void Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22f& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
 							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale);
 
 	// Getting the best view associated with the current orientation

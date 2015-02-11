@@ -46,14 +46,10 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include "SVR_patch_expert.h"
-
 #include "CLM_utils.h"
-
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
 
 using namespace CLMTracker;
 
@@ -129,7 +125,7 @@ void SVR_patch_expert::Read(ifstream &stream)
 }
 
 //===========================================================================
-void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double>& response)
+void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<float>& response)
 {
 
 	int response_height = area_of_interest.rows - weights.rows + 1;
@@ -178,9 +174,9 @@ void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double
 
 	// Efficient calc of patch expert SVR response across the area of interest
 	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF_NORMED); 
-
+	
 	response.create(svr_response.size());
-	MatIterator_<double> p = response.begin();
+	MatIterator_<float> p = response.begin();
 
 	cv::MatIterator_<float> q1 = svr_response.begin(); // respone for each pixel
 	cv::MatIterator_<float> q2 = svr_response.end();
@@ -193,7 +189,7 @@ void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double
 
 }
 
-void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Mat_<double> &response)
+void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Mat_<float> &response)
 {
 
 	// How big the response map will be
@@ -243,10 +239,11 @@ void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Ma
 	Mat_<float> empty_matrix_2(0,0,0.0);
 
 	// Efficient calc of patch expert response across the area of interest
-	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
 
+	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
+	
 	response.create(svr_response.size());
-	MatIterator_<double> p = response.begin();
+	MatIterator_<float> p = response.begin();
 
 	cv::MatIterator_<float> q1 = svr_response.begin(); // respone for each pixel
 	cv::MatIterator_<float> q2 = svr_response.end();
@@ -277,7 +274,7 @@ void Multi_SVR_patch_expert::Read(ifstream &stream)
 
 }
 //===========================================================================
-void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<double> &response)
+void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<float> &response)
 {
 	
 	int response_height = area_of_interest.rows - height + 1;
@@ -299,7 +296,7 @@ void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<
 		// responses from multiple patch experts these can be gradients, LBPs etc.
 		response.setTo(1.0);
 		
-		Mat_<double> modality_resp(response_height, response_width);
+		Mat_<float> modality_resp(response_height, response_width);
 
 		for(size_t i = 0; i < svr_patch_experts.size(); i++)
 		{			
@@ -311,7 +308,7 @@ void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<
 
 }
 
-void Multi_SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, Mat_<double>& response)
+void Multi_SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, Mat_<float>& response)
 {
 	int response_height = area_of_interest.rows - height + 1;
 	int response_width = area_of_interest.cols - width + 1;

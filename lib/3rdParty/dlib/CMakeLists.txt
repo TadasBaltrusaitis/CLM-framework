@@ -13,6 +13,9 @@ if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW) 
 endif()
 
+add_definitions(-DDLIB_HAVE_SSE2)
+add_definitions(-DDLIB_HAVE_SSE3)
+add_definitions(-DDLIB_HAVE_SSE41)
 
 # make macros that can add #define directives to the entire project.  Not just 
 # to the dlib library itself.  I.e. to dlib and to any projects that depend

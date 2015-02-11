@@ -42,18 +42,11 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include "CCNF_patch_expert.h"
 
 #include "CLM_utils.h"
-
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
-#include <Eigen/Dense>
-#include <opencv2/core/eigen.hpp>
-
-using Eigen::MatrixXf;
 
 using namespace CLMTracker;
 
@@ -89,18 +82,8 @@ void CCNF_patch_expert::ComputeSigmas(std::vector<Mat_<float> > sigma_components
 
 	Mat_<float> SigmaInv = 2 * (q1 + q2);
 	
-	// Eigen is faster in release mode, but OpenCV in debug
-	#ifdef _DEBUG
-		Mat Sigma_f;
-		invert(SigmaInv, Sigma_f, DECOMP_CHOLESKY);
-	#else
-		MatrixXf SigmaInvEig_f;
-		cv2eigen(SigmaInv,SigmaInvEig_f);
-		MatrixXf eye_f = MatrixXf::Identity(SigmaInv.rows, SigmaInv.cols);
-		SigmaInvEig_f.llt().solveInPlace(eye_f);		
-		Mat Sigma_f;
-		eigen2cv(eye_f, Sigma_f);
-	#endif
+	Mat Sigma_f;
+	invert(SigmaInv, Sigma_f, DECOMP_CHOLESKY);
 
 	window_sizes.push_back(window_size);
 	Sigmas.push_back(Sigma_f);
@@ -125,7 +108,7 @@ void CCNF_neuron::Read(ifstream &stream)
 }
 
 //===========================================================================
-void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_img, Mat &integral_img_sq, Mat_<double> &resp)
+void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_img, Mat &integral_img_sq, Mat_<float> &resp)
 {
 
 	int h = im.rows - weights.rows + 1;
@@ -170,27 +153,27 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 		}
 	}
   
-	// The response from neuron before activation
-	Mat_<float> neuron_response;
+	if(resp.empty())
+	{		
+		resp.create(h, w);
+	}
 
+	// The response from neuron before activation
 	if(neuron_type == 3)
 	{
 		// In case of depth we use per area, rather than per patch normalisation
-		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, neuron_response, CV_TM_CCOEFF); // the linear multiplication, efficient calc of response
-
+		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, resp, CV_TM_CCOEFF); // the linear multiplication, efficient calc of response
 	}
 	else
 	{
-		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, neuron_response, CV_TM_CCOEFF_NORMED); // the linear multiplication, efficient calc of response
-
+		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, resp, CV_TM_CCOEFF_NORMED); // the linear multiplication, efficient calc of response
 	}
 
-	// output
-	resp.create(neuron_response.size());
-	MatIterator_<double> p = resp.begin();
+	// TODO a single iterator?
+	MatIterator_<float> p = resp.begin();
 
-	MatIterator_<float> q1 = neuron_response.begin(); // respone for each pixel
-	MatIterator_<float> q2 = neuron_response.end();
+	MatIterator_<float> q1 = resp.begin(); // respone for each pixel
+	MatIterator_<float> q2 = resp.end();
 
 	// the logistic function (sigmoid) applied to the response
 	while(q1 != q2)
@@ -201,7 +184,7 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 }
 
 //===========================================================================
-void CCNF_patch_expert::Read(ifstream &stream, vector<int> window_sizes, vector<vector<Mat_<float> > > sigma_components)
+void CCNF_patch_expert::Read(ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<Mat_<float> > > sigma_components)
 {
 
 	// Sanity check
@@ -251,7 +234,7 @@ void CCNF_patch_expert::Read(ifstream &stream, vector<int> window_sizes, vector<
 }
 
 //===========================================================================
-void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<double> &response)
+void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<float> &response)
 {
 	
 	int response_height = area_of_interest.rows - height + 1;
@@ -268,7 +251,7 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<double> &re
 	Mat_<double> area_of_interest_dft;
 	Mat integral_image, integral_image_sq;
 	
-	Mat_<double> neuron_response;
+	Mat_<float> neuron_response;
 
 	// responses from the neural layers
 	for(size_t i = 0; i < neurons.size(); i++)
@@ -294,14 +277,12 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<double> &re
 		}
 	}
 
-	Mat resp_vec = response.reshape(1, response_height * response_width);
-	Mat_<float> resp_vec_f;
-	resp_vec.convertTo(resp_vec_f, CV_32F);
+	// TODO see how this affects it?
+	Mat_<float> resp_vec_f = response.reshape(1, response_height * response_width);
 
 	Mat out = Sigmas[s_to_use] * resp_vec_f;
-
+	
 	response = out.reshape(1, response_height);
-	response.convertTo(response, CV_64F);
 
 	// Making sure the response does not have negative numbers
 	double min;

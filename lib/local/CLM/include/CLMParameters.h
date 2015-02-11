@@ -51,17 +51,8 @@
 //
 //  Tadas Baltrusaitis
 //  01/05/2012
-
 #ifndef __CLM_PARAM_H
 #define __CLM_PARAM_H
-
-#include <cv.h>
-#include <highgui.h>
-
-#include <vector>
-#include <iostream>
-
-#include <filesystem.hpp>
 
 using namespace cv;
 using namespace std;
@@ -99,7 +90,7 @@ struct CLMParameters
 
 	// Where to load the model from
 	string model_location;
-
+	
 	// this is used for the smooting of response maps (KDE sigma)
 	double sigma;
 
@@ -134,7 +125,7 @@ struct CLMParameters
 		// initialise the default values
 	    init(); 
 
-		// The location of the executable, useful for locating models
+		// First element is reserved for the executable location (useful for finding relative model locs)
 		boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
 
 		bool* valid = new bool[arguments.size()];
@@ -145,13 +136,12 @@ struct CLMParameters
 			if (arguments[i].compare("-mloc") == 0) 
 			{                    
 				string model_loc = arguments[i + 1];
-
 				model_location = model_loc;
 				valid[i] = false;
 				valid[i+1] = false;
 				i++;
-			}
 
+			}
 			if (arguments[i].compare("-clm_sigma") == 0) 
 			{                    
 				stringstream data(arguments[i + 1]);

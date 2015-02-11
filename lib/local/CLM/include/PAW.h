@@ -46,16 +46,8 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __PAW_h_
 #define __PAW_h_
-
-#include <cv.h>
-#include <string>
-
-#include <stdio.h>
-#include <fstream>
-#include <iostream>
 
 using namespace cv;
 

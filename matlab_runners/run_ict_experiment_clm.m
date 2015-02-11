@@ -2,8 +2,7 @@ function [fps, resDir] = run_ict_experiment_clm(rootDir, ictDir, outputRoot, ver
 %EVALUATEICTDATABASE Summary of this function goes here
 %   Detailed explanation goes here
 
-oldDir = chdir('../Release/');
-gavamExe = '"SimpleCLM.exe"';
+gavamExe = '"../Release/SimpleCLM.exe"';
 
 output = 'CLM';
 
@@ -78,7 +77,6 @@ end
 timeTaken = toc;
 fps = 10661 / timeTaken;
 resDir = outputDir;
-chdir(oldDir);
 
 end
 

@@ -1,10 +1,10 @@
 #ifndef __FACE_UTILS_h_
 #define __FACE_UTILS_h_
 
+#include <CLM_core.h>
+
 #include <cv.h>
 #include <highgui.h>
-
-#include <CLM.h>
 
 namespace FaceAnalyser
 {

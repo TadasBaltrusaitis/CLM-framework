@@ -49,11 +49,7 @@
 
 
 // FeatureExtraction.cpp : Defines the entry point for the feature extraction console application.
-
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
-#include <CLM_utils.h>
+#include "CLM_core.h"
 
 #include <fstream>
 #include <sstream>
@@ -93,6 +89,7 @@ vector<string> get_arguments(int argc, char **argv)
 
 	vector<string> arguments;
 
+	// First argument is reserved for the name of the executable
 	for(int i = 0; i < argc; ++i)
 	{
 		arguments.push_back(string(argv[i]));

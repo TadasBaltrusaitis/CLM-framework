@@ -8,11 +8,11 @@
       <AdditionalIncludeDirectories>$(SolutionDir)lib\3rdParty\tbb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\tbb\lib\$(PlatformShortName)\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\tbb\lib\$(PlatformShortName)\$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\tbb\bin\ia32\vc10\tbb.dll" "$(OutDir)"</Command>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\tbb\bin\ia32\$(PlatformToolset)\tbb.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

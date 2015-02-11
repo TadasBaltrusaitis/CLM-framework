@@ -46,11 +46,8 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __PDM_h_
 #define __PDM_h_
-
-#include <cv.h>
 
 #include "CLMParameters.h"
 
@@ -94,7 +91,7 @@ class PDM{
 		// Listing the number of modes of variation
 		inline int NumberOfModes() const {return princ_comp.cols;}
 
-		void Clamp(Mat_<double>& params_local, Vec6d& params_global, const CLMParameters& params);
+		void Clamp(Mat_<float>& params_local, Vec6d& params_global, const CLMParameters& params);
 
 		// Compute shape in object space (3D)
 		void CalcShape3D(Mat_<double>& out_shape, const Mat_<double>& params_local);
@@ -109,11 +106,11 @@ class PDM{
 		void CalcBoundingBox(Rect& out_bounding_box, const Vec6d& params_global, const Mat_<double>& params_local);
 
 		// Helpers for computing Jacobians, and Jacobians with the weight matrix
-		void ComputeRigidJacobian(const Mat_<double>& params_local, const Vec6d& params_global, Mat_<double> &Jacob, const Mat_<double> W, cv::Mat_<double> &Jacob_t_w);
-		void ComputeJacobian(const Mat_<double>& params_local, const Vec6d& params_global, Mat_<double> &Jacobian, const Mat_<double> W, cv::Mat_<double> &Jacob_t_w);
+		void ComputeRigidJacobian(const Mat_<float>& params_local, const Vec6d& params_global, Mat_<float> &Jacob, const Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
+		void ComputeJacobian(const Mat_<float>& params_local, const Vec6d& params_global, Mat_<float> &Jacobian, const Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
 
 		// Given the current parameters, and the computed delta_p compute the updated parameters
-		void UpdateModelParameters(const Mat_<double>& delta_p, Mat_<double>& params_local, Vec6d& params_global);
+		void UpdateModelParameters(const Mat_<float>& delta_p, Mat_<float>& params_local, Vec6d& params_global);
 
   };
   //===========================================================================

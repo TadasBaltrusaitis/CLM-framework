@@ -46,15 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLM_utils.h>
-
-#include <math.h>
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
-
-#include <iostream>
-#include <sstream>
 
 using namespace boost::filesystem;
 
@@ -303,7 +297,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 					{
 						// Possible image extension .jpg and .png
-						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0)
+						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0 || file_iterator->extension().string().compare(".bmp") == 0)
 						{
 							
 								
@@ -389,7 +383,10 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			output_image_files.push_back(out_img_dir + "/" + fname.string());
 			
 		}
-		create_directory_from_file(output_image_files[0]);
+		if(!input_image_files.empty())
+		{
+			create_directory_from_file(output_image_files[0]);
+		}
 	}
 
 	if(!out_pts_dir.empty())
@@ -422,64 +419,123 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 }
 
+#if defined HAVE_IPP
 
-//===========================================================================
-// Fast patch expert response computation (linear model across a ROI) using normalised cross-correlation
-//===========================================================================
+typedef IppStatus (CV_STDCALL * ippimatchTemplate)(const void*, int, IppiSize, const void*, int, IppiSize, Ipp32f* , int , IppEnum , Ipp8u*);
 
-// A helper for matchTemplate
-void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const cv::Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& corr,
-                cv::Point anchor, double delta, int borderType )
+static bool ipp_crossCorr(const Mat& src, const Mat& tpl, Mat& dst)
 {
-    const double blockScale = 4.5;
-    const int minBlockSize = 256;
+    IppStatus status;
 
-    CV_Assert( img.dims <= 2 && templ.dims <= 2 && corr.dims <= 2 );
-		
-    cv::Size blocksize, dftsize;
+    IppiSize srcRoiSize = {src.cols,src.rows};
+    IppiSize tplRoiSize = {tpl.cols,tpl.rows};
 
-    blocksize.width = cvRound(templ.cols*blockScale);
-    blocksize.width = std::max( blocksize.width, minBlockSize - templ.cols + 1 );
-    blocksize.width = std::min( blocksize.width, corr.cols );
-    blocksize.height = cvRound(templ.rows*blockScale);
-    blocksize.height = std::max( blocksize.height, minBlockSize - templ.rows + 1 );
-    blocksize.height = std::min( blocksize.height, corr.rows );
+    Ipp8u *pBuffer;
+    int bufSize=0;
 
-    dftsize.width = std::max(cv::getOptimalDFTSize(blocksize.width + templ.cols - 1), 2);
-    dftsize.height = cv::getOptimalDFTSize(blocksize.height + templ.rows - 1);
-    if( dftsize.width <= 0 || dftsize.height <= 0 )
-        CV_Error( CV_StsOutOfRange, "the input arrays are too big" );
+    int depth = src.depth();
 
-    // recompute block size
-    blocksize.width = dftsize.width - templ.cols + 1;
+    ippimatchTemplate ippFunc =
+            depth==CV_8U ? (ippimatchTemplate)ippiCrossCorrNorm_8u32f_C1R:
+            depth==CV_32F? (ippimatchTemplate)ippiCrossCorrNorm_32f_C1R: 0;
+
+    if (ippFunc==0)
+        return false;
+
+    IppEnum funCfg = (IppEnum)(ippAlgAuto | ippiNormNone | ippiROIValid);
+
+    status = ippiCrossCorrNormGetBufferSize(srcRoiSize, tplRoiSize, funCfg, &bufSize);
+    if ( status < 0 )
+        return false;
+
+    pBuffer = ippsMalloc_8u( bufSize );
+
+    status = ippFunc(src.ptr(), (int)src.step, srcRoiSize, tpl.ptr(), (int)tpl.step, tplRoiSize, dst.ptr<Ipp32f>(), (int)dst.step, funCfg, pBuffer);
+
+    ippsFree( pBuffer );
+    return status >= 0;
+}
+
+static bool ipp_sqrDistance(const Mat& src, const Mat& tpl, Mat& dst)
+{
+    IppStatus status;
+
+    IppiSize srcRoiSize = {src.cols,src.rows};
+    IppiSize tplRoiSize = {tpl.cols,tpl.rows};
+
+    Ipp8u *pBuffer;
+    int bufSize=0;
+
+    int depth = src.depth();
+
+    ippimatchTemplate ippFunc =
+            depth==CV_8U ? (ippimatchTemplate)ippiSqrDistanceNorm_8u32f_C1R:
+            depth==CV_32F? (ippimatchTemplate)ippiSqrDistanceNorm_32f_C1R: 0;
+
+    if (ippFunc==0)
+        return false;
+
+    IppEnum funCfg = (IppEnum)(ippAlgAuto | ippiNormNone | ippiROIValid);
+
+    status = ippiSqrDistanceNormGetBufferSize(srcRoiSize, tplRoiSize, funCfg, &bufSize);
+    if ( status < 0 )
+        return false;
+
+    pBuffer = ippsMalloc_8u( bufSize );
+
+    status = ippFunc(src.ptr(), (int)src.step, srcRoiSize, tpl.ptr(), (int)tpl.step, tplRoiSize, dst.ptr<Ipp32f>(), (int)dst.step, funCfg, pBuffer);
+
+    ippsFree( pBuffer );
+    return status >= 0;
+}
+
+#endif
+
+void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, Mat_<float>& corr)
+{
+	// Our model will always be under min block size so can ignore this
+    //const double blockScale = 4.5;
+    //const int minBlockSize = 256;
+
+	int maxDepth = CV_64F;
+
+	Size dftsize;
+	
+    dftsize.width = getOptimalDFTSize(corr.cols + _templ.cols - 1);
+    dftsize.height = getOptimalDFTSize(corr.rows + _templ.rows - 1);
+
+    // Compute block size
+    Size blocksize;
+    blocksize.width = dftsize.width - _templ.cols + 1;
     blocksize.width = MIN( blocksize.width, corr.cols );
-    blocksize.height = dftsize.height - templ.rows + 1;
+    blocksize.height = dftsize.height - _templ.rows + 1;
     blocksize.height = MIN( blocksize.height, corr.rows );
+	
+	cv::Mat_<double> dftTempl;
 
-    cv::Mat_<double> dftImg(dftsize, 0.0);
-
-	cv::Mat_<double> dftTempl( dftsize.height, dftsize.width);
-
-	// if this has not been precomputer, precompute it, otherwise use it
+	// if this has not been precomputed, precompute it, otherwise use it
 	if(_templ_dfts.find(dftsize.width) == _templ_dfts.end())
 	{
-		cv::Mat_<float> src = templ;
+		dftTempl.create(dftsize.height, dftsize.width);
+
+		cv::Mat_<float> src = _templ;
 
 		// TODO simplify no need for rect?
 		cv::Mat_<double> dst(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
-		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, templ.cols, templ.rows));
+		
+		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, _templ.cols, _templ.rows));
 			
 		if( dst1.data != src.data )
 			src.convertTo(dst1, dst1.depth());
 
-		if( dst.cols > templ.cols )
+		if( dst.cols > _templ.cols )
 		{
-			cv::Mat_<double> part(dst, cv::Range(0, templ.rows), cv::Range(templ.cols, dst.cols));
+			cv::Mat_<double> part(dst, cv::Range(0, _templ.rows), cv::Range(_templ.cols, dst.cols));
 			part.setTo(0);
 		}
 
 		// Perform DFT of the template
-		dft(dst, dst, 0, templ.rows);
+		dft(dst, dst, 0, _templ.rows);
 		
 		_templ_dfts[dftsize.width] = dftTempl;
 
@@ -490,97 +546,76 @@ void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const c
 		dftTempl = _templ_dfts.find(dftsize.width)->second;
 	}
 
-    int tileCountX = (corr.cols + blocksize.width - 1)/blocksize.width;
-    int tileCountY = (corr.rows + blocksize.height - 1)/blocksize.height;
-    int tileCount = tileCountX * tileCountY;
+	Size bsz(std::min(blocksize.width, corr.cols), std::min(blocksize.height, corr.rows));
+	Mat src;
 
-    cv::Size wholeSize = img.size();
-    cv::Point roiofs(0,0);
-    cv::Mat img0 = img;
+	Mat cdst(corr, Rect(0, 0, bsz.width, bsz.height));
+	
+	cv::Mat_<double> dftImg;
 
-    if( !(borderType & cv::BORDER_ISOLATED) )
-    {
-        img.locateROI(wholeSize, roiofs);
-        img0.adjustROI(roiofs.y, wholeSize.height-img.rows-roiofs.y,
-                       roiofs.x, wholeSize.width-img.cols-roiofs.x);
-    }
-    borderType |= cv::BORDER_ISOLATED;
+	if(img_dft.empty())
+	{
+		dftImg.create(dftsize);
+		dftImg.setTo(0.0);
 
-    // calculate correlation by blocks
-    for( int i = 0; i < tileCount; i++ )
-    {
+		Size dsz(bsz.width + _templ.cols - 1, bsz.height + _templ.rows - 1);
 
-        int x = (i%tileCountX)*blocksize.width;
-        int y = (i/tileCountX)*blocksize.height;
+		int x2 = std::min(img.cols, dsz.width);
+		int y2 = std::min(img.rows, dsz.height);
 
-        cv::Size bsz(std::min(blocksize.width, corr.cols - x),
-                 std::min(blocksize.height, corr.rows - y));
-        cv::Size dsz(bsz.width + templ.cols - 1, bsz.height + templ.rows - 1);
-        int x0 = x - anchor.x + roiofs.x, y0 = y - anchor.y + roiofs.y;
-        int x1 = std::max(0, x0), y1 = std::max(0, y0);
-        int x2 = std::min(img0.cols, x0 + dsz.width);
-        int y2 = std::min(img0.rows, y0 + dsz.height);
-        cv::Mat src0(img0, cv::Range(y1, y2), cv::Range(x1, x2));
-        cv::Mat dst(dftImg, cv::Rect(0, 0, dsz.width, dsz.height));
-        cv::Mat dst1(dftImg, cv::Rect(x1-x0, y1-y0, x2-x1, y2-y1));
-        cv::Mat cdst(corr, cv::Rect(x, y, bsz.width, bsz.height));
+		Mat src0(img, Range(0, y2), Range(0, x2));
+		Mat dst(dftImg, Rect(0, 0, dsz.width, dsz.height));
+		Mat dst1(dftImg, Rect(0, 0, x2, y2));
 
-        cv::Mat src = src0;
-					
-        if( dst1.data != src.data )
-            src.convertTo(dst1, dst1.depth());
+		src = src0;
+		
+		if( dst1.data != src.data )
+			src.convertTo(dst1, dst1.depth());
 
-        if( x2 - x1 < dsz.width || y2 - y1 < dsz.height )
-            copyMakeBorder(dst1, dst, y1-y0, dst.rows-dst1.rows-(y1-y0),
-                            x1-x0, dst.cols-dst1.cols-(x1-x0), borderType);
-		if(img_dft.empty())
-		{
-			dft( dftImg, dftImg, 0, dsz.height );
-			img_dft = dftImg.clone();
-		}
-		else
-		{
-			dftImg = img_dft.clone();
-		}
+		dft( dftImg, dftImg, 0, dsz.height );
+		img_dft = dftImg.clone();
+	}
+	else
+	{
+		dftImg = img_dft.clone();
+	}
 
-		// TODO no need for Rect?
-		cv::Mat dftTempl1(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
+	Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
+	mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
+	dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
 
-        mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
-        dft( dftImg, dftImg, cv::DFT_INVERSE + cv::DFT_SCALE, bsz.height );
+	src = dftImg(Rect(0, 0, bsz.width, bsz.height));
 
-        src = dftImg(cv::Rect(0, 0, bsz.width, bsz.height));
+	src.convertTo(cdst, CV_32F);
 
-        src.convertTo(cdst, CV_32F, 1, delta);
-
-    }
 }
 
-/*****************************************************************************************/
-// The template matching code from OpenCV with some precomputation optimisations
-void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& result, int method )
-{
-    CV_Assert( CV_TM_SQDIFF <= method && method <= CV_TM_CCOEFF_NORMED );
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
+void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method )
+{
+
+        int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
                   method == CV_TM_CCOEFF || method == CV_TM_CCOEFF_NORMED ? 1 : 2;
     bool isNormed = method == CV_TM_CCORR_NORMED ||
                     method == CV_TM_SQDIFF_NORMED ||
                     method == CV_TM_CCOEFF_NORMED;
 	
-    cv::Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
-    result.create(corrSize);
-
-    crossCorr_m( input_img, img_dft, templ, _templ_dfts, result, cv::Point(0,0), 0, 0);
+	// Assume result is defined properly
+	if(result.empty())
+	{
+		Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
+		result.create(corrSize);
+	}
+    CLMTracker::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
 
     if( method == CV_TM_CCORR )
         return;
 
     double invArea = 1./((double)templ.rows * templ.cols);
 
-    cv::Mat sum, sqsum;
-    cv::Scalar templMean, templSdv;
-
+    Mat sum, sqsum;
+    Scalar templMean, templSdv;
     double *q0 = 0, *q1 = 0, *q2 = 0, *q3 = 0;
     double templNorm = 0, templSum2 = 0;
 
@@ -591,8 +626,8 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 		{
 			integral(input_img, _integral_img, CV_64F);
 		}
-		
 		sum = _integral_img;
+
         templMean = mean(templ);
     }
     else
@@ -605,32 +640,28 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 
 		sum = _integral_img;
 		sqsum = _integral_img_sq;
-		
-		// TODO this can be precomputed
+
         meanStdDev( templ, templMean, templSdv );
 
-        templNorm = CV_SQR(templSdv[0]) + CV_SQR(templSdv[1]) +
-                    CV_SQR(templSdv[2]) + CV_SQR(templSdv[3]);
+        templNorm = templSdv[0]*templSdv[0] + templSdv[1]*templSdv[1] + templSdv[2]*templSdv[2] + templSdv[3]*templSdv[3];
 
         if( templNorm < DBL_EPSILON && method == CV_TM_CCOEFF_NORMED )
         {
-			result.setTo(1);
+			result.setTo(1.0);
             return;
         }
 
-        templSum2 = templNorm +
-                     CV_SQR(templMean[0]) + CV_SQR(templMean[1]) +
-                     CV_SQR(templMean[2]) + CV_SQR(templMean[3]);
+        templSum2 = templNorm + templMean[0]*templMean[0] + templMean[1]*templMean[1] + templMean[2]*templMean[2] + templMean[3]*templMean[3];
 
         if( numType != 1 )
         {
-            templMean = cv::Scalar::all(0);
+            templMean = Scalar::all(0);
             templNorm = templSum2;
         }
 
         templSum2 /= invArea;
-        templNorm = sqrt(templNorm);
-        templNorm /= sqrt(invArea); // care of accuracy here
+        templNorm = std::sqrt(templNorm);
+        templNorm /= std::sqrt(invArea); // care of accuracy here
 
         q0 = (double*)sqsum.data;
         q1 = q0 + templ.cols;
@@ -646,29 +677,32 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
     int sumstep = sum.data ? (int)(sum.step / sizeof(double)) : 0;
     int sqstep = sqsum.data ? (int)(sqsum.step / sizeof(double)) : 0;
 
-    for( int i = 0; i < result.rows; i++ )
+    int i, j;
+
+    for( i = 0; i < result.rows; i++ )
     {
-        float* rrow = (float*)(result.data + i*result.step);
+        float* rrow = result.ptr<float>(i);
         int idx = i * sumstep;
         int idx2 = i * sqstep;
 
-        for( int j = 0; j < result.cols; j++, idx += 1, idx2 += 1 )
+        for( j = 0; j < result.cols; j++, idx += 1, idx2 += 1 )
         {
             double num = rrow[j], t;
             double wndMean2 = 0, wndSum2 = 0;
 
             if( numType == 1 )
             {
+
                 t = p0[idx] - p1[idx] - p2[idx] + p3[idx];
-                wndMean2 += CV_SQR(t);
+                wndMean2 += t*t;
                 num -= t*templMean[0];
-                
+
                 wndMean2 *= invArea;
             }
 
             if( isNormed || numType == 2 )
             {
-                
+
                 t = q0[idx2] - q1[idx2] - q2[idx2] + q3[idx2];
                 wndSum2 += t;
 
@@ -681,7 +715,7 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 
             if( isNormed )
             {
-                t = sqrt(MAX(wndSum2 - wndMean2,0))*templNorm;
+                t = std::sqrt(MAX(wndSum2 - wndMean2,0))*templNorm;
                 if( fabs(num) < t )
                     num /= t;
                 else if( fabs(num) < t*1.125 )
@@ -694,6 +728,280 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
         }
     }
 }
+
+
+//===========================================================================
+// Fast patch expert response computation (linear model across a ROI) using normalised cross-correlation
+//===========================================================================
+
+// TODO rem
+//// A helper for matchTemplate
+//void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const cv::Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& corr,
+//                cv::Point anchor, double delta, int borderType )
+//{
+//    const double blockScale = 4.5;
+//    const int minBlockSize = 256;
+//
+//    CV_Assert( img.dims <= 2 && templ.dims <= 2 && corr.dims <= 2 );
+//		
+//    cv::Size blocksize, dftsize;
+//
+//    blocksize.width = cvRound(templ.cols*blockScale);
+//    blocksize.width = std::max( blocksize.width, minBlockSize - templ.cols + 1 );
+//    blocksize.width = std::min( blocksize.width, corr.cols );
+//    blocksize.height = cvRound(templ.rows*blockScale);
+//    blocksize.height = std::max( blocksize.height, minBlockSize - templ.rows + 1 );
+//    blocksize.height = std::min( blocksize.height, corr.rows );
+//
+//    dftsize.width = std::max(cv::getOptimalDFTSize(blocksize.width + templ.cols - 1), 2);
+//    dftsize.height = cv::getOptimalDFTSize(blocksize.height + templ.rows - 1);
+//    if( dftsize.width <= 0 || dftsize.height <= 0 )
+//        CV_Error( CV_StsOutOfRange, "the input arrays are too big" );
+//
+//    // recompute block size
+//    blocksize.width = dftsize.width - templ.cols + 1;
+//    blocksize.width = MIN( blocksize.width, corr.cols );
+//    blocksize.height = dftsize.height - templ.rows + 1;
+//    blocksize.height = MIN( blocksize.height, corr.rows );
+//
+//    cv::Mat_<double> dftImg(dftsize, 0.0);
+//
+//	cv::Mat_<double> dftTempl( dftsize.height, dftsize.width);
+//
+//	// if this has not been precomputer, precompute it, otherwise use it
+//	if(_templ_dfts.find(dftsize.width) == _templ_dfts.end())
+//	{
+//		cv::Mat_<float> src = templ;
+//
+//		// TODO simplify no need for rect?
+//		cv::Mat_<double> dst(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
+//		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, templ.cols, templ.rows));
+//			
+//		if( dst1.data != src.data )
+//			src.convertTo(dst1, dst1.depth());
+//
+//		if( dst.cols > templ.cols )
+//		{
+//			cv::Mat_<double> part(dst, cv::Range(0, templ.rows), cv::Range(templ.cols, dst.cols));
+//			part.setTo(0);
+//		}
+//
+//		// Perform DFT of the template
+//		dft(dst, dst, 0, templ.rows);
+//		
+//		_templ_dfts[dftsize.width] = dftTempl;
+//
+//	}
+//	else
+//	{
+//		// use the precomputed version
+//		dftTempl = _templ_dfts.find(dftsize.width)->second;
+//	}
+//
+//    int tileCountX = (corr.cols + blocksize.width - 1)/blocksize.width;
+//    int tileCountY = (corr.rows + blocksize.height - 1)/blocksize.height;
+//    int tileCount = tileCountX * tileCountY;
+//
+//    cv::Size wholeSize = img.size();
+//    cv::Point roiofs(0,0);
+//    cv::Mat img0 = img;
+//
+//    if( !(borderType & cv::BORDER_ISOLATED) )
+//    {
+//        img.locateROI(wholeSize, roiofs);
+//        img0.adjustROI(roiofs.y, wholeSize.height-img.rows-roiofs.y,
+//                       roiofs.x, wholeSize.width-img.cols-roiofs.x);
+//    }
+//    borderType |= cv::BORDER_ISOLATED;
+//
+//    // calculate correlation by blocks
+//    for( int i = 0; i < tileCount; i++ )
+//    {
+//
+//        int x = (i%tileCountX)*blocksize.width;
+//        int y = (i/tileCountX)*blocksize.height;
+//
+//        cv::Size bsz(std::min(blocksize.width, corr.cols - x),
+//                 std::min(blocksize.height, corr.rows - y));
+//        cv::Size dsz(bsz.width + templ.cols - 1, bsz.height + templ.rows - 1);
+//        int x0 = x - anchor.x + roiofs.x, y0 = y - anchor.y + roiofs.y;
+//        int x1 = std::max(0, x0), y1 = std::max(0, y0);
+//        int x2 = std::min(img0.cols, x0 + dsz.width);
+//        int y2 = std::min(img0.rows, y0 + dsz.height);
+//        cv::Mat src0(img0, cv::Range(y1, y2), cv::Range(x1, x2));
+//        cv::Mat dst(dftImg, cv::Rect(0, 0, dsz.width, dsz.height));
+//        cv::Mat dst1(dftImg, cv::Rect(x1-x0, y1-y0, x2-x1, y2-y1));
+//        cv::Mat cdst(corr, cv::Rect(x, y, bsz.width, bsz.height));
+//
+//        cv::Mat src = src0;
+//					
+//        if( dst1.data != src.data )
+//            src.convertTo(dst1, dst1.depth());
+//
+//        if( x2 - x1 < dsz.width || y2 - y1 < dsz.height )
+//            copyMakeBorder(dst1, dst, y1-y0, dst.rows-dst1.rows-(y1-y0),
+//                            x1-x0, dst.cols-dst1.cols-(x1-x0), borderType);
+//		if(img_dft.empty())
+//		{
+//			dft( dftImg, dftImg, 0, dsz.height );
+//			img_dft = dftImg.clone();
+//		}
+//		else
+//		{
+//			dftImg = img_dft.clone();
+//		}
+//
+//		// TODO no need for Rect?
+//		cv::Mat dftTempl1(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
+//
+//        mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
+//        dft( dftImg, dftImg, cv::DFT_INVERSE + cv::DFT_SCALE, bsz.height );
+//
+//        src = dftImg(cv::Rect(0, 0, bsz.width, bsz.height));
+//
+//        src.convertTo(cdst, CV_32F, 1, delta);
+//
+//    }
+//}
+
+/*****************************************************************************************/
+// The template matching code from OpenCV with some precomputation optimisations TODO move this to CV3.0
+//void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& result, int method )
+//{
+//    CV_Assert( CV_TM_SQDIFF <= method && method <= CV_TM_CCOEFF_NORMED );
+//
+//    int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
+//                  method == CV_TM_CCOEFF || method == CV_TM_CCOEFF_NORMED ? 1 : 2;
+//    bool isNormed = method == CV_TM_CCORR_NORMED ||
+//                    method == CV_TM_SQDIFF_NORMED ||
+//                    method == CV_TM_CCOEFF_NORMED;
+//	
+//    cv::Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
+//    result.create(corrSize);
+//
+//    crossCorr_m( input_img, img_dft, templ, _templ_dfts, result, cv::Point(0,0), 0, 0);
+//
+//    if( method == CV_TM_CCORR )
+//        return;
+//
+//    double invArea = 1./((double)templ.rows * templ.cols);
+//
+//    cv::Mat sum, sqsum;
+//    cv::Scalar templMean, templSdv;
+//
+//    double *q0 = 0, *q1 = 0, *q2 = 0, *q3 = 0;
+//    double templNorm = 0, templSum2 = 0;
+//
+//    if( method == CV_TM_CCOEFF )
+//    {
+//		// If it has not been precomputed compute it now
+//		if(_integral_img.empty())
+//		{
+//			integral(input_img, _integral_img, CV_64F);
+//		}
+//		
+//		sum = _integral_img;
+//        templMean = mean(templ);
+//    }
+//    else
+//    {
+//		// If it has not been precomputed compute it now
+//		if(_integral_img.empty())
+//		{
+//			integral(input_img, _integral_img, _integral_img_sq, CV_64F);			
+//		}
+//
+//		sum = _integral_img;
+//		sqsum = _integral_img_sq;
+//		
+//		// TODO this can be precomputed
+//        meanStdDev( templ, templMean, templSdv );
+//
+//        templNorm = CV_SQR(templSdv[0]) + CV_SQR(templSdv[1]) +
+//                    CV_SQR(templSdv[2]) + CV_SQR(templSdv[3]);
+//
+//        if( templNorm < DBL_EPSILON && method == CV_TM_CCOEFF_NORMED )
+//        {
+//			result.setTo(1);
+//            return;
+//        }
+//
+//        templSum2 = templNorm +
+//                     CV_SQR(templMean[0]) + CV_SQR(templMean[1]) +
+//                     CV_SQR(templMean[2]) + CV_SQR(templMean[3]);
+//
+//        if( numType != 1 )
+//        {
+//            templMean = cv::Scalar::all(0);
+//            templNorm = templSum2;
+//        }
+//
+//        templSum2 /= invArea;
+//        templNorm = sqrt(templNorm);
+//        templNorm /= sqrt(invArea); // care of accuracy here
+//
+//        q0 = (double*)sqsum.data;
+//        q1 = q0 + templ.cols;
+//        q2 = (double*)(sqsum.data + templ.rows*sqsum.step);
+//        q3 = q2 + templ.cols;
+//    }
+//
+//    double* p0 = (double*)sum.data;
+//    double* p1 = p0 + templ.cols;
+//    double* p2 = (double*)(sum.data + templ.rows*sum.step);
+//    double* p3 = p2 + templ.cols;
+//
+//    int sumstep = sum.data ? (int)(sum.step / sizeof(double)) : 0;
+//    int sqstep = sqsum.data ? (int)(sqsum.step / sizeof(double)) : 0;
+//
+//    for( int i = 0; i < result.rows; i++ )
+//    {
+//        float* rrow = (float*)(result.data + i*result.step);
+//        int idx = i * sumstep;
+//        int idx2 = i * sqstep;
+//
+//        for( int j = 0; j < result.cols; j++, idx += 1, idx2 += 1 )
+//        {
+//            double num = rrow[j], t;
+//            double wndMean2 = 0, wndSum2 = 0;
+//
+//            if( numType == 1 )
+//            {
+//                t = p0[idx] - p1[idx] - p2[idx] + p3[idx];
+//                wndMean2 += CV_SQR(t);
+//                num -= t*templMean[0];
+//                
+//                wndMean2 *= invArea;
+//            }
+//
+//            if( isNormed || numType == 2 )
+//            {
+//                
+//                t = q0[idx2] - q1[idx2] - q2[idx2] + q3[idx2];
+//                wndSum2 += t;
+//
+//                if( numType == 2 )
+//                {
+//                    num = wndSum2 - 2*num + templSum2;
+//                    num = MAX(num, 0.);
+//                }
+//            }
+//
+//            if( isNormed )
+//            {
+//                t = sqrt(MAX(wndSum2 - wndMean2,0))*templNorm;
+//                if( fabs(num) < t )
+//                    num /= t;
+//                else if( fabs(num) < t*1.125 )
+//                    num = num > 0 ? 1 : -1;
+//                else
+//                    num = method != CV_TM_SQDIFF_NORMED ? 0 : 1;
+//            }
+//
+//            rrow[j] = (float)num;
+//        }
+//    }
+//}
 
 //===========================================================================
 // Point set and landmark manipulation functions
@@ -1219,7 +1527,7 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 {
 		
 	vector<Rect> face_detections;
-	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, CV_HAAR_DO_CANNY_PRUNING, Size(50, 50)); 		
+	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, 0, Size(50, 50)); 		
 
 	// Convert from int bounding box do a double one with corrections
 	o_regions.resize(face_detections.size());

@@ -46,11 +46,8 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
 #ifndef __DValid_h_
 #define __DValid_h_
-
-#include <vector>
 
 #include "PAW.h"
 

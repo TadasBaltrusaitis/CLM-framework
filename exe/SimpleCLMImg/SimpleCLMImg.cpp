@@ -46,14 +46,11 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
+#include "CLM_core.h"
 
 #include <fstream>
 
-#include <cxcore.h>
+#include <cv.h>
 #include <highgui.h>
 
 #include <filesystem.hpp>

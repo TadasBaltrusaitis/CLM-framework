@@ -46,15 +46,9 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLMTracker.h>
-
-#include "highgui.h"
-#include "cv.h"
-
-// For PI definition
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 using namespace CLMTracker;
 using namespace cv;
@@ -82,7 +76,7 @@ Vec6d CLMTracker::GetPoseCamera(CLM& clm_model, double fx, double fy, double cx,
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
 		double Z = fx / clm_model.params_global[0];
 	

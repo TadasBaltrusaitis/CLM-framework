@@ -2,7 +2,7 @@ For Windows this software comes prepackaged with all the necessary binaries and 
 
 For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt. NOTE the Ubuntu version of dlib face detector seems to be quite slow, so using HAAR face detector is recommended (by setting clm_parameters.curr_face_detector = CLMTracker::CLMParameters::HAAR_DETECTOR) for now.
 
-You have to respect boost, Eigen, TBB, dlib, and OpenCV licenses.
+You have to respect boost, TBB, dlib, and OpenCV licenses.
 
 ---------------------- Copyright information ----------------------
 
@@ -15,8 +15,7 @@ Copyright can be found in the Copyright.txt
 		CLM - The CLM, CLNF and CLM-Z algorithms
 	3rdParty - place for 3rd party libraries
 		boost - prepackaged relevant parts of the boost library
-		Eigen- prepackaged Eigen library used for some matrix computations
-		OpenCV - prepackaged OpenCV 2.4.9 library that is used extensively internally to provide support for basic computer vision functionallity
+		OpenCV3.0 - prepackaged OpenCV 3.0 beta library that is used extensively internally to provide support for basic computer vision functionallity
 		dlib - a header only dlib library (includes the face detector used for in-the-wild images)
 ./exe - the runner and executables that show how to use the libraries for facial expression and head pose tracking, these best demonstrate how to use the libraries
 	SimpleCLM/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
