@@ -52,8 +52,7 @@ else
     end
 end
       
-od = cd('../Release/');
-command = 'SimpleCLMImg.exe ';
+command = '../Release/SimpleCLMImg.exe ';
 
 if(any(strcmp(varargin, 'model')))
     model = varargin{find(strcmp(varargin, 'model')) + 1};
@@ -99,7 +98,6 @@ for i=1:numel(dataset_dirs)
     dos(command_c);
 
 end
-cd(od);
 toc
 
 %%

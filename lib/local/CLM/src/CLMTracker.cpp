@@ -76,7 +76,7 @@ Vec6d CLMTracker::GetPoseCamera(CLM& clm_model, double fx, double fy, double cx,
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
 		double Z = fx / clm_model.params_global[0];
 	
@@ -111,7 +111,7 @@ Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, doubl
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
 		// This is used as an initial estimate for the iterative PnP algorithm
 		double Z = fx / clm_model.params_global[0];

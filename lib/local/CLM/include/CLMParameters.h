@@ -125,8 +125,11 @@ struct CLMParameters
 		// initialise the default values
 	    init(); 
 
+		// First element is reserved for the executable location (useful for finding relative model locs)
+		boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
+
 		bool* valid = new bool[arguments.size()];
-		for(size_t i = 0; i < arguments.size(); ++i)
+		for(size_t i = 1; i < arguments.size(); ++i)
 		{
 			valid[i] = true;
 
@@ -230,6 +233,16 @@ struct CLMParameters
 			if(!valid[i])
 			{
 				arguments.erase(arguments.begin()+i);
+			}
+		}
+
+		// Make sure model_location is valid
+		if(!boost::filesystem::exists(boost::filesystem::path(model_location)))
+		{
+			model_location = (root / model_location).string();
+			if(!boost::filesystem::exists(boost::filesystem::path(model_location)))
+			{
+				std::cout << "Could not find the landmark detection model to load" << std::endl;
 			}
 		}
 

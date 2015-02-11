@@ -1,8 +1,7 @@
 function [fps, resDir] = run_biwi_experiment_clm(rootDir, biwiDir, outputDir, verbose, depth, version, varargin)
 % Biwi dataset experiment
 
-oldDir = chdir('../Release/');
-clm_exe = '"SimpleCLM.exe"';
+clm_exe = '"../Release/SimpleCLM.exe"';
 
 output = 'CLM';
 
@@ -86,4 +85,3 @@ end
 timeTaken = toc;
 fps = 15678 / timeTaken;
 resDir = outputDir;
-chdir(oldDir);
