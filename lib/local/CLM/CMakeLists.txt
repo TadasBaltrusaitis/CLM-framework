@@ -10,6 +10,7 @@ SET(SOURCE
 	src/PAW.cpp
     src/PDM.cpp
 	src/SVR_patch_expert.cpp
+	src/stdafx.cpp
 )
 
 SET(HEADERS
@@ -23,6 +24,7 @@ SET(HEADERS
     include/PAW.h
 	include/PDM.h
 	include/SVR_patch_expert.h		
+	include/stdafx.h
 )
 
 include_directories(./include)

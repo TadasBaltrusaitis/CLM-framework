@@ -7,73 +7,45 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 # OpenCV
 if(WIN32)
-	include_directories(lib/3rdParty/OpenCV/include)
-	include_directories(lib/3rdParty/OpenCV/include/opencv)
-	link_directories( ${PROJECT_SOURCE_DIR}/lib/3rdParty/OpenCV/lib )
+	include_directories(lib/3rdParty/OpenCV3.0/include)
+	include_directories(lib/3rdParty/OpenCV3.0/include/opencv)
+	
+	if(MSVC_VERSION == 1600)
+		link_directories( ${PROJECT_SOURCE_DIR}/lib/3rdParty/OpenCV3.0/x86/v100/lib )
+	endif(MSVC_VERSION)
+	
+	if(MSVC_VERSION == 1700)
+		link_directories( ${PROJECT_SOURCE_DIR}/lib/3rdParty/OpenCV3.0/x86/v110/lib )
+	endif(MSVC_VERSION)
+	
 	set(OpenCVLibraries 
-			debug opencv_core246d 
-			debug opencv_calib3d246d 
-			debug opencv_contrib246d 
-			debug opencv_core246d 
-			debug opencv_features2d246d 
-			debug opencv_flann246d 
-			debug opencv_gpu246d 
-			debug opencv_highgui246d 
-			debug opencv_imgproc246d 
-			debug opencv_legacy246d 
-			debug opencv_ml246d 
-			debug opencv_nonfree246d 
-			debug opencv_objdetect246d 
-			debug opencv_photo246d 
-			debug opencv_stitching246d 
-			debug opencv_ts246d 
-			debug opencv_video246d 
-			debug opencv_videostab246d
+			debug opencv_world300d 
 			
-			optimized opencv_core246
-			optimized opencv_calib3d246
-			optimized opencv_contrib246
-			optimized opencv_core246
-			optimized opencv_features2d246
-			optimized opencv_flann246
-			optimized opencv_gpu246
-			optimized opencv_highgui246
-			optimized opencv_imgproc246
-			optimized opencv_legacy246
-			optimized opencv_ml246
-			optimized opencv_nonfree246
-			optimized opencv_objdetect246
-			optimized opencv_photo246
-			optimized opencv_stitching246
-			optimized opencv_ts246
-			optimized opencv_video246
-			optimized opencv_videostab246)
+			optimized opencv_world300
+			)
 
 	if (MSVC)		
-		file(GLOB files "lib/3rdParty/OpenCV/bin/Release/*.dll")
+		
+		if(MSVC_VERSION == 1600)
+			file(GLOB files "lib/3rdParty/OpenCV3.0/x86/v100/bin/*.dll")
+		endif(MSVC_VERSION)
+		
+		if(MSVC_VERSION == 1700)
+			file(GLOB files "lib/3rdParty/OpenCV3.0/x86/v110/bin/*.dll")
+		endif(MSVC_VERSION)
+		
 		foreach(file ${files})
 		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
 		endforeach()
 
-		file(GLOB files "lib/3rdParty/OpenCV/bin/Debug/*.dll")
 		foreach(file ${files})
 		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug)
-		endforeach()
-	else(MSVC)
-		file(GLOB files "lib/3rdParty/OpenCV/bin/Release/*.dll")
-		foreach(file ${files})
-		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin)
-		endforeach()
-
-		file(GLOB files "lib/3rdParty/OpenCV/bin/Debug/*.dll")
-		foreach(file ${files})
-		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin)
 		endforeach()
 	endif(MSVC)
 endif(WIN32)
 
 if(UNIX)
-	find_package( OpenCV 2.4.6 REQUIRED )
+	find_package( OpenCV 3.0 REQUIRED )
 	find_package( Boost REQUIRED COMPONENTS filesystem system)
 	MESSAGE("Boost information:") 
 	MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
@@ -128,19 +100,8 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
-# Move sample videos and images classifiers
-file(GLOB files "lib/3rdParty/OpenCV/classifiers/*.xml")
-foreach(file ${files})
-	if (MSVC)
-		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/classifiers)
-		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Release/classifiers)
-	else(MSVC)
-		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/classifiers)
-	endif(MSVC)
-endforeach()
-
 # Move OpenCV classifiers
-file(GLOB files "lib/3rdParty/OpenCV/classifiers/*.xml")
+file(GLOB files "lib/3rdParty/OpenCV3.0/classifiers/*.xml")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/classifiers)
@@ -169,9 +130,6 @@ if(WIN32)
 else()
 	INCLUDE_DIRECTORIES(${BOOST_INCLUDE_DIR})
 endif()
-
-# Eigen
-include_directories(lib/3rdParty/Eigen)
 
 # dlib
 include_directories(lib/3rdParty/dlib/include)
