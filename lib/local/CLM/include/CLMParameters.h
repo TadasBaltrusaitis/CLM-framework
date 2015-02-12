@@ -129,6 +129,8 @@ struct CLMParameters
 		boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
 
 		bool* valid = new bool[arguments.size()];
+		valid[0] = true;
+
 		for(size_t i = 1; i < arguments.size(); ++i)
 		{
 			valid[i] = true;
