@@ -1,16 +1,22 @@
+This code has been tested on Ubuntu 14.04.1
+
 This requires cmake, OpenCV 3.0.0 (or newer), tbb and boost.
 
 Need to do the following:
 
-1. Get newest GCC, done using: sudo apt-get install build-essential
+1. Get newest GCC, done using:
+	sudo apt-get update
+	sudo apt-get install build-essential
 
 2. Cmake: sudo apt-get install cmake
 
+3. Get BLAS (for dlib)
+	sudo apt-get install libopenblas-dev liblapack-dev 
 
 4. OpenCV 3.0.0, Based on tutorial from http://docs.opencv.org/trunk/doc/tutorials/introduction/linux_install/linux_install.html
 4.1 Install OpenCV dependencies:
-	sudo apt-get install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-    sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall
+	sudo apt-get install git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+    	sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall
 4.2 Download OpenCV 3.0.0 https://github.com/Itseez/opencv/archive/3.0.0-beta.zip
 4.3 Unzip it and create a build folder there:
 	
@@ -34,7 +40,7 @@ Need to do the following:
 6. Make the actual CLM-framework and compile it using
 	cd CLM-framework	
 	cmake .
-	make
+	make -j2
 
 7. Test it with 
 

@@ -54,7 +54,8 @@
 #include <fstream>
 #include <sstream>
 
-#include <cv.h>
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #include <Face_utils.h>
 
