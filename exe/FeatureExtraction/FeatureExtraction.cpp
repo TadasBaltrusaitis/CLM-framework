@@ -420,9 +420,27 @@ int main (int argc, char **argv)
 	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
-	std::ifstream triangulation_file("model/tris_68_full.txt");
+
 	Mat_<int> triangulation;
-	CLMTracker::ReadMat(triangulation_file, triangulation);
+	if(boost::filesystem::exists(path("model/tris_68_full.txt")))
+	{
+		std::ifstream triangulation_file("model/tris_68_full.txt");
+		CLMTracker::ReadMat(triangulation_file, triangulation);
+	}
+	else
+	{
+		path loc = path(arguments[0]).parent_path() / "model/tris_68_full.txt";
+		if(exists(loc))
+		{
+			std::ifstream triangulation_file(loc.string());
+			CLMTracker::ReadMat(triangulation_file, triangulation);
+		}
+		else
+		{
+			cout << "Can't find triangulation files, exiting" << endl;
+			return 0;
+		}
+	}	
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
