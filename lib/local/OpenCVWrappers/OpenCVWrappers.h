@@ -6,6 +6,9 @@
 #include "cv.h"
 #include "highgui.h"
 
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
+
 #pragma managed
 
 #include <msclr\marshal_cppstd.h>

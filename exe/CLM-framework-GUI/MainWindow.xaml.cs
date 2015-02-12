@@ -179,7 +179,6 @@ namespace CLM_framework_GUI
 
                     frame.UpdateWriteableBitmap(latest_img);
 
-                    Console.WriteLine("Source updating");
                     video.Source = latest_img;
                     video.Confidence = confidence;
                     video.FPS = processing_fps.GetFPS();

@@ -6,8 +6,12 @@
 
 // Include all the unmanaged things we need.
 
-#include "cv.h"
-#include "highgui.h"
+#include <opencv2/core/core.hpp>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/calib3d.hpp"
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 // For camera listings
 #include "comet_auto_mf.h"
@@ -18,10 +22,7 @@
 #include <msclr\marshal.h>
 #include <msclr\marshal_cppstd.h>
 
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
-#include <CLM_utils.h>
+#include <CLM_core.h>
 
 using namespace System;
 using namespace OpenCVWrappers;
