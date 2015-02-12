@@ -72,10 +72,6 @@ namespace CLM_framework_GUI
         CLMParameters clm_params;
         CLM clm_model;
 
-        // For updating the GUI
-        // TODO
-        private Object update_lock = new Object();
-
         // For selecting webcams
         CameraSelection cam_sec;
         
@@ -99,15 +95,17 @@ namespace CLM_framework_GUI
         {
             Thread.CurrentThread.IsBackground = true;
 
-            // TODO set these properly
-            double fx = 500, fy = 500, cx = 0, cy = 0;
-
             DateTime? startTime = CurrentTime;
 
             var lastFrameTime = CurrentTime;
 
             clm_model.Reset();
-            
+
+            double fx, fy, cx, cy;
+            fx = 500.0;
+            fy = 500.0;
+            cx = cy = -1;
+
             while (thread_running)
             {
                 //////////////////////////////////////////////
@@ -141,8 +139,15 @@ namespace CLM_framework_GUI
                     continue;
                 }
 
-                if (cx == 0 && cy == 0)
+                // This is more ore less guess work, but seems to work well enough
+                if (cx == -1)
                 {
+                    fx = fx * (grayFrame.Width / 640.0);
+                    fy = fy * (grayFrame.Height / 480.0);
+
+                    fx = (fx + fy) / 2.0;
+                    fy = fx;
+
                     cx = grayFrame.Width / 2f;
                     cy = grayFrame.Height / 2f;
                 }
@@ -206,7 +211,6 @@ namespace CLM_framework_GUI
 
 
             }
-            System.Console.Out.WriteLine("Thread finished");
             latest_img = null;
         }
 
@@ -232,7 +236,7 @@ namespace CLM_framework_GUI
                 if (capture.isOpened())
                 {
                     thread_running = true;
-
+                    
                     processing_thread = new Thread(VideoLoop);
                     processing_thread.Start();
                 }
@@ -309,6 +313,16 @@ namespace CLM_framework_GUI
                     MessageBox.Show(messageBoxText, caption, button, icon);
                 }
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Stop capture and tracking
+            thread_running = false;
+            processing_thread.Join();
+
+            capture.Dispose();
+
         }
     }
 }

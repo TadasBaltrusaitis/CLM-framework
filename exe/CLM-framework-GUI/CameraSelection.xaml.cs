@@ -58,7 +58,6 @@ namespace CLM_framework_GUI
 
             foreach (var s in cams)
             {
-                Console.WriteLine(s.Item1);
 
                 var b = s.Item3.CreateWriteableBitmap();
                 s.Item3.UpdateWriteableBitmap(b);
@@ -127,7 +126,6 @@ namespace CLM_framework_GUI
 
                     resolutions.DropDownOpened += (sender, e) =>
                     {
-                        Console.WriteLine("Mouse down in res box:" + idx);
                         ChooseCamera(idx);
                     };
 
