@@ -50,7 +50,7 @@ for multiple faces (face detection slows it a bit):
 	./bin/MultiTrackCLM -f ./videos/multi_face.avi
 
 for feature extraction (i.e. HOG and similarity aligned faces amongst landmark locations and pose files):
-	./FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"
+	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"
 
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
