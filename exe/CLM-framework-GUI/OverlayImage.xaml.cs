@@ -72,12 +72,12 @@ namespace CLM_framework_GUI
             FormattedText txt = new FormattedText("Confidence: " + (int)(100 * Confidence) + "%", System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 12.0 * scaling, Brushes.Black);
             dc.DrawText(txt, new Point(ActualWidth - confidence_width + 2, 2));
 
-            int fps_width = (int)(48.0 * scaling);
+            int fps_width = (int)(52.0 * scaling);
             int fps_height = (int)(18.0 * scaling);
 
             dc.DrawRoundedRectangle(Brushes.WhiteSmoke, new Pen(Brushes.Black, 0.5 * scaling), new Rect(ActualWidth / 2 - fps_width/2, ActualHeight - fps_height, fps_width, fps_height), 3.0 * scaling, 3.0 * scaling);
             FormattedText fps_txt = new FormattedText("FPS: " + (int)FPS, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 12.0 * scaling, Brushes.Black);
-            dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 3.0 * scaling, ActualHeight - fps_height + 1.0 * scaling));
+            dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 2.0 * scaling, ActualHeight - fps_height + 1.0 * scaling));
 
             old_width = width;
             old_height = height;

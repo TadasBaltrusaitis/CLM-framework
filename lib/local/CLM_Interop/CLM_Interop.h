@@ -41,10 +41,6 @@ namespace CLM_Interop {
 		// OpenCV based video capture for reading from files
 		VideoCapture* vc;
 
-		// Using DirectShow for capturing from webcams (for MJPG as has issues with other formats)
-		camera* webcam;
-		comet::auto_mf* this_auto_mf;
-
 		RawImage^ latestFrame;
 		RawImage^ mirroredFrame;
 		RawImage^ grayFrame;
@@ -62,43 +58,10 @@ namespace CLM_Interop {
 
 			latestFrame = gcnew RawImage();
 			mirroredFrame = gcnew RawImage();
-			
-			this_auto_mf = new comet::auto_mf();
 
-			// Grab the cameras
-			webcam = new camera(camera_helper::get_all_cameras()[device]);
-			webcam->activate();
-
-			auto media_types = webcam->media_types();
-
-			bool found = false;
-
-			for (int m = 0; m < media_types.size(); ++m)
-			{
-				auto media_type_curr = media_types[m];
-				// For now only allow mjpeg
-				if(media_type_curr.format() == MediaFormat::MJPG)
-				{
-					if(media_type_curr.resolution().width == width && media_type_curr.resolution().height == height)
-					{
-						found = true;
-						webcam->set_media_type(media_type_curr);
-						webcam->read_frame();
-						break;
-					}
-				}
-			}
-
-			if(!found)
-			{
-				this_auto_mf->~auto_mf();
-				delete this_auto_mf;
-				webcam->~camera();
-				delete webcam;
-				vc = new VideoCapture(device);
-				vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
-				vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
-			}
+			vc = new VideoCapture(device);
+			vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
+			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 			is_webcam = true;
 		}
@@ -118,11 +81,12 @@ namespace CLM_Interop {
 
 			auto managed_camera_list = gcnew List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>();
 
+			// Using DirectShow for capturing from webcams (for MJPG as has issues with other formats)
 		    comet::auto_mf auto_mf;
 
 			std::vector<camera> cameras = camera_helper::get_all_cameras();
 			
-			for (int i = 0; i < cameras.size(); ++i)
+			for (size_t i = 0; i < cameras.size(); ++i)
 			{
 				cameras[i].activate();
 				
@@ -139,7 +103,7 @@ namespace CLM_Interop {
 				Mat sample_img;
 				RawImage^ sample_img_managed = gcnew RawImage();
 
-				for (int m = 0; m < media_types.size(); ++m)
+				for (size_t m = 0; m < media_types.size(); ++m)
 				{
 					auto media_type_curr = media_types[m];		
 					if(media_type_curr.format() == MediaFormat::MJPG)
@@ -216,10 +180,6 @@ namespace CLM_Interop {
 					throw gcnew CaptureFailedException();
 
 			}
-			else
-			{
-				webcam->read_frame().copyTo(mirroredFrame->Mat);
-			}
 
 			if(is_webcam)
 			{
@@ -247,8 +207,6 @@ namespace CLM_Interop {
 		{
 			if(vc != nullptr)
 				return vc->isOpened();
-			else if(webcam != nullptr)
-				return webcam->is_active();
 			else
 				return false;
 		}
@@ -261,22 +219,13 @@ namespace CLM_Interop {
 			return fps;
 		}
 		
+		// TODO rem?
 		// Finalizer. Definitely called before Garbage Collection,
 		// but not automatically called on explicit Dispose().
 		// May be called multiple times.
 		!Capture()
 		{
-			delete vc; // Automatically closes capture object before freeing memory.
-			if(this_auto_mf != nullptr)
-			{
-				this_auto_mf->~auto_mf();
-				delete this_auto_mf;				
-			}
-			
-			if(webcam != nullptr)
-			{
-				webcam->~camera();
-			}
+			delete vc; // Automatically closes capture object before freeing memory.			
 		}
 
 		// Destructor. Called on explicit Dispose() only.

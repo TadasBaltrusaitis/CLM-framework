@@ -76,6 +76,9 @@ namespace CLM_framework_GUI
         // TODO
         private Object update_lock = new Object();
 
+        // For selecting webcams
+        CameraSelection cam_sec;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -266,7 +269,16 @@ namespace CLM_framework_GUI
                 capture.Dispose();
             }
 
-            CameraSelection cam_sec = new CameraSelection();
+            if (cam_sec == null)
+            {
+                cam_sec = new CameraSelection();
+            }
+            else
+            {
+                cam_sec = new CameraSelection(cam_sec.cams);
+                cam_sec.Visibility = System.Windows.Visibility.Visible;
+            }
+
             cam_sec.ShowDialog();
 
             if (cam_sec.camera_selected)

@@ -36,15 +36,18 @@ namespace CLM_framework_GUI
 
         public bool no_cameras_found = false;
 
-        public CameraSelection()
-        {
-            InitializeComponent();
+        public List<Tuple<String, List<Tuple<int, int>>, OpenCVWrappers.RawImage>> cams;
 
+        public void PopulateCameraSelections()
+        {
             this.KeyDown += new KeyEventHandler(CameraSelection_KeyDown);
 
             // Finding the cameras here
-            var cams = Capture.GetCameras();
-            
+            if (cams == null)
+            {
+                cams = Capture.GetCameras();
+            }
+
             int i = 0;
 
             sample_images = new List<Border>();
@@ -71,21 +74,21 @@ namespace CLM_framework_GUI
 
                     ColumnDefinition col_def = new ColumnDefinition();
                     ThumbnailPanel.ColumnDefinitions.Add(col_def);
-                    
-                    Border img_border = new Border();                    
+
+                    Border img_border = new Border();
                     img_border.SetValue(Grid.ColumnProperty, i);
                     img_border.SetValue(Grid.RowProperty, 0);
                     img_border.CornerRadius = new CornerRadius(5);
 
                     StackPanel img_panel = new StackPanel();
-                    
+
                     Label camera_name_label = new Label();
                     camera_name_label.Content = s.Item1;
                     camera_name_label.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
                     img_panel.Children.Add(camera_name_label);
                     img.Height = 200;
-                    img_panel.Children.Add(img);                    
-                    img_border.Child = img_panel;                    
+                    img_panel.Children.Add(img);
+                    img_border.Child = img_panel;
 
                     sample_images.Add(img_border);
 
@@ -95,13 +98,13 @@ namespace CLM_framework_GUI
                     resolutions.Width = 80;
                     combo_boxes.Add(resolutions);
 
-                    resolutions_all.Add(new List<Tuple<int,int>>());
+                    resolutions_all.Add(new List<Tuple<int, int>>());
 
                     foreach (var r in s.Item2)
                     {
                         resolutions.Items.Add(r.Item1 + "x" + r.Item2);
                         resolutions_all[resolutions_all.Count - 1].Add(new Tuple<int, int>(r.Item1, r.Item2));
-                        
+
                     }
 
                     resolutions.SelectedIndex = 0;
@@ -114,14 +117,19 @@ namespace CLM_framework_GUI
                         }
                     }
                     resolutions.SetValue(Grid.ColumnProperty, i);
-                    resolutions.SetValue(Grid.RowProperty, 2);                    
+                    resolutions.SetValue(Grid.RowProperty, 2);
                     ThumbnailPanel.Children.Add(resolutions);
 
-                    img.MouseDown += (sender, e) =>
+                    img_panel.MouseDown += (sender, e) =>
                     {
                         ChooseCamera(idx);
                     };
 
+                    resolutions.DropDownOpened += (sender, e) =>
+                    {
+                        Console.WriteLine("Mouse down in res box:" + idx);
+                        ChooseCamera(idx);
+                    };
 
                 });
 
@@ -144,6 +152,19 @@ namespace CLM_framework_GUI
                 no_cameras_found = true;
                 this.Close();
             }
+        }
+
+        public CameraSelection()
+        {
+            InitializeComponent();
+            PopulateCameraSelections();
+        }
+
+        public CameraSelection(List<Tuple<String, List<Tuple<int, int>>, OpenCVWrappers.RawImage>> cams)
+        {
+            InitializeComponent();
+            this.cams = cams;
+            PopulateCameraSelections();
         }
 
         private void ChooseCamera(int idx)
@@ -183,7 +204,11 @@ namespace CLM_framework_GUI
             selected_camera = new Tuple<int, int, int>(selected_camera_idx, resolution_selected.Item1, resolution_selected.Item2);
 
             this.Close();
+        }
 
+        // Do not close it as user might want to open it again
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
         }
 
     }

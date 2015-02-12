@@ -23,6 +23,7 @@ using CLM_framework_GUI;
 using System.Collections.Concurrent;
 
 using ZeroMQ;
+using System.Windows.Threading;
 
 namespace Ophthalm_experiments
 {
@@ -52,6 +53,7 @@ namespace Ophthalm_experiments
         CLM_framework_GUI.FpsTracker processing_fps = new CLM_framework_GUI.FpsTracker();
 
         Thread processing_thread;
+        Thread rec_thread;
 
         string patient_id;
         bool record_video;
@@ -86,6 +88,9 @@ namespace Ophthalm_experiments
         // For broadcasting the results
         ZmqContext zero_mq_context;
         ZmqSocket zero_mq_socket;
+
+        // 
+        bool running = true;
 
         public void StartExperiment()
         {
@@ -160,7 +165,7 @@ namespace Ophthalm_experiments
 
             if (!cam_select.no_cameras_found)
             {
-                cam_select.ShowDialog();
+                cam_select.ShowDialog();                
             }
 
             if (cam_select.camera_selected)
@@ -326,7 +331,7 @@ namespace Ophthalm_experiments
 
             var lastFrameTime = CurrentTime;
 
-            while (true)
+            while (running)
             {
 
                 //////////////////////////////////////////////
@@ -381,10 +386,10 @@ namespace Ophthalm_experiments
                     reset = false;
                 }
 
-                // The actual frame processing
+                // Visualisation updating
                 try
                 {
-                    Dispatcher.Invoke(() =>
+                    Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                     {
                         if (latest_img == null)
                             latest_img = frame.CreateWriteableBitmap();
@@ -422,7 +427,6 @@ namespace Ophthalm_experiments
                             webcam_img.OverlayLines = lines;
                             webcam_img.OverlayPoints = landmarks;
                         
-
                             // Publish the information for other applications
                             String str = String.Format("{0}:{1:F2}, {2:F2}, {3:F2}, {4:F2}, {5:F2}, {6:F2}", "HeadPose", pose[0], pose[1], pose[2],
                                 pose[3] * 180 / Math.PI, pose[4] * 180 / Math.PI, pose[5] * 180 / Math.PI);
@@ -430,8 +434,7 @@ namespace Ophthalm_experiments
                             zero_mq_socket.Send(str, Encoding.UTF8);
 
                         }
-
-                    });
+                    }));
                 }
                 catch (TaskCanceledException)
                 {
@@ -458,7 +461,7 @@ namespace Ophthalm_experiments
                     Thread.CurrentThread.IsBackground = true;
                     
                     // Start the recording thread
-                    Thread rec_thread = new Thread(RecordingLoop);
+                    rec_thread = new Thread(RecordingLoop);
                     rec_thread.Start();
 
                     double d = seconds_to_record * 1000;
@@ -469,10 +472,10 @@ namespace Ophthalm_experiments
                     while(d > 1000)
                     {
                     
-                        Dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                         {
                             RecordingButton.Content = ((int)(d / 1000)).ToString() + " seconds remaining";
-                        }); 
+                        })); 
                         
                         System.Threading.Thread.Sleep(1000);
 
@@ -486,10 +489,10 @@ namespace Ophthalm_experiments
 
                     recording = false;
 
-                    Dispatcher.Invoke(() =>
+                    Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                     {
                         RecordingButton.Content = "0 seconds remaining";
-                    }); 
+                    })); 
 
                     Dispatcher.Invoke(() =>
                     {
@@ -543,6 +546,24 @@ namespace Ophthalm_experiments
 
         private void ResetButton_MouseEnter(object sender, MouseEventArgs e)
         {
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+            // Let it finish recording
+            recording = false;
+            if (rec_thread != null)
+            {
+                rec_thread.Join();
+            }
+
+            // Stop capture and tracking
+            running = false;
+            processing_thread.Join();
+            
+            capture.Dispose();
 
         }
 
