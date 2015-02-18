@@ -15,7 +15,7 @@ before_install:
  - mkdir build
  - cd build
  - cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_SHARED_LIBS=OFF .. 
- - make j8
+ - make -j8
  - sudo make install
  - cd ..
  - gem update --system
