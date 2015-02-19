@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,6 +57,37 @@ namespace Ophthalm_experiments
             if (e.Key == Key.Enter)
             {
                 DialogResult = true;
+            }
+        }
+
+        // Do not allow illegal characters like
+        private void ResponseTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Regex regex = new Regex("[/:*?<>|\"]");
+            Regex regex2 = new Regex(@"[\\]");
+            MatchCollection matches = regex.Matches(ResponseTextBox.Text);
+            MatchCollection matches2 = regex2.Matches(ResponseTextBox.Text);
+            if (matches.Count > 0 || matches2.Count > 0)
+            {
+                for (int i = matches.Count - 1; i >= 0; --i)
+                {
+                    // Remove the illegal characters
+                    ResponseTextBox.Text = ResponseTextBox.Text.Substring(0, matches[i].Index) + ResponseTextBox.Text.Substring(matches[i].Index + 1);
+                }
+
+                //tell the user
+                for (int i = matches2.Count - 1; i >= 0; --i)
+                {
+                    // Remove the illegal characters
+                    ResponseTextBox.Text = ResponseTextBox.Text.Substring(0, matches2[i].Index) + ResponseTextBox.Text.Substring(matches2[i].Index + 1);
+                    
+                }
+                warningLabel.Visibility = System.Windows.Visibility.Visible;
+                ResponseTextBox.SelectionStart = ResponseTextBox.Text.Length;
+            }
+            else
+            {
+                warningLabel.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,6 +25,7 @@ using System.Collections.Concurrent;
 
 using ZeroMQ;
 using System.Windows.Threading;
+using System.Drawing;
 
 namespace Ophthalm_experiments
 {
@@ -71,7 +73,7 @@ namespace Ophthalm_experiments
         bool reset = false;
 
         // For recording
-        string record_root = "./recorded/patient ";
+        string record_root = "./recorded/patient";
         string output_root;
         private Object recording_lock = new Object();
         int trial_id = 0;
@@ -89,8 +91,8 @@ namespace Ophthalm_experiments
         ZmqContext zero_mq_context;
         ZmqSocket zero_mq_socket;
 
-        // 
-        bool running = true;
+        volatile bool running = true;
+        volatile bool pause = false;
 
         public void StartExperiment()
         {
@@ -105,6 +107,21 @@ namespace Ophthalm_experiments
             {
 
                 patient_id = patient_id_window.ResponseText;
+
+                // Remove trailing spaces and full stops at the end of the folder name
+                int old_length;
+                do
+                {
+                    old_length = patient_id.Length;
+                    patient_id = patient_id.Trim();
+                    if (patient_id.Length > 0)
+                    {
+                        while (patient_id[patient_id.Length - 1].Equals('.'))
+                        {
+                            patient_id = patient_id.Substring(0, patient_id.Length - 1);
+                        }
+                    }
+                } while (patient_id.Length != old_length);
 
                 output_root = record_root + patient_id + "/";
 
@@ -165,7 +182,7 @@ namespace Ophthalm_experiments
 
             if (!cam_select.no_cameras_found)
             {
-                cam_select.ShowDialog();                
+                cam_select.ShowDialog();
             }
 
             if (cam_select.camera_selected)
@@ -217,17 +234,11 @@ namespace Ophthalm_experiments
 
                 // Create an overlay image for display purposes
                 webcam_img = new CLM_framework_GUI.OverlayImage();
-
-                webcam_img.Stretch = Stretch.Uniform;
-                webcam_img.Width = 400;
-                webcam_img.Height = (int)(((double)(img_height) / (double)img_width) * 400.0);
                 
-                webcam_img.SetValue(Canvas.BottomProperty, (300 - webcam_img.Height) / 2);
-                ResetButton.SetValue(Canvas.TopProperty, (300 - webcam_img.Height) / 2);
-
-                webcam_img.SetValue(Canvas.ZIndexProperty, 0);
-
-                ImageCanvas.Children.Add(webcam_img);
+                webcam_img.SetValue(Grid.RowProperty, 1);
+                webcam_img.SetValue(Grid.ColumnProperty, 1);
+                MainGrid.Children.Add(webcam_img);
+                
                 StartExperiment();
                 
             }
@@ -372,8 +383,8 @@ namespace Ophthalm_experiments
                     }
                 }
 
-                List<Tuple<Point, Point>> lines = null;
-                List<Point> landmarks = null;
+                List<Tuple<System.Windows.Point, System.Windows.Point>> lines = null;
+                List<System.Windows.Point> landmarks = null;
                 if (detectionSucceeding)
                 {
                     landmarks = clm_model.CalculateLandmarks();
@@ -397,9 +408,39 @@ namespace Ophthalm_experiments
                         List<double> pose = new List<double>();
                         clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
-                        YawLabel.Content = (int)(pose[4] * 180 / Math.PI + 0.5) + "°";
-                        RollLabel.Content = (int)(pose[5] * 180 / Math.PI + 0.5) + "°";
-                        PitchLabel.Content = (int)(pose[3] * 180 / Math.PI + 0.5) + "°";
+                        int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
+                        int yaw_abs = Math.Abs(yaw);
+
+                        int roll = (int)(pose[5] * 180 / Math.PI + 0.5);
+                        int roll_abs = Math.Abs(roll);
+
+                        int pitch = (int)(pose[3] * 180 / Math.PI + 0.5);
+                        int pitch_abs = Math.Abs(pitch);
+
+                        YawLabel.Content = yaw_abs + "°";
+                        RollLabel.Content = roll_abs + "°";
+                        PitchLabel.Content = pitch_abs + "°";
+
+                        if (yaw > 0)
+                            YawLabelDir.Content = "Left";
+                        else if(yaw < 0)
+                            YawLabelDir.Content = "Right";
+                        else
+                            YawLabelDir.Content = "Straight";
+
+                        if (pitch > 0)
+                            PitchLabelDir.Content = "Down";
+                        else if (pitch < 0)
+                            PitchLabelDir.Content = "Up";
+                        else
+                            PitchLabelDir.Content = "Straight";
+
+                        if (roll > 0)
+                            RollLabelDir.Content = "Right";
+                        else if (roll < 0)
+                            RollLabelDir.Content = "Left";
+                        else
+                            RollLabelDir.Content = "Straight";
 
                         XPoseLabel.Content = (int)pose[0] + " mm";
                         YPoseLabel.Content = (int)pose[1] + " mm";
@@ -435,6 +476,13 @@ namespace Ophthalm_experiments
 
                         }
                     }));
+
+                    while (running & pause)
+                    {
+                            
+                        Thread.Sleep(10);
+                    }
+                    
                 }
                 catch (TaskCanceledException)
                 {
@@ -451,6 +499,7 @@ namespace Ophthalm_experiments
             {
                 RecordingButton.IsEnabled = false;
                 CompleteButton.IsEnabled = false;
+                PauseButton.IsEnabled = false;
                 
                 recording_objects = new ConcurrentQueue<Tuple<RawImage, bool, List<double>>>();
 
@@ -527,6 +576,8 @@ namespace Ophthalm_experiments
                             RecordingButton.Content = "Record trial: " + trial_id;
                             RecordingButton.IsEnabled = true;
                             CompleteButton.IsEnabled = true;
+                            PauseButton.IsEnabled = true;
+
                         }
 
                     });
@@ -561,10 +612,55 @@ namespace Ophthalm_experiments
 
             // Stop capture and tracking
             running = false;
-            processing_thread.Join();
-            
-            capture.Dispose();
+            if (processing_thread != null)
+            {
+                processing_thread.Join();
+            }
 
+            if(capture != null)
+                capture.Dispose();
+
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            pause = !pause;
+
+            if (pause)
+            {
+                PauseButton.Content = "Resume";
+            }
+            else
+            {
+                PauseButton.Content = "Pause";
+            }
+        }
+
+        private void ScreenshotButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            int Top = (int)this.Top;
+            int Left = (int)this.Left;
+
+            int Width = (int)this.Width;
+            int Height = (int)this.Height;
+
+            using (Bitmap bmpScreenCapture = new Bitmap(Width,
+                                                        Height))
+            {
+                using (System.Drawing.Graphics g = Graphics.FromImage(bmpScreenCapture))
+                {
+                    g.CopyFromScreen(Left,
+                                     Top,
+                                     0, 0,
+                                     bmpScreenCapture.Size,
+                                     CopyPixelOperation.SourceCopy);
+                    
+                    // Write out the bitmap here encoded by a time-stamp?
+                    String fname = output_root + DateTime.Now.ToString("yyyy-MMM-dd--HH-mm-ss") + ".png";
+                    bmpScreenCapture.Save(fname, ImageFormat.Png);
+                }
+            }
         }
 
     }
