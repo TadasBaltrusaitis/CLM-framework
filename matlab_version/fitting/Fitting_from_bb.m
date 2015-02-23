@@ -29,10 +29,10 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     % correct it so that the bounding box is just around the minimum
     % and maximum point in the initialised face
     tx = tx - a*(min(rot_m(1,:)) + max(rot_m(1,:)))/2;
-    ty = ty + a*(min(rot_m(2,:)) + max(rot_m(2,:)))/2;
+    ty = ty - a*(min(rot_m(2,:)) + max(rot_m(2,:)))/2;
 
-    % visualisation
-    %hold off;plot(a*rot_m(1,:)+tx, -a*rot_m(2,:)+ty,'.r');hold on;rectangle('Position', [bounding_box(1), bounding_box(2), bounding_box(3)-bounding_box(1), bounding_box(4)-bounding_box(2)]);
+    % visualisation of the initial state
+    %hold off;imshow(Image);hold on;plot(a*rot_m(1,:)+tx, a*rot_m(2,:)+ty,'.r');hold on;rectangle('Position', [bounding_box(1), bounding_box(2), bounding_box(3)-bounding_box(1), bounding_box(4)-bounding_box(2)]);
     global_params = [a, 0, 0, 0, tx, ty]';
     global_params(2:4) = orientation;
 
