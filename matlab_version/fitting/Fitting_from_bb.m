@@ -219,6 +219,8 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
             % only go up a scale if we don't need to upsample
             if(0.9 * patchExperts(scale+1).trainingScale < global_params(1))
                 scale = scale + 1;
+            else
+                break;
             end
         end
     end
