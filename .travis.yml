@@ -1,33 +1,47 @@
-language: cpp
-compiler: gcc
+language:
+  - cpp
+compiler:
+  - gcc
 
 before_install:
- - sudo apt-get update
+  - sudo apt-get update
 
-install: 
- - sudo apt-get install build-essential
- - sudo apt-get install cmake
- - sudo apt-get install libopenblas-dev liblapack-dev
- - sudo apt-get install git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev 
- - sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall
- - sudo apt-get install libboost-all-dev
+install:
+# OpenCV v3.0.0 (beta) install code (modified from orignal source: https://github.com/jayrambhia/Install-OpenCV)
 
-before_script:
- - git clone https://github.com/Itseez/opencv.git
- - cd opencv
- - mkdir build
- - cd build
- - cmake ..
- - make -j4
- - sudo make -j4 install
- - cd ../..
- - cmake .
- - make
+  - sudo apt-get install -y build-essential
+  - sudo apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+  - sudo apt-get install -y libopenblas-dev liblapack-dev
+  - sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  - sudo apt-get install libboost-all-dev
+  - curl -sL https://github.com/Itseez/opencv/archive/3.0.0-beta.zip > opencv.zip
+  - unzip opencv.zip
+  - cd opencv-3.0.0-beta
+  - mkdir build
+  - cd build 
+  # Set build instructions for Ubuntu distro.
+  - cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_QT=ON -D WITH_OPENGL=ON ..
+
+  # Run 'make' with four threads.
+  - make -j4
+
+  # Install to OS.
+  - sudo make install
+
+  # Add configuration to OpenCV to tell it where the library files are located on the file system (/usr/local/lib)
+  - sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+
+  - sudo ldconfig
+  - echo "OpenCV installed."
+
+  # We need to return to the repo "root" folder, so we can then 'cd' into the C++ project folder.
+  - cd ../../
 
 script:
- ./bin/SimpleCLM -f "./videos/changeLighting.wmv" -f "./videos/0188_03_021_al_pacino.avi" -f "./videos/0217_03_006_alanis_morissette.avi" -f "./videos/0244_03_004_anderson_cooper.avi" -f "./videos/0294_02_004_angelina_jolie.avi" -f "./videos/0417_02_003_bill_clinton.avi" -f "./videos/0490_03_007_bill_gates.avi" -f "./videos/0686_02_003_gloria_estefan.avi" -f "./videos/1034_03_006_jet_li.avi" -f "./videos/1192_01_006_julia_roberts.avi" -f "./videos/1461_01_021_noam_chomsky.avi" -f "./videos/1804_03_006_sylvester_stallone.avi" -f "./videos/1815_01_008_tony_blair.avi" -f "./videos/1869_03_009_victoria_beckham.avi" -f "./videos/1878_01_002_vladimir_putin.avi"
+  - ./bin/SimpleCLM -f "./videos/changeLighting.wmv" -f "./videos/0188_03_021_al_pacino.avi" -f "./videos/0217_03_006_alanis_morissette.avi" -f "./videos/0244_03_004_anderson_cooper.avi" -f "./videos/0294_02_004_angelina_jolie.avi" -f "./videos/0417_02_003_bill_clinton.avi" -f "./videos/0490_03_007_bill_gates.avi" -f "./videos/0686_02_003_gloria_estefan.avi" -f "./videos/1034_03_006_jet_li.avi" -f "./videos/1192_01_006_julia_roberts.avi" -f "./videos/1461_01_021_noam_chomsky.avi" -f "./videos/1804_03_006_sylvester_stallone.avi" -f "./videos/1815_01_008_tony_blair.avi" -f "./videos/1869_03_009_victoria_beckham.avi" -f "./videos/1878_01_002_vladimir_putin.avi"
+
 os:
- - linux
+  - linux
 branches:
   only:
     - maintenance
