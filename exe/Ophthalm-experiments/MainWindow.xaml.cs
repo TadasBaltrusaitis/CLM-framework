@@ -101,6 +101,8 @@ namespace Ophthalm_experiments
             // Get the entry dialogue now for the patient ID
             trial_id = 0;
             TextEntryWindow patient_id_window = new TextEntryWindow();
+            patient_id_window.Icon = this.Icon;
+
             patient_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             
             if (patient_id_window.ShowDialog() == true)
@@ -164,9 +166,32 @@ namespace Ophthalm_experiments
         {
             InitializeComponent();
 
+            DateTime now = DateTime.Now;
+
+            if (now > new DateTime(2015, 7, 1, 0, 0, 0, 0))
+            {
+                string messageBoxText = "The version of the software has expired. Please contact Tadas Baltrušaitis (Tadas.Baltrusaitis@cl.cam.ac.uk) for an updated version.";
+                string caption = "Version expired! (after 2015-July-01";
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBoxImage icon = MessageBoxImage.Error;
+                MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon); 
+                this.Close();
+            }
+
             // Set the icon
             Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
             this.Icon = BitmapFrame.Create(iconUri);
+
+            // Warn about the liability
+            Liability liab = new Liability();
+            liab.Icon = BitmapFrame.Create(iconUri);
+            liab.ShowDialog();
+
+            if (!liab.continue_pressed)
+            {
+                this.Close();
+                return;
+            }
 
             BitmapImage src = new BitmapImage();
             src.BeginInit();
@@ -174,11 +199,11 @@ namespace Ophthalm_experiments
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.EndInit();
             
-
             logoLabel.Source = src;
 
             // First make the user chooose a webcam
             CLM_framework_GUI.CameraSelection cam_select = new CLM_framework_GUI.CameraSelection();
+            cam_select.Icon = BitmapFrame.Create(iconUri);
 
             if (!cam_select.no_cameras_found)
             {
