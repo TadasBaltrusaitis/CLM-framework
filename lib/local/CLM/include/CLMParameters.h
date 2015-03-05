@@ -84,7 +84,7 @@ struct CLMParameters
 	// Used for the current frame
 	vector<int> window_sizes_current;
 	
-	// How big is the tracking template that helps with large motions TODO
+	// How big is the tracking template that helps with large motions
 	double face_template_scale;	
 	bool use_face_template;
 

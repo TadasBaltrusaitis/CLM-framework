@@ -128,7 +128,6 @@ for i=1:numel(dirs)
     for g=1:numel(gt_labels)
         curr = curr+1;
         
-        
         gt_landmarks = dlmread([dirs{i}, gt_labels(g).name], ' ', 'A4..B71');
        
         % find the corresponding detection       
@@ -150,9 +149,13 @@ end
 % truth and detections
 if(size(shapes,2) == 66 && size(labels,2) == 68)
     inds_66 = [[1:60],[62:64],[66:68]];
+    
     labels = labels(inds_66,:,:);
     shapes = shapes(inds_66,:,:);
 end
+
+% Center the pixel
+labels = labels - 0.5;
 
 err_outline = compute_error(labels, shapes);
 

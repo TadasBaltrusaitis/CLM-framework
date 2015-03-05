@@ -57,7 +57,7 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     [heightImg, widthImg] = size(GrayImage);
 
     % Some predefinitions for faster patch extraction
-    [xi, yi] = meshgrid(1:widthImg,1:heightImg);
+    [xi, yi] = meshgrid(0:widthImg-1,0:heightImg-1);
     xi = double(xi);
     yi = double(yi);
     
@@ -73,7 +73,7 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
        
         % The shape fitting is performed in the reference frame of the
         % patch training scale
-        refGlobal = [current_patch_scaling, 0, 0, 0, 100, 100]';
+        refGlobal = [current_patch_scaling, 0, 0, 0, 0, 0]';
 
         % the reference shape
         refShape = GetShapeOrtho(M, PDM.V, local_params, refGlobal);
@@ -94,7 +94,7 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
         
         % transform the current shape to the reference one, so we can
         % interpolate
-        shape2D_in_ref = (A_img2ref * (shape2D_img+1)')';
+        shape2D_in_ref = (A_img2ref * shape2D_img')';
         
         sideSizeX = (clmParams.window_size(i,1) - 1)/2;
         sideSizeY = (clmParams.window_size(i,2) - 1)/2;
@@ -116,10 +116,10 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
                 
                 actualLocs = (Ainv * pairs')';
                 
-                actualLocs(actualLocs(:,1) < 1,1) = 1;
-                actualLocs(actualLocs(:,2) < 1,2) = 1;
-                actualLocs(actualLocs(:,1) > widthImg,1) = widthImg;
-                actualLocs(actualLocs(:,2) > heightImg,2) = heightImg;
+                actualLocs(actualLocs(:,1) < 0,1) = 0;
+                actualLocs(actualLocs(:,2) < 0,2) = 0;
+                actualLocs(actualLocs(:,1) > widthImg - 1,1) = widthImg - 1;
+                actualLocs(actualLocs(:,2) > heightImg - 1,2) = heightImg - 1;
                 
                 [t_patch] = interp2_mine(xi, yi, GrayImageDb, actualLocs(:,1), actualLocs(:,2), 'bilinear');
                 t_patch = reshape(t_patch, size(xs));
@@ -230,7 +230,9 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     
     % See how good the tracking was in the end
     [shape2D] = GetShapeOrtho(M, PDM.V, local_params, global_params);
-    shape2D = shape2D(:,1:2);
+    
+    % Moving to matlab format
+    shape2D = shape2D(:,1:2) + 1;
     
 end
 

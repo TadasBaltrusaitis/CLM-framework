@@ -117,7 +117,7 @@ Parameters for input (if nothing is specified attempts to read from a webcam wit
 	-cy <optical centre in y>
 
 Parameters for output
-	-op <location of output pose file>, the file format is as follows: frame_number timestamp detection_success X Y Z Rx Ry Rz
+	-op <location of output pose file>, the file format is as follows: frame_number confidence detection_success X Y Z Rx Ry Rz
 	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
 	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
 	-ov <location of tracked video>
@@ -161,7 +161,7 @@ Parameters for input (if nothing is specified attempts to read from a webcam wit
 Parameters for output
 	-outroot <the root directory relevant to which the output files are created> (optional)
 	
-	-op <location of output pose file>, the file format is as follows: frame_number timestamp detection_success X Y Z Rx Ry Rz
+	-op <location of output pose file>, the file format is as follows: frame_number confidence detection_success X Y Z Rx Ry Rz
 	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
 	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
 	-ov <location of tracked video>

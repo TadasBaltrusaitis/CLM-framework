@@ -78,9 +78,6 @@ for i=1:numel(images)
 
     bbox = detections(i,:);
            
-    % Correct the bounding box to 0 indexed format
-    bbox = bbox - 1;
-             
     % have a multi-view version
     if(multi_view)
 
@@ -111,7 +108,7 @@ for i=1:numel(images)
     all_views_used(i) = view_used;
 
     % shape correction for matlab format
-    shapes_all(:,:,i) = shape + 1;
+    shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
     if(mod(i, 200)==0)

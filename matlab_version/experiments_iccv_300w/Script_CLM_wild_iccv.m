@@ -78,9 +78,6 @@ for i=1:numel(images)
 
     bbox = detections(i,:);
       
-    % Correct the bounding box to 0 indexed format
-    bbox = bbox - 1;    
-      
     % have a multi-view version
     if(multi_view)
 
@@ -110,18 +107,19 @@ for i=1:numel(images)
     all_lmark_lhoods(:,i) = lmark_lhood;
     all_views_used(i) = view_used;
 
-    % shape correction for matlab format
-    shapes_all(:,:,i) = shape + 1;
+    shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
-    if(mod(i, 200)==0)
+    if(mod(i, 100)==0)
         fprintf('%d done\n', i );
     end
-
+    
     valid_points =  sum(squeeze(labels(i,:,:)),2) > 0;
     valid_points(1:17) = 0;
 
-    actualShape = squeeze(labels(i,:,:));
+    % Center the pixel
+    actualShape = squeeze(labels(i,:,:)) - 0.5;
+    
     errors(i) = sqrt(mean(sum((actualShape(valid_points,:) - shape(valid_points,:)).^2,2)));      
     width = ((max(actualShape(valid_points,1)) - min(actualShape(valid_points,1)))+(max(actualShape(valid_points,2)) - min(actualShape(valid_points,2))))/2;
     errors_normed(i) = errors(i)/width;                                    

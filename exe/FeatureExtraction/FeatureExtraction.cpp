@@ -781,7 +781,8 @@ int main (int argc, char **argv)
 			// Output the estimated head pose
 			if(!pose_output_files.empty())
 			{
-				pose_output_file << frame_count + 1 << " " << (float)frame_count * 1000/30 << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
+				double confidence = 0.5 * (1 - detection_certainty);
+				pose_output_file << frame_count + 1 << " " << confidence << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
 			}				
 
 			// output the tracked video

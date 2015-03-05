@@ -21,7 +21,6 @@ end
 clmParams = struct;
 
 clmParams.window_size = [25,25; 25,25; 25,25;];
-% clmParams.window_size = [15,15; 15,15; 15,15;];
 clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/wild/', 'ccnf_patches_*_wild.mat', [], [], clmParams);
@@ -81,9 +80,6 @@ for i=1:numel(images)
     end              
 
     bbox = detections(i,:);
-
-    % Correct the bounding box to 0 indexed format
-    bbox = bbox - 1;
     
     % have a multi-view version
     if(multi_view)
@@ -115,7 +111,7 @@ for i=1:numel(images)
     all_views_used(i) = view_used;
 
     % shape correction for matlab format
-    shapes_all(:,:,i) = shape + 1;
+    shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
     if(mod(i, 200)==0)
@@ -124,6 +120,9 @@ for i=1:numel(images)
 
     valid_points =  sum(squeeze(labels(i,:,:)),2) > 0;
     valid_points(1:17) = 0;
+
+    % Center the pixel
+    actualShape = squeeze(labels(i,:,:)) - 0.5;
 
     actualShape = squeeze(labels(i,:,:));
     errors(i) = sqrt(mean(sum((actualShape(valid_points,:) - shape(valid_points,:)).^2,2)));      

@@ -128,7 +128,6 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 			if(visibilities[scale][view_id].at<int>(lmark,0))
 			{
 				// Precompute sigmas if they are not computed yet
-				// TODO rem?
 				ccnf_expert_intensity[scale][view_id][lmark].ComputeSigmas(sigma_components, window_size);
 			}
 		}
