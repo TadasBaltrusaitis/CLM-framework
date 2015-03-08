@@ -35,7 +35,7 @@ Need to do the following:
 
 6. Make the actual CLM-framework and compile it using
 	cd CLM-framework	
-	cmake .
+	cmake -D CMAKE_BUILD_TYPE=RELEASE . 
 	make -j2
 
 7. Test it with 

@@ -444,6 +444,7 @@ void PDM::ComputeJacobian(const Mat_<float>& params_local, const Vec6d& params_g
 // Updating the parameters (more details in my thesis)
 void PDM::UpdateModelParameters(const Mat_<float>& delta_p, Mat_<float>& params_local, Vec6d& params_global)
 {
+
 	// The scaling and translation parameters can be just added
 	params_global[0] += (double)delta_p.at<float>(0,0);
 	params_global[4] += (double)delta_p.at<float>(4,0);
@@ -479,14 +480,9 @@ void PDM::UpdateModelParameters(const Mat_<float>& delta_p, Mat_<float>& params_
 	// Local parameter update, just simple addition
 	if(delta_p.rows > 6)
 	{
-		auto it_params = params_local.begin();
-		auto d_params = delta_p(cv::Rect(0,6,1, this->NumberOfModes())).begin();
-
-		while(it_params != params_local.end())
-		{
-			*it_params++ += (double)*d_params++;
-		}
+		params_local = params_local + delta_p(cv::Rect(0,6,1, this->NumberOfModes()));
 	}
+
 }
 
 void PDM::Read(string location)
