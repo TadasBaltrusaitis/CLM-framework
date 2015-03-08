@@ -18,7 +18,7 @@ end
    
 clmParams = struct;
 
-clmParams.window_size = [25,25; 25,25; 25,25;];
+clmParams.window_size = [25,25; 23,23; 21,21;];
 clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/wild/', 'svr_patches_*_wild.mat', [], [], clmParams);

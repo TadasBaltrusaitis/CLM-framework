@@ -211,7 +211,7 @@ struct CLMParameters
 			{                    
 				// For in the wild fitting these parameters are suitable
 				window_sizes_init = vector<int>(3);
-				window_sizes_init[0] = 15; window_sizes_init[1] = 15; window_sizes_init[2] = 15;		
+				window_sizes_init[0] = 15; window_sizes_init[1] = 13; window_sizes_init[2] = 11;
 
 				sigma = 2;
 				reg_factor = 25;
