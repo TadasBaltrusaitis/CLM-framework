@@ -6,7 +6,7 @@ The code was written mainly by Tadas Baltrusaitis during his time at the Compute
 
 Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code.
 
-The stable versions of the framework have been tagged, the latest version of CLM-framework is is 1.2.0 and I recommend you download it.
+The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.2.0 and I recommend you download it.
 
 Some examples of the system in action:
 http://youtu.be/V7rV0uy7heQ
