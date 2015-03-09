@@ -1,6 +1,6 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework.sln" using Visual Studio 2010 (or "CLM_framework_vs2012.sln" using Visual Studio 2012) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Running was extensively tested on Windows Vista, Windows 7 and Windows 8 can't guarantee compatibility with other versions and platforms. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps on 320x240px videos.
+For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework_vs2012.sln" using Visual Studio 2012 (or "CLM_framework.sln" using Visual Studio 2010, however 2012 version is more thoroughly tested) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Code was tested on Windows Vista, Windows 7 and Windows 8, Windows Server 2008 can't guarantee compatibility with other Windows versions. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps on 320x240px videos.
 
-For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support, note that for VisualStudio you will need to change the working directory from ProjectDir to TargetDir, as it uses relative paths to find the model location. For running the code on Ubuntu please see readme-ubuntu.txt.
+For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support. For running the code on Ubuntu please see readme-ubuntu.txt.
 
 You have to respect boost, TBB, dlib, and OpenCV licenses.
 
@@ -13,10 +13,12 @@ Copyright can be found in the Copyright.txt
 ./lib
 	local - the actual meat of the code where the relevant computer vision algorithms reside
 		CLM - The CLM, CLNF and CLM-Z algorithms
+		FaceAnalyser - some useful code for extracting features for facial analysis
 	3rdParty - place for 3rd party libraries
 		boost - prepackaged relevant parts of the boost library
 		OpenCV3.0 - prepackaged OpenCV 3.0 beta library that is used extensively internally to provide support for basic computer vision functionallity
 		dlib - a header only dlib library (includes the face detector used for in-the-wild images)
+		tbb - prepackaged tbb code, library files and dll's
 ./exe - the runner and executables that show how to use the libraries for facial expression and head pose tracking, these best demonstrate how to use the libraries
 	SimpleCLM/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
 	SimpleCLMImg/ - running clm or clm-z on a images, individual or in a folder
@@ -24,6 +26,8 @@ Copyright can be found in the Copyright.txt
 	FeatureExtraction/ - a utility executable for extracting similarity normalised faces and HOG features for further facial expression analysis (experimental)	
 ./matlab_runners
 	helper scripts for running the experiments and demos
+./matlab_version
+	A Matlab version of CLM-framework together with some training code, more details in ./matlab_version/readme.txt
 ./Release
 	The created directory after compilation containing the desired executables
 	
@@ -91,14 +95,11 @@ To run them you will need to change the dataset locations to those on your disc
 
 run_clm_head_pose_tests_svr.m - runs CLM, and CLM-Z on the 3 head pose datasets (Boston University, Biwi Kinect, and ICT-3DHP you need to acquire the datasets yourself)
 run_clm_head_pose_tests_clnf.m - runs CLNF on the 3 head pose datasets (Boston University, Biwi Kinect, and ICT-3DHP you need to acquire the datasets yourself)
-run_clm_feature_point_tests_wild.m - runs CLM and CLNF on the in the wild face datasets, using already defined bounding boxes of faces (these are produced using the 'matlab runners/ExtractBoundingBoxes.m' script on the in the wild datasets from http://ibug.doc.ic.ac.uk/resources/300-W/)
+run_clm_feature_point_tests_wild.m - runs CLM and CLNF on the in the wild face datasets, using already defined bounding boxes of faces (these are produced using the 'matlab_runners/ExtractBoundingBoxes.m' script on the in the wild datasets from http://ibug.doc.ic.ac.uk/resources/300-W/)
 
-run_demo_images - runs CLNF on some sample images that come with the code
-
-run_demo_videos - runs CLNF on some sample videos that come with the code (some taken from the Youtube celebrity dataset)
-	
+run_demo_images.m - runs CLNF on some sample images that come with the code
+run_demo_videos.m - runs CLNF on some sample videos that come with the code (some taken from the YouTube celebrity dataset)
 feature_extraction_demo_img_seq.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a sequence of images in a folder and how to read those features into Matlab.	
-
 feature_extraction_demo_vid.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a video and how to read those features into Matlab.	
 	
 -------- Command line parameters for video (SimpleCLM) --------------------------
@@ -270,4 +271,4 @@ matlab_runners/results/Pose_clm_svr_v1.txt - the results of head pose tracking u
 
 --------------------------------------- Final remarks -----------------------------------------------------------------------------	
 
-I did my best to make sure that the code runs out of the box but there are always issues and I would be grateful for your understanding that this is research code and not a commercial level product. However, if you encounter any probles please contact me at Tadas.Baltrusaitis@cl.cam.ac.uk for any bug reports/questions/suggestions. 
+I did my best to make sure that the code runs out of the box but there are always issues and I would be grateful for your understanding that this is research code and not a commercial level product. However, if you encounter any problems/bugs/issues please contact me at Tadas.Baltrusaitis@cl.cam.ac.uk for any bug reports/questions/suggestions. 
