@@ -313,12 +313,12 @@ namespace CLM_Interop {
 				}
 			}
 	
-			List<System::Windows::Point>^ CalculateLandmarks() {
-				vector<Point> vecLandmarks = ::CLMTracker::CalculateLandmarks(*clm);
+			List<System::Tuple<double,double>^>^ CalculateLandmarks() {
+				vector<Point2d> vecLandmarks = ::CLMTracker::CalculateLandmarks(*clm);
 				
-				List<System::Windows::Point>^ landmarks = gcnew List<System::Windows::Point>();
-				for(Point p : vecLandmarks) {
-					landmarks->Add(System::Windows::Point(p.x, p.y));
+				List<Tuple<double,double>^>^ landmarks = gcnew List<Tuple<double,double>^>();
+				for(Point2d p : vecLandmarks) {
+					landmarks->Add(gcnew Tuple<double,double>(p.x, p.y));
 				}
 
 				return landmarks;
@@ -380,6 +380,48 @@ namespace CLM_Interop {
 				::CLMTracker::DrawBox(vecLines, image->Mat, color, thickness);
 			}
 
+			int GetNumPoints()
+			{
+				return clm->pdm.NumberOfPoints();
+			}
+
+			int GetNumModes()
+			{
+				return clm->pdm.NumberOfModes();
+			}
+
+			// Getting the non-rigid shape parameters describing the facial expression
+			List<double>^ GetNonRigidParams()
+			{
+				List<double>^ non_rigid_params = gcnew List<double>();
+
+				for (int i = 0; i < clm->params_local.rows; ++i)
+				{
+					non_rigid_params->Add(clm->params_local.at<double>(i));
+				}
+
+				return non_rigid_params;
+			}
+
+			// Getting the rigid shape parameters describing face scale rotation and translation (scale,rotx,roty,rotz,tx,ty)
+			List<double>^ GetRigidParams()
+			{
+				List<double>^ rigid_params = gcnew List<double>();
+
+				for (size_t i = 0; i < 6; ++i)
+				{
+					rigid_params->Add(clm->params_global[i]);
+				}
+				return rigid_params;
+			}
+
+			// Rigid params followed by non-rigid ones
+			List<double>^ GetParams()
+			{
+				List<double>^ all_params = GetRigidParams();
+				all_params->AddRange(GetNonRigidParams());
+				return all_params;
+			}
 
 		};
 

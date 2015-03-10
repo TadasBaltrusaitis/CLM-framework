@@ -409,10 +409,14 @@ namespace Ophthalm_experiments
                 }
 
                 List<Tuple<System.Windows.Point, System.Windows.Point>> lines = null;
-                List<System.Windows.Point> landmarks = null;
+                List<System.Windows.Point> landmarks = new List<System.Windows.Point>();
                 if (detectionSucceeding)
                 {
-                    landmarks = clm_model.CalculateLandmarks();
+                    List<Tuple<double,double>> landmarks_doubles = clm_model.CalculateLandmarks();
+
+                    foreach(var p in landmarks_doubles)
+                        landmarks.Add(new System.Windows.Point(p.Item1, p.Item2));
+
                     lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
                 }
 

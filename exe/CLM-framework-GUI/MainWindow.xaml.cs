@@ -20,6 +20,7 @@ using OpenCVWrappers;
 using CLM_Interop;
 using CLM_Interop.CLMTracker;
 using System.Windows.Threading;
+using System.IO;
 
 namespace CLM_framework_GUI
 {
@@ -57,13 +58,10 @@ namespace CLM_framework_GUI
         private WriteableBitmap latest_HOG_descriptor;
 
         private volatile bool thread_running;
+        private volatile bool thread_paused = false;
 
-        // TODO rem?
-        double fpsLimit = 0;
         FpsTracker processing_fps = new FpsTracker();
 
-        // Keep track of video file (TODO rem)
-        string videoFile = null;
         // TODO rem?
         volatile bool detectionSucceeding = false;
         volatile bool reset = false;
@@ -75,6 +73,32 @@ namespace CLM_framework_GUI
         // For selecting webcams
         CameraSelection cam_sec;
         
+        // Recording parameters (default values)
+        bool record_pose = true; // pose and orientation
+        bool record_params = true; // Point Distribution Model parameters
+        bool record_2D_landmarks = true; // 2D landmark location
+        bool record_3D_landmarks = true; // 3D landmark locations in world coordinates
+        bool record_HOG = false; // HOG features extracted from face images
+        bool record_LBP = false; // LBP features extracted from face images
+        bool record_aligned = false; // aligned face images
+        bool record_track_video = false; // recording the actually tracked video
+        bool record_video = false; // recording video from the stream
+
+        // TODO if image don't record some of these (unless treated as video?)
+        // Separate entries for video/image in opening file menu
+        // If image just do landmarks and do multiple faces?
+
+        // The recording managers
+        StreamWriter output_head_pose_file;
+        StreamWriter output_clm_params_file;
+        StreamWriter output_2D_landmarks_file;
+        StreamWriter output_3D_landmarks_file;
+        VideoWriter video_writer;
+        VideoWriter tracked_video_writer;
+
+        // Where the recording is done (by default in a record directory, from where the application executed)
+        String record_root = "./record";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -90,6 +114,244 @@ namespace CLM_framework_GUI
 
         }
 
+        private void SetupRecording(String root, String filename)
+        {
+            if (!System.IO.Directory.Exists(root))
+            {
+                System.IO.Directory.CreateDirectory(root);
+            }
+
+            if (record_pose)
+            {
+                String filename_poses = root + "/" + filename + ".pose";
+                output_head_pose_file = new StreamWriter(filename_poses);
+                output_head_pose_file.WriteLine("frame,success,confidence,pose_X(mm),pose_Y(mm),pose_Z(mm),pitch(rad),yaw(rad),roll(rad)");
+            }
+
+            if (record_params)
+            {
+                String filename_params = root + "/" + filename + ".params";
+                output_clm_params_file = new StreamWriter(filename_params);
+
+                output_clm_params_file.Write("frame,success,confidence,scale,rot_x,rot_y,rot_z,tx,ty");
+                for (int i = 0; i < clm_model.GetNumModes(); ++i)
+                {
+                    output_clm_params_file.Write(",p" + i);
+                }
+                output_clm_params_file.WriteLine();
+            }
+
+            if (record_2D_landmarks)
+            {
+                String filename_2d_landmarks = root + "/" + filename + ".landmarks_2d";
+                output_2D_landmarks_file = new StreamWriter(filename_2d_landmarks);
+
+                output_2D_landmarks_file.Write("frame,success,confidence");
+                for (int i = 0; i < clm_model.GetNumPoints(); ++i)
+                {
+                    output_2D_landmarks_file.Write(",x" + i);
+                }
+                for (int i = 0; i < clm_model.GetNumPoints(); ++i)
+                {
+                    output_2D_landmarks_file.Write(",y" + i);
+                }
+                output_2D_landmarks_file.WriteLine();
+            }
+
+            if (record_3D_landmarks)
+            {
+                String filename_3d_landmarks = root + "/" + filename + ".landmarks_3d";
+                output_3D_landmarks_file = new StreamWriter(filename_3d_landmarks);
+
+                output_3D_landmarks_file.Write("frame,success,confidence");
+                for (int i = 0; i < clm_model.GetNumPoints(); ++i)
+                {
+                    output_3D_landmarks_file.Write(",X" + i);
+                }
+                for (int i = 0; i < clm_model.GetNumPoints(); ++i)
+                {
+                    output_3D_landmarks_file.Write(",Y" + i);
+                }
+                for (int i = 0; i < clm_model.GetNumPoints(); ++i)
+                {
+                    output_3D_landmarks_file.Write(",Z" + i);
+                }
+                output_3D_landmarks_file.WriteLine();
+            }
+
+        }
+
+        private void StopRecording()
+        {
+            if (record_pose && output_head_pose_file != null)
+                output_head_pose_file.Close();
+
+            if (record_params && output_clm_params_file != null)
+                output_clm_params_file.Close();
+
+            if (record_2D_landmarks && output_2D_landmarks_file != null)
+                output_2D_landmarks_file.Close();
+
+            if (record_3D_landmarks && output_3D_landmarks_file != null)
+                output_3D_landmarks_file.Close();
+
+        }
+
+        // Recording the relevant objects
+        private void RecordFrame(CLM clm_model, CLMParameters clm_params, bool success_b, int frame_ind, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
+        {
+            double confidence = (-clm_model.GetConfidence())/2.0 + 0.5;
+            
+            List<double> pose = new List<double>();
+            clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+
+            int success = 0;
+            if (success_b)
+                success = 1;
+
+            if (record_pose)
+            {
+                String pose_string = String.Format("{0},{1},{2:F3},{3:F3},{4:F3},{5:F3},{6:F3},{7:F3},{8:F3}", frame_ind, success, confidence, pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]);
+                output_head_pose_file.WriteLine(pose_string);
+            }
+
+            if (record_params)
+            {
+                output_clm_params_file.Write(String.Format("{0},{1},{2,0:F3}", frame_ind, success, confidence));
+                
+                List<double> all_params = clm_model.GetParams();
+
+                for (int i = 0; i < all_params.Count; ++i)
+                {
+                    String param = String.Format("{0,0:F5}", all_params[i]);
+                    output_clm_params_file.Write("," + param);
+                }
+                output_clm_params_file.WriteLine();
+            }
+
+            if (record_2D_landmarks)
+            {
+                List<Tuple<double,double>> landmarks_2d = clm_model.CalculateLandmarks();
+
+                output_2D_landmarks_file.Write(String.Format("{0},{1},{2:F3}", frame_ind, success, confidence));
+
+                for (int i = 0; i < landmarks_2d.Count; ++i)
+                {
+                    output_2D_landmarks_file.Write(",{0:F2}", landmarks_2d[i].Item1);
+                }
+                for (int i = 0; i < landmarks_2d.Count; ++i)
+                {
+                    output_2D_landmarks_file.Write(",{0:F2}", landmarks_2d[i].Item2);
+                }
+                output_2D_landmarks_file.WriteLine();
+            }
+
+            if (record_3D_landmarks)
+            {
+                List<System.Windows.Media.Media3D.Point3D> landmarks_3d = clm_model.Calculate3DLandmarks(fx, fy, cx, cy);
+
+                output_3D_landmarks_file.Write(String.Format("{0},{1},{2:F3}", frame_ind, success, confidence));
+
+                for (int i = 0; i < landmarks_3d.Count; ++i)
+                {
+                    output_3D_landmarks_file.Write(",{0:F2}", landmarks_3d[i].X);
+                }
+                for (int i = 0; i < landmarks_3d.Count; ++i)
+                {
+                    output_3D_landmarks_file.Write(",{0:F2}", landmarks_3d[i].Y);
+                }
+                for (int i = 0; i < landmarks_3d.Count; ++i)
+                {
+                    output_3D_landmarks_file.Write(",{0:F2}", landmarks_3d[i].Z);
+                }
+                output_3D_landmarks_file.WriteLine();
+            }
+
+        }
+
+        // The main function call for processing images, video files or webcam feed
+        private void ProcessingLoop(String[] filenames, int cam_id = -1, int width = -1, int height = -1)
+        {
+            thread_running = true;
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
+            {
+                PauseButton.IsEnabled = true;
+                StopButton.IsEnabled = true;
+            }));
+
+            // Create the video capture and call the VideoLoop
+            if(filenames != null)
+            {
+                foreach (string filename in filenames)
+                {
+                    capture = new Capture(filename);
+                    
+                    if (capture.isOpened())
+                    {
+                        // Prepare recording if any
+                        String file_no_ext = System.IO.Path.GetFileNameWithoutExtension(filename);
+                        SetupRecording(record_root, file_no_ext);
+
+                        // Start the actual processing                        
+                        VideoLoop();
+
+                        // Clear up the recording
+                        StopRecording();
+                    }
+                    else
+                    {
+                        string messageBoxText = "File is not a video or the codec is not supported.";
+                        string caption = "Not valid file";
+                        MessageBoxButton button = MessageBoxButton.OK;
+                        MessageBoxImage icon = MessageBoxImage.Warning;
+
+                        // Display message box
+                        MessageBox.Show(messageBoxText, caption, button, icon);
+                    }
+                }
+            }
+            else
+            {
+                capture = new Capture(cam_id, width, height);
+
+                if (capture.isOpened())
+                {
+                    // Prepare recording if any                    
+                    String dir_out = DateTime.Now.ToString("yyyy-MMM-dd--HH-mm");
+
+                    SetupRecording(record_root + "/" + dir_out, "webcam");
+
+                    // Start the actual processing
+                    VideoLoop();
+
+                    StopRecording();
+                }
+                else
+                {
+
+                    string messageBoxText = "Failed to open a webcam";
+                    string caption = "Webcam failure";
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+
+                    // Display message box
+                    MessageBox.Show(messageBoxText, caption, button, icon);
+                }
+
+                // Start the actual processing
+                VideoLoop();
+            }
+
+            // Some GUI clean up
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                PauseButton.IsEnabled = false;
+                StopButton.IsEnabled = false;
+            }));
+
+        }
+
         // Capturing and processing the video frame by frame
         private void VideoLoop()
         {
@@ -101,22 +363,19 @@ namespace CLM_framework_GUI
 
             clm_model.Reset();
 
+            // TODO add an ability to change these
             double fx, fy, cx, cy;
             fx = 500.0;
             fy = 500.0;
             cx = cy = -1;
+            
+            int frame_id = 0;
 
             while (thread_running)
             {
                 //////////////////////////////////////////////
                 // CAPTURE FRAME AND DETECT LANDMARKS FOLLOWED BY THE REQUIRED IMAGE PROCESSING
                 //////////////////////////////////////////////
-                if (fpsLimit > 0)
-                {
-                    while (CurrentTime < lastFrameTime + TimeSpan.FromSeconds(1 / fpsLimit))
-                        Thread.Sleep(1);
-                }
-
                 RawImage frame = null;
                 try
                 {
@@ -124,7 +383,7 @@ namespace CLM_framework_GUI
                 }
                 catch (CLM_Interop.CaptureFailedException)
                 {
-                    Console.WriteLine("Capture failed");
+                    // This indicates that we reached the end of the video file
                     break;
                 }
 
@@ -155,7 +414,7 @@ namespace CLM_framework_GUI
                 bool detectionSucceeding = ProcessFrame(clm_model, clm_params, frame, grayFrame, fx, fy, cx, cy);
 
                 List<Tuple<Point, Point>> lines = null;
-                List<Point> landmarks = null;
+                List<Tuple<double, double>> landmarks = null;
                 
                 if (detectionSucceeding)
                 {
@@ -166,7 +425,7 @@ namespace CLM_framework_GUI
                 // TODO rem?
                 var landmarks_3D = clm_model.Calculate3DLandmarks(fx, fy, cx, cy);
 
-                double confidence = (-clm_model.GetConfidence() + 0.6) / 2.0;
+                double confidence = (-clm_model.GetConfidence()) / 2.0 + 0.5;
 
                 if (confidence < 0)
                     confidence = 0;
@@ -182,8 +441,17 @@ namespace CLM_framework_GUI
                     if (latest_img == null)
                         latest_img = frame.CreateWriteableBitmap();
 
-                    headOrientationLabel.Content = "Head orientation (degrees) - Roll: " + (int)(pose[5] * 180 / Math.PI + 0.5) + " Pitch: " + (int)(pose[3] * 180 / Math.PI + 0.5) + " Yaw: " + (int)(pose[4] * 180 / Math.PI + 0.5);
-                    headPoseLabel.Content = "Head pose (mm.) - X: " + (int)pose[0] + " Y: " + (int)pose[1] + " Z: " + (int)pose[2];
+                    int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
+                    int roll = (int)(pose[5] * 180 / Math.PI + 0.5);
+                    int pitch = (int)(pose[3] * 180 / Math.PI + 0.5);
+
+                    YawLabel.Content = yaw + "°";
+                    RollLabel.Content = roll + "°";
+                    PitchLabel.Content = pitch + "°";
+
+                    XPoseLabel.Content = (int)pose[0] + " mm";
+                    YPoseLabel.Content = (int)pose[1] + " mm";
+                    ZPoseLabel.Content = (int)pose[2] + " mm";
 
                     frame.UpdateWriteableBitmap(latest_img);
 
@@ -199,9 +467,19 @@ namespace CLM_framework_GUI
                     else
                     {
                         video.OverlayLines = lines;
-                        video.OverlayPoints = landmarks;
+
+                        List<Point> landmark_points = new List<Point>();
+                        foreach (var p in landmarks)
+                        {
+                            landmark_points.Add(new Point(p.Item1, p.Item2));
+                        }
+
+                        video.OverlayPoints = landmark_points;
                     }
                 }));
+
+                // Recording the tracked model
+                RecordFrame(clm_model, clm_params, detectionSucceeding, frame_id, frame, grayFrame, fx, fy, cx, cy);
 
                 if (reset)
                 {
@@ -209,7 +487,12 @@ namespace CLM_framework_GUI
                     reset = false;
                 }
 
+                while (thread_running & thread_paused)
+                {
+                    Thread.Sleep(10);
+                }
 
+                frame_id++;
             }
             latest_img = null;
         }
@@ -218,40 +501,22 @@ namespace CLM_framework_GUI
         {
 
             var d = new OpenFileDialog();
+            d.Multiselect = true;
+
             if (d.ShowDialog(this) == true)
             {
-                videoFile = d.FileName;
-
                 // First complete the running of the thread
                 if (processing_thread != null)
                 {
-                    // Let the other thread finish first
+                    // Tell the other thread to finish
                     thread_running = false;
-
                     processing_thread.Join();
                 }
 
-                capture = new Capture(d.FileName);
+                string[] video_files = d.FileNames;
 
-                if (capture.isOpened())
-                {
-                    thread_running = true;
-                    
-                    processing_thread = new Thread(VideoLoop);
-                    processing_thread.Start();
-                }
-                else
-                {
-
-                    string messageBoxText = "File is not a video or the codec is not supported.";
-                    string caption = "Not valid file";
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-
-                    // Display message box
-                    MessageBox.Show(messageBoxText, caption, button, icon);
-                }
-                video.InvalidateArrange();
+                processing_thread = new Thread(() => ProcessingLoop(video_files));
+                processing_thread.Start();
 
             }
         }
@@ -267,7 +532,7 @@ namespace CLM_framework_GUI
                 processing_thread.Join();
             }
 
-            // First close the cameras that might be open
+            // First close the cameras that might be open to avoid clashing with webcam opening
             if (capture != null)
             {
                 capture.Dispose();
@@ -291,38 +556,58 @@ namespace CLM_framework_GUI
                 int width = cam_sec.selected_camera.Item2;
                 int height = cam_sec.selected_camera.Item3;
 
-                capture = new Capture(cam_id, width, height);
+                processing_thread = new Thread(() => ProcessingLoop(null, cam_id, width, height));
+                processing_thread.Start();
 
-                if (capture.isOpened())
-                {
-
-                    thread_running = true;
-
-                    processing_thread = new Thread(VideoLoop);
-                    processing_thread.Start();
-                }
-                else
-                {
-
-                    string messageBoxText = "Failed to open a webcam";
-                    string caption = "Webcam failure";
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-
-                    // Display message box
-                    MessageBox.Show(messageBoxText, caption, button, icon);
-                }
             }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Stop capture and tracking
-            thread_running = false;
-            processing_thread.Join();
+            if (processing_thread != null)
+            {
+                // Stop capture and tracking
+                thread_running = false;
+                processing_thread.Join();
 
-            capture.Dispose();
-
+                capture.Dispose();
+            }
         }
+
+        // Stopping the tracking
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (processing_thread != null)
+            {
+                // Stop capture and tracking
+                thread_paused = false;
+                thread_running = false;
+                processing_thread.Join();
+
+                PauseButton.IsEnabled = false;
+                StopButton.IsEnabled = false;
+
+            }
+        }
+
+        // Stopping the tracking
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (processing_thread != null)
+            {
+                // Stop capture and tracking                
+                thread_paused = !thread_paused;
+
+                if (thread_paused)
+                {
+                    PauseButton.Content = "Resume";
+                }
+                else
+                {
+                    PauseButton.Content = "Pause";
+                }
+            }
+        }
+
     }
 }

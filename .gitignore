@@ -59,3 +59,5 @@ CMakeCache.txt
 videos/images_track/
 exe/Ophthalm-experiments/obj/
 exe/Ophthalm-experiments/bin/
+HeadPose_v4/
+HeadPose_v4.zip

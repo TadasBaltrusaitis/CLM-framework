@@ -1280,16 +1280,16 @@ void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thic
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<Point> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities)
+vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
-	vector<Point> landmarks;
+	vector<Point2d> landmarks;
 
 	for( int i = 0; i < n; ++i)
 	{		
 		if(visibilities.at<int>(i))
 		{
-			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+			Point2d featurePoint(shape2D.at<double>(i), shape2D.at<double>(i +n));
 
 			landmarks.push_back(featurePoint);
 		}
@@ -1299,11 +1299,11 @@ vector<Point> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibil
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<Point> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
+vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 {
 	
 	int n;
-	vector<Point> landmarks;
+	vector<Point2d> landmarks;
 	
 	if(shape2D.cols == 2)
 	{
@@ -1316,14 +1316,14 @@ vector<Point> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 
 	for( int i = 0; i < n; ++i)
 	{		
-		Point featurePoint;
+		Point2d featurePoint;
 		if(shape2D.cols == 1)
 		{
-			featurePoint = Point((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+			featurePoint = Point2d(shape2D.at<double>(i), shape2D.at<double>(i +n));
 		}
 		else
 		{
-			featurePoint = Point((int)shape2D.at<double>(i, 0), (int)shape2D.at<double>(i, 1));
+			featurePoint = Point2d(shape2D.at<double>(i, 0), shape2D.at<double>(i, 1));
 		}
 
 		landmarks.push_back(featurePoint);
@@ -1333,7 +1333,7 @@ vector<Point> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<Point> CalculateLandmarks(CLM& clm_model)
+vector<cv::Point2d> CalculateLandmarks(CLM& clm_model)
 {
 
 	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
