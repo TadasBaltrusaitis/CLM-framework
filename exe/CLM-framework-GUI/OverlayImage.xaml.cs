@@ -59,8 +59,7 @@ namespace CLM_framework_GUI
 
                 dc.DrawEllipse(new SolidColorBrush(Color.FromArgb((byte)(200*Confidence),255,255,100)), null, q, 2, 2);
             }
-
-            // TODO this should be scalable
+            
             double scaling = ActualWidth / 400.0;
 
             int confidence_width = (int)(107.0 * scaling);

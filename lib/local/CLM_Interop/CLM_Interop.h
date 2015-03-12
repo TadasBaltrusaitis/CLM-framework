@@ -24,6 +24,8 @@
 
 #include <CLM_core.h>
 
+#include <Face_utils.h>
+
 using namespace System;
 using namespace OpenCVWrappers;
 using namespace System::Collections::Generic;
@@ -265,7 +267,7 @@ namespace CLM_Interop {
 
 		public ref class CLM
 		{
-		private:
+		public:
 
 			::CLMTracker::CLM* clm;
 
@@ -426,4 +428,76 @@ namespace CLM_Interop {
 		};
 
 	}
+
+	public ref class FaceAnalyserManaged
+	{
+
+	private:
+
+		cv::Mat* triangulation;
+
+		// The actual descriptors
+		cv::Mat_<double>* hog_features;
+		cv::Mat* aligned_face;
+
+		// Visualisation stuff, TODO this could be reshuffled a bit
+		cv::Mat* visualisation;
+			
+	public:
+
+		FaceAnalyserManaged() 
+		{
+
+			triangulation = new cv::Mat();
+			hog_features = new cv::Mat_<double>();
+
+			aligned_face = new cv::Mat();
+			visualisation = new cv::Mat();
+
+			// TODO relative paths?
+			std::ifstream triangulation_file("model/tris_68_full.txt");
+
+			::CLMTracker::ReadMat(triangulation_file, *triangulation);
+		}
+
+		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, double scale, int width, int height) {
+			//faceAnalyser->AddNextFrame(frame->Mat, *clm->getCLM(), timestamp_seconds);
+			
+			FaceAnalyser::AlignFaceMask(*aligned_face, frame->Mat, *(clm->clm), *triangulation, true, scale, width, height);
+
+			int num_rows, num_cols;
+			FaceAnalyser::Extract_FHOG_descriptor(*hog_features, *aligned_face, num_rows, num_cols, 8);
+
+			// TOOD make this optional
+			FaceAnalyser::Visualise_FHOG(*hog_features, num_rows, num_cols, *visualisation);			
+
+		}
+
+		RawImage^ GetLatestAlignedFace() {
+			RawImage^ face_aligned_image = gcnew RawImage(*aligned_face);
+			return face_aligned_image;
+		}
+
+		RawImage^ GetLatestHOGDescriptorVisualisation() {
+			RawImage^ HOG_vis_image = gcnew RawImage(*visualisation);
+			return HOG_vis_image;
+		}
+		// Finalizer. Definitely called before Garbage Collection,
+		// but not automatically called on explicit Dispose().
+		// May be called multiple times.
+		!FaceAnalyserManaged()
+		{
+			delete triangulation;
+			delete hog_features;
+			delete aligned_face;
+			delete visualisation;
+		}
+
+		// Destructor. Called on explicit Dispose() only.
+		~FaceAnalyserManaged()
+		{
+			this->!FaceAnalyserManaged();
+		}
+
+	};
 }

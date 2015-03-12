@@ -52,8 +52,6 @@ namespace CLM_framework_GUI
         // Some members for displaying the results
         private Capture capture;
         private WriteableBitmap latest_img;
-
-        // TODO populate
         private WriteableBitmap latest_aligned_face;
         private WriteableBitmap latest_HOG_descriptor;
 
@@ -69,13 +67,14 @@ namespace CLM_framework_GUI
         // For tracking
         CLMParameters clm_params;
         CLM clm_model;
+        FaceAnalyserManaged face_analyser;
 
         // For selecting webcams
         CameraSelection cam_sec;
         
         // Recording parameters (default values)
-        bool record_pose = true; // pose and orientation
-        bool record_params = true; // Point Distribution Model parameters
+        bool record_pose = true; // head location and orientation
+        bool record_params = true; // rigid and non-rigid shape parameters
         bool record_2D_landmarks = true; // 2D landmark location
         bool record_3D_landmarks = true; // 3D landmark locations in world coordinates
         bool record_HOG = false; // HOG features extracted from face images
@@ -103,8 +102,22 @@ namespace CLM_framework_GUI
         {
             InitializeComponent();
 
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 2000), (Action)(() =>
+            {
+                RecordAlignedCheckBox.IsChecked = record_aligned;
+                RecordHOGCheckBox.IsChecked = record_HOG;
+                RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
+                RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
+                RecordParamsCheckBox.IsChecked = record_params;
+                RecordPoseCheckBox.IsChecked = record_pose;
+                RecordTrackedVideoCheckBox.IsChecked = record_track_video;
+                RecordVideoCheckBox.IsChecked = record_video;
+            }));
+
             clm_params = new CLMParameters();
             clm_model = new CLM();
+            face_analyser = new FaceAnalyserManaged();
+
         }
 
         private bool ProcessFrame(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
@@ -116,6 +129,11 @@ namespace CLM_framework_GUI
 
         private void SetupRecording(String root, String filename)
         {
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                RecordingMenu.IsEnabled = false;
+            }));
+
             if (!System.IO.Directory.Exists(root))
             {
                 System.IO.Directory.CreateDirectory(root);
@@ -194,6 +212,11 @@ namespace CLM_framework_GUI
 
             if (record_3D_landmarks && output_3D_landmarks_file != null)
                 output_3D_landmarks_file.Close();
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                RecordingMenu.IsEnabled = true;
+            }));
 
         }
 
@@ -338,9 +361,6 @@ namespace CLM_framework_GUI
                     // Display message box
                     MessageBox.Show(messageBoxText, caption, button, icon);
                 }
-
-                // Start the actual processing
-                VideoLoop();
             }
 
             // Some GUI clean up
@@ -435,11 +455,21 @@ namespace CLM_framework_GUI
                 List<double> pose = new List<double>();
                 clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
 
+                // The face analysis step
+                face_analyser.AddNextFrame(frame, clm_model, 0.7, 112, 112);
+                RawImage aligned_face = face_analyser.GetLatestAlignedFace();
+                RawImage hog_face = face_analyser.GetLatestHOGDescriptorVisualisation();
+
                 // Visualisation
                 Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                 {
+
                     if (latest_img == null)
+                    {
                         latest_img = frame.CreateWriteableBitmap();
+                        latest_aligned_face = aligned_face.CreateWriteableBitmap();
+                        latest_HOG_descriptor = hog_face.CreateWriteableBitmap();
+                    }
 
                     int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
                     int roll = (int)(pose[5] * 180 / Math.PI + 0.5);
@@ -459,6 +489,7 @@ namespace CLM_framework_GUI
                     video.Confidence = confidence;
                     video.FPS = processing_fps.GetFPS();
 
+
                     if (!detectionSucceeding)
                     {
                         video.OverlayLines.Clear();
@@ -476,6 +507,18 @@ namespace CLM_framework_GUI
 
                         video.OverlayPoints = landmark_points;
                     }
+
+                    // Update face analysis frames
+                    frame.UpdateWriteableBitmap(latest_img);
+
+                    aligned_face.UpdateWriteableBitmap(latest_aligned_face);
+                    hog_face.UpdateWriteableBitmap(latest_HOG_descriptor);
+
+                    AlignedFace.Source = latest_aligned_face;
+                    //AlignedFace.Height = (AppearanceBorder.ActualHeight - 20) / 2;
+                    AlignedHOG.Source = latest_HOG_descriptor;
+                    //AlignedHOG.Height = (AppearanceBorder.ActualHeight - 20) / 2;
+
                 }));
 
                 // Recording the tracked model
@@ -493,6 +536,7 @@ namespace CLM_framework_GUI
                 }
 
                 frame_id++;
+
             }
             latest_img = null;
         }
@@ -586,7 +630,7 @@ namespace CLM_framework_GUI
 
                 PauseButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
-
+                RecordingMenu.IsEnabled = true;
             }
         }
 
@@ -607,6 +651,19 @@ namespace CLM_framework_GUI
                     PauseButton.Content = "Pause";
                 }
             }
+        }
+
+        // Stopping the tracking
+        private void recordCheckBox_click(object sender, RoutedEventArgs e)
+        {
+            record_aligned = RecordAlignedCheckBox.IsChecked;
+            record_HOG = RecordHOGCheckBox.IsChecked;
+            record_2D_landmarks = RecordLandmarks2DCheckBox.IsChecked;
+            record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
+            record_params = RecordParamsCheckBox.IsChecked;
+            record_pose = RecordPoseCheckBox.IsChecked;
+            record_track_video = RecordTrackedVideoCheckBox.IsChecked;
+            record_video = RecordVideoCheckBox.IsChecked;
         }
 
     }
