@@ -95,6 +95,14 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
         beta.at<double>(tri, 2) = c3/c5;
 	}
 
+	// Create a vector representation of the control points
+	vector<cv::Point_<double>> destination_points(num_points);
+	for (int i = 0; i < num_points; ++i)
+	{
+		destination_points[i].x = xs.at<double>(i);
+		destination_points[i].y = ys.at<double>(i);
+	}
+
 	double max_x;
 	double max_y;
 
@@ -115,7 +123,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -173,6 +181,15 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
         beta.at<double>(tri, 2) = c3/c5;
 	}
 
+
+	// Create a vector representation of the control points
+	vector<cv::Point_<double>> destination_points(num_points);
+	for (int i = 0; i < num_points; ++i)
+	{
+		destination_points[i].x = xs.at<double>(i);
+		destination_points[i].y = ys.at<double>(i);
+	}
+
 	double max_x;
 	double max_y;
 
@@ -196,7 +213,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_shape, curr_tri);
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -398,11 +415,11 @@ bool pointInTriangle(const Point_<double>& point, const Point_<double>& v1, cons
 }
 
 // Find if a given point lies in the triangles
-int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles, const Mat_<double> control_points, int guess) const
+int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int>& triangles, const std::vector<Point_<double>>& control_points, int guess) const
 {
     
     int num_tris = triangles.rows;
-	int num_points = control_points.rows / 2;
+	int num_points = control_points.size();
 
 	int tri = -1;
     
@@ -412,12 +429,8 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		int j = triangles.at<int>(guess, 0);
 		int k = triangles.at<int>(guess, 1);
 		int l = triangles.at<int>(guess, 2);
-
-		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
-		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
-		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
-
-		bool in_triangle = pointInTriangle(point, v1, v2, v3);
+		
+		bool in_triangle = pointInTriangle(point, control_points[j], control_points[k], control_points[l]);
 		if(in_triangle)
 		{
 			return guess;
@@ -431,9 +444,9 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int> triangles
 		int k = triangles.at<int>(i, 1);
 		int l = triangles.at<int>(i, 2);
 
-		Point_<double> v1(control_points.at<double>(j), control_points.at<double>(j + num_points));
-		Point_<double> v2(control_points.at<double>(k), control_points.at<double>(k + num_points));
-		Point_<double> v3(control_points.at<double>(l), control_points.at<double>(l + num_points));
+		Point_<double> v1 = control_points[j];
+		Point_<double> v2 = control_points[k];
+		Point_<double> v3 = control_points[l];
 
 		// Skip the check if the point is outside the bounding box of the triangle
 
