@@ -143,7 +143,7 @@ Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double 
 		cv::solvePnP(landmarks_3D, landmarks_2D, camera_matrix, Mat(), vec_rot, vec_trans, true);
 
 		Vec3d euler = CLMTracker::AxisAngle2Euler(vec_rot);
-
+		
 		return Vec6d(vec_trans[0], vec_trans[1], vec_trans[2], vec_rot[0], vec_rot[1], vec_rot[2]);
 	}
 	else
@@ -290,7 +290,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 			params.window_sizes_current = params.window_sizes_small;
 		}
 
-		// Before the expensive landmark detection step apply a quick template tracking approach TODO parameters
+		// Before the expensive landmark detection step apply a quick template tracking approach
 		if(params.use_face_template && !clm_model.face_template.empty() && clm_model.detection_success)
 		{
 			CorrectGlobalParametersVideo(grayscale_image, clm_model, params);
@@ -441,6 +441,8 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 		rotation_hypotheses.push_back(Vec3d(0,0,0));
 		rotation_hypotheses.push_back(Vec3d(0,0.5236,0));
 		rotation_hypotheses.push_back(Vec3d(0,-0.5236,0));
+		rotation_hypotheses.push_back(Vec3d(0.5236,0,0));
+		rotation_hypotheses.push_back(Vec3d(-0.5236,0,0));
 	}
 	else
 	{

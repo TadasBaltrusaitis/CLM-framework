@@ -19,7 +19,7 @@ load('results/results_wild_clnf.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clnf_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 
@@ -52,7 +52,7 @@ load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clm_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 
@@ -101,7 +101,7 @@ load('results/results_wild_clnf.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clnf_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 
@@ -134,7 +134,7 @@ load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clm_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 
@@ -183,7 +183,7 @@ load('results/results_wild_clnf.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clnf_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 
@@ -216,7 +216,7 @@ load('results/results_wild_clm.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+shapes = shapes(18:end,:,:);
 
 clm_error = compute_error( labels(:,:,inds),  shapes(:,:,inds));
 

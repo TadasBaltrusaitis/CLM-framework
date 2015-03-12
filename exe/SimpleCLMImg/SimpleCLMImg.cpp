@@ -50,8 +50,8 @@
 
 #include <fstream>
 
-#include <cv.h>
-#include <highgui.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
@@ -124,7 +124,7 @@ void write_out_landmarks(const string& outfeatures, const CLMTracker::CLM& clm_m
 		for (int i = 0; i < n; ++ i)
 		{
 			// Use matlab format, so + 1
-			featuresFile << clm_model.detected_landmarks.at<double>(i) + 2 << " " << clm_model.detected_landmarks.at<double>(i+n) + 2 << endl;
+			featuresFile << clm_model.detected_landmarks.at<double>(i) + 1 << " " << clm_model.detected_landmarks.at<double>(i+n) + 1 << endl;
 		}
 		featuresFile << "}" << endl;			
 		featuresFile.close();

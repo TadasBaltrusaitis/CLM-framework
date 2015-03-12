@@ -540,7 +540,11 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		{
 			scale++;			
 		}
-
+		else
+		{
+			// If we can't go up a scale just break, no point doing same scale over again
+			break;
+		}
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
 		{

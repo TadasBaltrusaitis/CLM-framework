@@ -413,7 +413,6 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 
 				for(size_t k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][in].size(); ++k)
 				{
-					// TODO this can be made much more efficient 
 					Mat_<float> kernel = cnn_convolutional_layers[view_id][cnn_layer][in][k];					
 										
 					// The convolution (with precomputation)

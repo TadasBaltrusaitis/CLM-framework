@@ -54,7 +54,7 @@ save(filename);
 % 
 % Also save them in a reasonable .txt format for easy comparison
 f = fopen(sprintf('results/Pose_clm_svr_v%s.txt', num2str(v)), 'w');
-fprintf(f, 'Dataset and model,        roll,  pitch,  yaw,  mean,  median\n');
+fprintf(f, 'Dataset and model,        pitch,  yaw,  roll,  mean,  median\n');
 fprintf(f, 'biwi error clm:           %.3f,   %.3f, %.3f,  %.3f,  %.3f\n', biwi_error_clm, mean(all_errors_biwi_clm(:)), median(all_errors_biwi_clm(:)));
 fprintf(f, 'biwi error clm-z:         %.3f,   %.3f, %.3f,  %.3f,  %.3f\n', biwi_error_clmz, mean(all_errors_biwi_clm_z(:)), median(all_errors_biwi_clm_z(:)));
 fprintf(f, 'bu error clm general:     %.3f,   %.3f, %.3f,  %.3f,  %.3f\n', bu_error_clm_svr_general, mean(all_errors_bu_svr_general(:)), median(all_errors_bu_svr_general(:)));

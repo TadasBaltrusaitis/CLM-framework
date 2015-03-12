@@ -30,6 +30,7 @@ tic;
     
 numTogether = 25;
 
+
 for i=3 + offset:numTogether:numel(dbSeqDir)
     
        

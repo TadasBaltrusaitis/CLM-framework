@@ -19,7 +19,7 @@ end
    
 clmParams = struct;
 
-clmParams.window_size = [25,25; 25,25; 25,25;];
+clmParams.window_size = [25,25; 23,23; 21,21;];
 clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/general/', 'ccnf_patches_*_general.mat', [], [], clmParams);
@@ -78,10 +78,7 @@ for i=1:numel(images)
         image = rgb2gray(image);
     end              
 
-    bbox = detections(i,:);
-               
-    % Correct the bounding box to 0 indexed format
-    bbox = bbox - 1;    
+    bbox = detections(i,:);                  
     
     % have a multi-view version
     if(multi_view)
@@ -112,8 +109,10 @@ for i=1:numel(images)
     all_lmark_lhoods(:,i) = lmark_lhood;
     all_views_used(i) = view_used;
 
-    % shape correction for matlab format
-    shapes_all(:,:,i) = shape + 1;
+    % TODO the shape correction?
+    shape = shape + 1;
+
+    shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
     if(mod(i, 200)==0)

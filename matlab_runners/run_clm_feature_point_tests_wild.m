@@ -73,10 +73,42 @@ set(figure1,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3)
 % Create axes
 axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
 
+% load intraface errors
+load('landmark_det_baselines/intraface_wild.mat');
+labels = labels_all(18:end,:,:);
+shapes = shapes_all(18:end,:,:);
+
+intraface_error = compute_error( labels - 0.5,  shapes);
+
+% removing faces that were not detected by intraface for fairness
+detected = intraface_error < 1;
+
+inds_in_cpp = [];
+
+load('landmark_det_baselines/zhu_wild.mat');
+load('out_wild_clnf_wild/res.mat');    
+for i=1:size(labels,3)
+    
+    diffs = squeeze(sum(sum(bsxfun(@plus, labels_all(18:end,:,:)-0.5, - labels([18:60,62:64,66:end],:,i)),1),2));
+    inds_in_cpp = cat(1, inds_in_cpp, find(diffs == 0));
+
+end
+detected_cpp = detected(inds_in_cpp);
+
+% load intraface errors
+load('landmark_det_baselines/intraface_wild.mat');
+labels = labels_all(18:end,:,detected);
+shapes = shapes_all(18:end,:,detected);
+
+intraface_error = compute_error( labels - 0.5,  shapes);
+[error_x, error_y] = cummErrorCurve(intraface_error);
+plot(error_x, error_y, 'g--','DisplayName', 'SDM', 'LineWidth',line_width);
+hold on;
+
 % load clnf errors
 load('out_wild_clnf_wild/res.mat');
-labels = labels([1:60,62:64,66:end],:,:);
-shapes = shapes([1:60,62:64,66:end],:,:);
+labels = labels([1:60,62:64,66:end],:, detected_cpp);
+shapes = shapes([1:60,62:64,66:end],:, detected_cpp);
 labels = labels(18:end,:,:);
 shapes = shapes(18:end,:,:);
 
@@ -87,8 +119,8 @@ hold on;
 
 % load svr errors
 load('out_wild_svr_wild/res.mat');
-labels = labels([1:60,62:64,66:end],:,:);
-shapes = shapes([1:60,62:64,66:end],:,:);
+labels = labels([1:60,62:64,66:end],:, detected_cpp);
+shapes = shapes([1:60,62:64,66:end],:, detected_cpp);
 labels = labels(18:end,:,:);
 shapes = shapes(18:end,:,:);
 
@@ -96,31 +128,21 @@ svr_error_cpp = compute_error( labels,  shapes);
 [error_x, error_y] = cummErrorCurve(svr_error_cpp);
 plot(error_x, error_y, 'b-.','DisplayName', 'CLM+SVR', 'LineWidth',line_width);
 
-% load intraface errors
-load('landmark_det_baselines/intraface_wild.mat');
-labels = labels_all(18:end,:,:);
-shapes = shapes_all(18:end,:,:);
-
-intraface_error = compute_error( labels,  shapes);
-[error_x, error_y] = cummErrorCurve(intraface_error);
-plot(error_x, error_y, 'g--','DisplayName', 'SDM', 'LineWidth',line_width);
-hold on;
-
 load('landmark_det_baselines/zhu_wild.mat');
-labels = labels_all(18:end,:,:);
-shapes = shapes_all(18:end,:,:);
+labels = labels_all(18:end,:, detected);
+shapes = shapes_all(18:end,:, detected);
 
-intraface_error = compute_error( labels,  shapes);
-[error_x, error_y] = cummErrorCurve(intraface_error);
+zhu_error = compute_error( labels,  shapes);
+[error_x, error_y] = cummErrorCurve(zhu_error);
 plot(error_x, error_y, 'c:','DisplayName', 'Tree based', 'LineWidth',line_width);
 hold on;
 
 load('landmark_det_baselines/drmf_wild.mat');
-labels = labels_all(18:end,:,:);
-shapes = shapes_all(18:end,:,:);
+labels = labels_all(18:end,:, detected);
+shapes = shapes_all(18:end,:, detected);
 
-intraface_error = compute_error( labels,  shapes);
-[error_x, error_y] = cummErrorCurve(intraface_error);
+drmf_error = compute_error( labels,  shapes);
+[error_x, error_y] = cummErrorCurve(drmf_error);
 plot(error_x, error_y, 'kx','DisplayName', 'DRMF', 'LineWidth',line_width);
 hold on;
 

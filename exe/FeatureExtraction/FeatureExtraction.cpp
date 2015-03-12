@@ -54,7 +54,8 @@
 #include <fstream>
 #include <sstream>
 
-#include <cv.h>
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #include <Face_utils.h>
 
@@ -419,9 +420,27 @@ int main (int argc, char **argv)
 	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
-	std::ifstream triangulation_file("model/tris_68_full.txt");
+
 	Mat_<int> triangulation;
-	CLMTracker::ReadMat(triangulation_file, triangulation);
+	if(boost::filesystem::exists(path("model/tris_68_full.txt")))
+	{
+		std::ifstream triangulation_file("model/tris_68_full.txt");
+		CLMTracker::ReadMat(triangulation_file, triangulation);
+	}
+	else
+	{
+		path loc = path(arguments[0]).parent_path() / "model/tris_68_full.txt";
+		if(exists(loc))
+		{
+			std::ifstream triangulation_file(loc.string());
+			CLMTracker::ReadMat(triangulation_file, triangulation);
+		}
+		else
+		{
+			cout << "Can't find triangulation files, exiting" << endl;
+			return 0;
+		}
+	}	
 
 	// Will warp to scaled mean shape
 	Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -762,7 +781,8 @@ int main (int argc, char **argv)
 			// Output the estimated head pose
 			if(!pose_output_files.empty())
 			{
-				pose_output_file << frame_count + 1 << " " << (float)frame_count * 1000/30 << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
+				double confidence = 0.5 * (1 - detection_certainty);
+				pose_output_file << frame_count + 1 << " " << confidence << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
 			}				
 
 			// output the tracked video

@@ -277,7 +277,6 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<float> &res
 		}
 	}
 
-	// TODO see how this affects it?
 	Mat_<float> resp_vec_f = response.reshape(1, response_height * response_width);
 
 	Mat out = Sigmas[s_to_use] * resp_vec_f;

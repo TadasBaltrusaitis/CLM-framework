@@ -1,4 +1,4 @@
-function [meanError, rmsError, errorVariance, meanErrors, all_errors] = calcBiwiError(resDir, gtDir)
+function [meanError, all_rot_preds, all_rot_gts, meanErrors, all_errors, rels_all] = calcBiwiError(resDir, gtDir)
 
 seqNames = {'01','02','03','04','05','06','07','08','09', ...
     '10', '11','12','13','14','15','16','17','18','19', ...
@@ -8,14 +8,18 @@ rotMeanErr = zeros(numel(seqNames),3);
 rotRMS = zeros(numel(seqNames),3);
 rot = cell(1,numel(seqNames));
 rotg = cell(1,numel(seqNames));
+rels_all = [];
 
 tic;
 for i=1:numel(seqNames)
         
     posesGround =  load ([gtDir '/' seqNames{i} '/groundTruthPose.txt']);
    
-    [frame time sc tx ty tz rx ry rz] = textread([resDir '/' seqNames{i} '.txt'], '%f %f %f %f %f %f %f %f %f');
+    [frame rels sc tx ty tz rx ry rz] = textread([resDir '/' seqNames{i} '.txt'], '%f %f %f %f %f %f %f %f %f');
    
+    % the reliabilities of head pose
+    rels_all = cat(1, rels_all, rels);    
+    
     rotg{i} = posesGround(:,[5 6 7]);
     rot{i} = [rx ry rz];  
 
@@ -56,3 +60,6 @@ all_errors = abs(allRot-allRotg);
 
 rmsError = sqrt(mean(((allRot(:,:)-allRotg(:,:))).^2)); 
 errorVariance = std(abs((allRot(:,:)-allRotg(:,:))));
+
+all_rot_preds = allRot;
+all_rot_gts = allRotg;

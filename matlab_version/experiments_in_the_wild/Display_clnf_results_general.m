@@ -17,8 +17,8 @@ hold on;
 load('results/results_wild_clnf_general.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
-labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+labels = labels(18:end,:,:) - 0.5;
+shapes = shapes(18:end,:,:);
 
 clnf_error = compute_error( labels,  shapes);
 
@@ -30,8 +30,8 @@ plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
 load('results/results_wild_clm_general.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
 shapes = experiments.shapes([1:60,62:64,66:end],:,:);
-labels = labels(18:end,:,:);
-shapes = shapes(18:end,:,:)+1;
+labels = labels(18:end,:,:) - 0.5;
+shapes = shapes(18:end,:,:);
 
 clm_error = compute_error( labels,  shapes);
 
@@ -63,8 +63,8 @@ line_width = 6;
 hold on;
 
 load('results/results_wild_clnf_general.mat');
-labels = experiments.labels([1:60,62:64,66:end],:,:);
-shapes = experiments.shapes([1:60,62:64,66:end],:,:)+1;
+labels = experiments.labels([1:60,62:64,66:end],:,:) - 0.5;
+shapes = experiments.shapes([1:60,62:64,66:end],:,:);
 
 clnf_error = compute_error( labels,  shapes);
 
@@ -74,8 +74,8 @@ hold on;
 plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clm_general.mat');
-experiments(1).labels = experiments(1).labels([1:60,62:64,66:end],:,:);
-experiments(1).shapes = experiments(1).shapes([1:60,62:64,66:end],:,:)+1;
+experiments(1).labels = experiments(1).labels([1:60,62:64,66:end],:,:) - 0.5;
+experiments(1).shapes = experiments(1).shapes([1:60,62:64,66:end],:,:);
 
 clm_error = compute_error( experiments(1).labels,  experiments(1).shapes);
 

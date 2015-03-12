@@ -84,7 +84,7 @@ struct CLMParameters
 	// Used for the current frame
 	vector<int> window_sizes_current;
 	
-	// How big is the tracking template that helps with large motions TODO
+	// How big is the tracking template that helps with large motions
 	double face_template_scale;	
 	bool use_face_template;
 
@@ -129,6 +129,8 @@ struct CLMParameters
 		boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
 
 		bool* valid = new bool[arguments.size()];
+		valid[0] = true;
+
 		for(size_t i = 1; i < arguments.size(); ++i)
 		{
 			valid[i] = true;
@@ -209,7 +211,7 @@ struct CLMParameters
 			{                    
 				// For in the wild fitting these parameters are suitable
 				window_sizes_init = vector<int>(3);
-				window_sizes_init[0] = 15; window_sizes_init[1] = 15; window_sizes_init[2] = 15;		
+				window_sizes_init[0] = 15; window_sizes_init[1] = 13; window_sizes_init[2] = 11;
 
 				sigma = 2;
 				reg_factor = 25;
