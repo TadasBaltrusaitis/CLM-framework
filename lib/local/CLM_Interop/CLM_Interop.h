@@ -429,6 +429,7 @@ namespace CLM_Interop {
 
 	}
 
+	// TODO split into separate files
 	public ref class FaceAnalyserManaged
 	{
 
@@ -442,7 +443,14 @@ namespace CLM_Interop {
 
 		// Visualisation stuff, TODO this could be reshuffled a bit
 		cv::Mat* visualisation;
-			
+		
+		// Variables used for recording things
+		std::ofstream* hog_output_file;
+		std::string* align_output_dir;
+		int* num_rows;
+		int* num_cols;
+		bool* good_frame;
+
 	public:
 
 		FaceAnalyserManaged() 
@@ -454,23 +462,101 @@ namespace CLM_Interop {
 			aligned_face = new cv::Mat();
 			visualisation = new cv::Mat();
 
+			num_rows = new int[0];
+			num_cols = new int[0];
+
+			good_frame = new bool[0];
+			
+			align_output_dir = new string();
+
 			// TODO relative paths?
 			std::ifstream triangulation_file("model/tris_68_full.txt");
 
 			::CLMTracker::ReadMat(triangulation_file, *triangulation);
+
+			hog_output_file = new std::ofstream();
+		}
+
+		void SetupAlignedImageRecording(System::String^ directory)
+		{
+			*align_output_dir = marshal_as<std::string>(directory);
+
+			// TODO create the directory
+
+			
+		}
+
+		void SetupHOGRecording(System::String^ file)
+		{
+			// First make sure the directory is there, TODO
+
+			// Create the file for recording			
+			hog_output_file->open(marshal_as<std::string>(file), ios_base::out | ios_base::binary);
+	
+		}
+
+		void StopHOGRecording()
+		{
+			hog_output_file->close();
+		}
+
+		void RecordAlignedFrame(int frame_num)
+		{
+			char name[100];
+					
+			// output the frame number
+			sprintf(name, "frame_det_%06d.png", frame_num);
+				
+			string out_file = (boost::filesystem::path(*align_output_dir) / boost::filesystem::path(name)).string();
+			imwrite(out_file, *aligned_face);
+		}
+
+		void RecordHOGFrame()
+		{
+			// Using FHOGs, hence 31 channels
+			int num_channels = 31;
+
+			hog_output_file->write((char*)(num_cols), 4);
+			hog_output_file->write((char*)(num_rows), 4);
+			hog_output_file->write((char*)(&num_channels), 4);
+
+			// Not the best way to store a bool, but will be much easier to read it
+			float good_frame_float;
+			if(good_frame)
+				good_frame_float = 1;
+			else
+				good_frame_float = -1;
+
+			hog_output_file->write((char*)(&good_frame_float), 4);
+
+			cv::MatConstIterator_<double> descriptor_it = hog_features->begin();
+
+			for(int y = 0; y < *num_cols; ++y)
+			{
+				for(int x = 0; x < *num_rows; ++x)
+				{
+					for(unsigned int o = 0; o < 31; ++o)
+					{
+
+						float hog_data = (float)(*descriptor_it++);
+						hog_output_file->write((char*)&hog_data, 4);
+					}
+				}
+			}
+
 		}
 
 		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, double scale, int width, int height) {
 			//faceAnalyser->AddNextFrame(frame->Mat, *clm->getCLM(), timestamp_seconds);
 			
 			FaceAnalyser::AlignFaceMask(*aligned_face, frame->Mat, *(clm->clm), *triangulation, true, scale, width, height);
-
-			int num_rows, num_cols;
-			FaceAnalyser::Extract_FHOG_descriptor(*hog_features, *aligned_face, num_rows, num_cols, 8);
+			
+			FaceAnalyser::Extract_FHOG_descriptor(*hog_features, *aligned_face, *num_rows, *num_cols, 8);
 
 			// TOOD make this optional
-			FaceAnalyser::Visualise_FHOG(*hog_features, num_rows, num_cols, *visualisation);			
+			FaceAnalyser::Visualise_FHOG(*hog_features, *num_rows, *num_cols, *visualisation);			
 
+			*good_frame = clm->clm->detection_success;
 		}
 
 		RawImage^ GetLatestAlignedFace() {
@@ -491,6 +577,11 @@ namespace CLM_Interop {
 			delete hog_features;
 			delete aligned_face;
 			delete visualisation;
+			delete num_cols;
+			delete num_rows;
+			delete hog_output_file;
+			delete good_frame;
+			delete align_output_dir;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

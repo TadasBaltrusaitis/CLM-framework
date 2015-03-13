@@ -2,17 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
-        Title="CLM Framework" Height="400" Width="800" MinWidth="600" MinHeight="300" Closing="Window_Closing">
+        Title="CLM Framework" Height="500" Width="1000" MinWidth="700" MinHeight="350" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="320"/>
             <ColumnDefinition Width="*" MinWidth="90"/>
-            <ColumnDefinition Width="*" MinWidth="90"/>
+            <ColumnDefinition Width="1.5*" MinWidth="90"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="3*" MinHeight="220"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.4*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>        
             <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
@@ -48,7 +48,7 @@
             <CLM_framework_GUI:OverlayImage x:Name="video" />
         </Border>
 
-        <GroupBox Name="AppearanceBorder" Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1" MinHeight="100" MaxWidth="220">
+        <GroupBox Name="AppearanceBorder" Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1" MinHeight="100">
             <GroupBox.Header>
                 Appearance features
             </GroupBox.Header>
@@ -71,38 +71,53 @@
                 <!--<Image MinWidth="50" MaxWidth="200" Name="AlignedHOG" Stretch="UniformToFill"  Margin="10,10,10,10"></Image>-->
         </GroupBox>
 
-        <GroupBox  Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100" MaxWidth="220">
+        <GroupBox  Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
             <GroupBox.Header>
                 Geometry features
             </GroupBox.Header>
-            <StackPanel VerticalAlignment="Center" Width="155">
-                <Label Name="headOrientationLabel" Margin="0,0,0,0" FontSize="20"  HorizontalContentAlignment="Left">Orientation</Label>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12" Width="80" HorizontalContentAlignment="Left">Turn:</Label>
-                    <Label Name="YawLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0°</Label>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Grid.Row="0" HorizontalAlignment="Center">
+                    <StackPanel Width="120" >
+                        <Label Name="headOrientationLabel" FontSize="18"  HorizontalContentAlignment="Left">Orientation</Label>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Turn:</Label>
+                            <Label Name="YawLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0°</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
+                            <Label Name="PitchLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Tilt:</Label>
+                            <Label Name="RollLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                        </StackPanel>
+                    </StackPanel>
+                    <Line X1="0" X2="0" Y1="20" Y2="90" Width="2" Stroke="Gray"></Line>
+                    <StackPanel>
+                        <Label Name="headPoseLabel" FontSize="18" HorizontalContentAlignment="Left">Pose</Label>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">X:</Label>
+                            <Label Name="XPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Y:</Label>
+                            <Label Name="YPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Z:</Label>
+                            <Label Name="ZPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12"  Width="80" HorizontalContentAlignment="Left">Up/down:</Label>
-                    <Label Name="PitchLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <CLM_framework_GUI:MultiBarGraph x:Name="nonRigidGraph" HorizontalAlignment="Center" MinHeight="100"/>
+                    <Label HorizontalAlignment="Center">Non rigid parameters</Label>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12"  Width="80" HorizontalContentAlignment="Left">Tilt:</Label>
-                    <Label Name="RollLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
-                </StackPanel>
-                <Label Name="headPoseLabel" Margin="0,0,0,0" FontSize="20" HorizontalContentAlignment="Left">Pose</Label>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">X:</Label>
-                    <Label Name="XPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="70">0 mm</Label>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Y:</Label>
-                    <Label Name="YPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="70">0 mm</Label>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Z:</Label>
-                    <Label Name="ZPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="70">0 mm</Label>
-                </StackPanel>
-            </StackPanel>
+            </Grid>
         </GroupBox>
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>

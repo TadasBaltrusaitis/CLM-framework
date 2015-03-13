@@ -197,6 +197,13 @@ namespace CLM_framework_GUI
                 output_3D_landmarks_file.WriteLine();
             }
 
+            if (record_aligned)
+            {
+                String aligned_root = root + "/" + filename + "_aligned/";
+                System.IO.Directory.CreateDirectory(aligned_root);
+                face_analyser.SetupAlignedImageRecording(aligned_root);
+            }
+
         }
 
         private void StopRecording()
@@ -288,6 +295,11 @@ namespace CLM_framework_GUI
                     output_3D_landmarks_file.Write(",{0:F2}", landmarks_3d[i].Z);
                 }
                 output_3D_landmarks_file.WriteLine();
+            }
+
+            if (record_aligned)
+            {
+                face_analyser.RecordAlignedFrame(frame_ind);
             }
 
         }
@@ -454,6 +466,7 @@ namespace CLM_framework_GUI
 
                 List<double> pose = new List<double>();
                 clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+                List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
                 // The face analysis step
                 face_analyser.AddNextFrame(frame, clm_model, 0.7, 112, 112);
@@ -508,6 +521,8 @@ namespace CLM_framework_GUI
                         video.OverlayPoints = landmark_points;
                     }
 
+                    nonRigidGraph.Update(non_rigid_params);
+
                     // Update face analysis frames
                     frame.UpdateWriteableBitmap(latest_img);
 
@@ -515,9 +530,7 @@ namespace CLM_framework_GUI
                     hog_face.UpdateWriteableBitmap(latest_HOG_descriptor);
 
                     AlignedFace.Source = latest_aligned_face;
-                    //AlignedFace.Height = (AppearanceBorder.ActualHeight - 20) / 2;
                     AlignedHOG.Source = latest_HOG_descriptor;
-                    //AlignedHOG.Height = (AppearanceBorder.ActualHeight - 20) / 2;
 
                 }));
 
