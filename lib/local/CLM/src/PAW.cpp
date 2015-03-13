@@ -73,6 +73,9 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
     Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
     Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
     
+	// Create a vector representation of the control points
+	vector<vector<double>> destination_points;
+
 	for (int tri = 0; tri < num_tris; ++tri)
 	{	
 		int j = triangulation.at<int>(tri, 0);
@@ -93,14 +96,32 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
         beta.at<double>(tri, 0) = (xs.at<double>(j) * c4 - ys.at<double>(j) * c3)/c5;
         beta.at<double>(tri, 1) = -c4/c5;
         beta.at<double>(tri, 2) = c3/c5;
-	}
 
-	// Create a vector representation of the control points
-	vector<cv::Point_<double>> destination_points(num_points);
-	for (int i = 0; i < num_points; ++i)
-	{
-		destination_points[i].x = xs.at<double>(i);
-		destination_points[i].y = ys.at<double>(i);
+		// Add points corresponding to triangles as optimisation
+		vector<double> triangle_points(10);
+
+		triangle_points[0] = xs.at<double>(j);
+		triangle_points[1] = ys.at<double>(j);
+		triangle_points[2] = xs.at<double>(k);
+		triangle_points[3] = ys.at<double>(k);
+		triangle_points[4] = xs.at<double>(l);
+		triangle_points[5] = ys.at<double>(l);
+		
+		Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
+		Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
+
+		double min_x, max_x, min_y, max_y;
+		cv::minMaxIdx(xs_three, &min_x, &max_x);
+		cv::minMaxIdx(ys_three, &min_y, &max_y);
+
+		triangle_points[6] = max_x;
+		triangle_points[7] = max_y;
+
+		triangle_points[8] = min_x;
+		triangle_points[9] = min_y;
+
+		destination_points.push_back(triangle_points);
+
 	}
 
 	double max_x;
@@ -123,7 +144,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_points, curr_tri);
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -158,6 +179,9 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
     
     Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
     Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
+
+	// Create a vector representation of the control points
+	vector<vector<double>> destination_points;
     
 	for (int tri = 0; tri < num_tris; ++tri)
 	{	
@@ -179,15 +203,32 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
         beta.at<double>(tri, 0) = (xs.at<double>(j) * c4 - ys.at<double>(j) * c3)/c5;
         beta.at<double>(tri, 1) = -c4/c5;
         beta.at<double>(tri, 2) = c3/c5;
-	}
 
+		// Add points corresponding to triangles as optimisation
+		vector<double> triangle_points(10);
 
-	// Create a vector representation of the control points
-	vector<cv::Point_<double>> destination_points(num_points);
-	for (int i = 0; i < num_points; ++i)
-	{
-		destination_points[i].x = xs.at<double>(i);
-		destination_points[i].y = ys.at<double>(i);
+		triangle_points[0] = xs.at<double>(j);
+		triangle_points[1] = ys.at<double>(j);
+		triangle_points[2] = xs.at<double>(k);
+		triangle_points[3] = ys.at<double>(k);
+		triangle_points[4] = xs.at<double>(l);
+		triangle_points[5] = ys.at<double>(l);
+		
+		Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
+		Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
+
+		double min_x, max_x, min_y, max_y;
+		cv::minMaxIdx(xs_three, &min_x, &max_x);
+		cv::minMaxIdx(ys_three, &min_y, &max_y);
+
+		triangle_points[6] = max_x;
+		triangle_points[7] = max_y;
+
+		triangle_points[8] = min_x;
+		triangle_points[9] = min_y;
+
+		destination_points.push_back(triangle_points);
+		
 	}
 
 	double max_x;
@@ -213,7 +254,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), triangulation, destination_points, curr_tri);
+			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -386,20 +427,10 @@ void PAW::WarpRegion(Mat_<float>& mapx, Mat_<float>& mapy)
 // Helper functions to determine which point a triangle lies in
 // ============================================================
 
-// Is the point on same side as a half-plane defined by v1, v2, v3
-bool sameSide(const Point_<double>& to_test, const Point_<double>& v1, const Point_<double>& v2, const Point_<double>& v3)
+// Is the point (x0,y0) on same side as a half-plane defined by (x1,y1), (x2, y2), and (x3, y3)
+bool sameSide(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
 {
-    double x0 = to_test.x;
-	double y0 = to_test.y;
     
-    double x1 = v1.x;
-    double x2 = v2.x;
-    double x3 = v3.x;
-    
-    double y1 = v1.y;
-    double y2 = v2.y;
-    double y3 = v3.y;
-
     double x = (x3-x2)*(y0-y2) - (x0-x2)*(y3-y2);
     double y = (x3-x2)*(y1-y2) - (x1-x2)*(y3-y2);
 
@@ -407,30 +438,33 @@ bool sameSide(const Point_<double>& to_test, const Point_<double>& v1, const Poi
 
 }
 
-// if point is on same side for all three half-planes it is in a triangle
-bool pointInTriangle(const Point_<double>& point, const Point_<double>& v1, const Point_<double>& v2, const Point_<double>& v3)
+// if point (x0, y0) is on same side for all three half-planes it is in a triangle
+bool pointInTriangle(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3)
 {
-    return sameSide(point, v1, v2, v3) && sameSide(point, v2, v1, v3) && sameSide(point, v3, v1, v2);
+	bool same_1 = sameSide(x0, y0, x1, y1, x2, y2, x3, y3);
+	bool same_2 = sameSide(x0, y0, x2, y2, x1, y1, x3, y3);
+	bool same_3 = sameSide(x0, y0, x3, y3, x1, y1, x2, y2);
+
+	return same_1 && same_2 && same_3;
 
 }
 
 // Find if a given point lies in the triangles
-int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int>& triangles, const std::vector<Point_<double>>& control_points, int guess) const
+int PAW::findTriangle(const cv::Point_<double>& point, const std::vector<vector<double>>& control_points, int guess) const
 {
     
-    int num_tris = triangles.rows;
-	int num_points = control_points.size();
-
+	int num_tris = control_points.size();
+	
 	int tri = -1;
     
+	double x0 = point.x;
+	double y0 = point.y;
+
 	// Allow a guess for speed (so as not to go through all triangles)
 	if(guess != -1)
 	{
-		int j = triangles.at<int>(guess, 0);
-		int k = triangles.at<int>(guess, 1);
-		int l = triangles.at<int>(guess, 2);
 		
-		bool in_triangle = pointInTriangle(point, control_points[j], control_points[k], control_points[l]);
+		bool in_triangle = pointInTriangle(x0, y0, control_points[guess][0], control_points[guess][1], control_points[guess][2], control_points[guess][3], control_points[guess][4], control_points[guess][5]);
 		if(in_triangle)
 		{
 			return guess;
@@ -440,23 +474,24 @@ int PAW::findTriangle(const cv::Point_<double>& point, const Mat_<int>& triangle
 
     for (int i = 0; i < num_tris; ++i)
 	{
-		int j = triangles.at<int>(i, 0);
-		int k = triangles.at<int>(i, 1);
-		int l = triangles.at<int>(i, 2);
 
-		Point_<double> v1 = control_points[j];
-		Point_<double> v2 = control_points[k];
-		Point_<double> v3 = control_points[l];
+		double max_x = control_points[i][6];
+		double max_y = control_points[i][7];
+
+		double min_x = control_points[i][8];
+		double min_y = control_points[i][9];
 
 		// Skip the check if the point is outside the bounding box of the triangle
 
-		if( (v1.x > point.x && v2.x > point.x && v3.x > point.x) || (v1.x < point.x && v2.x < point.x && v3.x < point.x) ||
-			(v1.y > point.y && v2.y > point.y && v3.y > point.y) || (v1.y < point.y && v2.y < point.y && v3.y < point.y)    )
+		if( max_x < x0 || min_x > x0 || max_y < y0 || min_y > y0)
 		{
 			continue;
 		}
 
-		bool in_triangle = pointInTriangle(point, v1, v2, v3);
+		bool in_triangle = pointInTriangle(x0, y0, 
+			control_points[i][0], control_points[i][1],
+			control_points[i][2], control_points[i][3],
+			control_points[i][4], control_points[i][5]);
 
         if(in_triangle)
 		{
