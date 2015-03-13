@@ -507,13 +507,9 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 		dft( dftImg, dftImg, 0, dsz.height );
 		img_dft = dftImg.clone();
 	}
-	else
-	{
-		dftImg = img_dft.clone();
-	}
 
 	Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
-	mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
+	mulSpectrums(img_dft, dftTempl1, dftImg, 0, true);
 	dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
 
 	src = dftImg(Rect(0, 0, bsz.width, bsz.height));

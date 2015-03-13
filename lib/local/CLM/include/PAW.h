@@ -146,7 +146,7 @@ public:
     
 private:
 
-	int findTriangle(const cv::Point_<double>& point, const Mat_<int>& triangles, const std::vector<Point_<double>>& control_points, int guess = -1) const;
+	int findTriangle(const cv::Point_<double>& point, const std::vector<std::vector<double>>& control_points, int guess = -1) const;
 
   };
   //===========================================================================
