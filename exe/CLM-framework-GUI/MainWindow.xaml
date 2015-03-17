@@ -30,7 +30,6 @@
                 <MenuItem Name="RecordLandmarks3DCheckBox" IsCheckable="True" Header="Record 3D landmarks" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordHOGCheckBox" IsCheckable="True" Header="Record HOG" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordParamsCheckBox" IsCheckable="True" Header="Record model parameters" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordVideoCheckBox" IsCheckable="True" Header="Record video" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordAlignedCheckBox" IsCheckable="True" Header="Record aligned faces" Click="recordCheckBox_click"></MenuItem>
             </MenuItem>
             <MenuItem Header="Tracker settings">

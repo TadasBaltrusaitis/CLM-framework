@@ -80,7 +80,6 @@ namespace CLM_framework_GUI
         bool record_HOG = false; // HOG features extracted from face images
         bool record_LBP = false; // LBP features extracted from face images
         bool record_aligned = false; // aligned face images
-        bool record_video = false; // recording video from the stream
 
         // TODO if image don't record some of these (unless treated as video?)
         // Separate entries for video/image in opening file menu
@@ -91,8 +90,6 @@ namespace CLM_framework_GUI
         StreamWriter output_clm_params_file;
         StreamWriter output_2D_landmarks_file;
         StreamWriter output_3D_landmarks_file;
-        VideoWriter video_writer;
-        VideoWriter tracked_video_writer;
 
         // Where the recording is done (by default in a record directory, from where the application executed)
         String record_root = "./record";
@@ -113,7 +110,6 @@ namespace CLM_framework_GUI
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
                 RecordPoseCheckBox.IsChecked = record_pose;
-                RecordVideoCheckBox.IsChecked = record_video;
             }));
 
             clm_params = new CLMParameters();
@@ -341,6 +337,7 @@ namespace CLM_framework_GUI
                     {
                         // Prepare recording if any
                         String file_no_ext = System.IO.Path.GetFileNameWithoutExtension(filename);
+                        
                         SetupRecording(record_root, file_no_ext);
 
                         // Start the actual processing                        
@@ -694,7 +691,6 @@ namespace CLM_framework_GUI
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
             record_params = RecordParamsCheckBox.IsChecked;
             record_pose = RecordPoseCheckBox.IsChecked;
-            record_video = RecordVideoCheckBox.IsChecked;
         }
 
     }
