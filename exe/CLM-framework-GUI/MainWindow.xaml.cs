@@ -80,7 +80,6 @@ namespace CLM_framework_GUI
         bool record_HOG = false; // HOG features extracted from face images
         bool record_LBP = false; // LBP features extracted from face images
         bool record_aligned = false; // aligned face images
-        bool record_track_video = false; // recording the actually tracked video
         bool record_video = false; // recording video from the stream
 
         // TODO if image don't record some of these (unless treated as video?)
@@ -102,6 +101,10 @@ namespace CLM_framework_GUI
         {
             InitializeComponent();
 
+            // Set the icon
+            Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
+            this.Icon = BitmapFrame.Create(iconUri);
+
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 2000), (Action)(() =>
             {
                 RecordAlignedCheckBox.IsChecked = record_aligned;
@@ -110,7 +113,6 @@ namespace CLM_framework_GUI
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
                 RecordPoseCheckBox.IsChecked = record_pose;
-                RecordTrackedVideoCheckBox.IsChecked = record_track_video;
                 RecordVideoCheckBox.IsChecked = record_video;
             }));
 
@@ -204,6 +206,12 @@ namespace CLM_framework_GUI
                 face_analyser.SetupAlignedImageRecording(aligned_root);
             }
 
+            if (record_HOG)
+            {
+                String filename_HOG = root + "/" + filename + ".hog";
+                face_analyser.SetupHOGRecording(filename_HOG);
+            }
+
         }
 
         private void StopRecording()
@@ -219,6 +227,9 @@ namespace CLM_framework_GUI
 
             if (record_3D_landmarks && output_3D_landmarks_file != null)
                 output_3D_landmarks_file.Close();
+
+            if (record_HOG)
+                face_analyser.StopHOGRecording();
 
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
@@ -302,6 +313,10 @@ namespace CLM_framework_GUI
                 face_analyser.RecordAlignedFrame(frame_ind);
             }
 
+            if (record_HOG)
+            {
+                face_analyser.RecordHOGFrame();
+            }
         }
 
         // The main function call for processing images, video files or webcam feed
@@ -528,7 +543,7 @@ namespace CLM_framework_GUI
 
                     aligned_face.UpdateWriteableBitmap(latest_aligned_face);
                     hog_face.UpdateWriteableBitmap(latest_HOG_descriptor);
-
+                    
                     AlignedFace.Source = latest_aligned_face;
                     AlignedHOG.Source = latest_HOG_descriptor;
 
@@ -605,6 +620,10 @@ namespace CLM_framework_GUI
                 cam_sec.Visibility = System.Windows.Visibility.Visible;
             }
 
+            // Set the icon
+            Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
+            cam_sec.Icon = BitmapFrame.Create(iconUri);
+
             cam_sec.ShowDialog();
 
             if (cam_sec.camera_selected)
@@ -675,7 +694,6 @@ namespace CLM_framework_GUI
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
             record_params = RecordParamsCheckBox.IsChecked;
             record_pose = RecordPoseCheckBox.IsChecked;
-            record_track_video = RecordTrackedVideoCheckBox.IsChecked;
             record_video = RecordVideoCheckBox.IsChecked;
         }
 
