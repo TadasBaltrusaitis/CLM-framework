@@ -1,12 +1,12 @@
 clear
 
-root_loc = 'F:/datasets/detection_validation/';
+root_loc = 'E:/datasets/detection_validation/';
 
 location = [root_loc, '/prep_data/'];
 
 faceCheckersLoc = dir([location 'face_checker_general_training_large_68_*']);   
 
-training_ratio = 0.7;
+training_ratio = 0.9;
 
 rng(0);
 for i=1:numel(faceCheckersLoc)
