@@ -763,7 +763,6 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 	// Number of iterations
 	for(int iter = 0; iter < parameters.num_optimisation_iteration; iter++)
 	{
-
 		// get the current estimates of x
 		pdm.CalcShape2D(current_shape, current_local, current_global);
 		

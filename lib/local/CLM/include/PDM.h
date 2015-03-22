@@ -102,6 +102,9 @@ class PDM{
 		// provided the bounding box of a face and the local parameters (with optional rotation), generates the global parameters that can generate the face with the provided bounding box
 		void CalcParams(Vec6d& out_params_global, const Rect_<double>& bounding_box, const Mat_<double>& params_local, const Vec3d rotation = Vec3d(0.0));
 
+		// Provided the landmark location compute global and local parameters best fitting it (can provide optional rotation for potentially better results)
+		void CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_local, const Mat_<double>& landmark_locations, const Vec3d rotation = Vec3d(0.0));
+
 		// provided the model parameters, compute the bounding box of a face
 		void CalcBoundingBox(Rect& out_bounding_box, const Vec6d& params_global, const Mat_<double>& params_local);
 

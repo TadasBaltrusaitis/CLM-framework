@@ -857,21 +857,72 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
 
-	for( int i = 0; i < n; ++i)
-	{		
-		if(visibilities.at<int>(i))
-		{
+	// Drawing feature points
+	if(n >= 66)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			if(visibilities.at<int>(i))
+			{
+				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+				// A rough heuristic for drawn point size
+				int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
+				int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+
+				cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
+				cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			}
+		}
+	}
+	else if(n == 28) // drawing eyes
+	{
+		for( int i = 0; i < n; ++i)
+		{		
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness_2 = (int)std::ceil(0.4* ((double)img.cols) / 640.0);
 
-			cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-			cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			int next_point = i + 1;
+			if(i == 7)
+				next_point = 0;
+			if(i == 19)
+				next_point = 8;
+			if(i == 27)
+				next_point = 20;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+
 		}
 	}
-	
+	else if(n == 6)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+			// A rough heuristic for drawn point size
+			int thickness = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness_2 = (int)std::ceil(0.4* ((double)img.cols) / 640.0);
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+			int next_point = i + 1;
+			if(i == 5)
+				next_point = 0;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+		}
+	}
 }
 
 // Drawing landmarks on a face image

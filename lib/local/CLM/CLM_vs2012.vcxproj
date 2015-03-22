@@ -74,6 +74,7 @@
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model_eye" "$(OutDir)model_eye"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -98,6 +99,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)c
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model_eye" "$(OutDir)model_eye"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
