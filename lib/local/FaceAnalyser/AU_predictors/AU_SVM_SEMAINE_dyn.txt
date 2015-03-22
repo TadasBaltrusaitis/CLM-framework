@@ -1,0 +1,6 @@
+svm_lin_semaine/AU_2_dynamic_og.dat AU02
+svm_lin_semaine/AU_12_dynamic.dat AU12
+svm_lin_semaine/AU_17_dynamic.dat AU17
+svm_lin_semaine/AU_25_dynamic.dat AU25
+svm_lin_semaine/AU_28_dynamic.dat AU28
+svm_lin_semaine/AU_45_dynamic.dat AU45

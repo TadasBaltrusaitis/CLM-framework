@@ -1,0 +1,16 @@
+svm_lin_semaine/AU_2_dynamic_og.dat AU02
+svm_lin_semaine/AU_12_dynamic.dat AU12
+svm_lin_semaine/AU_17_dynamic.dat AU17
+svm_lin_semaine/AU_25_dynamic.dat AU25
+svm_lin_semaine/AU_28_dynamic.dat AU28
+svm_lin_semaine/AU_45_dynamic.dat AU45
+svr_lin_bp4d/AU_6_static_intensity_combined.dat AU06
+svr_lin_bp4d/AU_10_static_intensity.dat AU10
+svr_lin_bp4d/AU_12_static_intensity_combined.dat AU12
+svr_lin_bp4d/AU_14_static_intensity.dat AU14
+svr_lin_bp4d/AU_17_static_intensity_combined.dat AU17
+svr_lin_bp4d_seg/AU_6_static_intensity_segmented.dat AU06
+svr_lin_bp4d_seg/AU_10_static_intensity_segmented.dat AU10
+svr_lin_bp4d_seg/AU_12_static_intensity_combined_segmented.dat AU12
+svr_lin_bp4d_seg/AU_14_static_intensity_segmented.dat AU14
+svr_lin_bp4d_seg/AU_17_static_intensity_combined_segmented.dat AU17
