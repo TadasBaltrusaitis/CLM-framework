@@ -7,7 +7,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="320"/>
             <ColumnDefinition Width="*" MinWidth="90"/>
-            <ColumnDefinition Width="1.5*" MinWidth="90"/>
+            <ColumnDefinition Width="1.25*" MinWidth="90"/>
+            <ColumnDefinition Width="1.25*" MinWidth="90"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -15,7 +16,7 @@
             <RowDefinition Height="0.4*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>        
-            <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
             <MenuItem Header="File">
                 <MenuItem Header="Open video/image file(s)" Click="fileOpenClick">
                 </MenuItem>
@@ -114,8 +115,31 @@
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <CLM_framework_GUI:MultiBarGraph x:Name="nonRigidGraph" HorizontalAlignment="Center" MinHeight="100"/>
                     <Label HorizontalAlignment="Center">Non rigid parameters</Label>
-                </StackPanel>
+                </StackPanel>                
             </Grid>
+        </GroupBox>
+        <GroupBox  Grid.Row="1" Grid.Column="3" BorderBrush="Black" BorderThickness="1" MinHeight="100">
+            <GroupBox.Header>
+                Action Units
+            </GroupBox.Header>
+            <StackPanel>
+            <GroupBox>
+                <GroupBox.Header>
+                    Classification
+                </GroupBox.Header>
+                <StackPanel Name="AU_classes_panel">
+                        
+                </StackPanel>
+            </GroupBox>
+            <GroupBox>
+                <GroupBox.Header>
+                    Regression
+                </GroupBox.Header>
+                <StackPanel Name="AU_reg_panel">
+
+                </StackPanel>
+                </GroupBox>
+            </StackPanel>
         </GroupBox>
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>

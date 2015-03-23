@@ -94,6 +94,10 @@ namespace CLM_framework_GUI
         // Where the recording is done (by default in a record directory, from where the application executed)
         String record_root = "./record";
 
+        // For AU visualisation and output
+        Dictionary<String, Label> au_class_labels;
+        Dictionary<String, Label> au_reg_labels;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -116,6 +120,8 @@ namespace CLM_framework_GUI
             clm_model = new CLM();
             face_analyser = new FaceAnalyserManaged();
 
+            au_class_labels = new Dictionary<string,Label>();
+            au_reg_labels = new Dictionary<string,Label>();
         }
 
         private bool ProcessFrame(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
@@ -485,9 +491,46 @@ namespace CLM_framework_GUI
                 RawImage aligned_face = face_analyser.GetLatestAlignedFace();
                 RawImage hog_face = face_analyser.GetLatestHOGDescriptorVisualisation();
 
+                var au_classes = face_analyser.GetCurrentAUsClass();
+                var au_regs = face_analyser.GetCurrentAUsReg();
+
                 // Visualisation
                 Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                 {
+
+                    if (au_class_labels.Count != au_classes.Count)
+                    {
+                        // First clear, then populate
+                        AU_classes_panel.Children.Clear();
+
+                        foreach(var au_class in au_classes)
+                        {
+                            Label au_class_label = new Label();
+                            au_class_label.Content = au_class.Key + " " + au_class.Value;
+                            AU_classes_panel.Children.Add(au_class_label);
+                            au_class_labels[au_class.Key] = au_class_label;
+                        }
+                    }
+
+                    foreach (var au_class in au_classes)
+                        au_class_labels[au_class.Key].Content = au_class.Key + " " + au_class.Value;
+
+                    if (au_reg_labels.Count != au_regs.Count)
+                    {
+                        // First clear, then populate
+                        AU_reg_panel.Children.Clear();
+
+                        foreach (var au_reg in au_regs)
+                        {
+                            Label au_reg_label = new Label();
+                            au_reg_label.Content = au_reg.Key + " " + au_reg.Value;
+                            AU_classes_panel.Children.Add(au_reg_label);
+                            au_reg_labels[au_reg.Key] = au_reg_label;
+                        }
+                    }
+
+                    foreach (var au_reg in au_regs)
+                        au_reg_labels[au_reg.Key].Content = au_reg.Key + " " + au_reg.Value;
 
                     if (latest_img == null)
                     {

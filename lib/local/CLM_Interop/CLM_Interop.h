@@ -25,6 +25,7 @@
 #include <CLM_core.h>
 
 #include <Face_utils.h>
+#include <FaceAnalyser.h>
 
 using namespace System;
 using namespace OpenCVWrappers;
@@ -435,7 +436,7 @@ namespace CLM_Interop {
 
 	private:
 
-		cv::Mat* triangulation;
+		FaceAnalysis::FaceAnalyser* face_analyser;
 
 		// The actual descriptors
 		cv::Mat_<double>* hog_features;
@@ -455,8 +456,18 @@ namespace CLM_Interop {
 
 		FaceAnalyserManaged() 
 		{
+			
+			vector<Vec3d> orientation_bins;
+			orientation_bins.push_back(Vec3d(0,0,0));
+			double scale = 0.7;
+			int width = 112;
+			int height = 112;
+			// TODO relative paths?
+			std::string au_location("AU_predictors/AU_all.txt");
+			std::string tri_location("model/tris_68_full.txt");
 
-			triangulation = new cv::Mat();
+			face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_location, tri_location);
+
 			hog_features = new cv::Mat_<double>();
 
 			aligned_face = new cv::Mat();
@@ -468,11 +479,6 @@ namespace CLM_Interop {
 			good_frame = new bool[0];
 			
 			align_output_dir = new string();
-
-			// TODO relative paths?
-			std::ifstream triangulation_file("model/tris_68_full.txt");
-
-			::CLMTracker::ReadMat(triangulation_file, *triangulation);
 
 			hog_output_file = new std::ofstream();
 		}
@@ -549,14 +555,39 @@ namespace CLM_Interop {
 		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, double scale, int width, int height) {
 			//faceAnalyser->AddNextFrame(frame->Mat, *clm->getCLM(), timestamp_seconds);
 			
-			FaceAnalyser::AlignFaceMask(*aligned_face, frame->Mat, *(clm->clm), *triangulation, true, scale, width, height);
-			
-			FaceAnalyser::Extract_FHOG_descriptor(*hog_features, *aligned_face, *num_rows, *num_cols, 8);
+			face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, true);
 
-			// TOOD make this optional
-			FaceAnalyser::Visualise_FHOG(*hog_features, *num_rows, *num_cols, *visualisation);			
+			face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
+			face_analyser->GetLatestAlignedFace(*aligned_face);
+
+			// TODO make optional
+			*visualisation = face_analyser->GetLatestHOGDescriptorVisualisation();
 
 			*good_frame = clm->clm->detection_success;
+		}
+		
+		Dictionary<System::String^, double>^ GetCurrentAUsClass()
+		{
+			auto classes = face_analyser->GetCurrentAUsClass();
+			Dictionary<System::String^, double>^ au_classes = gcnew Dictionary<System::String^, double>();
+
+			for(auto p: classes)
+			{
+				au_classes->Add(gcnew System::String(p.first.c_str()), p.second);
+			}
+			return au_classes;
+		}
+
+		Dictionary<System::String^, double>^ GetCurrentAUsReg()
+		{
+			auto preds = face_analyser->GetCurrentAUsReg();
+			Dictionary<System::String^, double>^ au_preds = gcnew Dictionary<System::String^, double>();
+
+			for(auto p: preds)
+			{
+				au_preds->Add(gcnew System::String(p.first.c_str()), p.second);
+			}
+			return au_preds;
 		}
 
 		RawImage^ GetLatestAlignedFace() {
@@ -573,7 +604,6 @@ namespace CLM_Interop {
 		// May be called multiple times.
 		!FaceAnalyserManaged()
 		{
-			delete triangulation;
 			delete hog_features;
 			delete aligned_face;
 			delete visualisation;
@@ -582,6 +612,7 @@ namespace CLM_Interop {
 			delete hog_output_file;
 			delete good_frame;
 			delete align_output_dir;
+			delete face_analyser;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

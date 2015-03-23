@@ -633,17 +633,17 @@ int main (int argc, char **argv)
 			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open())
 			{
-				FaceAnalyser::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
+				FaceAnalysis::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
 				cv::imshow("sim_warp", sim_warped_img);			
 			
 				if(hog_output_file.is_open())
 				{
-					FaceAnalyser::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
+					FaceAnalysis::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
 
 					if(visualise_hog)
 					{
 						Mat_<double> hog_descriptor_vis;
-						FaceAnalyser::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
+						FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
 						cv::imshow("hog", hog_descriptor_vis);	
 					}
 				}
