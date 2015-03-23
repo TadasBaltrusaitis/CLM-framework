@@ -497,40 +497,13 @@ namespace CLM_framework_GUI
                 // Visualisation
                 Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                 {
+                    auClassGraph.Update(au_classes);
 
-                    if (au_class_labels.Count != au_classes.Count)
-                    {
-                        // First clear, then populate
-                        AU_classes_panel.Children.Clear();
-
-                        foreach(var au_class in au_classes)
-                        {
-                            Label au_class_label = new Label();
-                            au_class_label.Content = au_class.Key + " " + au_class.Value;
-                            AU_classes_panel.Children.Add(au_class_label);
-                            au_class_labels[au_class.Key] = au_class_label;
-                        }
-                    }
-
-                    foreach (var au_class in au_classes)
-                        au_class_labels[au_class.Key].Content = au_class.Key + " " + au_class.Value;
-
-                    if (au_reg_labels.Count != au_regs.Count)
-                    {
-                        // First clear, then populate
-                        AU_reg_panel.Children.Clear();
-
-                        foreach (var au_reg in au_regs)
-                        {
-                            Label au_reg_label = new Label();
-                            au_reg_label.Content = au_reg.Key + " " + au_reg.Value;
-                            AU_classes_panel.Children.Add(au_reg_label);
-                            au_reg_labels[au_reg.Key] = au_reg_label;
-                        }
-                    }
-
+                    var au_regs_scaled = new Dictionary<String, double>();
                     foreach (var au_reg in au_regs)
-                        au_reg_labels[au_reg.Key].Content = au_reg.Key + " " + au_reg.Value;
+                        au_regs_scaled[au_reg.Key] = au_reg.Value / 5.0;
+
+                    auRegGraph.Update(au_regs_scaled);                    
 
                     if (latest_img == null)
                     {

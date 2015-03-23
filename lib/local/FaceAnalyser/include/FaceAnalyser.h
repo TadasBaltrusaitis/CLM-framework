@@ -30,7 +30,7 @@ public:
 	void AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm, double timestamp_seconds, bool visualise = true);
 
 	// If the features are extracted manually
-	void PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model);
+	void PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model, bool dyn_shift, bool dyn_scale);
 
 	Mat GetLatestHOGDescriptorVisualisation();
 
@@ -114,7 +114,7 @@ private:
 	Rect_<double> face_bounding_box;
 	
 	// The AU predictions internally
-	std::vector<std::pair<std::string, double>> PredictCurrentAUs(int view, bool dyn_correct = false);
+	std::vector<std::pair<std::string, double>> PredictCurrentAUs(int view, bool dyn_shift = false, bool dyn_scale = false);
 	std::vector<std::pair<std::string, double>> PredictCurrentAUsClass(int view);
 
 	void ReadAU(std::string au_location);
@@ -140,7 +140,7 @@ private:
 	// TODO is this needed? Have a tick box somewhere
 	// TODO same for dynamic scaling
 	// TODO don't start from 0 here have neg vals as well
-	void UpdatePredictionTrack(Mat_<unsigned int>& prediction_corr_histogram, int& prediction_correction_count, vector<double>& correction, const vector<pair<string, double>>& predictions, double ratio=0.25, int num_bins = 200, double min_val = 0, double max_val = 5, int min_frames = 10);	
+	void UpdatePredictionTrack(Mat_<unsigned int>& prediction_corr_histogram, int& prediction_correction_count, vector<double>& correction, const vector<pair<string, double>>& predictions, double ratio=0.25, int num_bins = 200, double min_val = -3, double max_val = 5, int min_frames = 10);	
 	void GetSampleHist(Mat_<unsigned int>& prediction_corr_histogram, int prediction_correction_count, vector<double>& sample, double ratio, int num_bins = 200, double min_val = 0, double max_val = 5);	
 
 	vector<cv::Mat_<unsigned int>> au_prediction_correction_histogram;

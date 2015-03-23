@@ -251,7 +251,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	cv::hconcat(locs.t(), geom_descriptor_frame.clone(), geom_descriptor_frame);
 	
 	// A small speedup
-	if(frames_tracking % 2 == 1)
+	if(clm_model.detection_success && frames_tracking % 2 == 1)
 	{
 		UpdateRunningMedian(this->geom_desc_hist, this->geom_hist_sum, this->geom_descriptor_median, geom_descriptor_frame, update_median, this->num_bins_geom, this->min_val_geom, this->max_val_geom);
 	}
@@ -270,10 +270,8 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 		FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_visualisation);
 	}
 
-	//if(clm_model.detection_success)
-	//{
 	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, false);
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, true, false);
 
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
 
@@ -288,7 +286,7 @@ void FaceAnalyser::GetGeomDescriptor(Mat_<double>& geom_desc)
 	geom_desc = this->geom_descriptor_frame.clone();
 }
 
-void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model)
+void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model, bool dyn_shift, bool dyn_scale)
 {
 	// Store the descriptor
 	hog_desc_frame = hog_features.clone();
@@ -298,7 +296,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 	int orientation_to_use = GetViewId(this->head_orientations, curr_orient);
 
 	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, false);
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dyn_shift, dyn_scale);
 
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
 
@@ -449,7 +447,7 @@ void FaceAnalyser::ExtractMedian(cv::Mat_<unsigned int>& histogram, int hist_cou
 	}
 }
 // Apply the current predictors to the currently stored descriptors
-vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_correct)
+vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale)
 {
 
 	vector<pair<string, double>> predictions;
@@ -477,22 +475,18 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 		}
 
 		// Correction that drags the predicion to 0 (assuming the bottom 10% of predictions are of neutral expresssions)
-		if(dyn_correct)
-		{
-			vector<double> correction(predictions.size(), 0.0);
-			UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, 0, 5, 1);
+		vector<double> correction(predictions.size(), 0.0);
+		UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, -3, 5, 10);
 		
-
+		if(dyn_shift)
+		{
 			for(size_t i = 0; i < correction.size(); ++i)
 			{
-				// TODO important only for semaine? (this is pulled out, but should be back in final versions
 				predictions[i].second = predictions[i].second - correction[i];
-
-				if(predictions[i].second < 0)
-					predictions[i].second = 0;
-				if(predictions[i].second > 5)
-					predictions[i].second = 5;
 			}
+		}
+		if(dyn_scale)
+		{
 			// Some scaling for effect better visualisation
 			// Also makes sense as till the maximum expression is seen, it is hard to tell how expressive a persons face is
 			if(dyn_scaling[view].empty())
@@ -519,6 +513,14 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 					predictions[i].second = 5;
 				}
 			}
+		}
+
+		for(size_t i = 0; i < correction.size(); ++i)
+		{
+			if(predictions[i].second < 0)
+				predictions[i].second = 0;
+			if(predictions[i].second > 5)
+				predictions[i].second = 5;
 		}
 	}
 

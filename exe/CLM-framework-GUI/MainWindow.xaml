@@ -127,17 +127,15 @@
                 <GroupBox.Header>
                     Classification
                 </GroupBox.Header>
-                <StackPanel Name="AU_classes_panel">
-                        
-                </StackPanel>
+                    <CLM_framework_GUI:MultiBarGraphHorz x:Name="auClassGraph" HorizontalAlignment="Center" MinWidth="100"/>
+                    <!--"<StackPanel Name="AU_classes_panel">
+                    </StackPanel>-->
             </GroupBox>
             <GroupBox>
                 <GroupBox.Header>
                     Regression
                 </GroupBox.Header>
-                <StackPanel Name="AU_reg_panel">
-
-                </StackPanel>
+                <CLM_framework_GUI:MultiBarGraphHorz x:Name="auRegGraph" HorizontalAlignment="Center" MinWidth="100"/>
                 </GroupBox>
             </StackPanel>
         </GroupBox>
