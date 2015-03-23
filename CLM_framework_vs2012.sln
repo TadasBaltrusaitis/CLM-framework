@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FeatureExtraction_vs2012", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLM_Interop", "lib\local\CLM_Interop\CLM_Interop.vcxproj", "{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalyser", "lib\local\FaceAnalyser\FaceAnalyser.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalysis", "lib\local\FaceAnalyser\FaceAnalyser.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLM-framework-GUI", "exe\CLM-framework-GUI\CLM-framework-GUI.csproj", "{2542A0F9-7047-435C-9DE6-FFB4E725735E}"
 EndProject
@@ -169,5 +169,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

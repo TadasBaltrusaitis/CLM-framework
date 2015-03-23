@@ -463,7 +463,7 @@ namespace CLM_Interop {
 			int width = 112;
 			int height = 112;
 			// TODO relative paths?
-			std::string au_location("AU_predictors/AU_all.txt");
+			std::string au_location("AU_predictors/AU_all_best.txt");
 			std::string tri_location("model/tris_68_full.txt");
 
 			face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_location, tri_location);

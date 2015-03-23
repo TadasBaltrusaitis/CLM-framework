@@ -363,7 +363,7 @@ namespace CLM_framework_GUI
 
                 foreach (var name_reg in au_reg_names)
                 {
-                    output_au_reg.Write(",{0:F2}", au_classes[name_reg]);
+                    output_au_reg.Write(",{0:F2}", au_regs[name_reg]);
                 }
                 output_au_reg.WriteLine();
 

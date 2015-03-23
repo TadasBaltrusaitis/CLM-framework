@@ -25,7 +25,7 @@ public:
 
 	// Constructor from a model file (or a default one if not provided
 	// TODO scale width and height should be part of the model?
-	FaceAnalyser(vector<Vec3d> orientation_bins = vector<Vec3d>(), double scale = 0.7, int width = 112, int height = 112, std::string au_location = "AU_regressors/AU_regressors.txt", std::string tri_location = "model/tris_68_full.txt");
+	FaceAnalyser(vector<Vec3d> orientation_bins = vector<Vec3d>(), double scale = 0.7, int width = 112, int height = 112, std::string au_location = "AU_predictors/AU_all_best.txt", std::string tri_location = "model/tris_68_full.txt");
 
 	void AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm, double timestamp_seconds, bool visualise = true);
 
