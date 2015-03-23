@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="150">
+             d:DesignHeight="30" d:DesignWidth="200">
     <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Left" >
-        <Label Name="Label" FontSize="10">AU name</Label>
+        <Label Name="Label" FontSize="10" Width="120">AU name</Label>
         <Border Name="barContainerPos" Background="PowderBlue" Height="12" DockPanel.Dock="Left" MinWidth="60">
             <Rectangle Name="barPos" Fill="CadetBlue" Width="0" HorizontalAlignment="Left"/>
         </Border>
