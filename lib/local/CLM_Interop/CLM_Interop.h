@@ -566,6 +566,36 @@ namespace CLM_Interop {
 			*good_frame = clm->clm->detection_success;
 		}
 		
+		List<System::String^>^ GetClassActionUnitsNames()
+		{
+			auto names = face_analyser->GetAUClassNames();
+
+			auto names_ret = gcnew List<System::String^>();
+
+			for(std::string name : names)
+			{
+				names_ret->Add(gcnew System::String(name.c_str()));
+			}
+
+			return names_ret;
+
+		}
+
+		List<System::String^>^ GetRegActionUnitsNames()
+		{
+			auto names = face_analyser->GetAURegNames();
+
+			auto names_ret = gcnew List<System::String^>();
+
+			for(std::string name : names)
+			{
+				names_ret->Add(gcnew System::String(name.c_str()));
+			}
+
+			return names_ret;
+
+		}
+
 		Dictionary<System::String^, double>^ GetCurrentAUsClass()
 		{
 			auto classes = face_analyser->GetCurrentAUsClass();

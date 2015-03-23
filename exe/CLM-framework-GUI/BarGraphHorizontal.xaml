@@ -6,8 +6,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="150">
     <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Left" >
-        <Label Name="Label">AU name</Label>
-        <Border Name="barContainerPos" Background="PowderBlue" Height="15" DockPanel.Dock="Left" MinWidth="60">
+        <Label Name="Label" FontSize="10">AU name</Label>
+        <Border Name="barContainerPos" Background="PowderBlue" Height="12" DockPanel.Dock="Left" MinWidth="60">
             <Rectangle Name="barPos" Fill="CadetBlue" Width="0" HorizontalAlignment="Left"/>
         </Border>
     </StackPanel>

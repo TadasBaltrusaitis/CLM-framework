@@ -33,5 +33,10 @@ namespace CLM_framework_GUI
             targetValue = value;
             barPos.Width = targetValue * barContainerPos.ActualWidth;
         }
+
+        public double GetTarget()
+        {
+            return targetValue;
+        }
     }
 }

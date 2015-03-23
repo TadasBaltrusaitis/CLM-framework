@@ -73,6 +73,7 @@ namespace CLM_framework_GUI
         CameraSelection cam_sec;
         
         // Recording parameters (default values)
+        bool record_aus = true; // Recording Action Units
         bool record_pose = true; // head location and orientation
         bool record_params = true; // rigid and non-rigid shape parameters
         bool record_2D_landmarks = true; // 2D landmark location
@@ -90,13 +91,15 @@ namespace CLM_framework_GUI
         StreamWriter output_clm_params_file;
         StreamWriter output_2D_landmarks_file;
         StreamWriter output_3D_landmarks_file;
+        StreamWriter output_au_class;
+        StreamWriter output_au_reg;
 
         // Where the recording is done (by default in a record directory, from where the application executed)
         String record_root = "./record";
 
-        // For AU visualisation and output
-        Dictionary<String, Label> au_class_labels;
-        Dictionary<String, Label> au_reg_labels;
+        // For AU visualisation and output        
+        List<String> au_class_names;
+        List<String> au_reg_names;
 
         public MainWindow()
         {
@@ -108,6 +111,7 @@ namespace CLM_framework_GUI
 
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 2000), (Action)(() =>
             {
+                RecordAUCheckBox.IsChecked = record_aus;
                 RecordAlignedCheckBox.IsChecked = record_aligned;
                 RecordHOGCheckBox.IsChecked = record_HOG;
                 RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
@@ -120,8 +124,6 @@ namespace CLM_framework_GUI
             clm_model = new CLM();
             face_analyser = new FaceAnalyserManaged();
 
-            au_class_labels = new Dictionary<string,Label>();
-            au_reg_labels = new Dictionary<string,Label>();
         }
 
         private bool ProcessFrame(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
@@ -180,6 +182,34 @@ namespace CLM_framework_GUI
                 output_2D_landmarks_file.WriteLine();
             }
 
+            if (record_aus)
+            {
+                String filename_au_class = root + "/" + filename + ".au_class";
+                output_au_class = new StreamWriter(filename_au_class);
+                
+                output_au_class.Write("frame,success,confidence");
+                au_class_names = face_analyser.GetClassActionUnitsNames();
+                au_class_names.Sort();
+                foreach (var name in au_class_names)
+                {
+                    output_au_class.Write("," + name);
+                }
+                output_au_class.WriteLine();
+
+                String filename_au_reg = root + "/" + filename + ".au_reg";
+                output_au_reg = new StreamWriter(filename_au_reg);
+                
+                output_au_reg.Write("frame,success,confidence");
+                au_reg_names = face_analyser.GetRegActionUnitsNames();
+                au_reg_names.Sort();
+                foreach (var name in au_reg_names)
+                {
+                    output_au_reg.Write("," + name);
+                }
+                output_au_reg.WriteLine();
+            
+            }
+
             if (record_3D_landmarks)
             {
                 String filename_3d_landmarks = root + "/" + filename + ".landmarks_3d";
@@ -232,6 +262,12 @@ namespace CLM_framework_GUI
 
             if (record_HOG)
                 face_analyser.StopHOGRecording();
+
+            if(record_aus && output_au_class != null && output_au_reg != null)
+            {
+                output_au_class.Close();
+                output_au_reg.Close();
+            }
 
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
@@ -308,6 +344,29 @@ namespace CLM_framework_GUI
                     output_3D_landmarks_file.Write(",{0:F2}", landmarks_3d[i].Z);
                 }
                 output_3D_landmarks_file.WriteLine();
+            }
+
+            if (record_aus)
+            {
+                var au_classes = face_analyser.GetCurrentAUsClass();
+                var au_regs = face_analyser.GetCurrentAUsReg();
+                
+                output_au_class.Write(String.Format("{0},{1},{2:F3}", frame_ind, success, confidence));
+
+                foreach (var name_class in au_class_names)
+                {
+                    output_au_class.Write(",{0:F0}", au_classes[name_class]);
+                }
+                output_au_class.WriteLine();
+
+                output_au_reg.Write(String.Format("{0},{1},{2:F3}", frame_ind, success, confidence));
+
+                foreach (var name_reg in au_reg_names)
+                {
+                    output_au_reg.Write(",{0:F2}", au_classes[name_reg]);
+                }
+                output_au_reg.WriteLine();
+
             }
 
             if (record_aligned)
@@ -701,6 +760,7 @@ namespace CLM_framework_GUI
         // Stopping the tracking
         private void recordCheckBox_click(object sender, RoutedEventArgs e)
         {
+            record_aus = RecordAUCheckBox.IsChecked;
             record_aligned = RecordAlignedCheckBox.IsChecked;
             record_HOG = RecordHOGCheckBox.IsChecked;
             record_2D_landmarks = RecordLandmarks2DCheckBox.IsChecked;

@@ -26,6 +26,11 @@ public:
 	// Reading in the model (or adding to it)
 	void Read(std::ifstream& stream, const std::vector<std::string>& au_names);
 
+	std::vector<std::string> GetAUNames()
+	{
+		return AU_names;
+	}
+
 private:
 
 	// The names of Action Units this model is responsible for

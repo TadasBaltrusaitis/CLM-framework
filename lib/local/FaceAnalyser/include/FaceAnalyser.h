@@ -57,6 +57,42 @@ public:
 
 	void ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& face_image_medians, vector<Vec3d>& orientations);
 
+	std::vector<std::string> GetAUClassNames()
+	{
+		std::vector<std::string> au_class_names_all;
+		std::vector<std::string> au_class_names_stat = AU_SVM_static_appearance_lin.GetAUNames();
+		std::vector<std::string> au_class_names_dyn = AU_SVM_dynamic_appearance_lin.GetAUNames();
+		
+		for(size_t i = 0; i < au_class_names_stat.size(); ++i)
+		{
+			au_class_names_all.push_back(au_class_names_stat[i]);
+		}
+		for(size_t i = 0; i < au_class_names_dyn.size(); ++i)
+		{
+			au_class_names_all.push_back(au_class_names_dyn[i]);
+		}
+
+		return au_class_names_all;
+	}
+
+	std::vector<std::string> GetAURegNames()
+	{
+		std::vector<std::string> au_reg_names_all;
+		std::vector<std::string> au_reg_names_stat = AU_SVR_static_appearance_lin_regressors.GetAUNames();
+		std::vector<std::string> au_reg_names_dyn = AU_SVR_dynamic_appearance_lin_regressors.GetAUNames();
+		
+		for(size_t i = 0; i < au_reg_names_stat.size(); ++i)
+		{
+			au_reg_names_all.push_back(au_reg_names_stat[i]);
+		}
+		for(size_t i = 0; i < au_reg_names_dyn.size(); ++i)
+		{
+			au_reg_names_all.push_back(au_reg_names_dyn[i]);
+		}
+
+		return au_reg_names_all;
+	}
+
 private:
 
 	// Where the predictions are kept
@@ -134,6 +170,7 @@ private:
 	// The linear SVM classifiers
 	SVM_static_lin AU_SVM_static_appearance_lin;
 	SVM_dynamic_lin AU_SVM_dynamic_appearance_lin;
+
 
 	// The AUs predicted by the model are not always 0 calibrated to a person. That is they don't always predict 0 for a neutral expression
 	// Keeping track of the predictions we can correct for this, by assuming that at least "ratio" of frames are neutral and subtract that value of prediction, only perform the correction after min_frames
