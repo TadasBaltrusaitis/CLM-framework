@@ -222,7 +222,6 @@ namespace CLM_Interop {
 			return fps;
 		}
 		
-		// TODO rem?
 		// Finalizer. Definitely called before Garbage Collection,
 		// but not automatically called on explicit Dispose().
 		// May be called multiple times.
@@ -430,7 +429,7 @@ namespace CLM_Interop {
 
 	}
 
-	// TODO split into separate files
+	// TODO split into separate managing files
 	public ref class FaceAnalyserManaged
 	{
 
@@ -438,11 +437,9 @@ namespace CLM_Interop {
 
 		FaceAnalysis::FaceAnalyser* face_analyser;
 
-		// The actual descriptors
+		// The actual descriptors (for visualisation and output)
 		cv::Mat_<double>* hog_features;
 		cv::Mat* aligned_face;
-
-		// Visualisation stuff, TODO this could be reshuffled a bit
 		cv::Mat* visualisation;
 		
 		// Variables used for recording things
@@ -462,6 +459,7 @@ namespace CLM_Interop {
 			double scale = 0.7;
 			int width = 112;
 			int height = 112;
+
 			// TODO relative paths?
 			std::string au_location("AU_predictors/AU_all_best.txt");
 			std::string tri_location("model/tris_68_full.txt");
@@ -487,7 +485,7 @@ namespace CLM_Interop {
 		{
 			*align_output_dir = marshal_as<std::string>(directory);
 
-			// TODO create the directory
+			// TODO create the directory?
 
 			
 		}
@@ -552,10 +550,9 @@ namespace CLM_Interop {
 
 		}
 
-		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, double scale, int width, int height) {
-			//faceAnalyser->AddNextFrame(frame->Mat, *clm->getCLM(), timestamp_seconds);
+		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, bool dynamic_shift, bool dynamic_scale) {
 			
-			face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, true);
+			face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, dynamic_shift, dynamic_scale, true);
 
 			face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
 			face_analyser->GetLatestAlignedFace(*aligned_face);

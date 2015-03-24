@@ -23,11 +23,37 @@ namespace CLM_framework_GUI
         int num_bars = 0;
         Dictionary<String, BarGraphHorizontal> graphs;
 
+        // Name mapping
+        Dictionary<String, String> mapping;
+
         public MultiBarGraphHorz()
         {
             InitializeComponent();
 
             graphs = new Dictionary<string,BarGraphHorizontal>();
+
+            mapping = new Dictionary<string, string>();
+            mapping["AU01"] = "Inner Brow raiser";
+            mapping["AU02"] = "Outer Brow raiser";
+            mapping["AU04"] = "Brow lowerer";
+            mapping["AU05"] = "Upper lid raiser";
+            mapping["AU06"] = "Cheek raiser";
+            mapping["AU07"] = "Lid tightener";
+            mapping["AU09"] = "Nose wrinkler";
+            mapping["AU10"] = "Upper lip raiser";
+            mapping["AU12"] = "Lip corner puller (smile)";
+            mapping["AU14"] = "Dimpler";
+            mapping["AU15"] = "Lip corner depressor";
+            mapping["AU17"] = "Chin Raiser";
+            mapping["AU20"] = "Lip Stretcher";
+            mapping["AU23"] = "Lip tightener";
+            mapping["AU25"] = "Lips part";
+            mapping["AU26"] = "Jaw drop";
+            mapping["AU28"] = "Lip suck";
+            mapping["AU45"] = "Blink";
+
+
+
         }
 
         public void Update(Dictionary<String, double> data)
@@ -37,12 +63,17 @@ namespace CLM_framework_GUI
             {
                 num_bars = data.Count;
                 barGrid.Children.Clear();
-                foreach (var value in data)
+
+                // Make sure AUs are sorted
+                var data_labels = data.Keys.ToList();
+                data_labels.Sort();
+
+                foreach (var label in data_labels)
                 {
-                    BarGraphHorizontal newBar = new BarGraphHorizontal(value.Key);
+                    BarGraphHorizontal newBar = new BarGraphHorizontal(label + " - " + mapping[label]);
                     barGrid.RowDefinitions.Add(new RowDefinition());
                     Grid.SetRow(newBar, graphs.Count);
-                    graphs.Add(value.Key, newBar);
+                    graphs.Add(label, newBar);
                     barGrid.Children.Add(newBar);
                 }
             }

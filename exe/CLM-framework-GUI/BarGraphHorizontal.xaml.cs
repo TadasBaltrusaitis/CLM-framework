@@ -25,28 +25,7 @@ namespace CLM_framework_GUI
         public BarGraphHorizontal(String label)
         {
             InitializeComponent();
-
-            Dictionary<String, String> mapping = new Dictionary<string, string>();
-            mapping["AU01"] = "Inner Brow raiser";
-            mapping["AU02"] = "Outer Brow raiser";
-            mapping["AU04"] = "Brow lowerer";
-            mapping["AU05"] = "Upper lid raiser";
-            mapping["AU06"] = "Cheek raiser";
-            mapping["AU07"] = "Lid tightener";
-            mapping["AU09"] = "Nose wrinkler";
-            mapping["AU10"] = "Upper lip raiser";
-            mapping["AU12"] = "Lip corner puller (smile)";
-            mapping["AU14"] = "Dimpler";
-            mapping["AU15"] = "Lip corner depressor";
-            mapping["AU17"] = "Chin Raiser";
-            mapping["AU20"] = "Lip Stretcher";
-            mapping["AU23"] = "Lip tightener";
-            mapping["AU25"] = "Lips part";
-            mapping["AU26"] = "Jaw drop";
-            mapping["AU28"] = "Lip suck";
-            mapping["AU45"] = "Blink";
-
-            Label.Content = mapping[label];
+            Label.Content = label;
         }
 
         public void SetValue(double value)

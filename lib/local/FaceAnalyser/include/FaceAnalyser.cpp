@@ -171,7 +171,7 @@ void FaceAnalyser::ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& 
 	}
 }
 
-void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm_model, double timestamp_seconds, bool visualise)
+void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm_model, double timestamp_seconds, bool dynamic_shift, bool dynamic_scale, bool visualise)
 {
 	// Check if a reset is needed first (TODO single person no reset)
 	//if(face_bounding_box.area() > 0)
@@ -251,7 +251,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	cv::hconcat(locs.t(), geom_descriptor_frame.clone(), geom_descriptor_frame);
 	
 	// A small speedup
-	if(clm_model.detection_success && frames_tracking % 2 == 1)
+	if(frames_tracking % 2 == 1)
 	{
 		UpdateRunningMedian(this->geom_desc_hist, this->geom_hist_sum, this->geom_descriptor_median, geom_descriptor_frame, update_median, this->num_bins_geom, this->min_val_geom, this->max_val_geom);
 	}
@@ -271,7 +271,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	}
 
 	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, true, false);
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dynamic_shift, dynamic_scale);
 
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
 

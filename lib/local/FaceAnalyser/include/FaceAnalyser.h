@@ -27,7 +27,7 @@ public:
 	// TODO scale width and height should be part of the model?
 	FaceAnalyser(vector<Vec3d> orientation_bins = vector<Vec3d>(), double scale = 0.7, int width = 112, int height = 112, std::string au_location = "AU_predictors/AU_all_best.txt", std::string tri_location = "model/tris_68_full.txt");
 
-	void AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm, double timestamp_seconds, bool visualise = true);
+	void AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm, double timestamp_seconds, bool dynamic_shift, bool dynamic_scale, bool visualise = true);
 
 	// If the features are extracted manually
 	void PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model, bool dyn_shift, bool dyn_scale);

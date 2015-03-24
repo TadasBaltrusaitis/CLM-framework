@@ -101,6 +101,16 @@ namespace CLM_framework_GUI
         List<String> au_class_names;
         List<String> au_reg_names;
 
+        // For AU prediction
+        bool dynamic_AU_shift = true;
+        bool dynamic_AU_scale = false;
+
+        // TODO adding resets to the face analyser
+
+        // TODO add a reset button?
+
+        // todo add four classifiers
+
         public MainWindow()
         {
             InitializeComponent();
@@ -118,6 +128,8 @@ namespace CLM_framework_GUI
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
                 RecordPoseCheckBox.IsChecked = record_pose;
+                UseDynamicScalingCheckBox.IsChecked = dynamic_AU_scale;
+                UseDynamicShiftingCheckBox.IsChecked = dynamic_AU_shift;
             }));
 
             clm_params = new CLMParameters();
@@ -531,9 +543,6 @@ namespace CLM_framework_GUI
                     lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
                 }
                 
-                // TODO rem?
-                var landmarks_3D = clm_model.Calculate3DLandmarks(fx, fy, cx, cy);
-
                 double confidence = (-clm_model.GetConfidence()) / 2.0 + 0.5;
 
                 if (confidence < 0)
@@ -546,7 +555,7 @@ namespace CLM_framework_GUI
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
                 // The face analysis step
-                face_analyser.AddNextFrame(frame, clm_model, 0.7, 112, 112);
+                face_analyser.AddNextFrame(frame, clm_model, dynamic_AU_shift, dynamic_AU_scale);
                 RawImage aligned_face = face_analyser.GetLatestAlignedFace();
                 RawImage hog_face = face_analyser.GetLatestHOGDescriptorVisualisation();
 
@@ -767,6 +776,15 @@ namespace CLM_framework_GUI
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
             record_params = RecordParamsCheckBox.IsChecked;
             record_pose = RecordPoseCheckBox.IsChecked;
+
+            dynamic_AU_shift = UseDynamicShiftingCheckBox.IsChecked;
+            dynamic_AU_scale = UseDynamicScalingCheckBox.IsChecked;
+
+        }
+
+        private void UseDynamicModelsCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

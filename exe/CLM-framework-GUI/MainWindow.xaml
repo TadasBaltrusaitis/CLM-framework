@@ -5,8 +5,8 @@
         Title="CLM Framework" Height="500" Width="1000" MinWidth="700" MinHeight="350" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" MinWidth="320"/>
-            <ColumnDefinition Width="*" MinWidth="90"/>
+            <ColumnDefinition Width="2.25*" MinWidth="320"/>
+            <ColumnDefinition Width="0.9*" MinWidth="90"/>
             <ColumnDefinition Width="1.25*" MinWidth="90"/>
             <ColumnDefinition Width="1*" MinWidth="90"/>
         </Grid.ColumnDefinitions>
@@ -34,8 +34,10 @@
                 <MenuItem Name="RecordParamsCheckBox" IsCheckable="True" Header="Record model parameters" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordAlignedCheckBox" IsCheckable="True" Header="Record aligned faces" Click="recordCheckBox_click"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Tracker settings">
-                <MenuItem Header="Sth"></MenuItem>
+            <MenuItem Header="AU settings">
+                <MenuItem Name="UseDynamicModelsCheckBox" IsChecked="True" IsCheckable="True" Header="Use dynamic models" Click="UseDynamicModelsCheckBox_Click"></MenuItem>
+                <MenuItem Name="UseDynamicShiftingCheckBox" IsCheckable="True" Header="Use dynamic shifting" Click="recordCheckBox_click"></MenuItem>
+                <MenuItem Name="UseDynamicScalingCheckBox" IsCheckable="True" Header="Use dynamic scaling" Click="recordCheckBox_click"></MenuItem>
             </MenuItem>
             <MenuItem Header="Visualisation settings">
                 <MenuItem IsCheckable="True" Header="Show aligned"></MenuItem>
@@ -67,8 +69,6 @@
                     <CLM_framework_GUI:SimpleImage x:Name="AlignedHOG" />
                 </Border>
             </Grid>
-            <!--<Image MinWidth="50" MaxWidth="200" Name="AlignedFace" Stretch="UniformToFill" Margin="10,10,10,10" ></Image>-->
-                <!--<Image MinWidth="50" MaxWidth="200" Name="AlignedHOG" Stretch="UniformToFill"  Margin="10,10,10,10"></Image>-->
         </GroupBox>
 
         <GroupBox  Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
