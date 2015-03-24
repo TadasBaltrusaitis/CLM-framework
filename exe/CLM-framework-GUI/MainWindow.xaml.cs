@@ -483,6 +483,7 @@ namespace CLM_framework_GUI
             var lastFrameTime = CurrentTime;
 
             clm_model.Reset();
+            face_analyser.Reset();
 
             // TODO add an ability to change these
             double fx, fy, cx, cy;
@@ -704,8 +705,9 @@ namespace CLM_framework_GUI
             // Set the icon
             Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
             cam_sec.Icon = BitmapFrame.Create(iconUri);
-
-            cam_sec.ShowDialog();
+            
+            if(!cam_sec.no_cameras_found)
+                cam_sec.ShowDialog();
 
             if (cam_sec.camera_selected)
             {
@@ -729,6 +731,7 @@ namespace CLM_framework_GUI
 
                 capture.Dispose();
             }
+            face_analyser.Dispose();            
         }
 
         // Stopping the tracking

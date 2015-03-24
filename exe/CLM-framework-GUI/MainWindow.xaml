@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
-        Title="CLM Framework" Height="500" Width="1000" MinWidth="700" MinHeight="350" Closing="Window_Closing">
+        Title="CLM Framework" Height="500" Width="1300" MinWidth="700" MinHeight="350" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.25*" MinWidth="320"/>
-            <ColumnDefinition Width="0.9*" MinWidth="90"/>
-            <ColumnDefinition Width="1.25*" MinWidth="90"/>
+            <ColumnDefinition Width="2.1*" MinWidth="320"/>
+            <ColumnDefinition Width="0.8*" MinWidth="90"/>
             <ColumnDefinition Width="1*" MinWidth="90"/>
+            <ColumnDefinition Width="1.6*" MinWidth="90"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -63,10 +63,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0">
-                    <CLM_framework_GUI:SimpleImage x:Name="AlignedFace" />
+                    <CLM_framework_GUI:SimpleImage x:Name="AlignedFace" MaxHeight="150"/>
                 </Border>
                 <Border Grid.Row="1">
-                    <CLM_framework_GUI:SimpleImage x:Name="AlignedHOG" />
+                    <CLM_framework_GUI:SimpleImage x:Name="AlignedHOG" MaxHeight="150"/>
                 </Border>
             </Grid>
         </GroupBox>
@@ -123,7 +123,7 @@
             <GroupBox.Header>
                 Action Units
             </GroupBox.Header>
-            <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <GroupBox>
                 <GroupBox.Header>
                     Classification

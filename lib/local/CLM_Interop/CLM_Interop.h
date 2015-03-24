@@ -626,6 +626,12 @@ namespace CLM_Interop {
 			RawImage^ HOG_vis_image = gcnew RawImage(*visualisation);
 			return HOG_vis_image;
 		}
+
+		void Reset()
+		{
+			face_analyser->Reset();
+		}
+
 		// Finalizer. Definitely called before Garbage Collection,
 		// but not automatically called on explicit Dispose().
 		// May be called multiple times.
