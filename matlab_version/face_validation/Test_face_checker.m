@@ -5,13 +5,13 @@ function [ predictions, gts, rmse, corr_coeff ] = Test_face_checker( face_check_
     % Read in the face images
     [image_locs, ~, landmark_locations] = Collect_wild_imgs('C:/Users/Tadas/Dropbox/AAM/test data/');
     
-    load '../models/pdm/pdm_68_multi_pie';
+    load '../models/pdm/pdm_68_aligned_wild.mat';
     load '../models/tri_68.mat';
         
     % Make sure same data generated all the time
     rng(0);
 
-    neg_image_loc = 'F:/datasets/detection_validation/neg/';
+    neg_image_loc = 'E:/datasets/detection_validation/neg/';
 
     neg_images = cat(1,dir([neg_image_loc, '/*.jpg']),dir([neg_image_loc, '/*.png']));
 

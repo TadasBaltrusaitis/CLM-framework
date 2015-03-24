@@ -124,8 +124,7 @@ for i=1:numel(images)
 
     % Center the pixel
     actualShape = squeeze(labels(i,:,:)) - 0.5;
-
-    actualShape = squeeze(labels(i,:,:));
+    
     errors(i) = sqrt(mean(sum((actualShape(valid_points,:) - shape(valid_points,:)).^2,2)));      
     width = ((max(actualShape(valid_points,1)) - min(actualShape(valid_points,1)))+(max(actualShape(valid_points,2)) - min(actualShape(valid_points,2))))/2;
     errors_normed(i) = errors(i)/width;                                    
