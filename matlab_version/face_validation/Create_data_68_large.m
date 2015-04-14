@@ -56,7 +56,7 @@ neg_image_loc = 'E:/datasets/detection_validation/neg/';
 
 neg_images = cat(1,dir([neg_image_loc, '/*.jpg']),dir([neg_image_loc, '/*.png']));
 
-max_img_used = 2500;
+max_img_used = 4000;
 
 % do it separately for centers due to memory limitations
 for r=1:size(centres_all,1)
@@ -224,7 +224,7 @@ for r=1:size(centres_all,1)
 
         % A somewhat offset example
         
-        trans_mod = trans_orig + randn(2,1) * 10;
+        trans_mod = trans_orig + randn(2,1) * 20;
         p_global = [a_orig; eul_orig'; trans_mod];
         
         labels_mod = GetShapeOrtho(M, V, params_orig, p_global);
@@ -239,7 +239,7 @@ for r=1:size(centres_all,1)
         errors(curr_filled,:) = error;
        
         % A rotated sample
-        eul_mod = eul_orig + randn(1,3)*0.2;
+        eul_mod = eul_orig + randn(1,3)*0.3;
         p_global = [a_orig; eul_mod'; trans_orig];
         
         labels_mod = GetShapeOrtho(M, V, params_orig, p_global);
