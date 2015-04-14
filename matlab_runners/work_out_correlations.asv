@@ -55,11 +55,22 @@ all_err = mean(abs(all_gts - all_hps), 2);
 corr(all_hps, all_gts)
 corr(all_hps(rel_frames, :), all_gts(rel_frames, :))
 
+centres_all = [0     0     0;
+               0   -20     0;
+               0   -45     0;
+               0   -70     0;
+               0    20     0;
+               0    45     0;
+               0    70     0];           
+           
+bin = bsxfun(@plus, all_hps, centres_all);           
+[~, ids] = min(abs(bin'));
+
 %%
-pitch_err = mean(abs(all_hps(rel_frames,1) - all_gts(rel_frames,1)))
-yaw_err = mean(abs(all_hps(rel_frames,2) - all_gts(rel_frames,2)))
-roll_err = mean(abs(all_hps(rel_frames,3) - all_gts(rel_frames,3)))
-sum(rel_frames)/numel(rel_frames)
+% pitch_err = mean(abs(all_hps(rel_frames,1) - all_gts(rel_frames,1)))
+% yaw_err = mean(abs(all_hps(rel_frames,2) - all_gts(rel_frames,2)))
+% roll_err = mean(abs(all_hps(rel_frames,3) - all_gts(rel_frames,3)))
+
 %% draw errors properly
 yaw_bins  = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
 err_yaw_bin = zeros(size(yaw_bins));

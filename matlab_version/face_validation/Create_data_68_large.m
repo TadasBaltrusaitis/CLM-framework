@@ -25,6 +25,9 @@ for i=1:numel(data_files)
     
 end
 
+% Do not use extreme pose
+centres_all = centres_all(1:3,:);
+
 % Construct mirror indices (which views need to be flipped to create other
 % profile training data)
 mirror_inds = zeros(size(centres_all,1), 1);
