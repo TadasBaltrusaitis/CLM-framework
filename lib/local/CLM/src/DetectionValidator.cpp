@@ -530,7 +530,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		input_maps = outputs;
 
 	}
-
+	
 	// Turn it to -1, 1 range
 	double dec = (outputs[0].at<float>(0) - 0.5) * 2.0;
 
