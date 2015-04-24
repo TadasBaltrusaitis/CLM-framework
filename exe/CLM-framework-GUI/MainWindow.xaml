@@ -33,6 +33,7 @@
                 <MenuItem Name="RecordHOGCheckBox" IsCheckable="True" Header="Record HOG" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordParamsCheckBox" IsCheckable="True" Header="Record model parameters" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordAlignedCheckBox" IsCheckable="True" Header="Record aligned faces" Click="recordCheckBox_click"></MenuItem>
+                <MenuItem Name="RecordTrackedVidCheckBox" IsCheckable="True" Header="Record tracked video" Click="recordCheckBox_click"></MenuItem>
             </MenuItem>
             <MenuItem Header="AU settings">
                 <MenuItem Name="UseDynamicModelsCheckBox" IsChecked="True" IsCheckable="True" Header="Use dynamic models" Click="UseDynamicModelsCheckBox_Click"></MenuItem>

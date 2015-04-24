@@ -81,6 +81,7 @@ namespace CLM_framework_GUI
         bool record_HOG = false; // HOG features extracted from face images
         bool record_LBP = false; // LBP features extracted from face images
         bool record_aligned = false; // aligned face images
+        bool record_tracked_vid = false;
 
         // TODO if image don't record some of these (unless treated as video?)
         // Separate entries for video/image in opening file menu
@@ -123,6 +124,7 @@ namespace CLM_framework_GUI
             {
                 RecordAUCheckBox.IsChecked = record_aus;
                 RecordAlignedCheckBox.IsChecked = record_aligned;
+                RecordTrackedVidCheckBox.IsChecked = record_tracked_vid;
                 RecordHOGCheckBox.IsChecked = record_HOG;
                 RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
@@ -145,7 +147,7 @@ namespace CLM_framework_GUI
 
         }
 
-        private void SetupRecording(String root, String filename)
+        private void SetupRecording(String root, String filename, int width, int height)
         {
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
@@ -250,6 +252,13 @@ namespace CLM_framework_GUI
                 face_analyser.SetupAlignedImageRecording(aligned_root);
             }
 
+            if (record_tracked_vid)
+            {
+                String vid_loc = root + "/" + filename + ".avi";
+                System.IO.Directory.CreateDirectory(root);
+                face_analyser.SetupTrackingRecording(vid_loc, width, height, 30);
+            }
+
             if (record_HOG)
             {
                 String filename_HOG = root + "/" + filename + ".hog";
@@ -274,6 +283,9 @@ namespace CLM_framework_GUI
 
             if (record_HOG)
                 face_analyser.StopHOGRecording();
+
+            if (record_tracked_vid)
+                face_analyser.StopTrackingRecording();
 
             if(record_aus && output_au_class != null && output_au_reg != null)
             {
@@ -390,6 +402,11 @@ namespace CLM_framework_GUI
             {
                 face_analyser.RecordHOGFrame();
             }
+
+            if (record_tracked_vid)
+            {
+                face_analyser.RecordTrackedFace();
+            }
         }
 
         // The main function call for processing images, video files or webcam feed
@@ -415,7 +432,7 @@ namespace CLM_framework_GUI
                         // Prepare recording if any
                         String file_no_ext = System.IO.Path.GetFileNameWithoutExtension(filename);
                         
-                        SetupRecording(record_root, file_no_ext);
+                        SetupRecording(record_root, file_no_ext, capture.width, capture.height);
 
                         // Start the actual processing                        
                         VideoLoop();
@@ -444,7 +461,7 @@ namespace CLM_framework_GUI
                     // Prepare recording if any                    
                     String dir_out = DateTime.Now.ToString("yyyy-MMM-dd--HH-mm");
 
-                    SetupRecording(record_root + "/" + dir_out, "webcam");
+                    SetupRecording(record_root + "/" + dir_out, "webcam", width, height);
 
                     // Start the actual processing
                     VideoLoop();
@@ -775,6 +792,7 @@ namespace CLM_framework_GUI
             record_aus = RecordAUCheckBox.IsChecked;
             record_aligned = RecordAlignedCheckBox.IsChecked;
             record_HOG = RecordHOGCheckBox.IsChecked;
+            record_tracked_vid = RecordTrackedVidCheckBox.IsChecked;
             record_2D_landmarks = RecordLandmarks2DCheckBox.IsChecked;
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
             record_params = RecordParamsCheckBox.IsChecked;

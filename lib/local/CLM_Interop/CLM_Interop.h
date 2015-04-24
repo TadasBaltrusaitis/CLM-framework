@@ -54,6 +54,7 @@ namespace CLM_Interop {
 
 	public:
 
+		int width, height;
 
 		Capture(int device, int width, int height)
 		{
@@ -67,6 +68,8 @@ namespace CLM_Interop {
 			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 			is_webcam = true;
+			this->width = width;
+			this->height = height;
 		}
 
 		Capture(System::String^ videoFile)
@@ -77,6 +80,8 @@ namespace CLM_Interop {
 			vc = new VideoCapture(marshal_as<std::string>(videoFile));
 			fps = vc->get(CV_CAP_PROP_FPS);
 			is_webcam = false;
+			this->width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
+			this->height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
 		}
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
@@ -192,7 +197,7 @@ namespace CLM_Interop {
 			{
 				mirroredFrame->Mat.copyTo(latestFrame->Mat);
 			}
-
+			
 			if (grayFrame == nullptr) {
 				if (latestFrame->Width > 0) {
 					grayFrame = gcnew RawImage(latestFrame->Width, latestFrame->Height, CV_8UC1);
@@ -441,13 +446,15 @@ namespace CLM_Interop {
 		cv::Mat_<double>* hog_features;
 		cv::Mat* aligned_face;
 		cv::Mat* visualisation;
-		
+		cv::Mat* tracked_face;
+
 		// Variables used for recording things
 		std::ofstream* hog_output_file;
 		std::string* align_output_dir;
 		int* num_rows;
 		int* num_cols;
 		bool* good_frame;
+		cv::VideoWriter* tracked_vid_writer;
 
 	public:
 
@@ -470,6 +477,7 @@ namespace CLM_Interop {
 
 			aligned_face = new cv::Mat();
 			visualisation = new cv::Mat();
+			tracked_face = new cv::Mat();
 
 			num_rows = new int[0];
 			num_cols = new int[0];
@@ -499,9 +507,19 @@ namespace CLM_Interop {
 	
 		}
 
+		void SetupTrackingRecording(System::String^ file, int width, int height, double fps)
+		{
+			tracked_vid_writer = new cv::VideoWriter(marshal_as<std::string>(file), CV_FOURCC('D', 'I', 'V', 'X'), fps, Size(width, height));
+		}
+
 		void StopHOGRecording()
 		{
 			hog_output_file->close();
+		}
+
+		void StopTrackingRecording()
+		{
+			tracked_vid_writer->release();
 		}
 
 		void RecordAlignedFrame(int frame_num)
@@ -550,6 +568,11 @@ namespace CLM_Interop {
 
 		}
 
+		void RecordTrackedFace()
+		{
+			tracked_vid_writer->write(*tracked_face);
+		}
+
 		void AddNextFrame(RawImage^ frame, CLMTracker::CLM^ clm, bool dynamic_shift, bool dynamic_scale) {
 			
 			face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, dynamic_shift, dynamic_scale, true);
@@ -561,6 +584,12 @@ namespace CLM_Interop {
 			*visualisation = face_analyser->GetLatestHOGDescriptorVisualisation();
 
 			*good_frame = clm->clm->detection_success;
+
+			*tracked_face = frame->Mat.clone();
+			if(clm->clm->detection_success)
+			{
+				::CLMTracker::Draw(*tracked_face, *clm->clm);
+			}
 		}
 		
 		List<System::String^>^ GetClassActionUnitsNames()
@@ -646,6 +675,8 @@ namespace CLM_Interop {
 			delete good_frame;
 			delete align_output_dir;
 			delete face_analyser;
+			delete tracked_face;
+			delete tracked_vid_writer;
 		}
 
 		// Destructor. Called on explicit Dispose() only.
