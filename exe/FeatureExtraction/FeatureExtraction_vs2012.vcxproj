@@ -48,7 +48,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <TargetName>FeatureExtraction</TargetName>
     <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -98,6 +98,9 @@
     <ClCompile Include="FeatureExtraction.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\3rdParty\dlib\dlib.vcxproj">
+      <Project>{b47a5f12-2567-44e9-ae49-35763ec82149}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\lib\local\CLM\CLM_vs2012.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>

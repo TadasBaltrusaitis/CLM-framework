@@ -6,7 +6,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-namespace FaceAnalyser
+namespace FaceAnalysis
 {
 	//===========================================================================	
 	// Defining a set of useful utility functions to be used within FaceAnalyser

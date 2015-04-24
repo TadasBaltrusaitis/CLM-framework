@@ -1,0 +1,17 @@
+﻿<Window x:Class="Ophthalm_experiments.TextEntryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuration and patient information" Height="210" Width="300">
+    <Grid>
+        <StackPanel FocusManager.FocusedElement="{Binding ElementName=ResponseTextBox}">
+            <TextBlock HorizontalAlignment="Center" Text="Enter patient ID" FontSize="20"/> 
+            <TextBox Margin="0,4,0,0" x:Name="ResponseTextBox" FontSize="20" Width="120" TextChanged="ResponseTextBox_TextChanged" />
+            <Label Name="warningLabel" Visibility="Collapsed" FontStyle="Italic" Foreground="Red" HorizontalAlignment="Center">Can't use the following characters: " \ / | &lt; > : * ?</Label>
+            <CheckBox HorizontalAlignment="Center" x:Name="RecordVideoCheckBox" Margin="-25,10,0,0" Content="Record video"/>
+            
+            <CheckBox Margin="0,6,0,0" IsChecked="True" HorizontalAlignment="Center" x:Name="RecordHeadPoseCheckBox" Content="Record head pose"/>
+
+            <Button Margin="0,8,0,0" Content="OK" Click="OKButton_Click" Width="100" VerticalAlignment="Bottom"/>
+        </StackPanel>
+    </Grid>
+</Window>

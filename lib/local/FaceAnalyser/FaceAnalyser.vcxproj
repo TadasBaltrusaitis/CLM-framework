@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}</ProjectGuid>
     <RootNamespace>FaceAnalyser</RootNamespace>
+    <ProjectName>FaceAnalysis</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -67,6 +68,12 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300d.dll" "$(OutDir)"
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"
+xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,6 +95,12 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300.dll" "$(OutDir)"
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
+xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"
+xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\3rdParty\dlib\dlib.vcxproj">
@@ -98,10 +111,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\FaceAnalyser.cpp" />
+    <ClCompile Include="src\SVM_dynamic_lin.cpp" />
+    <ClCompile Include="src\SVM_static_lin.cpp" />
+    <ClCompile Include="src\SVR_dynamic_lin_regressors.cpp" />
+    <ClCompile Include="src\SVR_static_lin_regressors.cpp" />
+    <ClInclude Include="include\FaceAnalyser.h" />
     <ClInclude Include="include\Face_utils.h">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClCompile Include="src\Face_utils.cpp" />
+    <ClInclude Include="include\SVM_dynamic_lin.h" />
+    <ClInclude Include="include\SVM_static_lin.h" />
+    <ClInclude Include="include\SVR_dynamic_lin_regressors.h" />
+    <ClInclude Include="include\SVR_static_lin_regressors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

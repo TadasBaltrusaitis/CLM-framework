@@ -118,7 +118,7 @@ Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double 
 	
 		double X = ((clm_model.params_global[4] - cx) * (1.0/fx)) * Z;
 		double Y = ((clm_model.params_global[5] - cy) * (1.0/fy)) * Z;
-	
+ 
 		// Correction for orientation
 
 		// 2D points
@@ -348,7 +348,9 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		{
 			// Indicate that tracking has started as a face was detected
 			clm_model.tracking_initialised = true;
-
+			
+			// TODO this can use multiple hypotheses
+			
 			// Keep track of old model values so that they can be restored if redetection fails
 			Vec6d params_global_init = clm_model.params_global;
 			Mat_<double> params_local_init = clm_model.params_local.clone();
