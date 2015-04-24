@@ -348,7 +348,9 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		{
 			// Indicate that tracking has started as a face was detected
 			clm_model.tracking_initialised = true;
-
+			
+			// TODO this can use multiple hypotheses
+			
 			// Keep track of old model values so that they can be restored if redetection fails
 			Vec6d params_global_init = clm_model.params_global;
 			Mat_<double> params_local_init = clm_model.params_local.clone();

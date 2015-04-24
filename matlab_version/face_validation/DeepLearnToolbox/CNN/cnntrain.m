@@ -6,7 +6,9 @@ function net = cnntrain(net, x, y, opts)
     end
     net.rL = [];
     for i = 1 : opts.numepochs
-        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs)]);
+        net = cnnff(net, x);
+        error_curr = sqrt(mean((net.o - y).^2));
+        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs), ' RMSE-', num2str(error_curr)]);
         tic;
         kk = randperm(m);
         for l = 1 : numbatches

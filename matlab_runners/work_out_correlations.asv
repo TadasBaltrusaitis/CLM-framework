@@ -61,18 +61,10 @@ centres_all = [0     0     0;
                0   -70     0;
                0    20     0;
                0    45     0;
-               0    70     0];       
+               0    70     0];           
            
-ids = zeros(size(all_err,1),1);
-mins = [];
-
-for i=1:size(centres_all, 1)                
-    mins = cat(2, mins, mean(abs(bsxfun(@plus, all_hps, -centres_all(i,:))), 2));
-end
-
-% find the center id for each of the frames
-[~, ids] = min(mins');
-ids = ids';
+bin = bsxfun(@plus, all_hps, centres_all);           
+[~, ids] = min(abs(bin'));
 
 %%
 % pitch_err = mean(abs(all_hps(rel_frames,1) - all_gts(rel_frames,1)))

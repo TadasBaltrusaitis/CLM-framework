@@ -1,6 +1,6 @@
 function Create_data_68_large()
 
-load '../models/pdm/pdm_68_multi_pie';
+load '../models/pdm/pdm_68_aligned_wild';
 load '../models/tri_68.mat';
 
 % This script uses the same format used for patch expert training, and
@@ -25,6 +25,9 @@ for i=1:numel(data_files)
     
 end
 
+% Do not use extreme pose
+centres_all = centres_all(1:3,:);
+
 % Construct mirror indices (which views need to be flipped to create other
 % profile training data)
 mirror_inds = zeros(size(centres_all,1), 1);
@@ -45,18 +48,18 @@ for i=1:numel(data_files)
 end
         
 % Replace with your location of training data
-outputLocation = 'F:/datasets/detection_validation/prep_data/';
+outputLocation = 'E:/datasets/detection_validation/prep_data/';
     
 num_more_neg = 10;
 
 % Make sure same data generated all the time
 rng(0);
 
-neg_image_loc = 'F:/datasets/detection_validation/neg/';
+neg_image_loc = 'E:/datasets/detection_validation/neg/';
 
 neg_images = cat(1,dir([neg_image_loc, '/*.jpg']),dir([neg_image_loc, '/*.png']));
 
-max_img_used = 2500;
+max_img_used = 4000;
 
 % do it separately for centers due to memory limitations
 for r=1:size(centres_all,1)
@@ -156,7 +159,7 @@ for r=1:size(centres_all,1)
             img = fliplr(img);
             imgSize = size(img);
             flippedLbls = labels;
-            flippedLbls(:,1) = imgSize(1) - flippedLbls(:,1);
+            flippedLbls(:,1) = imgSize(1) - flippedLbls(:,1) + 1;
             tmp1 = flippedLbls(label_mirror_inds(:,1),:);
             tmp2 = flippedLbls(label_mirror_inds(:,2),:);            
             flippedLbls(label_mirror_inds(:,2),:) = tmp1;
@@ -173,8 +176,12 @@ for r=1:size(centres_all,1)
            continue;
         end
         
+        % Centering the pixel so that 0,0 is center of the top left pixel
+        labels = labels - 1;
+        
         curr_filled = curr_filled + 1;        
         [features] = ExtractFaceFeatures(img, labels, triangulation, triX, mask, alphas, betas, nPix, minX, minY);
+%         sample_img = zeros(size(mask));sample_img(mask) = features;imagesc(sample_img)
         examples(curr_filled,:) = features;
         errors(curr_filled,:) = 0;
         
@@ -192,6 +199,7 @@ for r=1:size(centres_all,1)
         labels_mod = labels_mod(:,1:2);
         
         [features] = ExtractFaceFeatures(img, labels_mod, triangulation, triX, mask, alphas, betas, nPix, minX, minY);
+%         sample_img = zeros(size(mask));sample_img(mask) = features;imagesc(sample_img)
 
         curr_filled = curr_filled + 1;        
         examples(curr_filled,:) = features;
@@ -209,7 +217,8 @@ for r=1:size(centres_all,1)
         labels_mod = labels_mod(:,1:2);
         
         [features] = ExtractFaceFeatures(img, labels_mod, triangulation, triX, mask, alphas, betas, nPix, minX, minY);
-                
+%         sample_img = zeros(size(mask));sample_img(mask) = features;imagesc(sample_img)
+        
         curr_filled = curr_filled + 1;        
         examples(curr_filled,:) = features;
         
@@ -218,7 +227,7 @@ for r=1:size(centres_all,1)
 
         % A somewhat offset example
         
-        trans_mod = trans_orig + randn(2,1) * 10;
+        trans_mod = trans_orig + randn(2,1) * 20;
         p_global = [a_orig; eul_orig'; trans_mod];
         
         labels_mod = GetShapeOrtho(M, V, params_orig, p_global);
@@ -233,7 +242,7 @@ for r=1:size(centres_all,1)
         errors(curr_filled,:) = error;
        
         % A rotated sample
-        eul_mod = eul_orig + randn(1,3)*0.2;
+        eul_mod = eul_orig + randn(1,3)*0.3;
         p_global = [a_orig; eul_mod'; trans_orig];
         
         labels_mod = GetShapeOrtho(M, V, params_orig, p_global);
@@ -316,8 +325,8 @@ function [features] = ExtractFaceFeatures(img, labels, triangulation, triX, mask
 
     % Make sure labels are within range
     [hRes, wRes] = size(img);
-    labels(labels(:,1) < 1,1) = 1;
-    labels(labels(:,2) < 1,2) = 1;
+    labels(labels(:,1) < 0,1) = 0;
+    labels(labels(:,2) < 0,2) = 0;
 
     labels(labels(:,1) > wRes-1,1) = wRes-1;
     labels(labels(:,2) > hRes-1,2) = hRes-1;   

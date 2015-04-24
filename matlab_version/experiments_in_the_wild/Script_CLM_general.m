@@ -29,7 +29,7 @@ verbose = false; % set to true to visualise the fitting
 output_root = './wild_fit_clm_general/';
 
 % the default PDM to use
-pdmLoc = ['../models/pdm/pdm_68_multi_pie.mat'];
+pdmLoc = ['../models/pdm/pdm_68_aligned_wild.mat'];
 load(pdmLoc);
 
 pdm = struct;
