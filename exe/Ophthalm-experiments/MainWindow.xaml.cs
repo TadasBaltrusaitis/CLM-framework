@@ -475,7 +475,7 @@ namespace Ophthalm_experiments
                         YPoseLabel.Content = (int)pose[1] + " mm";
                         ZPoseLabel.Content = (int)pose[2] + " mm";
 
-                        double confidence = (- clm_model.GetConfidence() + 0.6) /2.0;
+                        double confidence = (- clm_model.GetConfidence() + 1) /2.0;
 
                         if (confidence < 0)
                             confidence = 0;
