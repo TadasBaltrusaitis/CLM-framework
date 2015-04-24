@@ -1040,7 +1040,10 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 				next_point = 20;
 
 			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
-			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+			if( i < 8 || i > 20)
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+			else
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2*2.0);
 
 			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
 			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);

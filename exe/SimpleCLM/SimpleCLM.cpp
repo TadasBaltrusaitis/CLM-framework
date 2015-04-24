@@ -110,6 +110,9 @@ int main (int argc, char **argv)
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
 	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
+
+	cout << tracked_videos_output[0] << endl;
+
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -151,21 +154,53 @@ int main (int argc, char **argv)
 	std::vector<int> left_eye_inds_sp;
 	if(clm_left_eye_model.pdm.NumberOfPoints() == 6)
 	{
+
+		vector<int> windows_large;
+		windows_large.push_back(3);
+		windows_large.push_back(5);
+		windows_large.push_back(7);
+
+		vector<int> windows_small;
+		windows_large.push_back(3);
+		windows_small.push_back(5);
+		windows_small.push_back(7);
+
+		clm_parameters_eye.window_sizes_init = windows_large;
+		clm_parameters_eye.window_sizes_small = windows_small;
+		clm_parameters_eye.window_sizes_current = windows_large;
+
 		right_eye_inds_sp.push_back(0); right_eye_inds_sp.push_back(1); right_eye_inds_sp.push_back(2);
 		right_eye_inds_sp.push_back(3); right_eye_inds_sp.push_back(4); right_eye_inds_sp.push_back(5);
 		left_eye_inds_sp.push_back(0); left_eye_inds_sp.push_back(1); left_eye_inds_sp.push_back(2);
 		left_eye_inds_sp.push_back(3); left_eye_inds_sp.push_back(4); left_eye_inds_sp.push_back(5);
-		clm_parameters_eye.reg_factor = 0.02;
-		clm_parameters_eye.sigma = 0.5;
+		clm_parameters_eye.reg_factor = 0.5;
+		clm_parameters_eye.sigma = 2.0;
 	}
 	else
 	{
+		vector<int> windows_large;
+		windows_large.push_back(3);
+		windows_large.push_back(5);
+		windows_large.push_back(7);
+
+		vector<int> windows_small;
+		windows_large.push_back(3);
+		windows_small.push_back(5);
+		windows_small.push_back(7);
+
+		clm_parameters_eye.window_sizes_init = windows_large;
+		clm_parameters_eye.window_sizes_small = windows_small;
+		clm_parameters_eye.window_sizes_current = windows_large;
+
+		clm_parameters_eye.window_sizes_init = windows_large;
+		clm_parameters_eye.window_sizes_small = windows_small;
+		clm_parameters_eye.window_sizes_current = windows_large;
 		right_eye_inds_sp.push_back(8); right_eye_inds_sp.push_back(10); right_eye_inds_sp.push_back(12);
 		right_eye_inds_sp.push_back(14); right_eye_inds_sp.push_back(16); right_eye_inds_sp.push_back(18);
 		left_eye_inds_sp.push_back(8); left_eye_inds_sp.push_back(10); left_eye_inds_sp.push_back(12);
 		left_eye_inds_sp.push_back(14); left_eye_inds_sp.push_back(16); left_eye_inds_sp.push_back(18);
-		clm_parameters_eye.reg_factor = 2;
-		clm_parameters_eye.sigma = 4.0;
+		clm_parameters_eye.reg_factor = 0.5;
+		clm_parameters_eye.sigma = 2.0;
 	}
 
 	// If multiple video files are tracked, use this to indicate if we are done
@@ -433,7 +468,7 @@ int main (int argc, char **argv)
 
 				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 
-				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
+				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
 
 			}
 

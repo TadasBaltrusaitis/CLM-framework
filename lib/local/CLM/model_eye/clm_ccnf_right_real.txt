@@ -1,0 +1,4 @@
+PDM pdms/pdm_6_eye_3D_lid_with_closed.txt
+PatchesCCNF patch_experts/ccnf_patches_0.75_real_eye.txt
+PatchesCCNF patch_experts/ccnf_patches_1.00_real_eye.txt
+PatchesCCNF patch_experts/ccnf_patches_1.50_real_eye.txt
