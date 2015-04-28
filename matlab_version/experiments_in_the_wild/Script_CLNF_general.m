@@ -109,9 +109,6 @@ for i=1:numel(images)
     all_lmark_lhoods(:,i) = lmark_lhood;
     all_views_used(i) = view_used;
 
-    % TODO the shape correction?
-    shape = shape + 1;
-
     shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
