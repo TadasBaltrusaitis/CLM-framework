@@ -1,4 +1,4 @@
-function Script_CLNF_general()
+function Script_CLNF_general_eyes()
 
 addpath('../PDM_helpers/');
 addpath('../fitting/normxcorr2_mex_ALL');
@@ -30,7 +30,7 @@ verbose = false; % set to true to visualise the fitting
 output_root = './wild_fit_clnf/';
 
 % the default PDM to use
-pdmLoc = ['../models/pdm/pdm_68_aligned_wild.mat'];
+pdmLoc = ['../models/pdm/pdm_68_aligned_wild_eyes.mat'];
 
 load(pdmLoc);
 
@@ -108,6 +108,9 @@ for i=1:numel(images)
 
     all_lmark_lhoods(:,i) = lmark_lhood;
     all_views_used(i) = view_used;
+
+    % TODO the shape correction?
+    shape = shape + 1;
 
     shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
@@ -187,7 +190,7 @@ fprintf('experiment %d done: mean normed error %.3f median normed error %.4f\n',
     numel(experiments), mean(errors_normed), median(errors_normed));
 
 %%
-output_results = 'results/results_wild_clnf_general.mat';
+output_results = 'results/results_wild_clnf_general_eyes.mat';
 save(output_results, 'experiments');
     
 end
