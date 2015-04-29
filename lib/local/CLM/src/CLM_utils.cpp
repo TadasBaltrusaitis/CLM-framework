@@ -1028,8 +1028,8 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(0.4* ((double)img.cols) / 640.0);
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
 
 			int next_point = i + 1;
 			if(i == 7)
@@ -1040,10 +1040,10 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 				next_point = 20;
 
 			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
-			if( i < 8 || i > 20)
-				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+			if( i < 8 || i > 19)
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
 			else
-				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2*2.0);
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2);
 
 			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
 			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
@@ -1058,8 +1058,8 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(0.4* ((double)img.cols) / 640.0);
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
 
 			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
 			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
@@ -1069,7 +1069,7 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 				next_point = 0;
 
 			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
-			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2*2.0);
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
 		}
 	}
 }

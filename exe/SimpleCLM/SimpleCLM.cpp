@@ -89,6 +89,109 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
+Mat draw_zoomed_in_eye(const CLMTracker::CLM& clm_model, const Mat& orig_image)
+{
+
+	// First extract the bounding box and extend it a bit
+	int num_points = clm_model.pdm.NumberOfPoints();
+
+	cv::Rect_<double> bbox = clm_model.GetBoundingBox();
+
+	double scale = 2.0;
+
+	bbox.x = bbox.x - 0.5 * bbox.width * (scale - 1.0);
+	bbox.y = bbox.y - 0.5 * bbox.height * (scale - 1.0);
+
+	bbox.width *= scale;
+	bbox.height *= scale;
+
+	// Make sure the bounding box is within bounds
+	bbox = bbox & cv::Rect_<double>(0, 0, orig_image.size().width, orig_image.size().height);
+
+	cv::Rect_<int> bbox_i((int)bbox.x, (int)bbox.y, (int)bbox.width, (int)bbox.height);
+
+	Mat image_zoomed = orig_image(bbox_i).clone();
+
+	if(!image_zoomed.empty())
+	{
+		Mat_<double> shape2D = clm_model.detected_landmarks;
+
+		// A rough heuristic for drawn point size
+		double thickness = 2.0;
+
+		double desired_width = 180;
+
+		double img_resize_scale = (double) desired_width / (double) image_zoomed.cols;
+
+		cv::resize(image_zoomed, image_zoomed, Size(), img_resize_scale, img_resize_scale);
+
+		image_zoomed = image_zoomed(Rect(0, 0, image_zoomed.cols, image_zoomed.rows));
+
+		if(num_points == 28) // drawing eyes
+		{
+			for( int i = 0; i < num_points; ++i)
+			{		
+				Point featurePoint((int)shape2D.at<double>(i) - bbox_i.x, (int)shape2D.at<double>(i + num_points) - bbox_i.y);
+				featurePoint = featurePoint * img_resize_scale;
+
+				int next_point = i + 1;
+				if(i == 7)
+					next_point = 0;
+				if(i == 19)
+					next_point = 8;
+				if(i == 27)
+					next_point = 20;
+
+				Point nextFeaturePoint((int)shape2D.at<double>(next_point) - bbox_i.x, (int)shape2D.at<double>(next_point + num_points) - bbox_i.y);
+				nextFeaturePoint = nextFeaturePoint * img_resize_scale;
+
+				if( i < 8 || i > 19)
+					cv::line(image_zoomed, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness);
+				else
+					cv::line(image_zoomed, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness);
+
+				//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+				//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+
+			}
+		}
+		else if(num_points == 6)
+		{
+			for( int i = 0; i < num_points; ++i)
+			{		
+				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i + num_points));
+				featurePoint = featurePoint * img_resize_scale;
+
+				//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+				//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+				int next_point = i + 1;
+				if(i == 5)
+					next_point = 0;
+
+				Point nextFeaturePoint((int)shape2D.at<double>(next_point) - bbox_i.x, (int)shape2D.at<double>(next_point + num_points) - bbox_i.y);
+				cv::line(image_zoomed, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness);
+			}
+		}
+
+		int offset = 10;
+		int height = 80;
+
+		if(image_zoomed.rows < height + offset)
+		{
+			height = image_zoomed.rows  - offset;
+		}
+
+		image_zoomed = image_zoomed(Rect(0, offset, image_zoomed.cols, height));
+
+	}
+
+	return image_zoomed;
+
+
+}
+
 int main (int argc, char **argv)
 {
 
@@ -106,13 +209,10 @@ int main (int argc, char **argv)
 	CLMTracker::CLMParameters clm_parameters(arguments);
 
 	// Get the input output file parameters
-	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
 	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
-
-	cout << tracked_videos_output[0] << endl;
-
+	
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -158,12 +258,12 @@ int main (int argc, char **argv)
 		vector<int> windows_large;
 		windows_large.push_back(3);
 		windows_large.push_back(5);
-		windows_large.push_back(7);
+		windows_large.push_back(9);
 
 		vector<int> windows_small;
 		windows_large.push_back(3);
 		windows_small.push_back(5);
-		windows_small.push_back(7);
+		windows_small.push_back(9);
 
 		clm_parameters_eye.window_sizes_init = windows_large;
 		clm_parameters_eye.window_sizes_small = windows_small;
@@ -181,12 +281,12 @@ int main (int argc, char **argv)
 		vector<int> windows_large;
 		windows_large.push_back(3);
 		windows_large.push_back(5);
-		windows_large.push_back(7);
+		windows_large.push_back(9);
 
 		vector<int> windows_small;
 		windows_large.push_back(3);
 		windows_small.push_back(5);
-		windows_small.push_back(7);
+		windows_small.push_back(9);
 
 		clm_parameters_eye.window_sizes_init = windows_large;
 		clm_parameters_eye.window_sizes_small = windows_small;
@@ -244,6 +344,8 @@ int main (int argc, char **argv)
 		{
 			INFO_STREAM( "Attempting to capture from device: " << device );
 			video_capture = VideoCapture( device );
+			video_capture.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
+			video_capture.set(CV_CAP_PROP_FRAME_WIDTH, 800);
 
 			// Read a first frame often empty in camera
 			Mat captured_image;
@@ -311,7 +413,7 @@ int main (int argc, char **argv)
 			{
 				grayscale_image = captured_image.clone();				
 			}
-		
+			
 			// Get depth image
 			if(use_depth)
 			{
@@ -448,6 +550,21 @@ int main (int argc, char **argv)
 			if(detection_certainty < visualisation_boundary)
 			{
 				//CLMTracker::Draw(captured_image, clm_model);
+				Mat to_show_left = draw_zoomed_in_eye(clm_left_eye_model, captured_image);
+
+				if(!to_show_left.empty())
+					imshow("left", to_show_left);
+
+				Mat to_show_right = draw_zoomed_in_eye(clm_right_eye_model, captured_image);
+
+				if(!to_show_right.empty())
+					imshow("right", to_show_right);
+
+				if(!to_show_left.empty())
+					to_show_left.copyTo(captured_image(Rect(10, 0, to_show_left.cols, to_show_left.rows)));
+
+				if(!to_show_right.empty())
+					to_show_right.copyTo(captured_image(Rect(10, 80, to_show_right.cols, to_show_right.rows)));
 
 				CLMTracker::Draw(captured_image, clm_left_eye_model);
 				CLMTracker::Draw(captured_image, clm_right_eye_model);
@@ -485,7 +602,7 @@ int main (int argc, char **argv)
 			sprintf(fpsC, "%d", (int)fps);
 			string fpsSt("FPS:");
 			fpsSt += fpsC;
-			cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
+			//cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
 			
 			if(!clm_parameters.quiet_mode)
 			{
