@@ -33,3 +33,51 @@ for i=1:numel(in_vids)
 end
 
 dos(command);
+
+%% evaluating yt datasets
+d_loc = 'yt_features/';
+
+files_yt = dir([d_loc, '/*.txt']);
+preds_all_eye = [];
+gts_all = [];
+for i = 1:numel(files_yt)
+    [~, name, ~] = fileparts(files_yt(i).name);
+    pred_landmarks = dlmread([d_loc, files_yt(i).name], ' ');
+    pred_landmarks = pred_landmarks(:,3:end);
+    
+    xs = pred_landmarks(:, 1:end/2);
+    ys = pred_landmarks(:, end/2+1:end);
+    pred_landmarks = zeros([size(xs,2), 2, size(xs,1)]);
+    pred_landmarks(:,1,:) = xs';
+    pred_landmarks(:,2,:) = ys';
+    
+    load([database_root, name(1:end-3), '.mat']);
+    preds_all_eye = cat(3, preds_all_eye, pred_landmarks);
+    gts_all = cat(3, gts_all, labels);
+end
+
+%% evaluating yt datasets
+d_loc = 'yt_features_no_eye/';
+
+files_yt = dir([d_loc, '/*.txt']);
+preds_all = [];
+gts_all = [];
+for i = 1:numel(files_yt)
+    [~, name, ~] = fileparts(files_yt(i).name);
+    pred_landmarks = dlmread([d_loc, files_yt(i).name], ' ');
+    pred_landmarks = pred_landmarks(:,3:end);
+    
+    xs = pred_landmarks(:, 1:2:end/2);
+    ys = pred_landmarks(:, end/2+1:2:end);
+    pred_landmarks = zeros([size(xs,2), 2, size(xs,1)]);
+    pred_landmarks(:,1,:) = xs';
+    pred_landmarks(:,2,:) = ys';
+    
+    load([database_root, name(1:end-3), '.mat']);
+    preds_all = cat(3, preds_all, pred_landmarks);
+    gts_all = cat(3, gts_all, labels);
+end
+
+%%
+clnf_error = compute_error( gts_all - 1.5,  preds_all);
+clnf_error_eye = compute_error( gts_all - 1.5,  preds_all_eye);

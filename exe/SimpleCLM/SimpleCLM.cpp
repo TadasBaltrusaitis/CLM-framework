@@ -237,14 +237,15 @@ int main (int argc, char **argv)
 	clm_parameters_eye.window_sizes_init = windows_large;
 	clm_parameters_eye.window_sizes_small = windows_small;
 	clm_parameters_eye.window_sizes_current = windows_large;
-	//clm_parameters_eye
+	
+	boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
 
-	clm_parameters_eye.model_location = "model_eye/main_ccnf_synth_right.txt";
+	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_real_right.txt").string();
 	CLMTracker::CLM clm_right_eye_model(clm_parameters_eye.model_location);
 
-	clm_parameters_eye.model_location = "model_eye/main_ccnf_synth_left.txt";
+	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_real_left.txt").string();
 	CLMTracker::CLM clm_left_eye_model(clm_parameters_eye.model_location);
-
+	
 	// The correspondences in the main model
 	std::vector<int> right_eye_inds;
 	right_eye_inds.push_back(42); right_eye_inds.push_back(43); right_eye_inds.push_back(44);
@@ -263,12 +264,10 @@ int main (int argc, char **argv)
 		vector<int> windows_large;
 		windows_large.push_back(5);
 		windows_large.push_back(3);
-		//windows_large.push_back(9);
 
 		vector<int> windows_small;
 		windows_large.push_back(5);
 		windows_small.push_back(3);
-		//windows_small.push_back(9);
 
 		clm_parameters_eye.window_sizes_init = windows_large;
 		clm_parameters_eye.window_sizes_small = windows_small;
@@ -544,7 +543,7 @@ int main (int argc, char **argv)
 					to_show_right.copyTo(captured_image(Rect(10, 80, to_show_right.cols, to_show_right.rows)));
 
 				CLMTracker::Draw(captured_image, clm_model);
-
+				// TODO correct the drawing
 				//CLMTracker::Draw(captured_image, clm_left_eye_model);
 				//CLMTracker::Draw(captured_image, clm_right_eye_model);
 
@@ -561,7 +560,7 @@ int main (int argc, char **argv)
 				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
 				// Draw it in reddish if uncertain, blueish if certain
-
+				// TODO put back
 				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 
 				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
@@ -601,7 +600,7 @@ int main (int argc, char **argv)
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++ i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
+					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
