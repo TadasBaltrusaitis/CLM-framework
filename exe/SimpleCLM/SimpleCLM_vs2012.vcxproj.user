@@ -3,12 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>
-    </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-mloc "model/main_ccnf_general.txt" -f "../videos/default.wmv"</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-mloc "model/main_ccnf_general.txt" -f "../Release/recording/2015-03-17-14-58.avi"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-mloc "model/main_ccnf_general.txt" -f "../videos/default.wmv"</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

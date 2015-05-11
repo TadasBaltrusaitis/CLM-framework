@@ -496,7 +496,7 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 
 	for(size_t i = 0; i < n; ++i)
 	{
-		// THe landmark is invisible indicate this
+		// If the landmark is invisible indicate this
 		if(landmark_locations.at<double>(i) == 0)
 		{
 			visi_ind_2D.at<int>(i) = 0;
@@ -541,10 +541,28 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 		}		
 	}
 
-	double scaling = 1;
+	// Compute the initial global parameters
+	double min_x;
+	double max_x;
+	cv::minMaxLoc(landmark_locations(Rect(0, 0, 1, this->NumberOfPoints())), &min_x, &max_x);
+
+	double min_y;
+	double max_y;
+	cv::minMaxLoc(landmark_locations(Rect(0, this->NumberOfPoints(), 1, this->NumberOfPoints())), &min_y, &max_y);
+
+	double width = abs(min_x - max_x);
+	double height = abs(min_y - max_y);
+
+	Rect model_bbox;
+	CalcBoundingBox(model_bbox, Vec6d(1.0, 0.0, 0.0, 0.0, 0.0, 0.0), cv::Mat_<double>(this->NumberOfModes(), 1, 0.0));
+
+	Rect bbox((int)min_x, (int)min_y, (int)width, (int)height);
+
+	double scaling = ((width / model_bbox.width) + (height / model_bbox.height)) / 2;
+        
     Vec3d rotation_init = rotation;
 	Matx33d R = Euler2RotationMatrix(rotation_init);
-    Vec2d translation(0.0, 0.0);
+    Vec2d translation((min_x + max_x) / 2.0, (min_y + max_y) / 2.0);
     
 	Mat_<float> loc_params(this->NumberOfModes(),1, 0.0);
 	Vec6d glob_params(scaling, rotation_init[0], rotation_init[1], rotation_init[2], translation[0], translation[1]);

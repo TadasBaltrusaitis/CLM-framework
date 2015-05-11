@@ -160,7 +160,7 @@ Mat draw_zoomed_in_eye(const CLMTracker::CLM& clm_model, const Mat& orig_image)
 		{
 			for( int i = 0; i < num_points; ++i)
 			{		
-				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i + num_points));
+				Point featurePoint((int)shape2D.at<double>(i) - bbox_i.x, (int)shape2D.at<double>(i + num_points) - bbox_i.y);
 				featurePoint = featurePoint * img_resize_scale;
 
 				//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
@@ -171,6 +171,8 @@ Mat draw_zoomed_in_eye(const CLMTracker::CLM& clm_model, const Mat& orig_image)
 					next_point = 0;
 
 				Point nextFeaturePoint((int)shape2D.at<double>(next_point) - bbox_i.x, (int)shape2D.at<double>(next_point + num_points) - bbox_i.y);
+				nextFeaturePoint = nextFeaturePoint * img_resize_scale;
+
 				cv::line(image_zoomed, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness);
 			}
 		}
@@ -225,14 +227,17 @@ int main (int argc, char **argv)
 	windows_large.push_back(9);
 	windows_large.push_back(7);
 	windows_large.push_back(5);
+
 	vector<int> windows_small;
 	// TODO these might differ for real and synth
 	windows_small.push_back(5);
 	windows_small.push_back(5);
 	windows_small.push_back(5);
+
 	clm_parameters_eye.window_sizes_init = windows_large;
 	clm_parameters_eye.window_sizes_small = windows_small;
 	clm_parameters_eye.window_sizes_current = windows_large;
+	//clm_parameters_eye
 
 	clm_parameters_eye.model_location = "model_eye/main_ccnf_synth_right.txt";
 	CLMTracker::CLM clm_right_eye_model(clm_parameters_eye.model_location);
@@ -256,14 +261,14 @@ int main (int argc, char **argv)
 	{
 
 		vector<int> windows_large;
-		windows_large.push_back(3);
 		windows_large.push_back(5);
-		windows_large.push_back(9);
+		windows_large.push_back(3);
+		//windows_large.push_back(9);
 
 		vector<int> windows_small;
-		windows_large.push_back(3);
-		windows_small.push_back(5);
-		windows_small.push_back(9);
+		windows_large.push_back(5);
+		windows_small.push_back(3);
+		//windows_small.push_back(9);
 
 		clm_parameters_eye.window_sizes_init = windows_large;
 		clm_parameters_eye.window_sizes_small = windows_small;
@@ -273,8 +278,8 @@ int main (int argc, char **argv)
 		right_eye_inds_sp.push_back(3); right_eye_inds_sp.push_back(4); right_eye_inds_sp.push_back(5);
 		left_eye_inds_sp.push_back(0); left_eye_inds_sp.push_back(1); left_eye_inds_sp.push_back(2);
 		left_eye_inds_sp.push_back(3); left_eye_inds_sp.push_back(4); left_eye_inds_sp.push_back(5);
-		clm_parameters_eye.reg_factor = 0.5;
-		clm_parameters_eye.sigma = 2.0;
+		clm_parameters_eye.reg_factor = 0.1;
+		clm_parameters_eye.sigma = 1.0;
 	}
 	else
 	{
@@ -446,77 +451,50 @@ int main (int argc, char **argv)
 				// Do the eye landmark detection refinement
 				// First extract eye landmarks				
 
-				// TODO if too far from orig reinit
-
-				// TODO the wide params might be unnecessary if not doing tracking
-				if(!clm_left_eye_model.detection_success || !clm_right_eye_model.detection_success)
+				// TODO this should be pulled into landmark detection (with additional models for eyes)
+				int n_right_eye_points = clm_right_eye_model.pdm.NumberOfPoints();
+				Mat_<double> eye_locs(n_right_eye_points * 2, 1, 0.0);
+				for (size_t eye_ind = 0; eye_ind < right_eye_inds.size(); ++eye_ind)
 				{
-					int n_right_eye_points = clm_right_eye_model.pdm.NumberOfPoints();
-					Mat_<double> eye_locs(n_right_eye_points * 2, 1, 0.0);
-					for (size_t eye_ind = 0; eye_ind < right_eye_inds.size(); ++eye_ind)
-					{
-						eye_locs.at<double>(right_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]);
-						eye_locs.at<double>(right_eye_inds_sp[eye_ind] + n_right_eye_points) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
-					}
-
-					// First need to estimate the local and global parameters from the landmark detection of CLM
-					clm_right_eye_model.params_local.setTo(0);
-					clm_right_eye_model.pdm.CalcParams(clm_right_eye_model.params_global, clm_right_eye_model.params_local, eye_locs);		
-
-					int n_left_eye_points = clm_left_eye_model.pdm.NumberOfPoints();
-					eye_locs.create(n_left_eye_points * 2, 1);
-					for (size_t eye_ind = 0; eye_ind < left_eye_inds.size(); ++eye_ind)
-					{
-						eye_locs.at<double>(left_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]);
-						eye_locs.at<double>(left_eye_inds_sp[eye_ind] + n_left_eye_points) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
-					}
-
-					// First need to estimate the local and global parameters from the landmark detection of CLM
-					clm_left_eye_model.params_local.setTo(0);
-					clm_left_eye_model.pdm.CalcParams(clm_left_eye_model.params_global, clm_left_eye_model.params_local, eye_locs);		
-
-
-					clm_parameters_eye.window_sizes_current = clm_parameters_eye.window_sizes_init;
+					eye_locs.at<double>(right_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]);
+					eye_locs.at<double>(right_eye_inds_sp[eye_ind] + n_right_eye_points) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
 				}
-				else
+
+				// First need to estimate the local and global parameters from the landmark detection of CLM
+				clm_right_eye_model.params_local.setTo(0);
+				clm_right_eye_model.pdm.CalcParams(clm_right_eye_model.params_global, clm_right_eye_model.params_local, eye_locs);		
+
+				int n_left_eye_points = clm_left_eye_model.pdm.NumberOfPoints();
+				eye_locs.create(n_left_eye_points * 2, 1);
+				for (size_t eye_ind = 0; eye_ind < left_eye_inds.size(); ++eye_ind)
 				{
-					clm_parameters_eye.window_sizes_current = clm_parameters_eye.window_sizes_small;
+					eye_locs.at<double>(left_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]);
+					eye_locs.at<double>(left_eye_inds_sp[eye_ind] + n_left_eye_points) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
 				}
+
+				// First need to estimate the local and global parameters from the landmark detection of CLM
+				clm_left_eye_model.params_local.setTo(0);
+				clm_left_eye_model.pdm.CalcParams(clm_left_eye_model.params_global, clm_left_eye_model.params_local, eye_locs);		
+
+
+				clm_parameters_eye.window_sizes_current = clm_parameters_eye.window_sizes_init;
+
 
 				// Do the actual landmark detection (and keep it only if successful)
 				clm_right_eye_model.DetectLandmarks(grayscale_image, depth_image, clm_parameters_eye);
 				clm_left_eye_model.DetectLandmarks(grayscale_image, depth_image, clm_parameters_eye);
 
-				double cumm_err_left = 0;
-				double cumm_err_right = 0;
 
 				// Reincorporate the models into main tracker
 				for (size_t eye_ind = 0; eye_ind < right_eye_inds.size(); ++eye_ind)
 				{
-					double x_err = cv::abs(clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]) - clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind]));
-					double y_err = cv::abs(clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) - clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind] + clm_right_eye_model.pdm.NumberOfPoints()));
-					cumm_err_right += cv::sqrt(x_err * x_err + y_err * y_err);
-
-					x_err = cv::abs(clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]) - clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind]));
-					y_err = cv::abs(clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) - clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind] + clm_left_eye_model.pdm.NumberOfPoints()));
-					cumm_err_left += cv::sqrt(x_err * x_err + y_err * y_err);
 
 					clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]) = clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind]);
 					clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) = clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind] + clm_right_eye_model.pdm.NumberOfPoints());
+
 					clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]) = clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind]);
 					clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) = clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind] + clm_left_eye_model.pdm.NumberOfPoints());
 				}
-
-				if(cumm_err_left / clm_model.params_global[0] > 30)
-				{
-					clm_left_eye_model.Reset();
-				}
-				if(cumm_err_right / clm_model.params_global[0] > 30)
-				{
-					clm_right_eye_model.Reset();
-				}
-				//cout << cumm_err_left / clm_model.params_global[0] << endl;
-				//cout << cumm_err_right / clm_model.params_global[0] << endl;
 
 				clm_model.pdm.CalcParams(clm_model.params_global, clm_model.params_local, clm_model.detected_landmarks);		
 				clm_model.pdm.CalcShape2D(clm_model.detected_landmarks, clm_model.params_local, clm_model.params_global);
@@ -549,13 +527,12 @@ int main (int argc, char **argv)
 			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 			if(detection_certainty < visualisation_boundary)
 			{
-				//CLMTracker::Draw(captured_image, clm_model);
-				Mat to_show_left = draw_zoomed_in_eye(clm_left_eye_model, captured_image);
+				Mat to_show_left = draw_zoomed_in_eye(clm_left_eye_model, captured_image.clone());
 
 				if(!to_show_left.empty())
 					imshow("left", to_show_left);
 
-				Mat to_show_right = draw_zoomed_in_eye(clm_right_eye_model, captured_image);
+				Mat to_show_right = draw_zoomed_in_eye(clm_right_eye_model, captured_image.clone());
 
 				if(!to_show_right.empty())
 					imshow("right", to_show_right);
@@ -566,8 +543,10 @@ int main (int argc, char **argv)
 				if(!to_show_right.empty())
 					to_show_right.copyTo(captured_image(Rect(10, 80, to_show_right.cols, to_show_right.rows)));
 
-				CLMTracker::Draw(captured_image, clm_left_eye_model);
-				CLMTracker::Draw(captured_image, clm_right_eye_model);
+				CLMTracker::Draw(captured_image, clm_model);
+
+				//CLMTracker::Draw(captured_image, clm_left_eye_model);
+				//CLMTracker::Draw(captured_image, clm_right_eye_model);
 
 				if(detection_certainty > 1)
 					detection_certainty = 1;

@@ -48,7 +48,14 @@ all_hps = cat(1, pred_hp_bu, pred_hp_biwi, pred_hp_ict);
 all_gts = cat(1, gt_hp_bu, gt_hp_biwi, gt_hp_ict);
 all_rels = cat(1, rels_bu, rels_biwi, rel_ict);
 
-rel_frames = all_rels > 0.7;
+rel_cutoff = 0.8;
+
+rel_frames = all_rels > rel_cutoff;
+fprintf('Proportion of reliable frames: %.2f\n', sum(rel_frames)/numel(rel_frames));
+
+err_bu = abs(pred_hp_bu(rels_bu > rel_cutoff,:) - gt_hp_bu(rels_bu > rel_cutoff,:));
+err_biwi = abs(pred_hp_biwi(rels_biwi > rel_cutoff,:) - gt_hp_biwi(rels_biwi > rel_cutoff,:));
+err_ict = abs(pred_hp_ict(rel_ict > rel_cutoff,:) - gt_hp_ict(rel_ict > rel_cutoff,:));
 
 all_err = mean(abs(all_gts - all_hps), 2);
 
@@ -83,8 +90,8 @@ ids = ids';
 yaw_bins  = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
 err_yaw_bin = zeros(size(yaw_bins));
 std_yaw_bin = zeros(size(yaw_bins));
-
-yaw_bin = bsxfun(@plus, all_gts(:,2), yaw_bins);
+dim = 3;
+yaw_bin = bsxfun(@plus, all_gts(:,dim), yaw_bins);
 [~, ids] = min(abs(yaw_bin'));
 ids = ids';
 
@@ -92,6 +99,6 @@ for i=1:numel(yaw_bins)
    
     rel_bins = ids == i & rel_frames;
     
-    err_bin(i) = mean(abs(all_hps(rel_bins,2) - all_gts(rel_bins,2)));
-    std_bin(i) = std(abs(all_hps(rel_bins,2) - all_gts(rel_bins,2)));
+    err_bin(i) = mean(abs(all_hps(rel_bins,dim) - all_gts(rel_bins,dim)));
+    std_bin(i) = std(abs(all_hps(rel_bins,dim) - all_gts(rel_bins,dim)));
 end
