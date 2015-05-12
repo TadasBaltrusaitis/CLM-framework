@@ -240,14 +240,14 @@ int main (int argc, char **argv)
 	
 	boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
 
-	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_real_right.txt").string();
+	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_synth_right.txt").string();
 	CLMTracker::CLM clm_right_eye_model(clm_parameters_eye.model_location);
 
-	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_real_left.txt").string();
+	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_synth_left.txt").string();
 	CLMTracker::CLM clm_left_eye_model(clm_parameters_eye.model_location);
 	
 	// The correspondences in the main model
-	std::vector<int> right_eye_inds;
+	std::vector<int> right_eye_inds; 
 	right_eye_inds.push_back(42); right_eye_inds.push_back(43); right_eye_inds.push_back(44);
 	right_eye_inds.push_back(45); right_eye_inds.push_back(46);	right_eye_inds.push_back(47);
 
@@ -262,12 +262,14 @@ int main (int argc, char **argv)
 	{
 
 		vector<int> windows_large;
-		windows_large.push_back(5);
 		windows_large.push_back(3);
+		windows_large.push_back(5);
+		windows_large.push_back(9);
 
 		vector<int> windows_small;
-		windows_large.push_back(5);
 		windows_small.push_back(3);
+		windows_small.push_back(5);
+		windows_small.push_back(9);
 
 		clm_parameters_eye.window_sizes_init = windows_large;
 		clm_parameters_eye.window_sizes_small = windows_small;
@@ -288,7 +290,7 @@ int main (int argc, char **argv)
 		windows_large.push_back(9);
 
 		vector<int> windows_small;
-		windows_large.push_back(3);
+		windows_small.push_back(3);
 		windows_small.push_back(5);
 		windows_small.push_back(9);
 
