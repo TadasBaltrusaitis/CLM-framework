@@ -479,10 +479,10 @@ namespace CLM_Interop {
 			visualisation = new cv::Mat();
 			tracked_face = new cv::Mat();
 
-			num_rows = new int[0];
-			num_cols = new int[0];
+			num_rows = new int;
+			num_cols = new int;
 
-			good_frame = new bool[0];
+			good_frame = new bool;
 			
 			align_output_dir = new string();
 
@@ -676,7 +676,11 @@ namespace CLM_Interop {
 			delete align_output_dir;
 			delete face_analyser;
 			delete tracked_face;
-			delete tracked_vid_writer;
+
+			if(tracked_vid_writer != 0)
+			{
+				delete tracked_vid_writer;
+			}
 		}
 
 		// Destructor. Called on explicit Dispose() only.
