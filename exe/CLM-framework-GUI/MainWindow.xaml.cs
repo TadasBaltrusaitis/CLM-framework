@@ -79,7 +79,6 @@ namespace CLM_framework_GUI
         bool record_2D_landmarks = true; // 2D landmark location
         bool record_3D_landmarks = true; // 3D landmark locations in world coordinates
         bool record_HOG = false; // HOG features extracted from face images
-        bool record_LBP = false; // LBP features extracted from face images
         bool record_aligned = false; // aligned face images
         bool record_tracked_vid = false;
 
