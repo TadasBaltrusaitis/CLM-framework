@@ -120,10 +120,12 @@ Global
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Win32.ActiveCfg = Release|Win32
 		{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}.Release|Win32.Build.0 = Release|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Any CPU.ActiveCfg = Release|Win32
-		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Debug|Win32.ActiveCfg = Release|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Any CPU.ActiveCfg = Release|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.ActiveCfg = Release|Win32
 		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}.Release|Win32.Build.0 = Release|Win32
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -169,8 +171,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
