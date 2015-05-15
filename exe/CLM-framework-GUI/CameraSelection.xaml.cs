@@ -45,7 +45,7 @@ namespace CLM_framework_GUI
             // Finding the cameras here
             if (cams == null)
             {
-                cams = Capture.GetCameras();
+                cams = Camera_Interop.Capture.GetCameras();
             }
 
             int i = 0;

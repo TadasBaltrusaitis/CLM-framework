@@ -15,6 +15,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>CLM_Interop</RootNamespace>
+    <ProjectName>CppInterop</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -63,7 +64,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -76,7 +77,8 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CamCom;$(SolutionDir)lib\local\CLM\include;$(SolutionDir)lib\local\FaceAnalyser\include;$(SolutionDir)lib\local\OpenCVWrappers;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -90,13 +92,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera_Interop.h" />
     <ClInclude Include="CLM_Interop.h" />
+    <ClInclude Include="FaceAnalyser_Interop.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="CLM_Interop.cpp" />
+    <ClCompile Include="CppInterop.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

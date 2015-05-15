@@ -19,6 +19,8 @@ using Microsoft.Win32;
 using OpenCVWrappers;
 using CLM_Interop;
 using CLM_Interop.CLMTracker;
+using FaceAnalyser_Interop;
+using Camera_Interop;
 using System.Windows.Threading;
 using System.IO;
 
@@ -60,8 +62,9 @@ namespace CLM_framework_GUI
 
         FpsTracker processing_fps = new FpsTracker();
 
-        // TODO rem?
         volatile bool detectionSucceeding = false;
+
+        // TODO actually have a button for resetting the tracker
         volatile bool reset = false;
 
         // For tracking
@@ -519,7 +522,7 @@ namespace CLM_framework_GUI
                 {
                     frame = new RawImage(capture.GetNextFrame());
                 }
-                catch (CLM_Interop.CaptureFailedException)
+                catch (Camera_Interop.CaptureFailedException)
                 {
                     // This indicates that we reached the end of the video file
                     break;
@@ -653,6 +656,7 @@ namespace CLM_framework_GUI
                 if (reset)
                 {
                     clm_model.Reset();
+                    face_analyser.Reset();
                     reset = false;
                 }
 

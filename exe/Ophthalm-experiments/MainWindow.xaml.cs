@@ -20,6 +20,7 @@ using Microsoft.Win32;
 using OpenCVWrappers;
 using CLM_Interop;
 using CLM_Interop.CLMTracker;
+using Camera_Interop;
 using CLM_framework_GUI;
 using System.Collections.Concurrent;
 
@@ -65,7 +66,7 @@ namespace Ophthalm_experiments
         CLM_framework_GUI.OverlayImage webcam_img;
 
         // Some members for displaying the results
-        private Capture capture;
+        private Camera_Interop.Capture capture;
         private WriteableBitmap latest_img;
 
         // For tracking
@@ -218,7 +219,7 @@ namespace Ophthalm_experiments
                 img_width = cam_select.selected_camera.Item2;
                 img_height = cam_select.selected_camera.Item3;
 
-                capture = new Capture(cam_id, img_width, img_height);
+                capture = new Camera_Interop.Capture(cam_id, img_width, img_height);
 
                 // Set appropriate fx and cx values
                 fx = fx * (img_width / 640.0);
@@ -379,7 +380,7 @@ namespace Ophthalm_experiments
                 {
                     frame = capture.GetNextFrame();
                 }
-                catch (CLM_Interop.CaptureFailedException)
+                catch (Camera_Interop.CaptureFailedException)
                 {
                     break;
                 }
