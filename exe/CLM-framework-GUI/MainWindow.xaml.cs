@@ -90,6 +90,10 @@ namespace CLM_framework_GUI
         bool show_geometry = true;
         bool show_aus = true;
 
+        // TODO remove some bad classifiers
+
+        // TODO classifiers converted to regressors
+
         // TODO if image don't record some of these (unless treated as video?)
         // Separate entries for video/image in opening file menu
         // If image just do landmarks and do multiple faces?
@@ -112,8 +116,6 @@ namespace CLM_framework_GUI
         // For AU prediction
         bool dynamic_AU_shift = true;
         bool dynamic_AU_scale = false;
-
-        // todo add four classifiers
 
         public MainWindow()
         {
@@ -580,7 +582,7 @@ namespace CLM_framework_GUI
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
                 // The face analysis step (only done if recording AUs, HOGs or video)
-                if (record_aus || record_HOG || show_aus || show_appearance || record_tracked_vid)
+                if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid)
                 {
                     face_analyser.AddNextFrame(frame, clm_model, dynamic_AU_shift, dynamic_AU_scale, show_appearance, record_tracked_vid);
                 }

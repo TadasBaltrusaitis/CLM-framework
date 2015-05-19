@@ -87,20 +87,13 @@ public:
 
 	void SetupAlignedImageRecording(System::String^ directory)
 	{
-		*align_output_dir = marshal_as<std::string>(directory);
-
-		// TODO create the directory to make sure valid recording location
-
-			
+		*align_output_dir = marshal_as<std::string>(directory);			
 	}
 
 	void SetupHOGRecording(System::String^ file)
 	{
-		// First make sure the directory is there, TODO
-
 		// Create the file for recording			
-		hog_output_file->open(marshal_as<std::string>(file), ios_base::out | ios_base::binary);
-	
+		hog_output_file->open(marshal_as<std::string>(file), ios_base::out | ios_base::binary);	
 	}
 
 	void SetupTrackingRecording(System::String^ file, int width, int height, double fps)
