@@ -21,25 +21,6 @@ ict_results_root = ['ict results/'];
 res_folder_ict_ccnf_general = 'ict results//CLMr4/';
 [~, pred_hp_ict, gt_hp_ict, ~, ~, rel_ict] = calcIctError([database_root res_folder_ict_ccnf_general], [database_root ict_dir]);
 
-% resFolderBUCLM_general = [database_root, '/bu/uniform-light/CLMr1/'];
-% [~, pred_hp_bu_clm, pred_gt_bu_clm, all_errors_bu_svr_general, rels_bu_clm] = calcBUerror(resFolderBUCLM_general, buDir);
-% 
-% biwi_dir = '/biwi pose/';
-% res_folder_ccnf_general = '/biwi pose results//CLMr1/';
-% [~, pred_hp_biwi_clm, gt_hp_biwi_clm, ~, ~, rels_biwi_clm] = calcBiwiError([database_root res_folder_ccnf_general], [database_root biwi_dir]);
-% 
-% biwi_dir = '/biwi pose/';
-% res_folder_ccnf_general = '/biwi pose results//CLMr2_depth/';
-% [~, pred_hp_biwi_clmz, gt_hp_biwi_clmz, ~, ~, rels_biwi_clmz] = calcBiwiError([database_root res_folder_ccnf_general], [database_root biwi_dir]);
-% 
-% res_folder_ict_ccnf_general = 'ict results//CLMr1/';
-% [~, pred_hp_ict_clm, gt_hp_ict_clm, ~, ~, rel_ict_clm] = calcIctError([database_root res_folder_ict_ccnf_general], [database_root ict_dir]);
-% 
-% ict_results_root = ['ict results/'];
-% res_folder_ict_ccnf_general = 'ict results//CLMr2_depth/';
-% [~, pred_hp_ict_clmz, gt_hp_ict_clmz, ~, ~, rel_ict_clmz] = calcIctError([database_root res_folder_ict_ccnf_general], [database_root ict_dir]);
-
-%%
 all_hps = cat(1, pred_hp_bu, pred_hp_biwi, pred_hp_ict);
 all_gts = cat(1, gt_hp_bu, gt_hp_biwi, gt_hp_ict);
 all_rels = cat(1, rels_bu, rels_biwi, rel_ict);
@@ -55,6 +36,30 @@ err_ict = abs(pred_hp_ict(rel_ict > rel_cutoff,:) - gt_hp_ict(rel_ict > rel_cuto
 
 all_err = mean(abs(all_gts - all_hps), 2);
 
-% corr(all_hps, all_gts)
-corr(all_hps(rel_frames, :), all_gts(rel_frames, :))
+all_gts_rel = all_gts(rel_frames,:);
+all_hps_rel = all_hps(rel_frames,:);
 
+%% Pitch 1D errors
+pitch_ids = abs(all_gts_rel(:,2)) < 4 & abs(all_gts_rel(:,3)) < 4;
+pitch_errs = abs(all_gts_rel(pitch_ids,1) - all_hps_rel(pitch_ids,1));
+
+yaw_ids = abs(all_gts_rel(:,1)) < 4 & abs(all_gts_rel(:,3)) < 4;
+yaw_errs = abs(all_gts_rel(yaw_ids,1) - all_hps_rel(yaw_ids,1));
+
+roll_ids = abs(all_gts_rel(:,1)) < 4 & abs(all_gts_rel(:,2)) < 4;
+roll_errs = abs(all_gts_rel(roll_ids,1) - all_hps_rel(roll_ids,1));
+
+pitch_bins  = [0, 5, 10, 15, 20, 30, 40, 50];
+err_pitch = zeros(size(pitch_bins));
+std_pitch = zeros(size(pitch_bins));
+
+pitch_bin = bsxfun(@plus, abs(all_gts_rel(pitch_ids,1)), -pitch_bins);
+[~, ids] = min(abs(pitch_bin'));
+ids = ids';
+
+for i=1:numel(pitch_bins)
+    rel_bins = ids == i;
+    err_pitch(i) = mean(pitch_errs(rel_bins));
+    std_pitch(i) = std(pitch_errs(rel_bins));
+end
+errorbar(pitch_bins, err_pitch, std_pitch);
