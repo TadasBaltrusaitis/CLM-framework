@@ -19,6 +19,8 @@ using Microsoft.Win32;
 using OpenCVWrappers;
 using CLM_Interop;
 using CLM_Interop.CLMTracker;
+using FaceAnalyser_Interop;
+using Camera_Interop;
 using System.Windows.Threading;
 using System.IO;
 
@@ -60,8 +62,8 @@ namespace CLM_framework_GUI
 
         FpsTracker processing_fps = new FpsTracker();
 
-        // TODO rem?
         volatile bool detectionSucceeding = false;
+
         volatile bool reset = false;
 
         // For tracking
@@ -81,6 +83,12 @@ namespace CLM_framework_GUI
         bool record_HOG = false; // HOG features extracted from face images
         bool record_aligned = false; // aligned face images
         bool record_tracked_vid = false;
+
+        // Visualisation options
+        bool show_tracked_video = true;
+        bool show_appearance = true;
+        bool show_geometry = true;
+        bool show_aus = true;
 
         // TODO if image don't record some of these (unless treated as video?)
         // Separate entries for video/image in opening file menu
@@ -105,10 +113,6 @@ namespace CLM_framework_GUI
         bool dynamic_AU_shift = true;
         bool dynamic_AU_scale = false;
 
-        // TODO adding resets to the face analyser
-
-        // TODO add a reset button?
-
         // todo add four classifiers
 
         public MainWindow()
@@ -132,10 +136,12 @@ namespace CLM_framework_GUI
                 UseDynamicScalingCheckBox.IsChecked = dynamic_AU_scale;
                 UseDynamicShiftingCheckBox.IsChecked = dynamic_AU_shift;
             }));
+            
+            String root = AppDomain.CurrentDomain.BaseDirectory;
 
-            clm_params = new CLMParameters();
-            clm_model = new CLM();
-            face_analyser = new FaceAnalyserManaged();
+            clm_params = new CLMParameters(root);
+            clm_model = new CLM(clm_params);
+            face_analyser = new FaceAnalyserManaged(root);
 
         }
 
@@ -415,6 +421,7 @@ namespace CLM_framework_GUI
 
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
             {
+                ResetButton.IsEnabled = true;
                 PauseButton.IsEnabled = true;
                 StopButton.IsEnabled = true;
             }));
@@ -485,6 +492,7 @@ namespace CLM_framework_GUI
             {
                 PauseButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
+                ResetButton.IsEnabled = false;
             }));
 
         }
@@ -501,7 +509,7 @@ namespace CLM_framework_GUI
             clm_model.Reset();
             face_analyser.Reset();
 
-            // TODO add an ability to change these
+            // TODO add an ability to change these through a calibration procedure or setting menu
             double fx, fy, cx, cy;
             fx = 500.0;
             fy = 500.0;
@@ -519,7 +527,7 @@ namespace CLM_framework_GUI
                 {
                     frame = new RawImage(capture.GetNextFrame());
                 }
-                catch (CLM_Interop.CaptureFailedException)
+                catch (Camera_Interop.CaptureFailedException)
                 {
                     // This indicates that we reached the end of the video file
                     break;
@@ -571,80 +579,96 @@ namespace CLM_framework_GUI
                 clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
-                // The face analysis step
-                face_analyser.AddNextFrame(frame, clm_model, dynamic_AU_shift, dynamic_AU_scale);
-                RawImage aligned_face = face_analyser.GetLatestAlignedFace();
-                RawImage hog_face = face_analyser.GetLatestHOGDescriptorVisualisation();
-
-                var au_classes = face_analyser.GetCurrentAUsClass();
-                var au_regs = face_analyser.GetCurrentAUsReg();
+                // The face analysis step (only done if recording AUs, HOGs or video)
+                if (record_aus || record_HOG || show_aus || show_appearance || record_tracked_vid)
+                {
+                    face_analyser.AddNextFrame(frame, clm_model, dynamic_AU_shift, dynamic_AU_scale, show_appearance, record_tracked_vid);
+                }
 
                 // Visualisation
                 Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                 {
-                    auClassGraph.Update(au_classes);
-
-                    var au_regs_scaled = new Dictionary<String, double>();
-                    foreach (var au_reg in au_regs)
-                        au_regs_scaled[au_reg.Key] = au_reg.Value / 5.0;
-
-                    auRegGraph.Update(au_regs_scaled);                    
-
-                    if (latest_img == null)
+                    if (show_aus)
                     {
-                        latest_img = frame.CreateWriteableBitmap();
-                        latest_aligned_face = aligned_face.CreateWriteableBitmap();
-                        latest_HOG_descriptor = hog_face.CreateWriteableBitmap();
+                        var au_classes = face_analyser.GetCurrentAUsClass();
+                        var au_regs = face_analyser.GetCurrentAUsReg();
+
+                        auClassGraph.Update(au_classes);
+
+                        var au_regs_scaled = new Dictionary<String, double>();
+                        foreach (var au_reg in au_regs)
+                            au_regs_scaled[au_reg.Key] = au_reg.Value / 5.0;
+
+                        auRegGraph.Update(au_regs_scaled);
                     }
 
-                    int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
-                    int roll = (int)(pose[5] * 180 / Math.PI + 0.5);
-                    int pitch = (int)(pose[3] * 180 / Math.PI + 0.5);
 
-                    YawLabel.Content = yaw + "°";
-                    RollLabel.Content = roll + "°";
-                    PitchLabel.Content = pitch + "°";
-
-                    XPoseLabel.Content = (int)pose[0] + " mm";
-                    YPoseLabel.Content = (int)pose[1] + " mm";
-                    ZPoseLabel.Content = (int)pose[2] + " mm";
-
-                    frame.UpdateWriteableBitmap(latest_img);
-
-                    video.Source = latest_img;
-                    video.Confidence = confidence;
-                    video.FPS = processing_fps.GetFPS();
-
-
-                    if (!detectionSucceeding)
+                    if (show_geometry)
                     {
-                        video.OverlayLines.Clear();
-                        video.OverlayPoints.Clear();
+                        int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
+                        int roll = (int)(pose[5] * 180 / Math.PI + 0.5);
+                        int pitch = (int)(pose[3] * 180 / Math.PI + 0.5);
+
+                        YawLabel.Content = yaw + "°";
+                        RollLabel.Content = roll + "°";
+                        PitchLabel.Content = pitch + "°";
+
+                        XPoseLabel.Content = (int)pose[0] + " mm";
+                        YPoseLabel.Content = (int)pose[1] + " mm";
+                        ZPoseLabel.Content = (int)pose[2] + " mm";
+
+                        nonRigidGraph.Update(non_rigid_params);
                     }
-                    else
-                    {
-                        video.OverlayLines = lines;
 
-                        List<Point> landmark_points = new List<Point>();
-                        foreach (var p in landmarks)
+                    if (show_tracked_video)
+                    {
+                        if (latest_img == null)
                         {
-                            landmark_points.Add(new Point(p.Item1, p.Item2));
+                            latest_img = frame.CreateWriteableBitmap();
                         }
 
-                        video.OverlayPoints = landmark_points;
+                        frame.UpdateWriteableBitmap(latest_img);
+
+                        video.Source = latest_img;
+                        video.Confidence = confidence;
+                        video.FPS = processing_fps.GetFPS();
+
+                        if (!detectionSucceeding)
+                        {
+                            video.OverlayLines.Clear();
+                            video.OverlayPoints.Clear();
+                        }
+                        else
+                        {
+                            video.OverlayLines = lines;
+
+                            List<Point> landmark_points = new List<Point>();
+                            foreach (var p in landmarks)
+                            {
+                                landmark_points.Add(new Point(p.Item1, p.Item2));
+                            }
+
+                            video.OverlayPoints = landmark_points;
+                        }
                     }
 
-                    nonRigidGraph.Update(non_rigid_params);
+                    if (show_appearance)
+                    {
+                        RawImage aligned_face = face_analyser.GetLatestAlignedFace();
+                        RawImage hog_face = face_analyser.GetLatestHOGDescriptorVisualisation();
 
-                    // Update face analysis frames
-                    frame.UpdateWriteableBitmap(latest_img);
+                        if (latest_aligned_face == null)
+                        {
+                            latest_aligned_face = aligned_face.CreateWriteableBitmap();
+                            latest_HOG_descriptor = hog_face.CreateWriteableBitmap();
+                        }
 
-                    aligned_face.UpdateWriteableBitmap(latest_aligned_face);
-                    hog_face.UpdateWriteableBitmap(latest_HOG_descriptor);
-                    
-                    AlignedFace.Source = latest_aligned_face;
-                    AlignedHOG.Source = latest_HOG_descriptor;
+                        aligned_face.UpdateWriteableBitmap(latest_aligned_face);
+                        hog_face.UpdateWriteableBitmap(latest_HOG_descriptor);
 
+                        AlignedFace.Source = latest_aligned_face;
+                        AlignedHOG.Source = latest_HOG_descriptor;
+                    }
                 }));
 
                 // Recording the tracked model
@@ -653,6 +677,7 @@ namespace CLM_framework_GUI
                 if (reset)
                 {
                     clm_model.Reset();
+                    face_analyser.Reset();
                     reset = false;
                 }
 
@@ -762,7 +787,18 @@ namespace CLM_framework_GUI
 
                 PauseButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
+                ResetButton.IsEnabled = false;
                 RecordingMenu.IsEnabled = true;
+            }
+        }
+
+        // Stopping the tracking
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (processing_thread != null)
+            {
+                // Stop capture and tracking
+                reset = true;
             }
         }
 
@@ -773,6 +809,8 @@ namespace CLM_framework_GUI
             {
                 // Stop capture and tracking                
                 thread_paused = !thread_paused;
+                
+                ResetButton.IsEnabled = !thread_paused;
 
                 if (thread_paused)
                 {
@@ -783,6 +821,62 @@ namespace CLM_framework_GUI
                     PauseButton.Content = "Pause";
                 }
             }
+        }
+
+        private void VisualisationCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            show_tracked_video = ShowVideoCheckBox.IsChecked;
+            show_appearance = ShowAppearanceFeaturesCheckBox.IsChecked;
+            show_geometry = ShowGeometryFeaturesCheckBox.IsChecked;
+            show_aus = ShowAUsCheckBox.IsChecked;
+
+            // Collapsing or restoring the windows here
+            if (!show_tracked_video)
+            {
+                VideoBorder.Visibility = System.Windows.Visibility.Collapsed;
+                MainGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Star);
+            }
+            else
+            {
+                VideoBorder.Visibility = System.Windows.Visibility.Visible;
+                MainGrid.ColumnDefinitions[0].Width = new GridLength(2.1, GridUnitType.Star);
+            }
+
+            if (!show_appearance)
+            {
+                AppearanceBorder.Visibility = System.Windows.Visibility.Collapsed;
+                MainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Star);
+            }
+            else
+            {
+                AppearanceBorder.Visibility = System.Windows.Visibility.Visible;
+                MainGrid.ColumnDefinitions[1].Width = new GridLength(0.8, GridUnitType.Star);
+            }
+
+            // Collapsing or restoring the windows here
+            if (!show_geometry)
+            {
+                GeometryBorder.Visibility = System.Windows.Visibility.Collapsed;
+                MainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Star);
+            }
+            else
+            {
+                GeometryBorder.Visibility = System.Windows.Visibility.Visible;
+                MainGrid.ColumnDefinitions[2].Width = new GridLength(1.0, GridUnitType.Star);
+            }
+
+            // Collapsing or restoring the windows here
+            if (!show_aus)
+            {
+                ActionUnitBorder.Visibility = System.Windows.Visibility.Collapsed;
+                MainGrid.ColumnDefinitions[3].Width = new GridLength(0, GridUnitType.Star);
+            }
+            else
+            {
+                ActionUnitBorder.Visibility = System.Windows.Visibility.Visible;
+                MainGrid.ColumnDefinitions[3].Width = new GridLength(1.6, GridUnitType.Star);
+            }
+        
         }
 
         // Stopping the tracking
