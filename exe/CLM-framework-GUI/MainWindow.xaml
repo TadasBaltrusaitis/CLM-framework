@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
         Title="CLM Framework" Height="500" Width="1300" MinWidth="700" MinHeight="350" Closing="Window_Closing">
-    <Grid>
+    <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.1*" MinWidth="320"/>
-            <ColumnDefinition Width="0.8*" MinWidth="90"/>
-            <ColumnDefinition Width="1*" MinWidth="90"/>
-            <ColumnDefinition Width="1.6*" MinWidth="90"/>
+            <ColumnDefinition Width="2.1*"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1.6*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -40,14 +40,15 @@
                 <MenuItem Name="UseDynamicShiftingCheckBox" IsCheckable="True" Header="Use dynamic shifting" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="UseDynamicScalingCheckBox" IsCheckable="True" Header="Use dynamic scaling" Click="recordCheckBox_click"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Visualisation settings">
-                <MenuItem IsCheckable="True" Header="Show aligned"></MenuItem>
-                <MenuItem IsCheckable="True" Header="Show HOG"></MenuItem>
-                <MenuItem IsCheckable="True" Header="Show LBP"></MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Name="ShowVideoCheckBox" IsChecked="True" IsCheckable="True" Header="Show Video" Click="VisualisationCheckBox_Click"></MenuItem>
+                <MenuItem Name="ShowAppearanceFeaturesCheckBox" IsChecked="True" IsCheckable="True" Header="Show Appearance" Click="VisualisationCheckBox_Click"></MenuItem>
+                <MenuItem Name="ShowGeometryFeaturesCheckBox" IsChecked="True" IsCheckable="True" Header="Show Geometry" Click="VisualisationCheckBox_Click"></MenuItem>
+                <MenuItem Name="ShowAUsCheckBox" IsChecked="True" IsCheckable="True" Header="Show AUs" Click="VisualisationCheckBox_Click"></MenuItem>
             </MenuItem>
         </Menu>
 
-        <Border  Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" Background="LightGray" Margin="5,5,0,0">
+        <Border Name="VideoBorder" Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" Background="LightGray" Margin="5,5,0,0">
             <CLM_framework_GUI:OverlayImage x:Name="video" />
         </Border>
 
@@ -72,7 +73,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox  Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
+        <GroupBox Name="GeometryBorder" Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
             <GroupBox.Header>
                 Geometry features
             </GroupBox.Header>
@@ -120,7 +121,7 @@
                 </StackPanel>                
             </Grid>
         </GroupBox>
-        <GroupBox  Grid.Row="1" Grid.Column="3" BorderBrush="Black" BorderThickness="1" MinHeight="100">
+        <GroupBox Name="ActionUnitBorder" Grid.Row="1" Grid.Column="3" BorderBrush="Black" BorderThickness="1" MinHeight="100">
             <GroupBox.Header>
                 Action Units
             </GroupBox.Header>
@@ -144,6 +145,7 @@
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>
             <Button  VerticalAlignment="Top" IsEnabled="False" Click="StopButton_Click" Name="StopButton">Stop</Button>
+            <Button  VerticalAlignment="Top" IsEnabled="False" Click="ResetButton_Click" Name="ResetButton">Reset</Button>
         </StackPanel>
         
     </Grid>

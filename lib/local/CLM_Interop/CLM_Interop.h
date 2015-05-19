@@ -56,11 +56,24 @@ namespace CLM_Interop {
 
 		public:
 
-			CLMParameters() : params(new ::CLMTracker::CLMParameters()) { }
+			CLMParameters(System::String^ root)
+			{
+				string root_std = marshal_as<std::string>(root);
+				vector<string> args;
+				args.push_back(root_std);
+
+				params = new ::CLMTracker::CLMParameters(args);
+			}
 
 			::CLMTracker::CLMParameters* getParams() {
 				return params;
 			}
+
+			~CLMParameters()
+			{
+				delete params;
+			}
+
 		};
 
 		public ref class CLM
@@ -72,6 +85,16 @@ namespace CLM_Interop {
 		public:
 
 			CLM() : clm(new ::CLMTracker::CLM()) { }
+			
+			CLM(CLMParameters^ params)
+			{				
+				clm = new ::CLMTracker::CLM(params->getParams()->model_location);				
+			}
+			
+			~CLM()
+			{
+				delete clm;
+			}
 
 			::CLMTracker::CLM* getCLM() {
 				return clm;

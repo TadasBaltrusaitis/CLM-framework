@@ -24,7 +24,7 @@ public:
 	enum RegressorType{ SVR_appearance_static_linear = 0, SVR_appearance_dynamic_linear = 1, SVR_dynamic_geom_linear = 2, SVR_combined_linear = 3, SVM_linear_stat = 4, SVM_linear_dyn = 5, SVR_linear_static_seg = 6, SVR_linear_dynamic_seg =7};
 
 	// Constructor from a model file (or a default one if not provided
-	// TODO scale width and height should be part of the model?
+	// TODO scale width and height should be read in as part of the model as opposed to being here?
 	FaceAnalyser(vector<Vec3d> orientation_bins = vector<Vec3d>(), double scale = 0.7, int width = 112, int height = 112, std::string au_location = "AU_predictors/AU_all_best.txt", std::string tri_location = "model/tris_68_full.txt");
 
 	void AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm, double timestamp_seconds, bool dynamic_shift, bool dynamic_scale, bool visualise = true);
@@ -122,7 +122,8 @@ private:
 	// Use the same for
 	vector<Mat_<unsigned int> > hog_desc_hist;
 
-	// TODO populate this
+	// This is not being used at the moment as it is a bit slow
+	// TODO check if this would be more useful than keeping median of HoG
 	vector<Mat_<unsigned int> > face_image_hist;
 	vector<int> face_image_hist_sum;
 
@@ -144,8 +145,6 @@ private:
 	double min_val_geom;
 	double max_val_geom;
 	
-	int frames_for_adaptation;
-
 	// Using the bounding box of previous analysed frame to determine if a reset is needed
 	Rect_<double> face_bounding_box;
 	
@@ -174,9 +173,6 @@ private:
 
 	// The AUs predicted by the model are not always 0 calibrated to a person. That is they don't always predict 0 for a neutral expression
 	// Keeping track of the predictions we can correct for this, by assuming that at least "ratio" of frames are neutral and subtract that value of prediction, only perform the correction after min_frames
-	// TODO is this needed? Have a tick box somewhere
-	// TODO same for dynamic scaling
-	// TODO don't start from 0 here have neg vals as well
 	void UpdatePredictionTrack(Mat_<unsigned int>& prediction_corr_histogram, int& prediction_correction_count, vector<double>& correction, const vector<pair<string, double>>& predictions, double ratio=0.25, int num_bins = 200, double min_val = -3, double max_val = 5, int min_frames = 10);	
 	void GetSampleHist(Mat_<unsigned int>& prediction_corr_histogram, int prediction_correction_count, vector<double>& sample, double ratio, int num_bins = 200, double min_val = 0, double max_val = 5);	
 

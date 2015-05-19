@@ -53,7 +53,7 @@ private:
 
 public:
 
-	FaceAnalyserManaged() 
+	FaceAnalyserManaged(System::String^ root) 
 	{
 			
 		vector<Vec3d> orientation_bins;
@@ -61,12 +61,13 @@ public:
 		double scale = 0.7;
 		int width = 112;
 		int height = 112;
+		
+		string root_std = marshal_as<std::string>(root);
 
-		// TODO relative paths?
-		std::string au_location("AU_predictors/AU_all_best.txt");
-		std::string tri_location("model/tris_68_full.txt");
+		boost::filesystem::path au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_best.txt";
+		boost::filesystem::path tri_loc = boost::filesystem::path(root_std) / "model" / "tris_68_full.txt";
 
-		face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_location, tri_location);
+		face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_loc.string(), tri_loc.string());
 
 		hog_features = new cv::Mat_<double>();
 
@@ -88,7 +89,7 @@ public:
 	{
 		*align_output_dir = marshal_as<std::string>(directory);
 
-		// TODO create the directory?
+		// TODO create the directory to make sure valid recording location
 
 			
 	}
@@ -168,22 +169,27 @@ public:
 		tracked_vid_writer->write(*tracked_face);
 	}
 
-	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, bool dynamic_shift, bool dynamic_scale) {
+	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, bool dynamic_shift, bool dynamic_scale, bool vis_hog, bool vis_tracked) {
 			
 		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, dynamic_shift, dynamic_scale, true);
 
 		face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
 		face_analyser->GetLatestAlignedFace(*aligned_face);
 
-		// TODO make optional
-		*visualisation = face_analyser->GetLatestHOGDescriptorVisualisation();
-
 		*good_frame = clm->clm->detection_success;
 
-		*tracked_face = frame->Mat.clone();
-		if(clm->clm->detection_success)
+		if(vis_hog)
 		{
-			::CLMTracker::Draw(*tracked_face, *clm->clm);
+			*visualisation = face_analyser->GetLatestHOGDescriptorVisualisation();
+		}
+
+		if(vis_tracked)
+		{
+			*tracked_face = frame->Mat.clone();
+			if(clm->clm->detection_success)
+			{
+				::CLMTracker::Draw(*tracked_face, *clm->clm);
+			}
 		}
 	}
 		

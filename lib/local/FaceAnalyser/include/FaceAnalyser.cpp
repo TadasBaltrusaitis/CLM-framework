@@ -33,13 +33,12 @@ FaceAnalyser::FaceAnalyser(vector<Vec3d> orientation_bins, double scale, int wid
 	max_val_hog = 1;
 	min_val_hog = 0;
 
-	// The geometry histogram ranges from -3 to 3 TODO change this as we don't use scaling anymore
+	// The geometry histogram ranges from -3 to 3 TODO change this as we don't use scaling anymore?
 	num_bins_geom = 10000;
 	max_val_geom = 60;
 	min_val_geom = -60;
 		
-	// 4 seconds for adaptation
-	frames_for_adaptation = 120;
+	// Keep track for how many frames have been tracked so far
 	frames_tracking = 0;
 	
 	if(orientation_bins.empty())
@@ -173,7 +172,7 @@ void FaceAnalyser::ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& 
 
 void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm_model, double timestamp_seconds, bool dynamic_shift, bool dynamic_scale, bool visualise)
 {
-	// Check if a reset is needed first (TODO single person no reset)
+	// Check if a reset is needed first (TODO same person no reset)
 	//if(face_bounding_box.area() > 0)
 	//{
 	//	Rect_<double> new_bounding_box = clm.GetBoundingBox();
@@ -223,7 +222,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	// That is don't update it when the face is expressive (just retrieve it)
 	bool update_median = true;
 
-	// TODO here
+	// TODO test if this would be useful or not
 	//if(!this->AU_predictions.empty())
 	//{
 	//	for(size_t i = 0; i < this->AU_predictions.size(); ++i)
@@ -235,6 +234,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	//		}
 	//	}
 	//}
+
 	update_median = update_median & clm_model.detection_success;
 
 	// A small speedup
@@ -496,7 +496,8 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 		
 			for(size_t i = 0; i < predictions.size(); ++i)
 			{
-				// First establish presence (assume it is maximum as we have not seen max) TODO this could be more robust
+				// First establish presence (assume it is maximum as we have not seen max) 
+				// TODO this could be more robust by removing some outliers, or by doing it only for certain AUs?
 				if(predictions[i].second > 1)
 				{
 					double scaling_curr = 5.0 / predictions[i].second;

@@ -361,8 +361,9 @@ namespace Ophthalm_experiments
         {
             Thread.CurrentThread.IsBackground = true;
 
-            CLMParameters clm_params = new CLMParameters();
-            CLM clm_model = new CLM();
+            String root = AppDomain.CurrentDomain.BaseDirectory;
+            CLMParameters clm_params = new CLMParameters(root);
+            CLM clm_model = new CLM(clm_params);
 
             DateTime? startTime = CurrentTime;
 
