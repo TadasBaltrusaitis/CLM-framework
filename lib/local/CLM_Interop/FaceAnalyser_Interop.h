@@ -53,7 +53,7 @@ private:
 
 public:
 
-	FaceAnalyserManaged(System::String^ root) 
+	FaceAnalyserManaged(System::String^ root, bool dynamic) 
 	{
 			
 		vector<Vec3d> orientation_bins;
@@ -63,9 +63,17 @@ public:
 		int height = 112;
 		
 		string root_std = marshal_as<std::string>(root);
-
-		boost::filesystem::path au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_best.txt";
+		
 		boost::filesystem::path tri_loc = boost::filesystem::path(root_std) / "model" / "tris_68_full.txt";
+		boost::filesystem::path au_loc;
+		if(dynamic)
+		{
+			au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_best.txt";
+		}
+		else
+		{
+			au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_static.txt";
+		}
 
 		face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_loc.string(), tri_loc.string());
 

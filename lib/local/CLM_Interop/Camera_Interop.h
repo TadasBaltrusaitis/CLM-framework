@@ -40,12 +40,14 @@ namespace Camera_Interop {
 		VideoCapture* vc;
 
 		RawImage^ latestFrame;
-		RawImage^ mirroredFrame;
 		RawImage^ grayFrame;
 
 		double fps;
 
 		bool is_webcam;
+		bool is_image_seq;
+
+		vector<string>* image_files;
 
 	public:
 
@@ -56,13 +58,14 @@ namespace Camera_Interop {
 			assert(device >= 0);
 
 			latestFrame = gcnew RawImage();
-			mirroredFrame = gcnew RawImage();
 
 			vc = new VideoCapture(device);
 			vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
 			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 			is_webcam = true;
+			is_image_seq = false;
+
 			this->width = width;
 			this->height = height;
 		}
@@ -70,13 +73,30 @@ namespace Camera_Interop {
 		Capture(System::String^ videoFile)
 		{
 			latestFrame = gcnew RawImage();
-			mirroredFrame = gcnew RawImage();
 
 			vc = new VideoCapture(marshal_as<std::string>(videoFile));
 			fps = vc->get(CV_CAP_PROP_FPS);
 			is_webcam = false;
+			is_image_seq = false;
 			this->width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
 			this->height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+		}
+
+		// An alternative to using video files is using image sequences
+		Capture(List<System::String^>^ image_files)
+		{
+			
+			latestFrame = gcnew RawImage();
+
+			is_webcam = false;
+			is_image_seq = true;
+			this->image_files = new vector<string>();
+
+			for(int i = 0; i < image_files->Count; ++i)
+			{
+				this->image_files->push_back(marshal_as<std::string>(image_files[i]));
+			}
+
 		}
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
@@ -177,20 +197,35 @@ namespace Camera_Interop {
 			if(vc != nullptr)
 			{
 				
-				bool success = vc->read(mirroredFrame->Mat);
+				bool success;
+				if(is_webcam)
+				{
+					Mat mirrored_frame;
+					success = vc->read(mirrored_frame);
+					// Flip horizontally
+					flip(mirrored_frame, latestFrame->Mat, 1);
+				}
+				else
+				{
+					success = vc->read(latestFrame->Mat);
+				}
 
 				if (!success)
 					throw gcnew CaptureFailedException();
 
 			}
+			else if(is_image_seq)
+			{
+				if(image_files->empty())
+				{
+					// TODO don't use exceptions for stopping
+					throw gcnew CaptureFailedException();
+				}
 
-			if(is_webcam)
-			{
-				flip(mirroredFrame->Mat, latestFrame->Mat, 1);
-			}
-			else
-			{
-				mirroredFrame->Mat.copyTo(latestFrame->Mat);
+				Mat img = imread(image_files->at(0), -1);
+				img.copyTo(latestFrame->Mat);
+				// Remove the first frame
+				image_files->erase(image_files->begin(), image_files->begin() + 1);
 			}
 			
 			if (grayFrame == nullptr) {
@@ -211,7 +246,12 @@ namespace Camera_Interop {
 			if(vc != nullptr)
 				return vc->isOpened();
 			else
-				return false;
+			{
+				if(is_image_seq && image_files->size() > 0)
+					return true;
+				else
+					return false;
+			}
 		}
 
 		RawImage^ GetCurrentFrameGray() {
@@ -228,6 +268,7 @@ namespace Camera_Interop {
 		!Capture()
 		{
 			delete vc; // Automatically closes capture object before freeing memory.			
+			delete image_files;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

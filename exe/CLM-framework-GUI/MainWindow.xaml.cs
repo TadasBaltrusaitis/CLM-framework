@@ -116,6 +116,7 @@ namespace CLM_framework_GUI
         // For AU prediction
         bool dynamic_AU_shift = true;
         bool dynamic_AU_scale = false;
+        bool use_dynamic_models = true;
 
         public MainWindow()
         {
@@ -135,6 +136,8 @@ namespace CLM_framework_GUI
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
                 RecordPoseCheckBox.IsChecked = record_pose;
+
+                UseDynamicModelsCheckBox.IsChecked = use_dynamic_models;
                 UseDynamicScalingCheckBox.IsChecked = dynamic_AU_scale;
                 UseDynamicShiftingCheckBox.IsChecked = dynamic_AU_shift;
             }));
@@ -143,7 +146,7 @@ namespace CLM_framework_GUI
 
             clm_params = new CLMParameters(root);
             clm_model = new CLM(clm_params);
-            face_analyser = new FaceAnalyserManaged(root);
+            face_analyser = new FaceAnalyserManaged(root, use_dynamic_models);
 
         }
 
@@ -159,6 +162,7 @@ namespace CLM_framework_GUI
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
                 RecordingMenu.IsEnabled = false;
+                UseDynamicModelsCheckBox.IsEnabled = false;
             }));
 
             if (!System.IO.Directory.Exists(root))
@@ -303,6 +307,8 @@ namespace CLM_framework_GUI
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
                 RecordingMenu.IsEnabled = true;
+                UseDynamicModelsCheckBox.IsEnabled = true;
+
             }));
 
         }
@@ -431,15 +437,21 @@ namespace CLM_framework_GUI
             // Create the video capture and call the VideoLoop
             if(filenames != null)
             {
-                foreach (string filename in filenames)
+
+                if (cam_id == -2)
                 {
-                    capture = new Capture(filename);
-                    
+                    List<String> image_files_all = new List<string>();
+                    foreach (string image_name in filenames)
+                        image_files_all.Add(image_name);
+
+                    // Loading an image sequence that represents a video                   
+                    capture = new Capture(image_files_all);
+
                     if (capture.isOpened())
                     {
-                        // Prepare recording if any
-                        String file_no_ext = System.IO.Path.GetFileNameWithoutExtension(filename);
-                        
+                        // Prepare recording if any based on the directory
+                        String file_no_ext = System.IO.Path.GetDirectoryName(filenames[0]);
+                        file_no_ext = System.IO.Path.GetFileName(file_no_ext);
                         SetupRecording(record_root, file_no_ext, capture.width, capture.height);
 
                         // Start the actual processing                        
@@ -450,13 +462,45 @@ namespace CLM_framework_GUI
                     }
                     else
                     {
-                        string messageBoxText = "File is not a video or the codec is not supported.";
+                        string messageBoxText = "Failed to open an image";
                         string caption = "Not valid file";
                         MessageBoxButton button = MessageBoxButton.OK;
                         MessageBoxImage icon = MessageBoxImage.Warning;
 
                         // Display message box
                         MessageBox.Show(messageBoxText, caption, button, icon);
+                    }
+                }
+                else
+                {
+                    // Loading a video file (or a number of them)
+                    foreach (string filename in filenames)
+                    {
+                        capture = new Capture(filename);
+
+                        if (capture.isOpened())
+                        {
+                            // Prepare recording if any
+                            String file_no_ext = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+                            SetupRecording(record_root, file_no_ext, capture.width, capture.height);
+
+                            // Start the actual processing                        
+                            VideoLoop();
+
+                            // Clear up the recording
+                            StopRecording();
+                        }
+                        else
+                        {
+                            string messageBoxText = "File is not a video or the codec is not supported.";
+                            string caption = "Not valid file";
+                            MessageBoxButton button = MessageBoxButton.OK;
+                            MessageBoxImage icon = MessageBoxImage.Warning;
+
+                            // Display message box
+                            MessageBox.Show(messageBoxText, caption, button, icon);
+                        }
                     }
                 }
             }
@@ -694,21 +738,27 @@ namespace CLM_framework_GUI
             latest_img = null;
         }
 
-        private void fileOpenClick(object sender, RoutedEventArgs e)
+        private void StopTracking()
+        {
+            // First complete the running of the thread
+            if (processing_thread != null)
+            {
+                // Tell the other thread to finish
+                thread_running = false;
+                processing_thread.Join();
+            }
+        }
+
+        private void videoFileOpenClick(object sender, RoutedEventArgs e)
         {
 
             var d = new OpenFileDialog();
             d.Multiselect = true;
+            d.Filter = "Video files|*.avi;*.wmv;*.mov;*.mpg;*.mpeg";
 
             if (d.ShowDialog(this) == true)
             {
-                // First complete the running of the thread
-                if (processing_thread != null)
-                {
-                    // Tell the other thread to finish
-                    thread_running = false;
-                    processing_thread.Join();
-                }
+                StopTracking();
 
                 string[] video_files = d.FileNames;
 
@@ -718,16 +768,28 @@ namespace CLM_framework_GUI
             }
         }
 
+        private void imageSequenceFileOpenClick(object sender, RoutedEventArgs e)
+        {
+
+            var d = new OpenFileDialog();
+            d.Multiselect = true;
+            d.Filter = "Image files|*.jpg;*.jpeg;*.bmp;*.png;*.gif";
+
+            if (d.ShowDialog(this) == true)
+            {
+                StopTracking();
+
+                string[] image_files = d.FileNames;
+
+                processing_thread = new Thread(() => ProcessingLoop(image_files, -2));
+                processing_thread.Start();
+
+            }
+        }
+
         private void openWebcamClick(object sender, RoutedEventArgs e)
         {
-            // First complete the running of the thread
-            if (processing_thread != null)
-            {
-                // Let the other thread finish first
-                thread_running = false;
-
-                processing_thread.Join();
-            }
+            StopTracking();
 
             // First close the cameras that might be open to avoid clashing with webcam opening
             if (capture != null)
@@ -791,6 +853,8 @@ namespace CLM_framework_GUI
                 StopButton.IsEnabled = false;
                 ResetButton.IsEnabled = false;
                 RecordingMenu.IsEnabled = true;
+
+                UseDynamicModelsCheckBox.IsEnabled = true;
             }
         }
 
@@ -881,7 +945,6 @@ namespace CLM_framework_GUI
         
         }
 
-        // Stopping the tracking
         private void recordCheckBox_click(object sender, RoutedEventArgs e)
         {
             record_aus = RecordAUCheckBox.IsChecked;
@@ -892,15 +955,20 @@ namespace CLM_framework_GUI
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;
             record_params = RecordParamsCheckBox.IsChecked;
             record_pose = RecordPoseCheckBox.IsChecked;
-
-            dynamic_AU_shift = UseDynamicShiftingCheckBox.IsChecked;
-            dynamic_AU_scale = UseDynamicScalingCheckBox.IsChecked;
-
         }
 
         private void UseDynamicModelsCheckBox_Click(object sender, RoutedEventArgs e)
         {
+            dynamic_AU_shift = UseDynamicShiftingCheckBox.IsChecked;
+            dynamic_AU_scale = UseDynamicScalingCheckBox.IsChecked;
 
+            if(use_dynamic_models != UseDynamicModelsCheckBox.IsChecked)
+            {
+                // Change the face analyser, this should be safe as the model is only allowed to change when not running
+                String root = AppDomain.CurrentDomain.BaseDirectory;
+                face_analyser = new FaceAnalyserManaged(root, UseDynamicModelsCheckBox.IsChecked);                
+            }
+            use_dynamic_models = UseDynamicModelsCheckBox.IsChecked;
         }
 
     }
