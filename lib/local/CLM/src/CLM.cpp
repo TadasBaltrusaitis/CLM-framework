@@ -333,11 +333,8 @@ void CLM::Read(string main_location)
 		// figure out which module is to be read from which file
 		lineStream >> module;
 				
-		getline(lineStream, location);
-
-		if(location.size() > 0)
-			location.erase(location.begin()); // remove the first space
-						
+		lineStream >> location;
+					
 		// remove carriage return at the end for compatibility with unix systems
 		if(location.size() > 0 && location.at(location.size()-1) == '\r')
 		{
@@ -353,7 +350,78 @@ void CLM::Read(string main_location)
 			// The CLM module includes the PDM and the patch experts
 			Read_CLM(location);
 		}
-		else if (module.compare("DetectionValidator") == 0) // Don't do face checking atm, as a new one needs to be trained
+		else if(module.compare("CLM_part") == 0)
+		{
+			string part_name;
+			lineStream >> part_name;
+			cout << "Reading part based module...." << part_name << endl;
+
+			vector<pair<int, int>> mappings;
+			while(!lineStream.eof())
+			{
+				int ind_in_main;
+				lineStream >> ind_in_main;
+				
+				int ind_in_part;
+				lineStream >> ind_in_part;
+				mappings.push_back(pair<int, int>(ind_in_main, ind_in_part));
+			}
+		
+			this->hierarchical_mapping.push_back(mappings);
+
+			CLM part_model(location);
+
+			this->hierarchical_models.push_back(part_model);
+
+			this->hierarchical_model_names.push_back(part_name);
+
+			CLMParameters params;
+			params.validate_detections = false;
+			params.refine_hierarchical = false;
+
+			if(part_name.compare("left_eye") == 0 || part_name.compare("right_eye") == 0)
+			{
+				
+				vector<int> windows_large;
+				windows_large.push_back(7);
+				windows_large.push_back(5);
+
+				vector<int> windows_small;
+				windows_small.push_back(7);
+				windows_small.push_back(5);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.1;
+				params.sigma = 0.5;
+			}
+			else if(part_name.compare("left_eye_28") == 0 || part_name.compare("right_eye_28") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(3);
+				windows_large.push_back(5);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(3);
+				windows_small.push_back(5);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.5;
+				params.sigma = 1.0;
+			}
+
+			this->hierarchical_params.push_back(params);
+
+			cout << "Done" << endl;
+		}
+		else if (module.compare("DetectionValidator") == 0)
 		{            
 			cout << "Reading the landmark validation module....";
 			landmark_validator.Read(location);
@@ -425,6 +493,57 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 	// Store the landmarks converged on in detected_landmarks
 	pdm.CalcShape2D(detected_landmarks, params_local, params_global);	
 	
+	if(params.refine_hierarchical && hierarchical_models.size() > 0)
+	{
+		bool parts_used = false;		
+
+		// TODO this can be TBBified?
+		for(size_t part_model = 0; part_model < hierarchical_models.size(); ++part_model)
+		{
+			
+			// Only do this if we don't need to upsample
+			if(params_global[0] > hierarchical_models[part_model].patch_experts.patch_scaling[0])
+			{
+				parts_used = true;
+
+				int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
+
+				this->hierarchical_params[part_model].window_sizes_current = this->hierarchical_params[part_model].window_sizes_init;
+
+				vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
+
+				Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
+
+				// Extract the corresponding landmarks
+				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+				{
+					part_model_locs.at<double>(mappings[mapping_ind].second) = detected_landmarks.at<double>(mappings[mapping_ind].first);
+					part_model_locs.at<double>(mappings[mapping_ind].second + n_part_points) = detected_landmarks.at<double>(mappings[mapping_ind].first + this->pdm.NumberOfPoints());
+				}
+						
+				// Fit the part based model PDM
+				hierarchical_models[part_model].pdm.CalcParams(hierarchical_models[part_model].params_global, hierarchical_models[part_model].params_local, part_model_locs);	
+
+				// Do the actual landmark detection
+				hierarchical_models[part_model].DetectLandmarks(image, depth, hierarchical_params[part_model]);
+
+				// Reincorporate the models into main tracker
+				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+				{
+					detected_landmarks.at<double>(mappings[mapping_ind].first) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second);
+					detected_landmarks.at<double>(mappings[mapping_ind].first + pdm.NumberOfPoints()) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second + hierarchical_models[part_model].pdm.NumberOfPoints());
+				}
+			}
+		}
+
+		// Recompute main model based on the fit part models
+		if(parts_used)
+		{
+			pdm.CalcParams(params_global, params_local, detected_landmarks);		
+			pdm.CalcShape2D(detected_landmarks, params_local, params_global);
+		}
+	}
+
 	// Check detection correctness
 	if(params.validate_detections && fit_success)
 	{

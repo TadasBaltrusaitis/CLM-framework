@@ -112,7 +112,7 @@ shapes = shapes([1:60,62:64,66:end],:, detected_cpp);
 labels = labels(18:end,:,:);
 shapes = shapes(18:end,:,:);
 
-clnf_error_cpp = compute_error( labels,  shapes);
+clnf_error_cpp = compute_error( labels - 0.5,  shapes);
 [error_x, error_y] = cummErrorCurve(clnf_error_cpp);
 plot(error_x, error_y, 'r','DisplayName', 'CLM+CLNF', 'LineWidth',line_width);
 hold on;
@@ -124,7 +124,7 @@ shapes = shapes([1:60,62:64,66:end],:, detected_cpp);
 labels = labels(18:end,:,:);
 shapes = shapes(18:end,:,:);
 
-svr_error_cpp = compute_error( labels,  shapes);
+svr_error_cpp = compute_error( labels - 0.5,  shapes);
 [error_x, error_y] = cummErrorCurve(svr_error_cpp);
 plot(error_x, error_y, 'b-.','DisplayName', 'CLM+SVR', 'LineWidth',line_width);
 

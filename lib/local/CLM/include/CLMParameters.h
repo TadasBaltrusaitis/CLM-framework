@@ -113,6 +113,9 @@ struct CLMParameters
 	// Should the results be visualised and reported to console
 	bool quiet_mode;
 
+	// Should the model be refined hierarchically (if available)
+	bool refine_hierarchical;
+
 	CLMParameters()
 	{
 		// initialise the default values
@@ -260,6 +263,9 @@ struct CLMParameters
 			// using an external face checker based on SVM
 			validate_detections = true;
 
+			// Using hierarchical refinement by default (can be turned off)
+			refine_hierarchical = true;
+
 			window_sizes_small = vector<int>(2);
 			window_sizes_init = vector<int>(3);
 
@@ -285,7 +291,7 @@ struct CLMParameters
 			reg_factor = 25;
 			weight_factor = 0; // By default do not use NU-RLMS, as weight factor is dependent on the database and needs to be estimated
 
-			validation_boundary = -0.4;
+			validation_boundary = -0.45;
 
 			limit_pose = true;
 			multi_view = false;

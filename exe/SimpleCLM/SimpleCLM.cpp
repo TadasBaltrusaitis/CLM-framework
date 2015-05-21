@@ -220,94 +220,8 @@ int main (int argc, char **argv)
 	
 	// The modules that are being used for tracking
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
-	
-	CLMTracker::CLMParameters clm_parameters_eye;
-	clm_parameters_eye.validate_detections = false;
-	vector<int> windows_large;
-	windows_large.push_back(9);
-	windows_large.push_back(7);
-	windows_large.push_back(5);
 
-	vector<int> windows_small;
-	// TODO these might differ for real and synth
-	windows_small.push_back(5);
-	windows_small.push_back(5);
-	windows_small.push_back(5);
-
-	clm_parameters_eye.window_sizes_init = windows_large;
-	clm_parameters_eye.window_sizes_small = windows_small;
-	clm_parameters_eye.window_sizes_current = windows_large;
-	
-	boost::filesystem::path root = boost::filesystem::path(arguments[0]).parent_path();
-
-	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_synth_right.txt").string();
-	CLMTracker::CLM clm_right_eye_model(clm_parameters_eye.model_location);
-
-	clm_parameters_eye.model_location = (root / "model_eye/main_ccnf_synth_left.txt").string();
-	CLMTracker::CLM clm_left_eye_model(clm_parameters_eye.model_location);
-	
-	// The correspondences in the main model
-	std::vector<int> right_eye_inds; 
-	right_eye_inds.push_back(42); right_eye_inds.push_back(43); right_eye_inds.push_back(44);
-	right_eye_inds.push_back(45); right_eye_inds.push_back(46);	right_eye_inds.push_back(47);
-
-	std::vector<int> left_eye_inds;
-	left_eye_inds.push_back(36); left_eye_inds.push_back(37); left_eye_inds.push_back(38);
-	left_eye_inds.push_back(39); left_eye_inds.push_back(40);	left_eye_inds.push_back(41);
-
-	// The specialist correspondences
-	std::vector<int> right_eye_inds_sp;
-	std::vector<int> left_eye_inds_sp;
-	if(clm_left_eye_model.pdm.NumberOfPoints() == 6)
-	{
-
-		vector<int> windows_large;
-		windows_large.push_back(3);
-		windows_large.push_back(5);
-		windows_large.push_back(9);
-
-		vector<int> windows_small;
-		windows_small.push_back(3);
-		windows_small.push_back(5);
-		windows_small.push_back(9);
-
-		clm_parameters_eye.window_sizes_init = windows_large;
-		clm_parameters_eye.window_sizes_small = windows_small;
-		clm_parameters_eye.window_sizes_current = windows_large;
-
-		right_eye_inds_sp.push_back(0); right_eye_inds_sp.push_back(1); right_eye_inds_sp.push_back(2);
-		right_eye_inds_sp.push_back(3); right_eye_inds_sp.push_back(4); right_eye_inds_sp.push_back(5);
-		left_eye_inds_sp.push_back(0); left_eye_inds_sp.push_back(1); left_eye_inds_sp.push_back(2);
-		left_eye_inds_sp.push_back(3); left_eye_inds_sp.push_back(4); left_eye_inds_sp.push_back(5);
-		clm_parameters_eye.reg_factor = 0.1;
-		clm_parameters_eye.sigma = 1.0;
-	}
-	else
-	{
-		vector<int> windows_large;
-		windows_large.push_back(3);
-		windows_large.push_back(5);
-		windows_large.push_back(9);
-
-		vector<int> windows_small;
-		windows_small.push_back(3);
-		windows_small.push_back(5);
-		windows_small.push_back(9);
-
-		clm_parameters_eye.window_sizes_init = windows_large;
-		clm_parameters_eye.window_sizes_small = windows_small;
-		clm_parameters_eye.window_sizes_current = windows_large;
-
-		clm_parameters_eye.window_sizes_init = windows_large;
-		clm_parameters_eye.window_sizes_small = windows_small;
-		clm_parameters_eye.window_sizes_current = windows_large;
-		right_eye_inds_sp.push_back(8); right_eye_inds_sp.push_back(10); right_eye_inds_sp.push_back(12);
-		right_eye_inds_sp.push_back(14); right_eye_inds_sp.push_back(16); right_eye_inds_sp.push_back(18);
-		left_eye_inds_sp.push_back(8); left_eye_inds_sp.push_back(10); left_eye_inds_sp.push_back(12);
-		left_eye_inds_sp.push_back(14); left_eye_inds_sp.push_back(16); left_eye_inds_sp.push_back(18);
-		clm_parameters_eye.reg_factor = 0.5;
-		clm_parameters_eye.sigma = 2.0;
-	}
+	clm_parameters.refine_hierarchical = true;
 
 	// If multiple video files are tracked, use this to indicate if we are done
 	bool done = false;	
@@ -443,70 +357,7 @@ int main (int argc, char **argv)
 			}
 			
 			// The actual facial landmark detection / tracking
-			bool detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);
-
-			// If face detection succeeded use a specialised model(s)
-			if(clm_model.detection_success)
-			{
-
-				// Do the eye landmark detection refinement
-				// First extract eye landmarks				
-
-				// TODO this should be pulled into landmark detection (with additional models for eyes)
-				int n_right_eye_points = clm_right_eye_model.pdm.NumberOfPoints();
-				Mat_<double> eye_locs(n_right_eye_points * 2, 1, 0.0);
-				for (size_t eye_ind = 0; eye_ind < right_eye_inds.size(); ++eye_ind)
-				{
-					eye_locs.at<double>(right_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]);
-					eye_locs.at<double>(right_eye_inds_sp[eye_ind] + n_right_eye_points) = clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
-				}
-
-				// First need to estimate the local and global parameters from the landmark detection of CLM
-				clm_right_eye_model.params_local.setTo(0);
-				clm_right_eye_model.pdm.CalcParams(clm_right_eye_model.params_global, clm_right_eye_model.params_local, eye_locs);		
-
-				int n_left_eye_points = clm_left_eye_model.pdm.NumberOfPoints();
-				eye_locs.create(n_left_eye_points * 2, 1);
-				for (size_t eye_ind = 0; eye_ind < left_eye_inds.size(); ++eye_ind)
-				{
-					eye_locs.at<double>(left_eye_inds_sp[eye_ind]) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]);
-					eye_locs.at<double>(left_eye_inds_sp[eye_ind] + n_left_eye_points) = clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints());
-				}
-
-				// First need to estimate the local and global parameters from the landmark detection of CLM
-				clm_left_eye_model.params_local.setTo(0);
-				clm_left_eye_model.pdm.CalcParams(clm_left_eye_model.params_global, clm_left_eye_model.params_local, eye_locs);		
-
-
-				clm_parameters_eye.window_sizes_current = clm_parameters_eye.window_sizes_init;
-
-
-				// Do the actual landmark detection (and keep it only if successful)
-				clm_right_eye_model.DetectLandmarks(grayscale_image, depth_image, clm_parameters_eye);
-				clm_left_eye_model.DetectLandmarks(grayscale_image, depth_image, clm_parameters_eye);
-
-
-				// Reincorporate the models into main tracker
-				for (size_t eye_ind = 0; eye_ind < right_eye_inds.size(); ++eye_ind)
-				{
-
-					clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind]) = clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind]);
-					clm_model.detected_landmarks.at<double>(right_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) = clm_right_eye_model.detected_landmarks.at<double>(right_eye_inds_sp[eye_ind] + clm_right_eye_model.pdm.NumberOfPoints());
-
-					clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind]) = clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind]);
-					clm_model.detected_landmarks.at<double>(left_eye_inds[eye_ind] + clm_model.pdm.NumberOfPoints()) = clm_left_eye_model.detected_landmarks.at<double>(left_eye_inds_sp[eye_ind] + clm_left_eye_model.pdm.NumberOfPoints());
-				}
-
-				clm_model.pdm.CalcParams(clm_model.params_global, clm_model.params_local, clm_model.detected_landmarks);		
-				clm_model.pdm.CalcShape2D(clm_model.detected_landmarks, clm_model.params_local, clm_model.params_global);
-			}
-			else
-			{
-				clm_right_eye_model.Reset();
-				clm_left_eye_model.Reset();
-				clm_right_eye_model.detection_success = false;
-				clm_left_eye_model.detection_success = false;
-			}
+			bool detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);			
 
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
@@ -528,27 +379,18 @@ int main (int argc, char **argv)
 			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 			if(detection_certainty < visualisation_boundary)
 			{
-				Mat to_show_left = draw_zoomed_in_eye(clm_left_eye_model, captured_image.clone());
+				//Mat to_show_left = draw_zoomed_in_eye(clm_model.hierarchical_models[0], captured_image.clone());
 
-				if(!to_show_left.empty())
-					imshow("left", to_show_left);
+				//if(!to_show_left.empty())
+				//	imshow("left", to_show_left);
 
-				Mat to_show_right = draw_zoomed_in_eye(clm_right_eye_model, captured_image.clone());
+				//Mat to_show_right = draw_zoomed_in_eye(clm_model.hierarchical_models[1], captured_image.clone());
 
-				if(!to_show_right.empty())
-					imshow("right", to_show_right);
-
-				if(!to_show_left.empty())
-					to_show_left.copyTo(captured_image(Rect(10, 0, to_show_left.cols, to_show_left.rows)));
-
-				if(!to_show_right.empty())
-					to_show_right.copyTo(captured_image(Rect(10, 80, to_show_right.cols, to_show_right.rows)));
+				//if(!to_show_right.empty())
+					//imshow("right", to_show_right);
 
 				CLMTracker::Draw(captured_image, clm_model);
-				// TODO correct the drawing
-				//CLMTracker::Draw(captured_image, clm_left_eye_model);
-				//CLMTracker::Draw(captured_image, clm_right_eye_model);
-
+				
 				if(detection_certainty > 1)
 					detection_certainty = 1;
 				if(detection_certainty < -1)
@@ -562,10 +404,7 @@ int main (int argc, char **argv)
 				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
 				// Draw it in reddish if uncertain, blueish if certain
-				// TODO put back
-				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
-
-				//CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
+				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
 
 			}
 
@@ -582,7 +421,7 @@ int main (int argc, char **argv)
 			sprintf(fpsC, "%d", (int)fps);
 			string fpsSt("FPS:");
 			fpsSt += fpsC;
-			//cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
+			cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
 			
 			if(!clm_parameters.quiet_mode)
 			{
@@ -641,8 +480,6 @@ int main (int argc, char **argv)
 			if(character_press == 'r')
 			{
 				clm_model.Reset();
-				clm_left_eye_model.Reset();
-				clm_right_eye_model.Reset();
 			}
 			// quit the application
 			else if(character_press=='q')

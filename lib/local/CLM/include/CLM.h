@@ -80,6 +80,11 @@ public:
 	// Global parameters describing the rigid shape [scale, euler_x, euler_y, euler_z, tx, ty]
     Vec6d           params_global;
 
+	// A collection of hierarchical CLM models that can be used for refinement
+	vector<CLM>						hierarchical_models;
+	vector<string>					hierarchical_model_names;
+	vector<vector<pair<int,int>>>	hierarchical_mapping;
+	vector<CLMParameters>			hierarchical_params;
 
 	//==================== Helpers for face detection and landmark detection validation =========================================
 

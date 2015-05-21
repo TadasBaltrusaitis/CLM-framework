@@ -1,3 +1,5 @@
 CLM clm_ccnf_wild.txt
+CLM_part model_eye/main_ccnf_real_right_wild.txt left_eye 36 0 37 1 38 2 39 3 40 4 41 5
+CLM_part model_eye/main_ccnf_real_left_wild.txt right_eye 42 0 43 1 44 2 45 3 46 4 47 5
 FaceDetConversion haarAlign.txt
 DetectionValidator detection_validation/validator_general_68.txt
