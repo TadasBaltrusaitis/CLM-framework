@@ -49,7 +49,17 @@ yaw_errs = abs(all_gts_rel(yaw_ids,1) - all_hps_rel(yaw_ids,1));
 roll_ids = abs(all_gts_rel(:,1)) < 4 & abs(all_gts_rel(:,2)) < 4;
 roll_errs = abs(all_gts_rel(roll_ids,1) - all_hps_rel(roll_ids,1));
 
-pitch_bins  = [0, 5, 10, 15, 20, 30, 40, 50];
+%%
+scrsz = get(0,'ScreenSize');
+figure1 = figure('Position',[20 50 3*scrsz(3)/4 0.9*scrsz(4)]);
+
+set(figure1,'Units','Inches');
+pos = get(figure1,'Position');
+set(figure1,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+% Create axes
+axes1 = axes('Parent',figure1,'FontSize',30,'FontName','Helvetica');
+
+pitch_bins  = [0, 5, 10, 15, 20, 30];
 err_pitch = zeros(size(pitch_bins));
 std_pitch = zeros(size(pitch_bins));
 
@@ -62,4 +72,72 @@ for i=1:numel(pitch_bins)
     err_pitch(i) = mean(pitch_errs(rel_bins));
     std_pitch(i) = std(pitch_errs(rel_bins));
 end
-errorbar(pitch_bins, err_pitch, std_pitch);
+errorbar(pitch_bins, err_pitch, std_pitch, 'linewidth', 2);
+title('Pitch errors');
+xlabel('Absolute pose (degrees)','FontName','Helvetica');
+ylabel('Absolute error in degrees','FontName','Helvetica');
+xlim([-2,32])
+print -dpdf pitch_error_bin
+
+%
+yaw_bins  = [0, 5, 10, 15, 20, 30];
+err_yaw = zeros(size(yaw_bins));
+std_yaw = zeros(size(yaw_bins));
+
+yaw_bin = bsxfun(@plus, abs(all_gts_rel(yaw_ids,2)), -yaw_bins);
+[~, ids] = min(abs(yaw_bin'));
+ids = ids';
+
+for i=1:numel(yaw_bins)
+    rel_bins = ids == i;
+    err_yaw(i) = mean(yaw_errs(rel_bins));
+    std_yaw(i) = std(yaw_errs(rel_bins));
+end
+
+errorbar(yaw_bins, err_yaw, std_yaw, 'linewidth', 2);
+title('Yaw errors');
+xlabel('Absolute pose (degrees)','FontName','Helvetica');
+ylabel('Absolute error in degrees','FontName','Helvetica');
+xlim([-2,32]);
+print -dpdf yaw_error_bin
+
+%
+roll_bins  = [0, 5, 10, 15, 20, 30];
+err_roll = zeros(size(roll_bins));
+std_roll = zeros(size(roll_bins));
+
+roll_bin = bsxfun(@plus, abs(all_gts_rel(roll_ids,3)), -roll_bins);
+[~, ids] = min(abs(roll_bin'));
+ids = ids';
+
+for i=1:numel(roll_bins)
+    rel_bins = ids == i;
+    err_roll(i) = mean(roll_errs(rel_bins));
+    std_roll(i) = std(roll_errs(rel_bins));
+end
+
+errorbar(roll_bins, err_roll, std_roll, 'linewidth', 2);
+title('Roll errors');
+xlabel('Absolute pose (degrees)','FontName','Helvetica');
+ylabel('Absolute error in degrees','FontName','Helvetica');
+xlim([-2,32])
+print -dpdf roll_error_bin
+
+%%
+figure;
+scatter(all_gts_rel(roll_ids,3), all_hps_rel(roll_ids,3), 'x')
+title('Roll scatter graph');
+xlabel('Actual pose (degrees)','FontName','Helvetica');
+ylabel('Predicted pose (degrees)','FontName','Helvetica');
+
+figure;
+scatter(all_gts_rel(yaw_ids,2), all_hps_rel(yaw_ids,2), 'x')
+title('Yaw scatter graph');
+xlabel('Actual pose (degrees)','FontName','Helvetica');
+ylabel('Predicted pose (degrees)','FontName','Helvetica');
+
+figure;
+scatter(all_gts_rel(pitch_ids,1), all_hps_rel(pitch_ids,1), 'x')
+title('Pitch scatter graph');
+xlabel('Actual pose (degrees)','FontName','Helvetica');
+ylabel('Predicted pose (degrees)','FontName','Helvetica');
