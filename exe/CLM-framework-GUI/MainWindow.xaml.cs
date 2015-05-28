@@ -57,8 +57,12 @@ namespace CLM_framework_GUI
         private WriteableBitmap latest_aligned_face;
         private WriteableBitmap latest_HOG_descriptor;
 
+        // Managing the running of the analysis system
         private volatile bool thread_running;
         private volatile bool thread_paused = false;
+        // Allows for going forward in time step by step
+        // Useful for visualising things
+        private volatile int skip_frames = 0;
 
         FpsTracker processing_fps = new FpsTracker();
 
@@ -94,9 +98,8 @@ namespace CLM_framework_GUI
 
         // TODO classifiers converted to regressors
 
-        // TODO if image don't record some of these (unless treated as video?)
-        // Separate entries for video/image in opening file menu
-        // If image just do landmarks and do multiple faces?
+        // TODO track length (part of video?), can have a nice bar at the bottom
+        // TODO indication that track is done        
 
         // The recording managers
         StreamWriter output_head_pose_file;
@@ -117,6 +120,8 @@ namespace CLM_framework_GUI
         bool dynamic_AU_shift = true;
         bool dynamic_AU_scale = false;
         bool use_dynamic_models = true;
+
+        private volatile bool mirror_image = false;
 
         public MainWindow()
         {
@@ -427,6 +432,9 @@ namespace CLM_framework_GUI
         {
             thread_running = true;
 
+            mirror_image = false;
+
+
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
             {
                 ResetButton.IsEnabled = true;
@@ -507,6 +515,7 @@ namespace CLM_framework_GUI
             else
             {
                 capture = new Capture(cam_id, width, height);
+                mirror_image = true;
 
                 if (capture.isOpened())
                 {
@@ -539,6 +548,8 @@ namespace CLM_framework_GUI
                 PauseButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
                 ResetButton.IsEnabled = false;
+                NextFiveFramesButton.IsEnabled = false;
+                NextFrameButton.IsEnabled = false;
             }));
 
         }
@@ -569,9 +580,11 @@ namespace CLM_framework_GUI
                 // CAPTURE FRAME AND DETECT LANDMARKS FOLLOWED BY THE REQUIRED IMAGE PROCESSING
                 //////////////////////////////////////////////
                 RawImage frame = null;
+                double progress = -1;
                 try
                 {
-                    frame = new RawImage(capture.GetNextFrame());
+                    frame = new RawImage(capture.GetNextFrame(mirror_image));
+                    progress = capture.GetProgress();
                 }
                 catch (Camera_Interop.CaptureFailedException)
                 {
@@ -579,6 +592,8 @@ namespace CLM_framework_GUI
                     break;
                 }
 
+                // TODO stop button actually clears the video
+                
                 lastFrameTime = CurrentTime;
                 processing_fps.AddFrame();
 
@@ -678,6 +693,7 @@ namespace CLM_framework_GUI
                         video.Source = latest_img;
                         video.Confidence = confidence;
                         video.FPS = processing_fps.GetFPS();
+                        video.Progress = progress;
 
                         if (!detectionSucceeding)
                         {
@@ -727,15 +743,20 @@ namespace CLM_framework_GUI
                     reset = false;
                 }
 
-                while (thread_running & thread_paused)
+                while (thread_running & thread_paused && skip_frames == 0)
                 {
                     Thread.Sleep(10);
                 }
 
                 frame_id++;
 
+                if (skip_frames > 0)
+                    skip_frames--;
+
             }
+
             latest_img = null;
+            skip_frames = 0;
         }
 
         private void StopTracking()
@@ -850,6 +871,8 @@ namespace CLM_framework_GUI
                 processing_thread.Join();
 
                 PauseButton.IsEnabled = false;
+                NextFrameButton.IsEnabled = false;
+                NextFiveFramesButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
                 ResetButton.IsEnabled = false;
                 RecordingMenu.IsEnabled = true;
@@ -878,6 +901,9 @@ namespace CLM_framework_GUI
                 
                 ResetButton.IsEnabled = !thread_paused;
 
+                NextFrameButton.IsEnabled = thread_paused;
+                NextFiveFramesButton.IsEnabled = thread_paused;
+
                 if (thread_paused)
                 {
                     PauseButton.Content = "Resume";
@@ -886,6 +912,18 @@ namespace CLM_framework_GUI
                 {
                     PauseButton.Content = "Pause";
                 }
+            }
+        }
+
+        private void SkipButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(sender.Equals(NextFrameButton))
+            {
+                skip_frames += 1;
+            }
+            else if(sender.Equals(NextFiveFramesButton))
+            {
+                skip_frames += 5;
             }
         }
 

@@ -62,6 +62,9 @@ namespace Ophthalm_experiments
         bool record_video;
         bool record_head_pose;
 
+        // Controls if the view should be mirrored or not
+        volatile bool mirror_image = false;
+
         // Capturing and displaying the images
         CLM_framework_GUI.OverlayImage webcam_img;
 
@@ -379,7 +382,7 @@ namespace Ophthalm_experiments
                 RawImage frame = null;
                 try
                 {
-                    frame = capture.GetNextFrame();
+                    frame = capture.GetNextFrame(mirror_image);
                 }
                 catch (Camera_Interop.CaptureFailedException)
                 {
@@ -626,9 +629,9 @@ namespace Ophthalm_experiments
             StartExperiment();
         }
 
-        private void ResetButton_MouseEnter(object sender, MouseEventArgs e)
+        private void MirrorButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mirror_image = !mirror_image;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -651,6 +654,11 @@ namespace Ophthalm_experiments
             if(capture != null)
                 capture.Dispose();
 
+        }
+
+        private void MorrorButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)

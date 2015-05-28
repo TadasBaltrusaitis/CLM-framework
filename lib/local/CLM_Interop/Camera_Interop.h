@@ -47,7 +47,10 @@ namespace Camera_Interop {
 		bool is_webcam;
 		bool is_image_seq;
 
+		int  frame_num;
 		vector<string>* image_files;
+
+		int vid_length;
 
 	public:
 
@@ -68,6 +71,9 @@ namespace Camera_Interop {
 
 			this->width = width;
 			this->height = height;
+
+			vid_length = 0;
+			frame_num = 0;
 		}
 
 		Capture(System::String^ videoFile)
@@ -80,6 +86,9 @@ namespace Camera_Interop {
 			is_image_seq = false;
 			this->width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
 			this->height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+
+			vid_length = vc->get(CV_CAP_PROP_FRAME_COUNT);
+			frame_num = 0;
 		}
 
 		// An alternative to using video files is using image sequences
@@ -96,7 +105,7 @@ namespace Camera_Interop {
 			{
 				this->image_files->push_back(marshal_as<std::string>(image_files[i]));
 			}
-
+			vid_length = image_files->Count;
 		}
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
@@ -192,23 +201,14 @@ namespace Camera_Interop {
 			return managed_camera_list;
 		}
 
-		RawImage^ GetNextFrame()
+		RawImage^ GetNextFrame(bool mirror)
 		{
+			frame_num++;
+
 			if(vc != nullptr)
 			{
 				
-				bool success;
-				if(is_webcam)
-				{
-					Mat mirrored_frame;
-					success = vc->read(mirrored_frame);
-					// Flip horizontally
-					flip(mirrored_frame, latestFrame->Mat, 1);
-				}
-				else
-				{
-					success = vc->read(latestFrame->Mat);
-				}
+				bool success = vc->read(latestFrame->Mat);
 
 				if (!success)
 					throw gcnew CaptureFailedException();
@@ -234,11 +234,29 @@ namespace Camera_Interop {
 				}
 			}
 
+			if(mirror)
+			{
+				flip(latestFrame->Mat, latestFrame->Mat, 1);
+			}
+
+
 			if (grayFrame != nullptr) {
 				cvtColor(latestFrame->Mat, grayFrame->Mat, CV_BGR2GRAY);
 			}
 
 			return latestFrame;
+		}
+
+		double GetProgress()
+		{
+			if(vc != nullptr && is_webcam)
+			{
+				return - 1.0;
+			}
+			else
+			{
+				return (double)frame_num / (double)vid_length;
+			}
 		}
 
 		bool isOpened()

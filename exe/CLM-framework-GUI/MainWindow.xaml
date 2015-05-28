@@ -147,7 +147,8 @@
             <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>
             <Button VerticalAlignment="Top" IsEnabled="False" Click="StopButton_Click" Name="StopButton">Stop</Button>
             <Button VerticalAlignment="Top" IsEnabled="False" Click="ResetButton_Click" Name="ResetButton">Reset</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="NextFrameButton">Next Frame (TODO)</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFrameButton"> >> 1</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFiveFramesButton"> >> 5</Button>
         </StackPanel>
         
     </Grid>
