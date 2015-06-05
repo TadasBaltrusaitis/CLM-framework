@@ -175,6 +175,7 @@ public:
 		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, dynamic_shift, dynamic_scale, true);
 
 		face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
+		
 		face_analyser->GetLatestAlignedFace(*aligned_face);
 
 		*good_frame = clm->clm->detection_success;
@@ -186,11 +187,20 @@ public:
 
 		if(vis_tracked)
 		{
-			*tracked_face = frame->Mat.clone();
+			if(frame->Mat.cols != tracked_face->cols && frame->Mat.rows != tracked_face->rows)
+			{
+				*tracked_face = frame->Mat.clone();
+			}
+			else
+			{
+				frame->Mat.clone().copyTo(*tracked_face);
+			}
+
 			if(clm->clm->detection_success)
 			{
 				::CLMTracker::Draw(*tracked_face, *clm->clm);
 			}
+			tracked_face->deallocate();
 		}
 	}
 		

@@ -583,7 +583,7 @@ namespace CLM_framework_GUI
                 double progress = -1;
                 try
                 {
-                    frame = new RawImage(capture.GetNextFrame(mirror_image));
+                    frame = capture.GetNextFrame(mirror_image);
                     progress = capture.GetProgress();
                 }
                 catch (Camera_Interop.CaptureFailedException)
