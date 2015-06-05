@@ -312,7 +312,8 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 	// This is used for both detection (if it the tracking has not been initialised yet) or if the tracking failed (however we do this every n frames, for speed)
 	// This also has the effect of an attempt to reinitialise just after the tracking has failed, which is useful during large motions
-	if(!clm_model.tracking_initialised || (!clm_model.detection_success && params.reinit_video_every > 0 && clm_model.failures_in_a_row % params.reinit_video_every == 0))
+	if((!clm_model.tracking_initialised && (clm_model.failures_in_a_row + 1) % (params.reinit_video_every * 2) == 0) 
+		|| (!clm_model.detection_success && params.reinit_video_every > 0 && clm_model.failures_in_a_row % params.reinit_video_every == 0))
 	{
 		
 		Rect_<double> bounding_box;
@@ -391,7 +392,10 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 				return true;
 			}
 		}
-
+		else
+		{
+			clm_model.failures_in_a_row++;
+		}
 	}
 
 	return clm_model.detection_success;
