@@ -392,10 +392,12 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 				return true;
 			}
 		}
-		else
-		{
-			clm_model.failures_in_a_row++;
-		}
+	}
+
+	// if the model has not been initialised yet class it as a failure
+	if(!clm_model.tracking_initialised)
+	{
+		clm_model.failures_in_a_row++;
 	}
 
 	return clm_model.detection_success;
