@@ -581,12 +581,11 @@ namespace CLM_framework_GUI
                 //////////////////////////////////////////////
                 RawImage frame = null;
                 double progress = -1;
-                try
-                {
-                    frame = new RawImage(capture.GetNextFrame(mirror_image));
-                    progress = capture.GetProgress();
-                }
-                catch (Camera_Interop.CaptureFailedException)
+
+                frame = new RawImage(capture.GetNextFrame(mirror_image));
+                progress = capture.GetProgress();
+                
+                if(frame.Width == 0)
                 {
                     // This indicates that we reached the end of the video file
                     break;
@@ -757,6 +756,15 @@ namespace CLM_framework_GUI
 
             latest_img = null;
             skip_frames = 0;
+
+            // Unpause if it's paused
+            if (thread_paused)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
+                {
+                    PauseButton_Click(null, null);
+                }));
+            }
         }
 
         private void StopTracking()

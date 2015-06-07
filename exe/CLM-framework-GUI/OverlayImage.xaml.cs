@@ -75,17 +75,18 @@ namespace CLM_framework_GUI
             int fps_width = (int)(52.0 * scaling);
             int fps_height = (int)(18.0 * scaling);
 
-            dc.DrawRoundedRectangle(Brushes.WhiteSmoke, new Pen(Brushes.Black, 0.5 * scaling), new Rect(ActualWidth / 2 - fps_width / 2, ActualHeight - fps_height - fps_height / 3.0, fps_width, fps_height), 3.0 * scaling, 3.0 * scaling);
+            dc.DrawRoundedRectangle(Brushes.WhiteSmoke, new Pen(Brushes.Black, 0.5 * scaling), new Rect(0, 0, fps_width, fps_height), 3.0 * scaling, 3.0 * scaling);
             FormattedText fps_txt = new FormattedText("FPS: " + (int)FPS, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), 12.0 * scaling, Brushes.Black);
-            dc.DrawText(fps_txt, new Point(ActualWidth / 2 - fps_width / 2 + 2.0 * scaling, ActualHeight - fps_height - fps_height / 3.0 + 1.0 * scaling));
-
+            dc.DrawText(fps_txt, new Point(2.0 * scaling, 0));
+            
             old_width = width;
             old_height = height;
 
-            // Drawing a progress bar
+            // Drawing a progress bar at the bottom of the image
             if (Progress > 0)
             {
-                dc.DrawRectangle(Brushes.GreenYellow, new Pen(Brushes.Black, 0.5 * scaling), new Rect(0, ActualHeight - fps_height / 3.0, Progress * ActualWidth, fps_height / 3.0));
+                int progress_bar_height = (int)(6.0 * scaling);
+                dc.DrawRectangle(Brushes.GreenYellow, new Pen(Brushes.Black, 0.5 * scaling), new Rect(0, ActualHeight - progress_bar_height, Progress * ActualWidth, progress_bar_height));
             }
 
         }

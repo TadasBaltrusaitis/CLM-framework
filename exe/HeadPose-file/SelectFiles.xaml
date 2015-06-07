@@ -1,0 +1,24 @@
+﻿<Window x:Class="HeadPoseFile.SelectFiles"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="File selection" Height="210" Width="300" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel FocusManager.FocusedElement="{Binding ElementName=ResponseTextBox}">
+            <TextBlock HorizontalAlignment="Center" Text="Choose files" FontSize="20" Margin="0,0,0,20"/>
+
+            <Button Click="OpenFileButton_Click" Name="OpenVideoButton" HorizontalAlignment="Center" Width="150" Margin="0,0,0,10">Open video file(s)</Button>
+            <Button Click="OpenFileButton_Click" Name="OpenImageButton" HorizontalAlignment="Center" Width="150">Open image(s)</Button>
+            <Label Name="warningLabel" Visibility="Collapsed" FontStyle="Italic" Foreground="Red" HorizontalAlignment="Center">Can't use the following characters: " \ / | &lt; > : * ?</Label>
+
+            <CheckBox Click="RecordHeadPoseCheckBox_Click" Margin="0,6,0,0" IsChecked="True" HorizontalAlignment="Center" x:Name="RecordHeadPoseCheckBox" Content="Record head pose"/>
+            <StackPanel HorizontalAlignment="Center" Margin="50,5,0,0">
+                <RadioButton Name="RecordFileLoc" GroupName="RecordingLocation" HorizontalAlignment="Left" IsChecked="True">
+                    File directory
+                </RadioButton>
+                <RadioButton Name="RecordRecDirLoc" GroupName="RecordingLocation" HorizontalAlignment="Left">
+                    Recording directory
+                </RadioButton>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

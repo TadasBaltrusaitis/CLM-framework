@@ -30,7 +30,12 @@ using namespace msclr::interop;
 
 namespace Camera_Interop {
 
-	public ref class CaptureFailedException : System::Exception { };
+	public ref class CaptureFailedException : System::Exception 
+	{
+        public:
+        
+		CaptureFailedException(System::String^ message): Exception(message){}	
+	};
 	
 	public ref class Capture
 	{
@@ -74,6 +79,18 @@ namespace Camera_Interop {
 
 			vid_length = 0;
 			frame_num = 0;
+
+			int set_width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
+			int set_height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+
+			if(!vc->isOpened())
+			{
+				throw gcnew CaptureFailedException("Failed to open the webcam");
+			}
+			if(set_width != width || set_height != height)
+			{
+				throw gcnew CaptureFailedException("Failed to open the webcam with desired resolution");
+			}
 		}
 
 		Capture(System::String^ videoFile)
@@ -89,6 +106,11 @@ namespace Camera_Interop {
 
 			vid_length = vc->get(CV_CAP_PROP_FRAME_COUNT);
 			frame_num = 0;
+
+			if(!vc->isOpened())
+			{
+				throw gcnew CaptureFailedException("Failed to open the video file");
+			}
 		}
 
 		// An alternative to using video files is using image sequences
@@ -211,15 +233,21 @@ namespace Camera_Interop {
 				bool success = vc->read(latestFrame->Mat);
 
 				if (!success)
-					throw gcnew CaptureFailedException();
-
+				{
+					// Indicate lack of success by returning an empty image
+					Mat empty_mat = cv::Mat();
+					empty_mat.copyTo(latestFrame->Mat);
+					return latestFrame;
+				}
 			}
 			else if(is_image_seq)
 			{
 				if(image_files->empty())
 				{
-					// TODO don't use exceptions for stopping
-					throw gcnew CaptureFailedException();
+					// Indicate lack of success by returning an empty image
+					Mat empty_mat = cv::Mat();
+					empty_mat.copyTo(latestFrame->Mat);
+					return latestFrame;
 				}
 
 				Mat img = imread(image_files->at(0), -1);
