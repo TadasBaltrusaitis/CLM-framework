@@ -63,3 +63,5 @@ exe/Ophthalm-experiments/bin/
 HeadPose_v4/
 HeadPose_v4.zip
 exe/HeadPose-file/obj/
+lib/local/CamCom/Debug/
+exe/HeadPose-file/libzmq.dll
