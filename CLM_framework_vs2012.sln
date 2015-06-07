@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlib", "lib\3rdParty\dlib\d
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FeatureExtraction_vs2012", "exe\FeatureExtraction\FeatureExtraction_vs2012.vcxproj", "{8A23C00D-767D-422D-89A3-CF225E3DAB4B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLM_Interop", "lib\local\CLM_Interop\CLM_Interop.vcxproj", "{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppInterop", "lib\local\CLM_Interop\CLM_Interop.vcxproj", "{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalysis", "lib\local\FaceAnalyser\FaceAnalyser.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
 EndProject
@@ -27,7 +27,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCVWrappers", "lib\local
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamCom", "lib\local\CamCom\CamCom.vcxproj", "{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ophthalm-experiments", "exe\Ophthalm-experiments\Ophthalm-experiments.csproj", "{2029BC8D-4AEF-42F7-BE74-641686AB3016}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadPose-live", "exe\Ophthalm-experiments\HeadPose-live.csproj", "{2029BC8D-4AEF-42F7-BE74-641686AB3016}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadPose-file", "exe\HeadPose-file\HeadPose-file.csproj", "{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +170,16 @@ Global
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Win32.ActiveCfg = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

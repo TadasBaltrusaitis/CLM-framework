@@ -30,7 +30,12 @@ using namespace msclr::interop;
 
 namespace Camera_Interop {
 
-	public ref class CaptureFailedException : System::Exception { };
+	public ref class CaptureFailedException : System::Exception 
+	{
+        public:
+        
+		CaptureFailedException(System::String^ message): Exception(message){}	
+	};
 	
 	public ref class Capture
 	{
@@ -40,12 +45,17 @@ namespace Camera_Interop {
 		VideoCapture* vc;
 
 		RawImage^ latestFrame;
-		RawImage^ mirroredFrame;
 		RawImage^ grayFrame;
 
 		double fps;
 
 		bool is_webcam;
+		bool is_image_seq;
+
+		int  frame_num;
+		vector<string>* image_files;
+
+		int vid_length;
 
 	public:
 
@@ -56,27 +66,68 @@ namespace Camera_Interop {
 			assert(device >= 0);
 
 			latestFrame = gcnew RawImage();
-			mirroredFrame = gcnew RawImage();
 
 			vc = new VideoCapture(device);
 			vc->set(CV_CAP_PROP_FRAME_WIDTH, width);
 			vc->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 
 			is_webcam = true;
+			is_image_seq = false;
+
 			this->width = width;
 			this->height = height;
+
+			vid_length = 0;
+			frame_num = 0;
+
+			int set_width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
+			int set_height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+
+			if(!vc->isOpened())
+			{
+				throw gcnew CaptureFailedException("Failed to open the webcam");
+			}
+			if(set_width != width || set_height != height)
+			{
+				throw gcnew CaptureFailedException("Failed to open the webcam with desired resolution");
+			}
 		}
 
 		Capture(System::String^ videoFile)
 		{
 			latestFrame = gcnew RawImage();
-			mirroredFrame = gcnew RawImage();
 
 			vc = new VideoCapture(marshal_as<std::string>(videoFile));
 			fps = vc->get(CV_CAP_PROP_FPS);
 			is_webcam = false;
+			is_image_seq = false;
 			this->width = vc->get(CV_CAP_PROP_FRAME_WIDTH);
 			this->height = vc->get(CV_CAP_PROP_FRAME_HEIGHT);
+
+			vid_length = vc->get(CV_CAP_PROP_FRAME_COUNT);
+			frame_num = 0;
+
+			if(!vc->isOpened())
+			{
+				throw gcnew CaptureFailedException("Failed to open the video file");
+			}
+		}
+
+		// An alternative to using video files is using image sequences
+		Capture(List<System::String^>^ image_files)
+		{
+			
+			latestFrame = gcnew RawImage();
+
+			is_webcam = false;
+			is_image_seq = true;
+			this->image_files = new vector<string>();
+
+			for(int i = 0; i < image_files->Count; ++i)
+			{
+				this->image_files->push_back(marshal_as<std::string>(image_files[i]));
+			}
+			vid_length = image_files->Count;
 		}
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
@@ -172,25 +223,37 @@ namespace Camera_Interop {
 			return managed_camera_list;
 		}
 
-		RawImage^ GetNextFrame()
+		RawImage^ GetNextFrame(bool mirror)
 		{
+			frame_num++;
+
 			if(vc != nullptr)
 			{
 				
-				bool success = vc->read(mirroredFrame->Mat);
+				bool success = vc->read(latestFrame->Mat);
 
 				if (!success)
-					throw gcnew CaptureFailedException();
-
+				{
+					// Indicate lack of success by returning an empty image
+					Mat empty_mat = cv::Mat();
+					empty_mat.copyTo(latestFrame->Mat);
+					return latestFrame;
+				}
 			}
+			else if(is_image_seq)
+			{
+				if(image_files->empty())
+				{
+					// Indicate lack of success by returning an empty image
+					Mat empty_mat = cv::Mat();
+					empty_mat.copyTo(latestFrame->Mat);
+					return latestFrame;
+				}
 
-			if(is_webcam)
-			{
-				flip(mirroredFrame->Mat, latestFrame->Mat, 1);
-			}
-			else
-			{
-				mirroredFrame->Mat.copyTo(latestFrame->Mat);
+				Mat img = imread(image_files->at(0), -1);
+				img.copyTo(latestFrame->Mat);
+				// Remove the first frame
+				image_files->erase(image_files->begin(), image_files->begin() + 1);
 			}
 			
 			if (grayFrame == nullptr) {
@@ -199,6 +262,12 @@ namespace Camera_Interop {
 				}
 			}
 
+			if(mirror)
+			{
+				flip(latestFrame->Mat, latestFrame->Mat, 1);
+			}
+
+
 			if (grayFrame != nullptr) {
 				cvtColor(latestFrame->Mat, grayFrame->Mat, CV_BGR2GRAY);
 			}
@@ -206,12 +275,29 @@ namespace Camera_Interop {
 			return latestFrame;
 		}
 
+		double GetProgress()
+		{
+			if(vc != nullptr && is_webcam)
+			{
+				return - 1.0;
+			}
+			else
+			{
+				return (double)frame_num / (double)vid_length;
+			}
+		}
+
 		bool isOpened()
 		{
 			if(vc != nullptr)
 				return vc->isOpened();
 			else
-				return false;
+			{
+				if(is_image_seq && image_files->size() > 0)
+					return true;
+				else
+					return false;
+			}
 		}
 
 		RawImage^ GetCurrentFrameGray() {
@@ -228,6 +314,7 @@ namespace Camera_Interop {
 		!Capture()
 		{
 			delete vc; // Automatically closes capture object before freeing memory.			
+			delete image_files;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

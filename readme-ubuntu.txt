@@ -30,8 +30,8 @@ Need to do the following:
 	make -j2
 	sudo make install	
 	
-5. Get Boost: sudo apt-get install libboost1.53-all-dev
-	alternatively: sudo apt-get install libboost-all-dev
+5. Get Boost: sudo apt-get install libboost-all-dev
+	alternatively: sudo apt-get install libboost1.53-all-dev
 
 6. Make the actual CLM-framework and compile it using
 	cd CLM-framework	

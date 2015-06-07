@@ -59,3 +59,7 @@ lib/local/CLM_Interop/Debug/
 lib/local/CLM_Interop/Release/
 lib/local/OpenCVWrappers/Debug/
 lib/local/OpenCVWrappers/Release/
+exe/Ophthalm-experiments/bin/
+HeadPose_v4/
+HeadPose_v4.zip
+exe/HeadPose-file/obj/

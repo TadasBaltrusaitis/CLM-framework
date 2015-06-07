@@ -40,10 +40,6 @@ res_folder_ict_ccnf_general = 'ict results//CLMr4/';
 % [~, pred_hp_ict_clmz, gt_hp_ict_clmz, ~, ~, rel_ict_clmz] = calcIctError([database_root res_folder_ict_ccnf_general], [database_root ict_dir]);
 
 %%
-% all_hps = cat(1, pred_hp_bu, pred_hp_biwi, pred_hp_ict, pred_hp_bu_clm, pred_hp_biwi_clm, pred_hp_biwi_clmz, pred_hp_ict_clm, pred_hp_ict_clmz);
-% all_gts = cat(1, gt_hp_bu, gt_hp_biwi, gt_hp_ict, pred_gt_bu_clm, gt_hp_biwi_clm, gt_hp_biwi_clmz, gt_hp_ict_clm, gt_hp_ict_clmz);
-% all_rels = cat(1, rels_bu, rels_biwi, rel_ict, rels_bu_clm, rels_biwi_clm, rels_biwi_clmz, rel_ict_clm, rel_ict_clmz);
-
 all_hps = cat(1, pred_hp_bu, pred_hp_biwi, pred_hp_ict);
 all_gts = cat(1, gt_hp_bu, gt_hp_biwi, gt_hp_ict);
 all_rels = cat(1, rels_bu, rels_biwi, rel_ict);
@@ -59,46 +55,6 @@ err_ict = abs(pred_hp_ict(rel_ict > rel_cutoff,:) - gt_hp_ict(rel_ict > rel_cuto
 
 all_err = mean(abs(all_gts - all_hps), 2);
 
-corr(all_hps, all_gts)
+% corr(all_hps, all_gts)
 corr(all_hps(rel_frames, :), all_gts(rel_frames, :))
 
-centres_all = [0     0     0;
-               0   -20     0;
-               0   -45     0;
-               0   -70     0;
-               0    20     0;
-               0    45     0;
-               0    70     0];       
-           
-ids = zeros(size(all_err,1),1);
-mins = [];
-
-for i=1:size(centres_all, 1)                
-    mins = cat(2, mins, mean(abs(bsxfun(@plus, all_hps, -centres_all(i,:))), 2));
-end
-
-% find the center id for each of the frames
-[~, ids] = min(mins');
-ids = ids';
-
-%%
-% pitch_err = mean(abs(all_hps(rel_frames,1) - all_gts(rel_frames,1)))
-% yaw_err = mean(abs(all_hps(rel_frames,2) - all_gts(rel_frames,2)))
-% roll_err = mean(abs(all_hps(rel_frames,3) - all_gts(rel_frames,3)))
-
-%% draw errors properly
-yaw_bins  = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
-err_yaw_bin = zeros(size(yaw_bins));
-std_yaw_bin = zeros(size(yaw_bins));
-dim = 3;
-yaw_bin = bsxfun(@plus, all_gts(:,dim), yaw_bins);
-[~, ids] = min(abs(yaw_bin'));
-ids = ids';
-
-for i=1:numel(yaw_bins)
-   
-    rel_bins = ids == i & rel_frames;
-    
-    err_bin(i) = mean(abs(all_hps(rel_bins,dim) - all_gts(rel_bins,dim)));
-    std_bin(i) = std(abs(all_hps(rel_bins,dim) - all_gts(rel_bins,dim)));
-end

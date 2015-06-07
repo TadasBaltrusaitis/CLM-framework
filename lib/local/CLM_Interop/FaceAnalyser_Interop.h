@@ -53,7 +53,7 @@ private:
 
 public:
 
-	FaceAnalyserManaged(System::String^ root) 
+	FaceAnalyserManaged(System::String^ root, bool dynamic) 
 	{
 			
 		vector<Vec3d> orientation_bins;
@@ -63,9 +63,17 @@ public:
 		int height = 112;
 		
 		string root_std = marshal_as<std::string>(root);
-
-		boost::filesystem::path au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_best.txt";
+		
 		boost::filesystem::path tri_loc = boost::filesystem::path(root_std) / "model" / "tris_68_full.txt";
+		boost::filesystem::path au_loc;
+		if(dynamic)
+		{
+			au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_best.txt";
+		}
+		else
+		{
+			au_loc = boost::filesystem::path(root_std) / "AU_predictors" / "AU_all_static.txt";
+		}
 
 		face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_loc.string(), tri_loc.string());
 
@@ -87,20 +95,13 @@ public:
 
 	void SetupAlignedImageRecording(System::String^ directory)
 	{
-		*align_output_dir = marshal_as<std::string>(directory);
-
-		// TODO create the directory to make sure valid recording location
-
-			
+		*align_output_dir = marshal_as<std::string>(directory);			
 	}
 
 	void SetupHOGRecording(System::String^ file)
 	{
-		// First make sure the directory is there, TODO
-
 		// Create the file for recording			
-		hog_output_file->open(marshal_as<std::string>(file), ios_base::out | ios_base::binary);
-	
+		hog_output_file->open(marshal_as<std::string>(file), ios_base::out | ios_base::binary);	
 	}
 
 	void SetupTrackingRecording(System::String^ file, int width, int height, double fps)
@@ -174,6 +175,7 @@ public:
 		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, dynamic_shift, dynamic_scale, true);
 
 		face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
+		
 		face_analyser->GetLatestAlignedFace(*aligned_face);
 
 		*good_frame = clm->clm->detection_success;
@@ -185,11 +187,20 @@ public:
 
 		if(vis_tracked)
 		{
-			*tracked_face = frame->Mat.clone();
+			if(frame->Mat.cols != tracked_face->cols && frame->Mat.rows != tracked_face->rows)
+			{
+				*tracked_face = frame->Mat.clone();
+			}
+			else
+			{
+				frame->Mat.clone().copyTo(*tracked_face);
+			}
+
 			if(clm->clm->detection_success)
 			{
 				::CLMTracker::Draw(*tracked_face, *clm->clm);
 			}
+			tracked_face->deallocate();
 		}
 	}
 		
