@@ -143,16 +143,19 @@ namespace Camera_Interop {
 			for (size_t i = 0; i < cameras.size(); ++i)
 			{
 				cameras[i].activate();
-				
 				std::string name = cameras[i].name(); 
 
 				// List camera media types
 				auto media_types = cameras[i].media_types();
+				// TODO rem?
+				cameras[i].set_media_type(media_types[0]);
+				// Destroy the camera
+				cameras[i].~camera();
 
 				auto resolutions = gcnew List<Tuple<int,int>^>();
 
-				set<pair<pair<int, int>, media_type>> res_set_mjpg;
-				set<pair<pair<int, int>, media_type>> res_set_rgb;
+				// TODO clean this up
+				set<pair<pair<int, int>, media_type>> res_set;
 
 				Mat sample_img;
 				RawImage^ sample_img_managed = gcnew RawImage();
@@ -160,60 +163,62 @@ namespace Camera_Interop {
 				for (size_t m = 0; m < media_types.size(); ++m)
 				{
 					auto media_type_curr = media_types[m];		
-					if(media_type_curr.format() == MediaFormat::MJPG)
-					{
-						res_set_mjpg.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
-					}
-					else if(media_type_curr.format() == MediaFormat::RGB24)
-					{
-						res_set_rgb.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
-					}
+					res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
 				}
 				
 				bool found = false;
 
-				for (auto beg = res_set_mjpg.begin(); beg != res_set_mjpg.end(); ++beg)
-				{
-					auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
-					resolutions->Add(resolution);
-
-					if((resolution->Item1 >= 640) && (resolution->Item2 >= 480) && !found)
-					{
-						found = true;
-						cameras[i].set_media_type(beg->second);
-						
-						// read several images (to avoid overexposure)						
-						for (int k = 0; k < 5; ++k)
-							cameras[i].read_frame();
-
-						// Flip horizontally
-						cv::flip(cameras[i].read_frame(), sample_img, 1);
-					}
-				}
-
-				// If we didn't find any MJPG resolutions revert to RGB24
+				// Grab some sample images and confirm the resolutions
 				if(resolutions->Count == 0)
 				{
-					for (auto beg = res_set_rgb.begin(); beg != res_set_rgb.end(); ++beg)
+					VideoCapture cap1(i);
+					for (auto beg = res_set.begin(); beg != res_set.end(); ++beg)
 					{
 						auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
-						resolutions->Add(resolution);
 
+						cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
+						cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
+
+						// Add only valid resolutions as API sometimes provides wrong ones
+						int set_width = cap1.get(CV_CAP_PROP_FRAME_WIDTH);
+						int set_height = cap1.get(CV_CAP_PROP_FRAME_HEIGHT);
+
+						resolution = gcnew Tuple<int, int>(set_width, set_height);
+						if(!resolutions->Contains(resolution))
+						{
+							resolutions->Add(resolution);
+						}
+
+						// Create a thumbnail (by default 640 x 480 image)
 						if((resolution->Item1 >= 640) && (resolution->Item2 >= 480) && !found)
 						{
 							found = true;
-							VideoCapture cap1(i);
-							cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
-							cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
 
 							for (int k = 0; k < 5; ++k)
 								cap1.read(sample_img);
 
 							// Flip horizontally
-						cv::flip(sample_img, sample_img, 1);
-
+							cv::flip(sample_img, sample_img, 1);
 						}
 					}
+
+					// if haven't found 640x480 just pick one
+					if(!found && resolutions->Count > 0)
+					{
+						auto resolution = resolutions[resolutions->Count - 1];
+
+						found = true;
+						cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
+						cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
+
+						for (int k = 0; k < 5; ++k)
+							cap1.read(sample_img);
+
+						// Flip horizontally
+						cv::flip(sample_img, sample_img, 1);
+
+					}
+					cap1.~VideoCapture();
 				}
 				sample_img.copyTo(sample_img_managed->Mat);					
 
