@@ -70,7 +70,7 @@ namespace HeadPose_file
 
         // For visualisation and pose computation
         double fx = 500, fy = 500, cx = 0, cy = 0;
-        bool reset = false;
+        volatile bool reset = false;
 
         // For recording
         string record_root = "./recorded/";
@@ -79,12 +79,18 @@ namespace HeadPose_file
         int img_width;
         int img_height;
 
+        // Useful for visualising things
+        private volatile int skip_frames = 0;
+
         volatile bool running = true;
         volatile bool pause = false;
 
         Uri iconUri;
 
         string[] files_chosen;
+
+        // Locking objects
+        object next_file_lock = new object();
 
         public MainWindow()
         {
@@ -165,10 +171,16 @@ namespace HeadPose_file
                 if (record_from_image)
                 {
                     ResetButton.Visibility = System.Windows.Visibility.Hidden;
+                    NextFiveFrameButton.Visibility = System.Windows.Visibility.Collapsed;
+                    PauseButton.Visibility = System.Windows.Visibility.Collapsed;
+                    NextFrameButton.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else
                 {
                     ResetButton.Visibility = System.Windows.Visibility.Visible;
+                    NextFiveFrameButton.Visibility = System.Windows.Visibility.Visible;
+                    PauseButton.Visibility = System.Windows.Visibility.Visible;
+                    NextFrameButton.Visibility = System.Windows.Visibility.Visible;
                 }
 
                 if (record_head_pose)
@@ -201,12 +213,16 @@ namespace HeadPose_file
             if(record_head_pose && record_file_dir)
                 record_root = System.IO.Path.GetDirectoryName(files_chosen[0]);
 
+            int file_counter = 0;
+
             // Create the capture device for each file (needs to be a loop)
             foreach (string file in files_chosen)            
             {
                 // This implies reset has been called
                 if (!running)
                     break;
+
+                file_counter++;
 
                 capture = new Camera_Interop.Capture(file);
                 img_width = capture.width;
@@ -249,6 +265,11 @@ namespace HeadPose_file
 
                     while (running)
                     {
+
+                        Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                        {
+                            PauseButton.IsEnabled = true;
+                        }));
 
                         //////////////////////////////////////////////
                         // CAPTURE FRAME AND DETECT LANDMARKS FOLLOWED BY THE REQUIRED IMAGE PROCESSING
@@ -394,13 +415,23 @@ namespace HeadPose_file
                                     display_img.OverlayPoints = landmarks;
                         
                                 }
+
+                                // updating the progress bar
+                                if (!record_from_image)
+                                {
+                                    display_img.Progress = capture.GetProgress();
+                                }
+
                             }));
 
-                            while (running & pause)
+                            while (running && pause && skip_frames == 0)
                             {
-                            
                                 Thread.Sleep(10);
                             }
+
+                            if (skip_frames > 0)
+                                skip_frames--;
+
                             frame_number++;
                         }                        
                         catch (TaskCanceledException)
@@ -426,15 +457,36 @@ namespace HeadPose_file
                     MessageBox.Show(messageBoxText, caption, button, icon);
                     this.Close();
                 }
+                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                {
+                    PauseButton.IsEnabled = false;
+                }));
+
+                // Only lock if no next file and it has not been stopped
+                if (running && file_counter < files_chosen.Length)
+                {
+                    lock (next_file_lock)
+                    {
+                        // Do not move to next file before the next button is pressed
+                        Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                        {
+                            NextFileButton.IsEnabled = true;
+                        }));
+
+                        Monitor.Wait(next_file_lock);
+
+                        Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                        {
+                            NextFileButton.IsEnabled = false;
+                        }));
+                    }
+                }
             }   
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            running = false;
-            processing_thread.Join();
-            running = true;
-            processing_thread.Start();
+            reset = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -464,12 +516,66 @@ namespace HeadPose_file
             {
                 PauseButton.Content = "Pause";
             }
+
+            if (pause)
+            {
+                NextFrameButton.IsEnabled = true;
+                NextFiveFrameButton.IsEnabled = true;
+            }
+            else
+            {
+                NextFrameButton.IsEnabled = false;
+                NextFiveFrameButton.IsEnabled = false;
+            }
         }
 
         private void ReplayButton_Click(object sender, RoutedEventArgs e)
         {
             // Restart the videos
             running = false;
+            processing_thread.Join();
+            
+            // Start the tracking now
+            processing_thread = new Thread(VideoLoop);
+            running = true;
+            processing_thread.Start();
+
+        }
+
+        private void SkipButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender == NextFrameButton)
+            {
+                skip_frames += 1;
+            }
+            if (sender == NextFiveFrameButton)
+            {
+                skip_frames += 5;
+            }
+        }
+
+        private void NextFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            lock (next_file_lock)
+            {
+                // Indicate that the next file should be opened
+                Monitor.Pulse(next_file_lock);
+            }
+        }
+
+        private void OpenFiles_Click(object sender, RoutedEventArgs e)
+        {
+            // Finish current
+            running = false;
+            processing_thread.Join();
+
+            // Select files
+            SelectFiles();
+
+            // Start the tracking now
+            processing_thread = new Thread(VideoLoop);
+            running = true;
+            processing_thread.Start();
         }
 
         private void ScreenshotButton_Click(object sender, RoutedEventArgs e)
