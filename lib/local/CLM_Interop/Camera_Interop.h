@@ -130,10 +130,10 @@ namespace Camera_Interop {
 			vid_length = image_files->Count;
 		}
 
-		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
+		static Dictionary<System::String^, List<Tuple<int,int>^>^>^ GetListingFromFile(string filename)
 		{
 			// Check what cameras have been written
-			FileStorage fs_read("camera_list.xml", FileStorage::READ);
+			FileStorage fs_read(filename, FileStorage::READ);
 
 			auto managed_camera_list_initial = gcnew Dictionary<System::String^, List<Tuple<int,int>^>^>();
 
@@ -155,6 +155,36 @@ namespace Camera_Interop {
 				managed_camera_list_initial[gcnew System::String(camera_name.c_str())] = resolutions;
 			}
 			fs_read.release();
+			return managed_camera_list_initial;
+		}
+
+		static void WriteCameraListingToFile(List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ camera_list, string filename)
+		{
+			FileStorage fs("camera_list.xml", FileStorage::WRITE);
+
+			fs << "cameras" << "[";
+			for( int i = 0; i < camera_list->Count; i++ )
+			{
+				string name = marshal_as<std::string>(camera_list[i]->Item1);
+
+				fs << "{:" << "name" << name;
+					fs << "resolutions" << "[";
+					for(int j = 0; j < camera_list[i]->Item2->Count; j++)
+					{
+						fs << "{:" << "x" << camera_list[i]->Item2[j]->Item1 << "y" << camera_list[i]->Item2[j]->Item2;
+						fs<< "}";
+					}
+					fs << "]";
+				fs << "}";
+			}
+			fs << "]";
+			fs.release();
+		}
+
+		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras(System::String^ root_directory_m)
+		{
+			string root_directory = marshal_as<std::string>(root_directory_m);
+			auto managed_camera_list_initial = GetListingFromFile(root_directory + "camera_list.xml");
 
 			auto managed_camera_list = gcnew List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>();
 
@@ -222,7 +252,12 @@ namespace Camera_Interop {
 				// Now that the resolutions have been identified, pick a camera and create a thumbnail
 				if(resolutions->Count > 0)
 				{
-					auto resolution = resolutions[resolutions->Count - 1];
+					int resolution_ind = resolutions->Count / 2;
+
+					if(resolution_ind >= resolutions->Count)
+						resolution_ind = resolutions->Count - 1;
+
+					auto resolution = resolutions[resolution_ind];
 
 					cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
 					cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
@@ -241,27 +276,7 @@ namespace Camera_Interop {
 				managed_camera_list->Add(gcnew Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>(gcnew System::String(name.c_str()), resolutions, sample_img_managed));
 			}
 
-			FileStorage fs("camera_list.xml", FileStorage::WRITE);
-
-			fs << "cameras" << "[";
-			for( int i = 0; i < managed_camera_list->Count; i++ )
-			{
-				string name = marshal_as<std::string>(managed_camera_list[i]->Item1);
-
-				fs << "{:" << "name" << name;
-
-				fs << "resolutions";
-					fs << "[";
-					for(int j = 0; j < managed_camera_list[i]->Item2->Count; j++)
-					{
-						fs << "{:" << "x" << managed_camera_list[i]->Item2[j]->Item1 << "y" << managed_camera_list[i]->Item2[j]->Item2;
-						fs<< "}";
-					}
-					fs << "]";
-				fs << "}";
-			}
-			fs << "]";
-			fs.release();
+			WriteCameraListingToFile(managed_camera_list, root_directory + "camera_list.xml");
 
 			return managed_camera_list;
 		}

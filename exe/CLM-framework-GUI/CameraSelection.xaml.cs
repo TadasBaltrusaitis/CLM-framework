@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using CLM_Interop;
+using System.Windows.Threading;
+using System.Threading;
 
 namespace CLM_framework_GUI
 {
@@ -45,7 +47,8 @@ namespace CLM_framework_GUI
             // Finding the cameras here
             if (cams == null)
             {
-                cams = Camera_Interop.Capture.GetCameras();
+                String root = AppDomain.CurrentDomain.BaseDirectory;
+                cams = Camera_Interop.Capture.GetCameras(root);
             }
 
             int i = 0;
@@ -62,7 +65,6 @@ namespace CLM_framework_GUI
                 var b = s.Item3.CreateWriteableBitmap();
                 s.Item3.UpdateWriteableBitmap(b);
                 b.Freeze();
-
 
                 Dispatcher.Invoke(() =>
                 {
@@ -137,7 +139,10 @@ namespace CLM_framework_GUI
             if (cams.Count > 0)
             {
                 no_cameras_found = false;
-                ChooseCamera(0);
+                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                {
+                    ChooseCamera(0);
+                }));
             }
             else
             {
@@ -154,8 +159,24 @@ namespace CLM_framework_GUI
 
         public CameraSelection()
         {
+
             InitializeComponent();
+
+            // We want to display the loading screen first
+            Thread load_cameras = new Thread(LoadCameras);
+            load_cameras.Start();
+        }
+
+        public void LoadCameras()
+        {
+            Thread.CurrentThread.IsBackground = true;
             PopulateCameraSelections();
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                LoadingGrid.Visibility = System.Windows.Visibility.Hidden;
+                camerasPanel.Visibility = System.Windows.Visibility.Visible;
+            }));
         }
 
         public CameraSelection(List<Tuple<String, List<Tuple<int, int>>, OpenCVWrappers.RawImage>> cams)
