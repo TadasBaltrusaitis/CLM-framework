@@ -158,20 +158,23 @@ namespace Camera_Interop {
 			return managed_camera_list_initial;
 		}
 
-		static void WriteCameraListingToFile(List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ camera_list, string filename)
+		static void WriteCameraListingToFile(Dictionary<System::String^, List<Tuple<int,int>^>^>^ camera_list, string filename)
 		{
 			FileStorage fs("camera_list.xml", FileStorage::WRITE);
 
 			fs << "cameras" << "[";
-			for( int i = 0; i < camera_list->Count; i++ )
+			for each( System::String^ name_m in camera_list->Keys )
 			{
-				string name = marshal_as<std::string>(camera_list[i]->Item1);
+
+				string name = marshal_as<std::string>(name_m);
 
 				fs << "{:" << "name" << name;
 					fs << "resolutions" << "[";
-					for(int j = 0; j < camera_list[i]->Item2->Count; j++)
+					auto resolutions = camera_list[name_m];
+					for(int j = 0; j < resolutions->Count; j++)
 					{
-						fs << "{:" << "x" << camera_list[i]->Item2[j]->Item1 << "y" << camera_list[i]->Item2[j]->Item2;
+
+						fs << "{:" << "x" << resolutions[j]->Item1 << "y" << resolutions[j]->Item2;
 						fs<< "}";
 					}
 					fs << "]";
@@ -243,7 +246,7 @@ namespace Camera_Interop {
 							resolutions->Add(resolution);
 						}
 					}
-
+					managed_camera_list_initial[name_managed] = resolutions;
 				}
 
 				Mat sample_img;
@@ -276,7 +279,7 @@ namespace Camera_Interop {
 				managed_camera_list->Add(gcnew Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>(gcnew System::String(name.c_str()), resolutions, sample_img_managed));
 			}
 
-			WriteCameraListingToFile(managed_camera_list, root_directory + "camera_list.xml");
+			WriteCameraListingToFile(managed_camera_list_initial, root_directory + "camera_list.xml");
 
 			return managed_camera_list;
 		}
