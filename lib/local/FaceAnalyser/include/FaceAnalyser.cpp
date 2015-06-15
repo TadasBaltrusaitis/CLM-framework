@@ -196,9 +196,17 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 
 	frames_tracking++;
 
-	// First align the face
-	AlignFaceMask(aligned_face, frame, clm_model, triangulation, true, align_scale, align_width, align_height);
-	
+	// First align the face if tracking was successfull
+	if(clm_model.detection_success)
+	{
+		AlignFaceMask(aligned_face, frame, clm_model, triangulation, true, align_scale, align_width, align_height);
+	}
+	else
+	{
+		aligned_face = Mat(align_height, align_width, CV_8UC3);
+		aligned_face.setTo(0);
+	}
+
 	if(aligned_face.channels() == 3)
 	{
 		cvtColor(aligned_face, aligned_face_grayscale, CV_BGR2GRAY);
@@ -245,8 +253,13 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	// Geom descriptor and its median
 	geom_descriptor_frame = clm_model.params_local.t();
 	
+	if(!clm_model.detection_success)
+	{
+		geom_descriptor_frame.setTo(0);
+	}
+
 	// Stack with the actual feature point locations (without mean)
-	Mat_<double> locs = clm_model.pdm.princ_comp * clm_model.params_local;
+	Mat_<double> locs = clm_model.pdm.princ_comp * geom_descriptor_frame.t();
 	
 	cv::hconcat(locs.t(), geom_descriptor_frame.clone(), geom_descriptor_frame);
 	
@@ -270,8 +283,10 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 		FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_visualisation);
 	}
 
+	// TODO how to deal with predictions when tracking just fails?
+
 	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dynamic_shift, dynamic_scale);
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dynamic_shift, dynamic_scale, clm_model.detection_success);
 
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
 
@@ -447,7 +462,7 @@ void FaceAnalyser::ExtractMedian(cv::Mat_<unsigned int>& histogram, int hist_cou
 	}
 }
 // Apply the current predictors to the currently stored descriptors
-vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale)
+vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale, bool update_track)
 {
 
 	vector<pair<string, double>> predictions;
@@ -476,8 +491,12 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 
 		// Correction that drags the predicion to 0 (assuming the bottom 10% of predictions are of neutral expresssions)
 		vector<double> correction(predictions.size(), 0.0);
-		UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, -3, 5, 10);
-		
+
+		if(update_track)
+		{
+			UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, -3, 5, 10);
+		}
+
 		if(dyn_shift)
 		{
 			for(size_t i = 0; i < correction.size(); ++i)
