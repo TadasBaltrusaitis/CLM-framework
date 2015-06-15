@@ -131,6 +131,12 @@ namespace HeadPose_file
             
             logoLabel.Source = src;
 
+            // Make sure output directory exists
+            if (!System.IO.Directory.Exists(record_root))
+            {
+                System.IO.Directory.CreateDirectory(record_root);
+            }
+
             // First make the user chooose a file or a set of files
             SelectFiles();
 
@@ -252,6 +258,7 @@ namespace HeadPose_file
                     {
                         string output_file_name = System.IO.Path.GetFileNameWithoutExtension(file);
                         output_file_name = System.IO.Path.Combine(record_root, output_file_name + ".pose.txt");
+
                         output_head_pose_file = new System.IO.StreamWriter(output_file_name);
                         if (record_from_image)
                         {
@@ -494,6 +501,12 @@ namespace HeadPose_file
 
             // Stop capture and tracking
             running = false;
+            
+            lock (next_file_lock)
+            {
+                Monitor.Pulse(next_file_lock);
+            }
+
             if (processing_thread != null)
             {
                 processing_thread.Join();
