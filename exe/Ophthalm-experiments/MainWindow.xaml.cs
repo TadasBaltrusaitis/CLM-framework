@@ -694,7 +694,7 @@ namespace Ophthalm_experiments
                                      0, 0,
                                      bmpScreenCapture.Size,
                                      CopyPixelOperation.SourceCopy);
-                    
+
                     // Write out the bitmap here encoded by a time-stamp?
                     String fname = output_root + DateTime.Now.ToString("yyyy-MMM-dd--HH-mm-ss") + ".png";
                     bmpScreenCapture.Save(fname, ImageFormat.Png);

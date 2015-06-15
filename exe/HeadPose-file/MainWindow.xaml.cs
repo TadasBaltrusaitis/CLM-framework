@@ -73,7 +73,7 @@ namespace HeadPose_file
         volatile bool reset = false;
 
         // For recording
-        string record_root = "./recorded/";
+        string record_root = "./head_pose_from_files/";
         bool record_from_image;
 
         int img_width;

@@ -23,7 +23,7 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset"/>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1" Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset"/>
         
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button  Width="110" Height="26" FontSize="16" Click="startRecordingButton_Click" Name="RecordingButton">Record trial 0</Button>
