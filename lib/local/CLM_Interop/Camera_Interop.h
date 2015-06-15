@@ -132,6 +132,29 @@ namespace Camera_Interop {
 
 		static List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>^ GetCameras()
 		{
+			// Check what cameras have been written
+			FileStorage fs_read("camera_list.xml", FileStorage::READ);
+
+			auto managed_camera_list_initial = gcnew Dictionary<System::String^, List<Tuple<int,int>^>^>();
+
+			FileNode camera_node_list = fs_read["cameras"];
+
+			// iterate through a sequence using FileNodeIterator
+			for(int idx = 0; idx < camera_node_list.size(); idx++ )
+			{
+				string camera_name = (string)camera_node_list[idx]["name"];
+				
+				FileNode resolution_list = camera_node_list[idx]["resolutions"];
+				auto resolutions = gcnew List<Tuple<int, int>^>();
+				for(int r_idx = 0; r_idx < resolution_list.size(); r_idx++ )
+				{
+					int x = (int)resolution_list[r_idx]["x"];
+					int y = (int)resolution_list[r_idx]["y"];
+					resolutions->Add(gcnew Tuple<int,int>(x, y));
+				}
+				managed_camera_list_initial[gcnew System::String(camera_name.c_str())] = resolutions;
+			}
+			fs_read.release();
 
 			auto managed_camera_list = gcnew List<Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>^>();
 
@@ -144,34 +167,35 @@ namespace Camera_Interop {
 			{
 				cameras[i].activate();
 				std::string name = cameras[i].name(); 
+				System::String^ name_managed = gcnew System::String(name.c_str());
 
 				// List camera media types
 				auto media_types = cameras[i].media_types();
-				// TODO rem?
-				cameras[i].set_media_type(media_types[0]);
-				// Destroy the camera
-				cameras[i].~camera();
 
-				auto resolutions = gcnew List<Tuple<int,int>^>();
-
-				// TODO clean this up
+				List<Tuple<int,int>^>^ resolutions;
 				set<pair<pair<int, int>, media_type>> res_set;
 
-				Mat sample_img;
-				RawImage^ sample_img_managed = gcnew RawImage();
-
-				for (size_t m = 0; m < media_types.size(); ++m)
+				// If we have them just use pre-loaded resolutions
+				if(managed_camera_list_initial->ContainsKey(name_managed))
 				{
-					auto media_type_curr = media_types[m];		
-					res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+					resolutions = managed_camera_list_initial[name_managed];
 				}
+				else
+				{
+					resolutions = gcnew List<Tuple<int,int>^>();
+					for (size_t m = 0; m < media_types.size(); ++m)
+					{
+						auto media_type_curr = media_types[m];		
+						res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+					}
+				}								
 				
-				bool found = false;
-
 				// Grab some sample images and confirm the resolutions
+				VideoCapture cap1(i);
+
+				// Go through resolutions if they have not been identified
 				if(resolutions->Count == 0)
 				{
-					VideoCapture cap1(i);
 					for (auto beg = res_set.begin(); beg != res_set.end(); ++beg)
 					{
 						auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
@@ -188,43 +212,57 @@ namespace Camera_Interop {
 						{
 							resolutions->Add(resolution);
 						}
-
-						// Create a thumbnail (by default 640 x 480 image)
-						if((resolution->Item1 >= 640) && (resolution->Item2 >= 480) && !found)
-						{
-							found = true;
-
-							for (int k = 0; k < 5; ++k)
-								cap1.read(sample_img);
-
-							// Flip horizontally
-							cv::flip(sample_img, sample_img, 1);
-						}
 					}
 
-					// if haven't found 640x480 just pick one
-					if(!found && resolutions->Count > 0)
-					{
-						auto resolution = resolutions[resolutions->Count - 1];
-
-						found = true;
-						cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
-						cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
-
-						for (int k = 0; k < 5; ++k)
-							cap1.read(sample_img);
-
-						// Flip horizontally
-						cv::flip(sample_img, sample_img, 1);
-
-					}
-					cap1.~VideoCapture();
 				}
-				sample_img.copyTo(sample_img_managed->Mat);					
 
+				Mat sample_img;
+				RawImage^ sample_img_managed = gcnew RawImage();
+				
+				// Now that the resolutions have been identified, pick a camera and create a thumbnail
+				if(resolutions->Count > 0)
+				{
+					auto resolution = resolutions[resolutions->Count - 1];
+
+					cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
+					cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);
+
+					for (int k = 0; k < 5; ++k)
+						cap1.read(sample_img);
+
+					// Flip horizontally
+					cv::flip(sample_img, sample_img, 1);
+
+				}
+				cap1.~VideoCapture();
+
+				sample_img.copyTo(sample_img_managed->Mat);					
 
 				managed_camera_list->Add(gcnew Tuple<System::String^, List<Tuple<int,int>^>^, RawImage^>(gcnew System::String(name.c_str()), resolutions, sample_img_managed));
 			}
+
+			FileStorage fs("camera_list.xml", FileStorage::WRITE);
+
+			fs << "cameras" << "[";
+			for( int i = 0; i < managed_camera_list->Count; i++ )
+			{
+				string name = marshal_as<std::string>(managed_camera_list[i]->Item1);
+
+				fs << "{:" << "name" << name;
+
+				fs << "resolutions";
+					fs << "[";
+					for(int j = 0; j < managed_camera_list[i]->Item2->Count; j++)
+					{
+						fs << "{:" << "x" << managed_camera_list[i]->Item2[j]->Item1 << "y" << managed_camera_list[i]->Item2[j]->Item2;
+						fs<< "}";
+					}
+					fs << "]";
+				fs << "}";
+			}
+			fs << "]";
+			fs.release();
+
 			return managed_camera_list;
 		}
 
