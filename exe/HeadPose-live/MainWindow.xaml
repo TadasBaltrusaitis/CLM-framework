@@ -1,7 +1,7 @@
-﻿<Window x:Class="Ophthalm_experiments.MainWindow"
+﻿<Window x:Class="HeadPoseLive.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
-        xmlns:Ophthalm_experiments="clr-namespace:Ophthalm_experiments"
+        xmlns:Ophthalm_experiments="clr-namespace:HeadPoseLive"
         Title="Cambridge Face Tracker - Head Pose Experiments" MinHeight="400" MinWidth="640" WindowStartupLocation="CenterScreen" UseLayoutRounding="True" Closing="Window_Closing">
     <Window.Resources>
         <Style TargetType="{x:Type Image}">

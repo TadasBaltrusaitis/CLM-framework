@@ -7,8 +7,8 @@
     <ProjectGuid>{2029BC8D-4AEF-42F7-BE74-641686AB3016}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ophthalm_experiments</RootNamespace>
-    <AssemblyName>Ophthalm_experiments</AssemblyName>
+    <RootNamespace>HeadPoseLive</RootNamespace>
+    <AssemblyName>HeadPose-live</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -136,7 +136,9 @@
     <PreBuildEvent>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\ZeroMQ\libzmq.dll" "$(SolutionDir)/$(Configuration)"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\ZeroMQ\libzmq.dll" "$(ProjectDir)"
 xcopy /I /E /Y /D "$(ProjectDir)logo1.png" "$(SolutionDir)/$(Configuration)"
-xcopy /I /E /Y /D "$(ProjectDir)logo1.ico" "$(SolutionDir)/$(Configuration)"</PreBuildEvent>
+xcopy /I /E /Y /D "$(ProjectDir)logo1.ico" "$(SolutionDir)/$(Configuration)"
+xcopy /I /E /Y /D "$(ProjectDir)testing_head_pose.py" "$(SolutionDir)/$(Configuration)"
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

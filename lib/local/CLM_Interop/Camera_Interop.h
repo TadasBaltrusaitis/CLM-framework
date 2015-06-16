@@ -140,13 +140,13 @@ namespace Camera_Interop {
 			FileNode camera_node_list = fs_read["cameras"];
 
 			// iterate through a sequence using FileNodeIterator
-			for(int idx = 0; idx < camera_node_list.size(); idx++ )
+			for(size_t idx = 0; idx < camera_node_list.size(); idx++ )
 			{
 				string camera_name = (string)camera_node_list[idx]["name"];
 				
 				FileNode resolution_list = camera_node_list[idx]["resolutions"];
 				auto resolutions = gcnew List<Tuple<int, int>^>();
-				for(int r_idx = 0; r_idx < resolution_list.size(); r_idx++ )
+				for(size_t r_idx = 0; r_idx < resolution_list.size(); r_idx++ )
 				{
 					int x = (int)resolution_list[r_idx]["x"];
 					int y = (int)resolution_list[r_idx]["y"];

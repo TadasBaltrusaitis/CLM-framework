@@ -62,3 +62,6 @@ exe/Ophthalm-experiments/bin/
 HeadPose_v4/
 HeadPose_v4.zip
 exe/HeadPose-file/obj/
+HeadPose_v6/
+exe/HeadPose-live/obj/
+matlab_runners/FACS/
