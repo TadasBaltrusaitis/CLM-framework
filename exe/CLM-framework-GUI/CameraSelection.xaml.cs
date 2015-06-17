@@ -153,7 +153,10 @@ namespace CLM_framework_GUI
                 MessageBox.Show(messageBoxText, caption, button, icon);
                 selected_camera_idx = -1;
                 no_cameras_found = true;
-                this.Close();
+                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+                {
+                    this.Close();
+                }));
             }
         }
 
