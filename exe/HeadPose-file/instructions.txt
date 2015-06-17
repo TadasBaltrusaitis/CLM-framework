@@ -1,0 +1,7 @@
+For running the Cambridge Face Tracker live from webcam run HeadPose-live.exe and follow the instructions on the screen. The code will both display head pose information and is able to record head pose data and video in 10 second intervals.
+
+For running the Cambridge Face Tracker from video files and images run HeadPose-file.exe and follow the instruction on the screen. If selected the application will output text files with the detected head pose and orientation in chosen directory. Please note that the accuracy of head pose predictions from images taken by unknown and unaligned cameras is not as reliable. The head pose variation might be present due to the camera orientation, furthermore we cannot correct for optical properties of cameras as well if we don't know what camera it is.
+
+If the code fails to run, please install vcredist_x86.exe (available in this folder).
+
+If you have any questions/suggestions contact Tadas.Baltrusaitis@cl.cam.ac.uk
