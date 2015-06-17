@@ -12,10 +12,10 @@
 
             <CheckBox Click="RecordHeadPoseCheckBox_Click" Margin="0,6,0,0" IsChecked="True" HorizontalAlignment="Center" x:Name="RecordHeadPoseCheckBox" Content="Record head pose"/>
             <StackPanel HorizontalAlignment="Center" Margin="50,5,0,0">
-                <RadioButton Name="RecordFileLoc" GroupName="RecordingLocation" HorizontalAlignment="Left" IsChecked="True">
+                <RadioButton ToolTip="Record head pose file in the same directory as the original image/video" Name="RecordFileLoc" GroupName="RecordingLocation" HorizontalAlignment="Left" IsChecked="True">
                     File directory
                 </RadioButton>
-                <RadioButton Name="RecordRecDirLoc" GroupName="RecordingLocation" HorizontalAlignment="Left">
+                <RadioButton ToolTip="Record head pose file in Cambridge Face Tracker directory (under head_pose_from_files directory)" Name="RecordRecDirLoc" GroupName="RecordingLocation" HorizontalAlignment="Left">
                     Recording directory
                 </RadioButton>
             </StackPanel>

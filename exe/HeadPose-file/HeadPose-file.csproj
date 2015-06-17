@@ -136,7 +136,8 @@
     <PreBuildEvent>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\ZeroMQ\libzmq.dll" "$(SolutionDir)/$(Configuration)"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\ZeroMQ\libzmq.dll" "$(ProjectDir)"
 xcopy /I /E /Y /D "$(ProjectDir)logo1.png" "$(SolutionDir)/$(Configuration)"
-xcopy /I /E /Y /D "$(ProjectDir)logo1.ico" "$(SolutionDir)/$(Configuration)"</PreBuildEvent>
+xcopy /I /E /Y /D "$(ProjectDir)logo1.ico" "$(SolutionDir)/$(Configuration)"
+xcopy /I /E /Y /D "$(ProjectDir)instructions.txt" "$(SolutionDir)/$(Configuration)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

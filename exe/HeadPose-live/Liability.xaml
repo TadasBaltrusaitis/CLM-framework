@@ -1,4 +1,4 @@
-﻿<Window x:Class="Ophthalm_experiments.Liability"
+﻿<Window x:Class="HeadPoseLive.Liability"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Liability" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">

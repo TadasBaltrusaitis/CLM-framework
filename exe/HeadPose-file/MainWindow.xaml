@@ -26,9 +26,6 @@
         <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1" Background="DarkSalmon" Canvas.ZIndex="1" MouseDown="ResetButton_Click" Name="ResetButton" Content="Reset"/>
         
         <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-            <Button Name="PauseButton" Click="PauseButton_Click">
-                Pause
-            </Button>
             <Button Name="ReplayButton" Click="ReplayButton_Click" Margin="0,10,0,0">
                 Replay video(s) or image(s)
             </Button>
@@ -68,6 +65,21 @@
             </StackPanel>
         </StackPanel>
 
+        <StackPanel Grid.Row="2" Grid.Column="2">
+            <Button Name="OpenFilesButton" Click="OpenFiles_Click">
+                Open new files
+            </Button>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button VerticalAlignment="Top" Name="PauseButton" Click="PauseButton_Click">
+                Pause
+            </Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFrameButton">Next frame</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFiveFrameButton">Next five frames</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="NextFileButton_Click" Name="NextFileButton">Next image/video</Button>
+        </StackPanel>
+        
         <StackPanel  HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
             <Image RenderOptions.BitmapScalingMode="Fant"  RenderOptions.EdgeMode="Aliased"  x:Name="logoLabel" Source="/logo1.png"  Stretch="Uniform" />
         </StackPanel>

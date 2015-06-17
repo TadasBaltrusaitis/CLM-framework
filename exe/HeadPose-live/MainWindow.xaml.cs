@@ -28,7 +28,7 @@ using ZeroMQ;
 using System.Windows.Threading;
 using System.Drawing;
 
-namespace Ophthalm_experiments
+namespace HeadPoseLive
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -58,7 +58,7 @@ namespace Ophthalm_experiments
         Thread processing_thread;
         Thread rec_thread;
 
-        string patient_id;
+        string subject_id;
         bool record_video;
         bool record_head_pose;
 
@@ -77,7 +77,7 @@ namespace Ophthalm_experiments
         bool reset = false;
 
         // For recording
-        string record_root = "./recorded/patient";
+        string record_root = "./head_pose_live_recordings/subject";
         string output_root;
         private Object recording_lock = new Object();
         int trial_id = 0;
@@ -102,38 +102,38 @@ namespace Ophthalm_experiments
         {
             // Inquire more from the user
 
-            // Get the entry dialogue now for the patient ID
+            // Get the entry dialogue now for the subject ID
             trial_id = 0;
-            TextEntryWindow patient_id_window = new TextEntryWindow();
-            patient_id_window.Icon = this.Icon;
+            TextEntryWindow subject_id_window = new TextEntryWindow();
+            subject_id_window.Icon = this.Icon;
 
-            patient_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            subject_id_window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             
-            if (patient_id_window.ShowDialog() == true)
+            if (subject_id_window.ShowDialog() == true)
             {
 
-                patient_id = patient_id_window.ResponseText;
+                subject_id = subject_id_window.ResponseText;
 
                 // Remove trailing spaces and full stops at the end of the folder name
                 int old_length;
                 do
                 {
-                    old_length = patient_id.Length;
-                    patient_id = patient_id.Trim();
-                    if (patient_id.Length > 0)
+                    old_length = subject_id.Length;
+                    subject_id = subject_id.Trim();
+                    if (subject_id.Length > 0)
                     {
-                        while (patient_id[patient_id.Length - 1].Equals('.'))
+                        while (subject_id[subject_id.Length - 1].Equals('.'))
                         {
-                            patient_id = patient_id.Substring(0, patient_id.Length - 1);
+                            subject_id = subject_id.Substring(0, subject_id.Length - 1);
                         }
                     }
-                } while (patient_id.Length != old_length);
+                } while (subject_id.Length != old_length);
 
-                output_root = record_root + patient_id + "/";
+                output_root = record_root + subject_id + "/";
 
                 if (System.IO.Directory.Exists(output_root))
                 {
-                    string messageBoxText = "The recording for patient already exists, are you sure you want to continue?";
+                    string messageBoxText = "The recording for subject already exists, are you sure you want to continue?";
                     string caption = "Directory exists!";
                     MessageBoxButton button = MessageBoxButton.YesNo;
                     MessageBoxImage icon = MessageBoxImage.Warning;
@@ -154,8 +154,8 @@ namespace Ophthalm_experiments
 
                 System.IO.Directory.CreateDirectory(output_root);
 
-                record_video = patient_id_window.RecordVideo;
-                record_head_pose = patient_id_window.RecordHeadPose;
+                record_video = subject_id_window.RecordVideo;
+                record_head_pose = subject_id_window.RecordHeadPose;
                 RecordingButton.Content = "Record trial: " + trial_id;
 
             }
@@ -172,10 +172,10 @@ namespace Ophthalm_experiments
 
             DateTime now = DateTime.Now;
 
-            if (now > new DateTime(2015, 7, 1, 0, 0, 0, 0))
+            if (now > new DateTime(2015, 9, 1, 0, 0, 0, 0))
             {
                 string messageBoxText = "The version of the software has expired. Please contact Tadas Baltrušaitis (Tadas.Baltrusaitis@cl.cam.ac.uk) for an updated version.";
-                string caption = "Version expired! (after 2015-July-01";
+                string caption = "Version expired! (after 2015-September-01)";
                 MessageBoxButton button = MessageBoxButton.OK;
                 MessageBoxImage icon = MessageBoxImage.Error;
                 MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon); 
@@ -694,7 +694,7 @@ namespace Ophthalm_experiments
                                      0, 0,
                                      bmpScreenCapture.Size,
                                      CopyPixelOperation.SourceCopy);
-                    
+
                     // Write out the bitmap here encoded by a time-stamp?
                     String fname = output_root + DateTime.Now.ToString("yyyy-MMM-dd--HH-mm-ss") + ".png";
                     bmpScreenCapture.Save(fname, ImageFormat.Png);
