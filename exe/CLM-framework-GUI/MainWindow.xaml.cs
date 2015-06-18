@@ -783,7 +783,7 @@ namespace CLM_framework_GUI
 
             var d = new OpenFileDialog();
             d.Multiselect = true;
-            d.Filter = "Video files|*.avi;*.wmv;*.mov;*.mpg;*.mpeg";
+            d.Filter = "Video files|*.avi;*.wmv;*.mov;*.mpg;*.mpeg;*.mp4";
 
             if (d.ShowDialog(this) == true)
             {
