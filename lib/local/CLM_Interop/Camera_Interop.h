@@ -387,8 +387,13 @@ namespace Camera_Interop {
 		// May be called multiple times.
 		!Capture()
 		{
-			delete vc; // Automatically closes capture object before freeing memory.			
-			delete image_files;
+			// Automatically closes capture object before freeing memory.	
+			if(vc != nullptr)
+			{
+				vc->~VideoCapture();
+			}
+			if(image_files != nullptr)
+				delete image_files;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

@@ -187,6 +187,12 @@ namespace CLM_framework_GUI
             InitializeComponent();
             this.cams = cams;
             PopulateCameraSelections();
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                LoadingGrid.Visibility = System.Windows.Visibility.Hidden;
+                camerasPanel.Visibility = System.Windows.Visibility.Visible;
+            }));
         }
 
         private void ChooseCamera(int idx)
