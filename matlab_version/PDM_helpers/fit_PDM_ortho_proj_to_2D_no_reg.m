@@ -1,61 +1,59 @@
-function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D( M, E, V, shape2D, f, cx, cy)
+function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D_no_reg( M, E, V, shape2D)
 %FITPDMTO2DSHAPE Summary of this function goes here
 %   Detailed explanation goes here
 
-
-
-    params = zeros(size(E));
-    
     hidden = false;
-        
+
     % if some of the points are unavailable modify M, V, and shape2D (can
     % later infer the actual shape from this)
     if(sum(shape2D(:)==0) > 0)        
-    
+
         hidden = true;
         % which indices to remove
         inds_to_rem = shape2D(:,1) == 0 | shape2D(:,2) == 0;
-        
+
         shape2D = shape2D(~inds_to_rem,:);
-        
+
         inds_to_rem = repmat(inds_to_rem, 3, 1);
-        
+
         M_old = M;
         V_old = V;
-        
+
         M = M(~inds_to_rem);
         V = V(~inds_to_rem,:);
-        
+
     end
     
     num_points = numel(M) / 3;
-    
+
     m = reshape(M, num_points, 3)';
     width_model = max(m(1,:)) - min(m(1,:));
     height_model = max(m(2,:)) - min(m(2,:));
 
     bounding_box = [min(shape2D(:,1)), min(shape2D(:,2)),...
                     max(shape2D(:,1)), max(shape2D(:,2))];
-    
+
     a = (((bounding_box(3) - bounding_box(1)) / width_model) + ((bounding_box(4) - bounding_box(2))/ height_model)) / 2;
-        
+
     tx = (bounding_box(3) + bounding_box(1))/2;
     ty = (bounding_box(4) + bounding_box(2))/2;
-    
+
     % correct it so that the bounding box is just around the minimum
     % and maximum point in the initialised face
     tx = tx - a*(min(m(1,:)) + max(m(1,:)))/2;
     ty = ty - a*(min(m(2,:)) + max(m(2,:)))/2;    
-    
+
     R = eye(3); 
     T = [tx; ty];
-    
+
+    params = zeros(size(E));
+
     currShape = getShapeOrtho(M, V, params, R, T, a);
     
     currError = getRMSerror(currShape, shape2D);
     
     reg_rigid = zeros(6,1);
-    regFactor = 20;
+    regFactor = 0.25;
     regularisations = [reg_rigid; regFactor ./ E]; % the above version, however, does not perform as well
     regularisations = diag(regularisations)*diag(regularisations);
     
@@ -79,7 +77,7 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
         
         % RLMS style update
         p_delta = (J'*J + regularisations) \ (J'*error_res(:) - regularisations*[p_global;params]);
-        
+
         % not to overshoot
         p_delta = 0.5 * p_delta;
         
@@ -109,16 +107,8 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
     else
         shapeOrtho = currShape;
     end
-    if(nargin == 7)
     
-        Zavg = f / a;
-        Xavg = (T(1) - cx) / a;
-        Yavg = (T(2) - cy) / a;
-
-        T3D = [Xavg;Yavg;Zavg];
-    else
-        T3D = [0;0;0];
-    end
+    T3D = [0;0;0];
     
 end
 

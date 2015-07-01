@@ -59,9 +59,7 @@ for i =1:num_of_images
     error_per_image(i) = sum/(6*interocular_distance);
 end
 
-if(nargin > 2)
-    error_per_image = error_per_image(~occluded);
-end
+error_per_image = error_per_image(~occluded);
 
 end
 

@@ -1,4 +1,4 @@
-function Script_CLNF_general_eyes()
+function Script_CLNF_general_hierarch()
 
 addpath('../PDM_helpers/');
 addpath('../fitting/normxcorr2_mex_ALL');
@@ -15,7 +15,7 @@ end
 
 [images, detections, labels] = Collect_wild_imgs(root_test_data);
 
-%% loading the patch experts
+%% loading the patch experts and PDMs
    
 clmParams = struct;
 
@@ -24,42 +24,43 @@ clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/general/', 'ccnf_patches_*_general.mat', [], [], clmParams);
 
-%% Fitting the model to the provided image
-
 verbose = false; % set to true to visualise the fitting
-output_root = './wild_fit_clnf/';
+output_root = './wild_fit_clnf_hierarch/';
 
 % the default PDM to use
-pdmLoc = ['../models/pdm/pdm_68_aligned_wild_eyes.mat'];
+pdmLoc = ['../models/pdm/pdm_68_aligned_wild.mat'];
 
 load(pdmLoc);
+pdm = struct; pdm.M = double(M); pdm.E = double(E); pdm.V = double(V);
 
-pdm = struct;
-pdm.M = double(M);
-pdm.E = double(E);
-pdm.V = double(V);
+% the default full face model parameters to use
+clmParams.regFactor = 25; clmParams.sigmaMeanShift = 2; clmParams.tikhonov_factor = 5;
 
-% the default model parameters to use
-clmParams.regFactor = 25;               
-clmParams.sigmaMeanShift = 2;
-clmParams.tikhonov_factor = 5;
-
-clmParams.startScale = 1;
-clmParams.num_RLMS_iter = 10;
-clmParams.fTol = 0.01;
-clmParams.useMultiScale = true;
-clmParams.use_multi_modal = 1;
+clmParams.startScale = 1; clmParams.num_RLMS_iter = 10; clmParams.fTol = 0.01;
+clmParams.useMultiScale = true; clmParams.use_multi_modal = 1;
 clmParams.multi_modal_types  = patches(1).multi_modal_types;
-   
-% for recording purposes
+
+% Loading eye PDM and patch experts
+[clmParams_eye, pdm_right_eye, pdm_left_eye] = Load_CLM_params_eye();
+[patches_right_eye] = Load_Patch_Experts( '../models/hierarch/', 'ccnf_patches_*_combined.mat', [], [], clmParams_eye);
+[patches_left_eye] = Load_Patch_Experts( '../models/hierarch/', 'left_ccnf_patches_*_combined.mat', [], [], clmParams_eye);
+clmParams_eye.multi_modal_types  = patches_right_eye(1).multi_modal_types;
+right_eye_inds = [43,44,45,46,47,48];
+left_eye_inds = [37,38,39,40,41,42];
+
+% Loading mouth PDM and patch experts
+[clmParams_mouth, pdm_mouth] = Load_CLM_params_mouth();
+[patches_mouth] = Load_Patch_Experts( '../models/hierarch/', 'ccnf_patches_*_mouth_mv.mat', [], [], clmParams_mouth);
+clmParams_mouth.multi_modal_types  = patches_mouth(1).multi_modal_types;
+mouth_inds = 49:68;
+
+%% for recording purposes
 experiment.params = clmParams;
 
 num_points = numel(M)/3;
 
-errors = zeros(numel(images),1);
 shapes_all = zeros(size(labels,2),size(labels,3), size(labels,1));
 labels_all = zeros(size(labels,2),size(labels,3), size(labels,1));
-errors_normed = zeros(numel(images),1);
 lhoods = zeros(numel(images),1);
 all_lmark_lhoods = zeros(num_points, numel(images));
 all_views_used = zeros(numel(images),1);
@@ -68,6 +69,7 @@ all_views_used = zeros(numel(images),1);
 % orientation
 multi_view = true;
 
+%% Fitting the model to the provided images
 tic
 for i=1:numel(images)
 
@@ -109,25 +111,62 @@ for i=1:numel(images)
     all_lmark_lhoods(:,i) = lmark_lhood;
     all_views_used(i) = view_used;
 
-    % TODO the shape correction?
-    shape = shape + 1;
+    %% now fit the hierarchical models (eyes and mouth)
+                            
+    % Perform eye fitting now
+    shape_r_eye = shape(right_eye_inds, :);
 
-    shapes_all(:,:,i) = shape;
+    [ a, R, T, ~, l_params] = fit_PDM_ortho_proj_to_2D_no_reg(pdm_right_eye.M, pdm_right_eye.E, pdm_right_eye.V, shape_r_eye);
+
+    bbox = [min(shape_r_eye(:,1)), min(shape_r_eye(:,2)), max(shape_r_eye(:,1)), max(shape_r_eye(:,2))];
+
+    g_param = [a; Rot2Euler(R)'; T];
+
+    [shape_r_eye] = Fitting_from_bb(image, [], bbox, pdm_right_eye, patches_right_eye, clmParams_eye, 'gparam', g_param, 'lparam', l_params);
+
+    % Perform eye fitting now 
+    shape_l_eye = shape(left_eye_inds, :);
+
+    [ a, R, T, ~, l_params] = fit_PDM_ortho_proj_to_2D_no_reg(pdm_left_eye.M, pdm_left_eye.E, pdm_left_eye.V, shape_l_eye);
+
+    bbox = [min(shape_l_eye(:,1)), min(shape_l_eye(:,2)), max(shape_l_eye(:,1)), max(shape_l_eye(:,2))];
+
+    g_param = [a; Rot2Euler(R)'; T];
+
+    [shape_l_eye] = Fitting_from_bb(image, [], bbox, pdm_left_eye, patches_left_eye, clmParams_eye, 'gparam', g_param, 'lparam', l_params);
+
+    % Perform mouth fitting now 
+    shape_mouth = shape(mouth_inds, :);
+
+    [ a, R, T, ~, l_params] = fit_PDM_ortho_proj_to_2D_no_reg(pdm_mouth.M, pdm_mouth.E, pdm_mouth.V, shape_mouth);
+
+    bbox = [min(shape_mouth(:,1)), min(shape_mouth(:,2)), max(shape_mouth(:,1)), max(shape_mouth(:,2))];
+
+    g_param = [a; Rot2Euler(R)'; T];
+
+    [shape_mouth] = Fitting_from_bb(image, [], bbox, pdm_mouth, patches_mouth, clmParams_mouth, 'gparam', g_param, 'lparam', l_params);
+    
+    % Now after detections incorporate the eyes back
+    % into the face model
+
+    shape(left_eye_inds, :) = shape_l_eye;
+    shape(right_eye_inds, :) = shape_r_eye;
+    shape(mouth_inds, :) = shape_mouth;
+    
+    [ ~, ~, ~, ~, ~, ~, shape_fit] = fit_PDM_ortho_proj_to_2D_no_reg(pdm.M, pdm.E, pdm.V, shape);
+    
+    %% Incorporate the hierarchical models back into the joint PDM
+    
+    shapes_all(:,:,i) = shape_fit;
     labels_all(:,:,i) = labels(i,:,:);
 
     if(mod(i, 200)==0)
         fprintf('%d done\n', i );
     end
 
-    valid_points =  sum(squeeze(labels(i,:,:)),2) > 0;
-    valid_points(1:17) = 0;
-
-    actualShape = squeeze(labels(i,:,:));
-    errors(i) = sqrt(mean(sum((actualShape(valid_points,:) - shape(valid_points,:)).^2,2)));      
-    width = ((max(actualShape(valid_points,1)) - min(actualShape(valid_points,1)))+(max(actualShape(valid_points,2)) - min(actualShape(valid_points,2))))/2;
-    errors_normed(i) = errors(i)/width;                                    
     lhoods(i) = lhood;
     if(verbose)
+        actualShape = squeeze(labels(i,:,:));
         [height_img, width_img,~] = size(image_orig);
         width = max(actualShape(:,1)) - min(actualShape(:,1));
         height = max(actualShape(:,2)) - min(actualShape(:,2));
@@ -172,12 +211,10 @@ for i=1:numel(images)
 
 end
 toc
-experiment.errors = errors;
-experiment.errors_normed = errors_normed;
 experiment.lhoods = lhoods;
 experiment.shapes = shapes_all;
 experiment.labels = labels_all;
-experiment.ibug_error = compute_error(labels_all, shapes_all);
+experiment.errors_normed = compute_error(labels_all - 0.5, shapes_all);
 experiment.all_lmark_lhoods = all_lmark_lhoods;
 experiment.all_views_used = all_views_used;
 % save the experiment
@@ -187,10 +224,10 @@ else
     experiments = cat(1, experiments, experiment);
 end
 fprintf('experiment %d done: mean normed error %.3f median normed error %.4f\n', ...
-    numel(experiments), mean(errors_normed), median(errors_normed));
+    numel(experiments), mean(experiment.errors_normed), median(experiment.errors_normed));
 
 %%
-output_results = 'results/results_wild_clnf_general_eyes.mat';
+output_results = 'results/results_wild_clnf_general_hierarch.mat';
 save(output_results, 'experiments');
     
 end

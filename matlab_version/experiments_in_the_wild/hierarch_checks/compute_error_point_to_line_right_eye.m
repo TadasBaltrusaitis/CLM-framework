@@ -1,4 +1,4 @@
-function [ error_per_image ] = compute_error_point_to_line_left_eye( ground_truth_all, detected_points_all, occluded )
+function [ error_per_image ] = compute_error_point_to_line_right_eye( ground_truth_all, detected_points_all, occluded )
 %compute_error
 %   compute the average point-to-point Euclidean error normalized by the
 %   inter-ocular distance (measured as the Euclidean distance between the
@@ -12,7 +12,7 @@ function [ error_per_image ] = compute_error_point_to_line_left_eye( ground_trut
 
 
 
-right_eye_inds_from_68 = [37,38,39,40,41,42,37];
+right_eye_inds_from_68 = [43,44,45,46,47,48,43];
 right_eye_inds_from_28 = [9,11,13,15,17,19];
 
 num_of_images = size(ground_truth_all,3);
@@ -59,9 +59,7 @@ for i =1:num_of_images
     error_per_image(i) = sum/(6*interocular_distance);
 end
 
-if(nargin > 2)
-    error_per_image = error_per_image(~occluded);
-end
+error_per_image = error_per_image(~occluded);
 
 end
 
