@@ -54,6 +54,12 @@ left_eye_inds = [37,38,39,40,41,42];
 clmParams_mouth.multi_modal_types  = patches_mouth(1).multi_modal_types;
 mouth_inds = 49:68;
 
+% Loading brow PDM and patch experts
+[clmParams_brow, pdm_brow] = Load_CLM_params_brows();
+[patches_brow] = Load_Patch_Experts( '../models/hierarch/', 'ccnf_patches_*_brow.mat', [], [], clmParams_brow);
+clmParams_mouth.multi_modal_types  = patches_brow(1).multi_modal_types;
+brow_inds = 18:27;
+
 %% for recording purposes
 experiment.params = clmParams;
 
@@ -145,6 +151,16 @@ for i=1:numel(images)
     g_param = [a; Rot2Euler(R)'; T];
 
     [shape_mouth] = Fitting_from_bb(image, [], bbox, pdm_mouth, patches_mouth, clmParams_mouth, 'gparam', g_param, 'lparam', l_params);
+
+    % Perform brow fitting now 
+    shape_brow = shape(brow_inds, :);
+
+    [ a, R, T, ~, l_params] = fit_PDM_ortho_proj_to_2D_no_reg(pdm_brow.M, pdm_brow.E, pdm_brow.V, shape_brow);
+    g_param = [a; Rot2Euler(R)'; T];
+
+    bbox = [min(shape_brow(:,1)), min(shape_brow(:,2)), max(shape_brow(:,1)), max(shape_brow(:,2))];
+
+    [shape_brow] = Fitting_from_bb(image, [], bbox, pdm_brow, patches_brow, clmParams_brow, 'gparam', g_param, 'lparam', l_params);
     
     % Now after detections incorporate the eyes back
     % into the face model
@@ -152,6 +168,7 @@ for i=1:numel(images)
     shape(left_eye_inds, :) = shape_l_eye;
     shape(right_eye_inds, :) = shape_r_eye;
     shape(mouth_inds, :) = shape_mouth;
+    shape(brow_inds, :) = shape_brow;
     
     [ ~, ~, ~, ~, ~, ~, shape_fit] = fit_PDM_ortho_proj_to_2D_no_reg(pdm.M, pdm.E, pdm.V, shape);
     

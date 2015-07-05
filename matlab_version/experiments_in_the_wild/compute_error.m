@@ -1,4 +1,4 @@
-function [ error_per_image ] = compute_error( ground_truth_all, detected_points_all )
+function [ error_per_image, err_pp ] = compute_error( ground_truth_all, detected_points_all )
 %compute_error
 %   compute the average point-to-point Euclidean error normalized by the
 %   inter-ocular distance (measured as the Euclidean distance between the
@@ -15,6 +15,7 @@ num_of_images = size(ground_truth_all,3);
 num_of_points = size(ground_truth_all,1);
 
 error_per_image = zeros(num_of_images,1);
+err_pp = zeros(num_of_images, num_of_points);
 
 for i =1:num_of_images
     detected_points      = detected_points_all(:,:,i);
@@ -27,8 +28,10 @@ for i =1:num_of_images
     sum=0;
     for j=1:num_of_points
         sum = sum+norm(detected_points(j,:)-ground_truth_points(j,:));
+        err_pp(i,j) = norm(detected_points(j,:)-ground_truth_points(j,:));
     end
     error_per_image(i) = sum/(num_of_points*interocular_distance);
+    err_pp(i,:) = err_pp(i,:) ./ interocular_distance;
 end
 
 end

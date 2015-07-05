@@ -501,28 +501,28 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 		for(size_t part_model = 0; part_model < hierarchical_models.size(); ++part_model)
 		{
 			
+			int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
+
+			vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
+
+			Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
+
+			// Extract the corresponding landmarks
+			for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+			{
+				part_model_locs.at<double>(mappings[mapping_ind].second) = detected_landmarks.at<double>(mappings[mapping_ind].first);
+				part_model_locs.at<double>(mappings[mapping_ind].second + n_part_points) = detected_landmarks.at<double>(mappings[mapping_ind].first + this->pdm.NumberOfPoints());
+			}
+						
+			// Fit the part based model PDM
+			hierarchical_models[part_model].pdm.CalcParams(hierarchical_models[part_model].params_global, hierarchical_models[part_model].params_local, part_model_locs);	
+			
 			// Only do this if we don't need to upsample
-			if(params_global[0] > hierarchical_models[part_model].patch_experts.patch_scaling[0])
+			if(params_global[0] > 0.9 * hierarchical_models[part_model].patch_experts.patch_scaling[0])
 			{
 				parts_used = true;
 
-				int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
-
 				this->hierarchical_params[part_model].window_sizes_current = this->hierarchical_params[part_model].window_sizes_init;
-
-				vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
-
-				Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
-
-				// Extract the corresponding landmarks
-				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
-				{
-					part_model_locs.at<double>(mappings[mapping_ind].second) = detected_landmarks.at<double>(mappings[mapping_ind].first);
-					part_model_locs.at<double>(mappings[mapping_ind].second + n_part_points) = detected_landmarks.at<double>(mappings[mapping_ind].first + this->pdm.NumberOfPoints());
-				}
-						
-				// Fit the part based model PDM
-				hierarchical_models[part_model].pdm.CalcParams(hierarchical_models[part_model].params_global, hierarchical_models[part_model].params_local, part_model_locs);	
 
 				// Do the actual landmark detection
 				hierarchical_models[part_model].DetectLandmarks(image, depth, hierarchical_params[part_model]);
@@ -533,6 +533,10 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 					detected_landmarks.at<double>(mappings[mapping_ind].first) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second);
 					detected_landmarks.at<double>(mappings[mapping_ind].first + pdm.NumberOfPoints()) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second + hierarchical_models[part_model].pdm.NumberOfPoints());
 				}
+			}
+			else
+			{
+				hierarchical_models[part_model].pdm.CalcShape2D(hierarchical_models[part_model].detected_landmarks, hierarchical_models[part_model].params_local, hierarchical_models[part_model].params_global);
 			}
 		}
 
