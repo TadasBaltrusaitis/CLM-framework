@@ -217,11 +217,14 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
         if(clmParams.useMultiScale && scale ~= numel(patchExperts))
             
             % only go up a scale if we don't need to upsample
-            if(0.9 * patchExperts(scale+1).trainingScale < global_params(1))
-                scale = scale + 1;
-            else
-                break;
-            end
+%             if(0.9 * patchExperts(scale+1).trainingScale < global_params(1))
+%                 scale = scale + 1;
+%             else
+% %                 break;
+%                 continue;
+%             end
+            % What if we always move up a scale
+            scale = scale + 1;
         end
     end
     

@@ -65,3 +65,9 @@ exe/HeadPose-file/obj/
 HeadPose_v6/
 exe/HeadPose-live/obj/
 matlab_runners/FACS/
+matlab_version/experiments_JANUS/dev_fit_bbox_mv/
+matlab_version/experiments_JANUS/fit_CS0_mv/
+matlab_version/experiments_JANUS/dev_fit_jpeg/
+matlab_version/experiments_JANUS/dev_fit_bbox_perfect/
+matlab_version/experiments_JANUS/mouth_fit/
+matlab_version/experiments_JANUS/dev_fit_bbox_mv_hierarch/
