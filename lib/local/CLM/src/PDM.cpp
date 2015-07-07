@@ -633,6 +633,9 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 		Mat_<float> param_update;
 		solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
 
+		// To not overshoot, have the gradient decent rate a bit smaller
+		param_update = 0.5 * param_update;
+
 		UpdateModelParameters(param_update, loc_params, glob_params);		
         
         scaling = glob_params[0];

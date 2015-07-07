@@ -416,6 +416,40 @@ void CLM::Read(string main_location)
 				params.reg_factor = 0.5;
 				params.sigma = 1.0;
 			}
+			else if(part_name.compare("mouth") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(9);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(9);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 2.0;
+				params.sigma = 2.0;
+			}
+			else if(part_name.compare("brow") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(11);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(11);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 2.0;
+				params.sigma = 1.5;
+			}
 
 			this->hierarchical_params.push_back(params);
 
