@@ -65,3 +65,5 @@ exe/HeadPose-file/obj/
 HeadPose_v6/
 exe/HeadPose-live/obj/
 matlab_runners/FACS/
+matlab_runners/yt_features/
+matlab_runners/yt_features_clm/
