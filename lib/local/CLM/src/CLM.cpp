@@ -378,24 +378,25 @@ void CLM::Read(string main_location)
 			CLMParameters params;
 			params.validate_detections = false;
 			params.refine_hierarchical = false;
+			params.refine_parameters = false;
 
 			if(part_name.compare("left_eye") == 0 || part_name.compare("right_eye") == 0)
 			{
 				
 				vector<int> windows_large;
-				windows_large.push_back(7);
 				windows_large.push_back(5);
+				windows_large.push_back(3);
 
 				vector<int> windows_small;
-				windows_small.push_back(7);
 				windows_small.push_back(5);
+				windows_small.push_back(3);
 
 				params.window_sizes_init = windows_large;
 				params.window_sizes_small = windows_small;
 				params.window_sizes_current = windows_large;
 
 				params.reg_factor = 0.1;
-				params.sigma = 0.5;
+				params.sigma = 2;
 			}
 			else if(part_name.compare("left_eye_28") == 0 || part_name.compare("right_eye_28") == 0)
 			{
@@ -419,18 +420,18 @@ void CLM::Read(string main_location)
 			else if(part_name.compare("mouth") == 0)
 			{
 				vector<int> windows_large;
-				windows_large.push_back(9);
-				windows_large.push_back(9);
+				windows_large.push_back(7);
+				windows_large.push_back(7);
 
 				vector<int> windows_small;
-				windows_small.push_back(9);
-				windows_small.push_back(9);
+				windows_small.push_back(7);
+				windows_small.push_back(7);
 
 				params.window_sizes_init = windows_large;
 				params.window_sizes_small = windows_small;
 				params.window_sizes_current = windows_large;
 
-				params.reg_factor = 2.0;
+				params.reg_factor = 1.0;
 				params.sigma = 2.0;
 			}
 			else if(part_name.compare("brow") == 0)
@@ -447,8 +448,8 @@ void CLM::Read(string main_location)
 				params.window_sizes_small = windows_small;
 				params.window_sizes_current = windows_large;
 
-				params.reg_factor = 2.0;
-				params.sigma = 1.5;
+				params.reg_factor = 10.0;
+				params.sigma = 3.5;
 			}
 
 			this->hierarchical_params.push_back(params);
@@ -663,6 +664,8 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
+	CLMParameters tmp_parameters = clm_parameters;
+
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
 	for(size_t witer = 0; witer < window_sizes.size(); witer++)
 	{
@@ -680,6 +683,13 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
+		if(clm_parameters.refine_parameters == true)
+		{
+			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov), TODO make it optional?
+			tmp_parameters.reg_factor = clm_parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.sigma = clm_parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.weight_factor = clm_parameters.weight_factor + 2 * clm_parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+		}
 		// Get the current landmark locations
 		pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -687,10 +697,10 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		int view_id = patch_experts.GetViewIdx(params_global, scale);
 
 		// the actual optimisation step
-		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, clm_parameters);
+		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, tmp_parameters);
 
 		// non-rigid optimisation
-		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, clm_parameters);
+		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
 		
 		// If there are more scales to go, and we don't need to upscale too much move to next scale level
 		if(scale < num_scales - 1 && 0.9 * patch_experts.patch_scaling[scale] < params_global[0])
@@ -873,8 +883,8 @@ void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, con
 double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const CLMParameters& parameters)
-{
-	
+{		
+
 	int n = pdm.NumberOfPoints();  
 	
 	// Mean, eigenvalues, eigenvectors

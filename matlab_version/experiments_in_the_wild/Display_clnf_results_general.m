@@ -63,8 +63,8 @@ line_width = 6;
 hold on;
 
 load('results/results_wild_clnf_general.mat');
-labels = experiments.labels([1:60,62:64,66:end],:,:) - 0.5;
-shapes = experiments.shapes([1:60,62:64,66:end],:,:);
+labels = experiments.labels - 0.5;
+shapes = experiments.shapes;
 
 clnf_error = compute_error( labels,  shapes);
 
@@ -74,8 +74,8 @@ hold on;
 plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clm_general.mat');
-experiments(1).labels = experiments(1).labels([1:60,62:64,66:end],:,:) - 0.5;
-experiments(1).shapes = experiments(1).shapes([1:60,62:64,66:end],:,:);
+experiments(1).labels = experiments(1).labels - 0.5;
+experiments(1).shapes = experiments(1).shapes;
 
 clm_error = compute_error( experiments(1).labels,  experiments(1).shapes);
 
@@ -83,8 +83,8 @@ clm_error = compute_error( experiments(1).labels,  experiments(1).shapes);
 
 plot(error_x, error_y, '--b','DisplayName', 'CLM+', 'LineWidth',line_width);
 
-set(gca,'xtick',[0:0.05:0.15])
-xlim([0,0.15]);
+set(gca,'xtick',[0:0.025:0.1])
+xlim([0,0.1]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on

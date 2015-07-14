@@ -1,7 +1,7 @@
 function [ clmParams, pdm_mouth] = Load_CLM_params_mouth() 
 %LOAD_CLM_PARAMS_WILD Summary of this function goes here
 %   Detailed explanation goes here
-    clmParams.window_size = [21,21; 21,21];
+    clmParams.window_size = [17,17; 17,17];
     clmParams.numPatchIters = size(clmParams.window_size,1);
     
     % the PDM created from in the wild data
@@ -15,7 +15,7 @@ function [ clmParams, pdm_mouth] = Load_CLM_params_mouth()
     pdm_mouth.V = double(V);
     
     % the default model parameters to use
-    clmParams.regFactor = 2;               
+    clmParams.regFactor = 1;               
     clmParams.sigmaMeanShift = 2.0;
     clmParams.tikhonov_factor = 0;
 

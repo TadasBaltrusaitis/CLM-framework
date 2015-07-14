@@ -19,12 +19,12 @@ end
    
 clmParams = struct;
 
-clmParams.window_size = [25,25; 23,23; 21,21;];
+clmParams.window_size = [25,25; 23,23; 21,21; 19,19];
 clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/general/', 'ccnf_patches_*_general.mat', [], [], clmParams);
 
-verbose = false; % set to true to visualise the fitting
+verbose = true; % set to true to visualise the fitting
 output_root = './wild_fit_clnf_hierarch/';
 
 % the default PDM to use
@@ -34,7 +34,9 @@ load(pdmLoc);
 pdm = struct; pdm.M = double(M); pdm.E = double(E); pdm.V = double(V);
 
 % the default full face model parameters to use
-clmParams.regFactor = 25; clmParams.sigmaMeanShift = 2; clmParams.tikhonov_factor = 5;
+clmParams.regFactor = [35, 27, 20, 5];
+clmParams.sigmaMeanShift = [1.25, 1.375, 1.5, 1.75]; 
+clmParams.tikhonov_factor = [2.5, 5, 7.5, 12.5];
 
 clmParams.startScale = 1; clmParams.num_RLMS_iter = 10; clmParams.fTol = 0.01;
 clmParams.useMultiScale = true; clmParams.use_multi_modal = 1;

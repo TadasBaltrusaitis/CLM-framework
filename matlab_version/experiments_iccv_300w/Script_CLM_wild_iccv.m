@@ -38,9 +38,9 @@ pdm.E = double(E);
 pdm.V = double(V);
  
 % the default model parameters to use
-clmParams.regFactor = 25;               
-clmParams.sigmaMeanShift = 2;
-clmParams.tikhonov_factor = 5;
+clmParams.regFactor = [35, 27, 20, 5];
+clmParams.sigmaMeanShift = [1.25, 1.375, 1.5, 1.75]; 
+clmParams.tikhonov_factor = [2.5, 5, 7.5, 12.5];
 
 clmParams.startScale = 1;
 clmParams.num_RLMS_iter = 10;

@@ -1,5 +1,5 @@
-oldDir = chdir('../Release/');
-clm_exe = '"MultiTrackCLM.exe"';
+clear
+clm_exe = '"../Release/MultiTrackCLM.exe"';
 
 output = '../matlab_runners/demo_vid/';
 
@@ -44,4 +44,3 @@ for i=1:numel(in_files)
 end
 
 dos(command);
-chdir(oldDir);

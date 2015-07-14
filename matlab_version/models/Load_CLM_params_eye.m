@@ -25,11 +25,11 @@ function [ clmParams, pdm_right, pdm_left ] = Load_CLM_params_eye()
     
     % the default model parameters to use
     clmParams.regFactor = 0.1;               
-    clmParams.sigmaMeanShift = 1;
+    clmParams.sigmaMeanShift = 2;
     clmParams.tikhonov_factor = 0;
 
     clmParams.startScale = 1;
-    clmParams.num_RLMS_iter = 10;
+    clmParams.num_RLMS_iter = 5;
     clmParams.fTol = 0.01;
     clmParams.useMultiScale = true;
     clmParams.use_multi_modal = 1;

@@ -1,7 +1,6 @@
 clear
 
-oldDir = chdir('../Release/');
-clm_exe = '"SimpleCLMImg.exe"';
+clm_exe = '"../Release/SimpleCLMImg.exe"';
     
 in_dir  = '../videos/';
 out_dir = '../matlab_runners/demo_img/';
@@ -44,5 +43,3 @@ command = cat(2, command, [' -mloc "', model, '"']);
 command = cat(2, command, ' -clmwild ');
 
 dos(command);
-
-chdir(oldDir);

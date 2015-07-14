@@ -63,6 +63,8 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     
     GrayImageDb = double(GrayImage);
     
+    clmParams_old = clmParams;
+    
     % multi iteration refinement using NU-RLMS in each one
     for i=1:clmParams.numPatchIters
       
@@ -198,6 +200,18 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
         end
         reliabilities = reliabilities(view,:);        
                
+        % deal with the fact that params might be different for different
+        % scales
+        if(numel(clmParams_old.regFactor) > 1)
+            clmParams.regFactor = clmParams_old.regFactor(i);
+        end
+        if(numel(clmParams_old.sigmaMeanShift) > 1)
+            clmParams.sigmaMeanShift = clmParams_old.sigmaMeanShift(i);
+        end
+        if(numel(clmParams_old.tikhonov_factor) > 1)
+            clmParams.tikhonov_factor = clmParams_old.tikhonov_factor(i);
+        end
+        
         % The actual NU-RLMS step
         
         % first the rigid transform
