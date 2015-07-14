@@ -322,7 +322,7 @@ int main (int argc, char **argv)
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++ i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
+					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
