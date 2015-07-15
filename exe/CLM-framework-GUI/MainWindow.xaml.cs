@@ -434,7 +434,6 @@ namespace CLM_framework_GUI
 
             mirror_image = false;
 
-
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
             {
                 ResetButton.IsEnabled = true;
@@ -484,6 +483,11 @@ namespace CLM_framework_GUI
                     // Loading a video file (or a number of them)
                     foreach (string filename in filenames)
                     {
+                        if (!thread_running)
+                        {
+                            continue;
+                        }
+
                         capture = new Capture(filename);
 
                         if (capture.isOpened())
@@ -542,9 +546,11 @@ namespace CLM_framework_GUI
                 }
             }
 
+            // TODO this should be up a level
             // Some GUI clean up
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
             {
+                Console.WriteLine("Cleaning up after processing is done");
                 PauseButton.IsEnabled = false;
                 StopButton.IsEnabled = false;
                 ResetButton.IsEnabled = false;
@@ -780,79 +786,103 @@ namespace CLM_framework_GUI
 
         private void videoFileOpenClick(object sender, RoutedEventArgs e)
         {
+            new Thread(() => openVideoFile()).Start();
+        }
 
-            var d = new OpenFileDialog();
-            d.Multiselect = true;
-            d.Filter = "Video files|*.avi;*.wmv;*.mov;*.mpg;*.mpeg";
+        private void openVideoFile()
+        {
+            StopTracking();
 
-            if (d.ShowDialog(this) == true)
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
             {
-                StopTracking();
+                var d = new OpenFileDialog();
+                d.Multiselect = true;
+                d.Filter = "Video files|*.avi;*.wmv;*.mov;*.mpg;*.mpeg;*.mp4";
 
-                string[] video_files = d.FileNames;
+                if (d.ShowDialog(this) == true)
+                {
 
-                processing_thread = new Thread(() => ProcessingLoop(video_files));
-                processing_thread.Start();
+                    string[] video_files = d.FileNames;
 
-            }
+                    processing_thread = new Thread(() => ProcessingLoop(video_files));
+                    processing_thread.Start();
+
+                }
+            }));
         }
 
         private void imageSequenceFileOpenClick(object sender, RoutedEventArgs e)
         {
+            new Thread(() => imageSequenceOpen()).Start();
+        }
 
-            var d = new OpenFileDialog();
-            d.Multiselect = true;
-            d.Filter = "Image files|*.jpg;*.jpeg;*.bmp;*.png;*.gif";
+        private void imageSequenceOpen()
+        {
+            StopTracking();
 
-            if (d.ShowDialog(this) == true)
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
             {
-                StopTracking();
+                var d = new OpenFileDialog();
+                d.Multiselect = true;
+                d.Filter = "Image files|*.jpg;*.jpeg;*.bmp;*.png;*.gif";
 
-                string[] image_files = d.FileNames;
+                if (d.ShowDialog(this) == true)
+                {
 
-                processing_thread = new Thread(() => ProcessingLoop(image_files, -2));
-                processing_thread.Start();
+                    string[] image_files = d.FileNames;
 
-            }
+                    processing_thread = new Thread(() => ProcessingLoop(image_files, -2));
+                    processing_thread.Start();
+
+                }
+            }));
         }
 
         private void openWebcamClick(object sender, RoutedEventArgs e)
         {
+            new Thread(() => openWebcam()).Start();
+        }
+
+        private void openWebcam()
+        {
             StopTracking();
 
-            // First close the cameras that might be open to avoid clashing with webcam opening
-            if (capture != null)
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
             {
-                capture.Dispose();
-            }
+                // First close the cameras that might be open to avoid clashing with webcam opening
+                if (capture != null)
+                {
+                    capture.Dispose();
+                }
 
-            if (cam_sec == null)
-            {
-                cam_sec = new CameraSelection();
-            }
-            else
-            {
-                cam_sec = new CameraSelection(cam_sec.cams);
-                cam_sec.Visibility = System.Windows.Visibility.Visible;
-            }
+                if (cam_sec == null)
+                {
+                    cam_sec = new CameraSelection();
+                }
+                else
+                {
+                    cam_sec = new CameraSelection(cam_sec.cams);
+                    cam_sec.Visibility = System.Windows.Visibility.Visible;
+                }
 
-            // Set the icon
-            Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
-            cam_sec.Icon = BitmapFrame.Create(iconUri);
-            
-            if(!cam_sec.no_cameras_found)
-                cam_sec.ShowDialog();
+                // Set the icon
+                Uri iconUri = new Uri("logo1.ico", UriKind.RelativeOrAbsolute);
+                cam_sec.Icon = BitmapFrame.Create(iconUri);
 
-            if (cam_sec.camera_selected)
-            {
-                int cam_id = cam_sec.selected_camera.Item1;
-                int width = cam_sec.selected_camera.Item2;
-                int height = cam_sec.selected_camera.Item3;
+                if (!cam_sec.no_cameras_found)
+                    cam_sec.ShowDialog();
 
-                processing_thread = new Thread(() => ProcessingLoop(null, cam_id, width, height));
-                processing_thread.Start();
+                if (cam_sec.camera_selected)
+                {
+                    int cam_id = cam_sec.selected_camera.Item1;
+                    int width = cam_sec.selected_camera.Item2;
+                    int height = cam_sec.selected_camera.Item3;
 
-            }
+                    processing_thread = new Thread(() => ProcessingLoop(null, cam_id, width, height));
+                    processing_thread.Start();
+
+                }
+            }));
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

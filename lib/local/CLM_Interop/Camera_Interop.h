@@ -196,6 +196,19 @@ namespace Camera_Interop {
 
 			std::vector<camera> cameras = camera_helper::get_all_cameras();
 			
+			// A Surface Pro specific hack, it seems to list webcams in a weird way
+			for (size_t i = 0; i < cameras.size(); ++i)
+			{
+				cameras[i].activate();
+				std::string name = cameras[i].name(); 
+				if(name.compare("Microsoft LifeCam Front") == 0)
+				{
+					cameras.push_back(cameras[i]);
+					cameras.erase(cameras.begin() + i);
+				}
+			}
+			
+
 			for (size_t i = 0; i < cameras.size(); ++i)
 			{
 				cameras[i].activate();
@@ -225,7 +238,6 @@ namespace Camera_Interop {
 				
 				// Grab some sample images and confirm the resolutions
 				VideoCapture cap1(i);
-
 				// Go through resolutions if they have not been identified
 				if(resolutions->Count == 0)
 				{
@@ -251,7 +263,7 @@ namespace Camera_Interop {
 
 				Mat sample_img;
 				RawImage^ sample_img_managed = gcnew RawImage();
-				
+
 				// Now that the resolutions have been identified, pick a camera and create a thumbnail
 				if(resolutions->Count > 0)
 				{
@@ -270,6 +282,7 @@ namespace Camera_Interop {
 
 					// Flip horizontally
 					cv::flip(sample_img, sample_img, 1);
+					
 
 				}
 				cap1.~VideoCapture();
@@ -374,8 +387,13 @@ namespace Camera_Interop {
 		// May be called multiple times.
 		!Capture()
 		{
-			delete vc; // Automatically closes capture object before freeing memory.			
-			delete image_files;
+			// Automatically closes capture object before freeing memory.	
+			if(vc != nullptr)
+			{
+				vc->~VideoCapture();
+			}
+			if(image_files != nullptr)
+				delete image_files;
 		}
 
 		// Destructor. Called on explicit Dispose() only.

@@ -66,3 +66,5 @@ HeadPose_v6/
 exe/HeadPose-live/obj/
 matlab_runners/FACS/
 matlab_version/experiments_in_the_wild/wild_fit_clnf_hierarch/
+matlab_runners/yt_features/
+matlab_runners/yt_features_clm/

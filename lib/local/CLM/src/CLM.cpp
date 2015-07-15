@@ -634,27 +634,6 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		}
 	}
 
-	double curr_scale = params_global[0];
-
-	// Find the closest depth and colour patch scales, and start window_size below, this will make sure that the last iteration is done at the best scale available
-	int scale = -1;
-
-	double minDist;
-	for( size_t i = 0; i < patch_experts.patch_scaling.size(); ++i)
-	{
-		if(i==0 || std::abs(patch_experts.patch_scaling[i] - curr_scale) < minDist)
-		{
-			minDist = std::abs(patch_experts.patch_scaling[i] - curr_scale);
-			scale = i + 1;
-		}
-
-	}
-	
-	scale = scale - window_sizes.size();
-
-	if(scale < 0)
-		scale = 0;
-
 	int num_scales = patch_experts.patch_scaling.size();
 
 	// Storing the patch expert response maps
@@ -667,13 +646,16 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	CLMParameters tmp_parameters = clm_parameters;
 
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
-	for(size_t witer = 0; witer < window_sizes.size(); witer++)
+	for(int scale = 0; scale < num_scales; scale++)
 	{
 
-		int window_size = window_sizes[witer];
+		int window_size = window_sizes[scale];
+
+		if(window_size == 0 ||  0.9 * patch_experts.patch_scaling[scale] > params_global[0])
+			continue;
 
 		// The patch expert response computation
-		if(witer != window_sizes.size() - 1)
+		if(scale != window_sizes.size() - 1)
 		{
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, depth_img_no_background, pdm, params_global, params_local, window_size, scale);
 		}
@@ -685,11 +667,16 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		
 		if(clm_parameters.refine_parameters == true)
 		{
-			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov), TODO make it optional?
+			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov)
 			tmp_parameters.reg_factor = clm_parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			
+			if(tmp_parameters.reg_factor <= 0)
+				tmp_parameters.reg_factor = 0.001;
+
 			tmp_parameters.sigma = clm_parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
 			tmp_parameters.weight_factor = clm_parameters.weight_factor + 2 * clm_parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
 		}
+
 		// Get the current landmark locations
 		pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -702,16 +689,6 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		// non-rigid optimisation
 		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
 		
-		// If there are more scales to go, and we don't need to upscale too much move to next scale level
-		if(scale < num_scales - 1 && 0.9 * patch_experts.patch_scaling[scale] < params_global[0])
-		{
-			scale++;			
-		}
-		else
-		{
-			// If we can't go up a scale just break, no point doing same scale over again
-			break;
-		}
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
 		{

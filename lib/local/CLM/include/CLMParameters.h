@@ -272,17 +272,20 @@ struct CLMParameters
 			// Refining parameters by default
 			refine_parameters = true;
 
-			window_sizes_small = vector<int>(2);
-			window_sizes_init = vector<int>(3);
+			window_sizes_small = vector<int>(4);
+			window_sizes_init = vector<int>(4);
 
 			// For fast tracking
-			window_sizes_small[0] = 9;
-			window_sizes_small[1] = 7;
+			window_sizes_small[0] = 0;
+			window_sizes_small[1] = 9;
+			window_sizes_small[2] = 7;
+			window_sizes_small[3] = 5;
 
 			// Just for initialisation
 			window_sizes_init.at(0) = 11;
 			window_sizes_init.at(1) = 9;
 			window_sizes_init.at(2) = 7;
+			window_sizes_init.at(3) = 5;
 			
 			face_template_scale = 0.3;
 			// Off by default (as it might lead to some slight inaccuracies in slowly moving faces)
@@ -293,9 +296,9 @@ struct CLMParameters
 
 			model_location = "model/main_ccnf_general.txt";
 
-			sigma = 1.25;
-			reg_factor = 30;
-			weight_factor = 0; // By default do not use NU-RLMS, as weight factor is dependent on the database and needs to be estimated
+			sigma = 1.5;
+			reg_factor = 25;
+			weight_factor = 0; // By default do not use NU-RLMS for videos as it does not work as well for them
 
 			validation_boundary = -0.45;
 

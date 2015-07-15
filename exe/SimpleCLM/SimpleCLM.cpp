@@ -358,7 +358,7 @@ int main (int argc, char **argv)
 			
 			// The actual facial landmark detection / tracking
 			bool detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);			
-
+			
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
