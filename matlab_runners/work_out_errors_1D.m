@@ -124,20 +124,49 @@ xlim([-2,32])
 print -dpdf roll_error_bin
 
 %%
+addpath('facs');
 figure;
-scatter(all_gts_rel(roll_ids,3), all_hps_rel(roll_ids,3), 'x')
+% scatter(all_gts_rel(roll_ids,3), all_hps_rel(roll_ids,3), 'x')
+dscatter(all_gts_rel(roll_ids,3), all_hps_rel(roll_ids,3), 'marker', 'o');
 title('Roll scatter graph');
 xlabel('Actual pose (degrees)','FontName','Helvetica');
 ylabel('Predicted pose (degrees)','FontName','Helvetica');
+xlim([-40, 40])
+ylim([-40, 40])
+% xs = all_gts_rel(roll_ids,3);
+% ys = all_hps_rel(roll_ids,3);
+% xs(xs > 50) = 50;
+% xs(xs < -50) = -50;
+% ys(ys > 50) = 50;
+% ys(ys < -50) = -50;
+% values = hist3([xs ys],[101 101]);
+% imagesc(values, [0,50])
+% colorbar
+% set(gca,'xtick',[-50:10:50])
+% axis equal
+% axis xy
+print -dpdf roll_scatter
 
 figure;
-scatter(all_gts_rel(yaw_ids,2), all_hps_rel(yaw_ids,2), 'x')
+dscatter(all_gts_rel(yaw_ids,2), all_hps_rel(yaw_ids,2), 'marker', 'o')
 title('Yaw scatter graph');
 xlabel('Actual pose (degrees)','FontName','Helvetica');
 ylabel('Predicted pose (degrees)','FontName','Helvetica');
+xlim([-50, 50])
+ylim([-50, 50])
+print -dpdf yaw_scatter
+
+% values = hist3([data1(:) data2(:)],[51 51]);
+% imagesc(values)
+% colorbar
+% axis equal
+% axis xy
 
 figure;
-scatter(all_gts_rel(pitch_ids,1), all_hps_rel(pitch_ids,1), 'x')
+dscatter(all_gts_rel(pitch_ids,1), all_hps_rel(pitch_ids,1))
 title('Pitch scatter graph');
 xlabel('Actual pose (degrees)','FontName','Helvetica');
 ylabel('Predicted pose (degrees)','FontName','Helvetica');
+xlim([-50, 50])
+ylim([-50, 50])
+print -dpdf pitch_scatter

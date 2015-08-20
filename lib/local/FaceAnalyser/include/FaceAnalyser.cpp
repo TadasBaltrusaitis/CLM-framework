@@ -462,7 +462,7 @@ void FaceAnalyser::ExtractMedian(cv::Mat_<unsigned int>& histogram, int hist_cou
 	}
 }
 // Apply the current predictors to the currently stored descriptors
-vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale, bool update_track)
+vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale, bool update_track, bool clip_values)
 {
 
 	vector<pair<string, double>> predictions;
@@ -535,12 +535,15 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 			}
 		}
 
-		for(size_t i = 0; i < correction.size(); ++i)
+		if(clip_values)
 		{
-			if(predictions[i].second < 0)
-				predictions[i].second = 0;
-			if(predictions[i].second > 5)
-				predictions[i].second = 5;
+			for(size_t i = 0; i < correction.size(); ++i)
+			{
+				if(predictions[i].second < 0)
+					predictions[i].second = 0;
+				if(predictions[i].second > 5)
+					predictions[i].second = 5;
+			}
 		}
 	}
 

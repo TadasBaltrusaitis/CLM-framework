@@ -149,7 +149,7 @@ private:
 	Rect_<double> face_bounding_box;
 	
 	// The AU predictions internally
-	std::vector<std::pair<std::string, double>> PredictCurrentAUs(int view, bool dyn_shift = false, bool dyn_scale = false, bool update_track = true);
+	std::vector<std::pair<std::string, double>> PredictCurrentAUs(int view, bool dyn_shift = false, bool dyn_scale = false, bool update_track = true, bool clip_values = false);
 	std::vector<std::pair<std::string, double>> PredictCurrentAUsClass(int view);
 
 	void ReadAU(std::string au_location);

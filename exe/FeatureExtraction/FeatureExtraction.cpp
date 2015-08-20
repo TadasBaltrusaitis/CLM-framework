@@ -58,6 +58,7 @@
 #include <opencv2/videoio/videoio_c.h>  // Video write
 
 #include <Face_utils.h>
+#include <FaceAnalyser.h>
 
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
@@ -135,7 +136,7 @@ void create_directory(string output_path)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, vector<string> &output_au_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
 {
 	output_similarity_aligned.clear();
 	vid_output = false;
@@ -184,7 +185,16 @@ void get_output_feature_params(vector<string> &output_similarity_aligned, bool &
 			valid[i+1] = false;			
 			i++;
 		}		
-		if (arguments[i].compare("-simaligndir") == 0) 
+		else if (arguments[i].compare("-oaus") == 0) 
+		{                    
+			output_au_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
+			vid_output = true;
+			valid[i] = false;
+			valid[i+1] = false;			
+			i++;
+		}		
+		else if (arguments[i].compare("-simaligndir") == 0) 
 		{                    
 			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
 			create_directory(output_root + arguments[i + 1]);
@@ -406,6 +416,7 @@ int main (int argc, char **argv)
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
 	vector<string> output_similarity_align;
+	vector<string> output_au_files;
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
 
@@ -417,19 +428,23 @@ int main (int argc, char **argv)
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
+	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, output_au_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
 
 	Mat_<int> triangulation;
+	string tri_loc;
 	if(boost::filesystem::exists(path("model/tris_68_full.txt")))
 	{
 		std::ifstream triangulation_file("model/tris_68_full.txt");
 		CLMTracker::ReadMat(triangulation_file, triangulation);
+		tri_loc = "model/tris_68_full.txt";
 	}
 	else
 	{
 		path loc = path(arguments[0]).parent_path() / "model/tris_68_full.txt";
+		tri_loc = loc.string();
+
 		if(exists(loc))
 		{
 			std::ifstream triangulation_file(loc.string());
@@ -457,7 +472,30 @@ int main (int argc, char **argv)
 	if(cx == 0 || cy == 0)
 	{
 		cx_undefined = true;
-	}			
+	}		
+
+	string au_loc;
+	if(boost::filesystem::exists(path("AU_predictors/AU_all_best.txt")))
+	{
+		au_loc = "AU_predictors/AU_all_best.txt";
+	}
+	else
+	{
+		path loc = path(arguments[0]).parent_path() / "AU_predictors/AU_all_best.txt";
+
+		if(exists(loc))
+		{
+			au_loc = loc.string();
+		}
+		else
+		{
+			cout << "Can't find AU prediction files, exiting" << endl;
+			return 0;
+		}
+	}	
+
+	// Creating a  face analyser that will be used for AU extraction
+	FaceAnalysis::FaceAnalyser face_analyser(vector<Vec3d>(), 0.7, 112, 112, au_loc, tri_loc);
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -467,6 +505,8 @@ int main (int argc, char **argv)
 		VideoCapture video_capture;
 		
 		Mat captured_image;
+		int total_frames = -1;
+		int reported_completion = 0;
 
 		if(video_input)
 		{
@@ -486,6 +526,7 @@ int main (int argc, char **argv)
 			{
 				INFO_STREAM( "Attempting to read from file: " << current_file );
 				video_capture = VideoCapture( current_file );
+				total_frames = (int)video_capture.get(CV_CAP_PROP_FRAME_COUNT);
 			}
 			else
 			{
@@ -549,6 +590,32 @@ int main (int argc, char **argv)
 		if(!params_output_files.empty())
 		{
 			params_output_file.open(params_output_files[f_n], ios_base::out);
+		}
+
+		// Creating output files
+		std::ofstream au_output_file_reg;
+		std::ofstream au_output_file_class;
+		if(!output_au_files.empty())
+		{
+			au_output_file_reg.open (output_au_files[f_n] + "reg.txt", ios_base::out);
+			au_output_file_class.open (output_au_files[f_n] + "class.txt", ios_base::out);
+
+			vector<string> au_names_class = face_analyser.GetAUClassNames();
+			vector<string> au_names_reg = face_analyser.GetAURegNames();
+
+			au_output_file_reg << "frame, success, confidence";
+			for(string reg_name : au_names_reg)
+			{
+				au_output_file_reg << ", " << reg_name;
+			}
+			au_output_file_reg << endl;
+
+			au_output_file_class << "frame, success, confidence";
+			for(string class_name : au_names_class)
+			{
+				au_output_file_class << ", " << class_name;
+			}
+			au_output_file_class << endl;
 		}
 
 		// saving the videos
@@ -631,16 +698,21 @@ int main (int argc, char **argv)
 			Mat_<double> hog_descriptor;
 
 			// But only if needed in output
-			if(!output_similarity_align.empty() || hog_output_file.is_open())
+			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
 			{
-				FaceAnalysis::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
-				cv::imshow("sim_warp", sim_warped_img);			
-			
+				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, false, false, !clm_parameters.quiet_mode);
+				face_analyser.GetLatestAlignedFace(sim_warped_img);
+
+				//FaceAnalysis::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
+				if(!clm_parameters.quiet_mode)
+				{
+					cv::imshow("sim_warp", sim_warped_img);			
+				}
 				if(hog_output_file.is_open())
 				{
 					FaceAnalysis::Extract_FHOG_descriptor(hog_descriptor, sim_warped_img, num_hog_rows, num_hog_cols);						
 
-					if(visualise_hog)
+					if(visualise_hog && !clm_parameters.quiet_mode)
 					{
 						Mat_<double> hog_descriptor_vis;
 						FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
@@ -648,7 +720,7 @@ int main (int argc, char **argv)
 					}
 				}
 			}
-			
+
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -680,7 +752,7 @@ int main (int argc, char **argv)
 					char name[100];
 					
 					// output the frame number
-					sprintf(name, "frame_det_%06d.png", frame_count);
+					std::sprintf(name, "frame_det_%06d.png", frame_count);
 
 					// Construct the output filename
 					boost::filesystem::path slash("/");
@@ -730,7 +802,7 @@ int main (int argc, char **argv)
 			
 			// Write out the framerate on the image before displaying it
 			char fpsC[255];
-			sprintf(fpsC, "%d", (int)fps);
+			std::sprintf(fpsC, "%d", (int)fps);
 			string fpsSt("FPS:");
 			fpsSt += fpsC;
 			cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
@@ -784,6 +856,46 @@ int main (int argc, char **argv)
 				double confidence = 0.5 * (1 - detection_certainty);
 				pose_output_file << frame_count + 1 << " " << confidence << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
 			}				
+			
+			if(!output_au_files.empty())
+			{
+				double confidence = 0.5 * (1 - detection_certainty);
+
+				au_output_file_reg << frame_count + 1 << ", " << detection_success << ", " << confidence;
+				auto aus_reg = face_analyser.GetCurrentAUsReg();
+				
+				for(auto au_reg : aus_reg)
+				{
+					au_output_file_reg << ", " << au_reg.second;
+				}
+
+				if(aus_reg.size() == 0)
+				{
+					for(int p = 0; p < face_analyser.GetAURegNames().size(); ++p)
+					{
+						au_output_file_reg << ", 0";
+					}
+				}
+
+				au_output_file_reg << endl;
+
+				au_output_file_class << frame_count + 1 << " " << detection_success << " " << confidence;
+				auto aus_class = face_analyser.GetCurrentAUsClass();
+				
+				for(auto au_class : aus_class)
+				{
+					au_output_file_class << " " << au_class.second;
+				}
+
+				if(aus_class.size() == 0)
+				{
+					for(int p = 0; p < face_analyser.GetAUClassNames().size(); ++p)
+					{
+						au_output_file_class << ", 0";
+					}
+				}
+				au_output_file_class << endl;
+			}
 
 			// output the tracked video
 			if(!tracked_videos_output.empty())
@@ -825,6 +937,20 @@ int main (int argc, char **argv)
 			// Update the frame count
 			frame_count++;
 
+			if(total_frames != -1)
+			{
+				if((double)frame_count/(double)total_frames >= reported_completion / 10.0)
+				{
+					cout << reported_completion * 10 << "% ";
+					reported_completion = reported_completion + 1;
+				}
+			}
+
+		}
+		
+		if(total_frames != -1)
+		{
+			cout << endl;
 		}
 
 		frame_count = 0;
