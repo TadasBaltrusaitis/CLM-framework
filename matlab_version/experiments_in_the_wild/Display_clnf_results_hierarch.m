@@ -14,6 +14,19 @@ axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
 line_width = 6;
 hold on;
 
+load('results/results_wild_clnf_general_final_inner.mat');
+labels = experiments.labels - 0.5;
+shapes = experiments.shapes;
+labels(1:17,:,:) = [];
+shapes(1:17,:,:) = [];
+
+[clnf_error, err_pp] = compute_error( labels,  shapes);
+
+[error_x, error_y] = cummErrorCurve(clnf_error);
+hold on;
+
+plot(error_x, error_y, 'b','DisplayName', 'CLNF inner', 'LineWidth',line_width);
+
 load('results/results_wild_clnf_general.mat');
 labels = experiments.labels - 0.5;
 shapes = experiments.shapes;
@@ -25,7 +38,7 @@ shapes(1:17,:,:) = [];
 [error_x, error_y] = cummErrorCurve(clnf_error);
 hold on;
 
-plot(error_x, error_y, 'b','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, 'g','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clnf_general_hierarch.mat');
 labels = experiments.labels - 0.5;
@@ -63,7 +76,7 @@ axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
 line_width = 6;
 hold on;
 
-load('results/results_wild_clnf_general.mat');
+load('results/results_wild_clnf_general_final_inner.mat');
 labels = experiments.labels - 0.5;
 shapes = experiments.shapes;
 
@@ -112,7 +125,7 @@ axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
 line_width = 6;
 hold on;
 
-load('results/results_wild_clnf_general.mat');
+load('results/results_wild_clnf_general_final_inner.mat');
 labels = experiments.labels - 0.5;
 shapes = experiments.shapes;
 
@@ -157,7 +170,7 @@ axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
 line_width = 6;
 hold on;
 
-load('results/results_wild_clnf_general.mat');
+load('results/results_wild_clnf_general_final_inner.mat');
 labels = experiments.labels - 0.5;
 shapes = experiments.shapes;
 
