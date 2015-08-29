@@ -316,6 +316,13 @@ void doFaceTracking(int argc, char **argv)
 	// Object for recording videos
 	VideoWriter video_writer;
 
+	// cx and cy aren't always half dimx or half dimy, so need to be able to override it (start with unit vals and init them if none specified)
+	float fx = 500, fy = 500, cx = 0, cy = 0;
+
+	// Get camera parameters
+	int device = 0;
+	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);
+
 	// The main loop
 	while( true )
 	{
@@ -336,18 +343,12 @@ void doFaceTracking(int argc, char **argv)
 		// Some initial parameters that can be overriden from command line	
 		vector<string> files, depth_dirs, outposes, outvideos, outfeatures;
 
-		// cx and cy aren't always half dimx or half dimy, so need to be able to override it (start with unit vals and init them if none specified)
-		float fx = 500, fy = 500, cx = 0, cy = 0;
 
 		// Get the input output file parameters
 		bool camera_plane_pose;
 
 		CLMTracker::get_video_input_output_params(files, depth_dirs, outposes, outvideos, outfeatures, camera_plane_pose, arguments);
 		
-		// Get camera parameters
-		int device = 0;
-		CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);
-
 		int f_n = -1;
 
 		// We might specify multiple video files as arguments
