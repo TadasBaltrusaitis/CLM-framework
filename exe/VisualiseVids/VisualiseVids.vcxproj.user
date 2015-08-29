@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>-ov "C:\hms\output_vids/150604_MS0010_01.avi" -f "C:\hms\full//150604_MS0010_01/Participant/colour_6.17.2015_14.3.avi" -t "C:\hms\full//150604_MS0010_01/Participant/colourLog_6.17.2015_14.3.csv" -ip "C:\hms\processed//150604_MS0010_01/Participant_pose.txt" -if "C:\hms\processed//150604_MS0010_01/Participant_fp.txt" -iac "C:\hms\processed//150604_MS0010_01/Participant_auclass.txt" -iar "C:\hms\processed//150604_MS0010_01/Participant_aureg.txt" -f "C:\hms\full//150604_MS0010_01/Doctor/colour_6.17.2015_14.3.avi" -t "C:\hms\full//150604_MS0010_01/Doctor/colourLog_6.17.2015_14.3.csv" -ip "C:\hms\processed//150604_MS0010_01/Doctor_pose.txt" -if "C:\hms\processed//150604_MS0010_01/Doctor_fp.txt" -iac "C:\hms\processed//150604_MS0010_01/Doctor_auclass.txt" -iar "C:\hms\processed//150604_MS0010_01/Doctor_aureg.txt" -offset 616  -osd "C:\hms\output_vids//150604_MS0010_01_feats_doc.txt" -osp "C:\hms\output_vids//150604_MS0010_01_feats_pat.txt"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>-offset 616 -ov "C:\hms\output_vids/test.avi" -f "C:\hms\full//150604_MS0010_01/Participant/colour_6.17.2015_14.3.avi" -t "C:\hms\full//150604_MS0010_01/Participant/colourLog_6.17.2015_14.3.csv" -ip "C:\hms\processed//150604_MS0010_01/Participant_pose.txt" -if "C:\hms\processed//150604_MS0010_01/Participant_fp.txt" -iac "C:\hms\processed//150604_MS0010_01/Participant_auclass.txt" -iar "C:\hms\processed//150604_MS0010_01/Participant_aureg.txt" -f "C:\hms\full//150604_MS0010_01/Doctor/colour_6.17.2015_14.3.avi" -t "C:\hms\full//150604_MS0010_01/Doctor/colourLog_6.17.2015_14.3.csv" -ip "C:\hms\processed//150604_MS0010_01/Doctor_pose.txt" -if "C:\hms\processed//150604_MS0010_01/Doctor_fp.txt" -iac "C:\hms\processed//150604_MS0010_01/Doctor_auclass.txt" -iar "C:\hms\processed//150604_MS0010_01/Doctor_aureg.txt"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>
