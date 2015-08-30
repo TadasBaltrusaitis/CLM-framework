@@ -1,6 +1,6 @@
 clear
 
-root_loc = 'F:/datasets/detection_validation/';
+root_loc = 'E:/datasets/detection_validation/';
 
 location = [root_loc, '/prep_data/'];
 
@@ -85,7 +85,9 @@ for i=1:numel(faceCheckersLoc)
     
     % Set up model options
     opts.batchsize = 50;    
-    opts.numepochs = 100;
+    
+    % Can go up if needed
+    opts.numepochs = 150;
     
     cnns = cell(numel(num_kern), numel(alphas_learn));
 

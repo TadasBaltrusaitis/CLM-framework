@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,25 +45,11 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include "SVR_patch_expert.h"
-
 #include "CLM_utils.h"
-
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
 
 using namespace CLMTracker;
 
@@ -122,7 +125,7 @@ void SVR_patch_expert::Read(ifstream &stream)
 }
 
 //===========================================================================
-void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double>& response)
+void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<float>& response)
 {
 
 	int response_height = area_of_interest.rows - weights.rows + 1;
@@ -171,9 +174,9 @@ void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double
 
 	// Efficient calc of patch expert SVR response across the area of interest
 	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF_NORMED); 
-
+	
 	response.create(svr_response.size());
-	MatIterator_<double> p = response.begin();
+	MatIterator_<float> p = response.begin();
 
 	cv::MatIterator_<float> q1 = svr_response.begin(); // respone for each pixel
 	cv::MatIterator_<float> q2 = svr_response.end();
@@ -186,7 +189,7 @@ void SVR_patch_expert::Response(const Mat_<float>& area_of_interest, Mat_<double
 
 }
 
-void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Mat_<double> &response)
+void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Mat_<float> &response)
 {
 
 	// How big the response map will be
@@ -236,10 +239,11 @@ void SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, cv::Ma
 	Mat_<float> empty_matrix_2(0,0,0.0);
 
 	// Efficient calc of patch expert response across the area of interest
-	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
 
+	matchTemplate_m(normalised_area_of_interest, empty_matrix_0, empty_matrix_1, empty_matrix_2, weights, weights_dfts, svr_response, CV_TM_CCOEFF); 
+	
 	response.create(svr_response.size());
-	MatIterator_<double> p = response.begin();
+	MatIterator_<float> p = response.begin();
 
 	cv::MatIterator_<float> q1 = svr_response.begin(); // respone for each pixel
 	cv::MatIterator_<float> q2 = svr_response.end();
@@ -270,7 +274,7 @@ void Multi_SVR_patch_expert::Read(ifstream &stream)
 
 }
 //===========================================================================
-void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<double> &response)
+void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<float> &response)
 {
 	
 	int response_height = area_of_interest.rows - height + 1;
@@ -292,7 +296,7 @@ void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<
 		// responses from multiple patch experts these can be gradients, LBPs etc.
 		response.setTo(1.0);
 		
-		Mat_<double> modality_resp(response_height, response_width);
+		Mat_<float> modality_resp(response_height, response_width);
 
 		for(size_t i = 0; i < svr_patch_experts.size(); i++)
 		{			
@@ -304,7 +308,7 @@ void Multi_SVR_patch_expert::Response(const Mat_<float> &area_of_interest, Mat_<
 
 }
 
-void Multi_SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, Mat_<double>& response)
+void Multi_SVR_patch_expert::ResponseDepth(const Mat_<float>& area_of_interest, Mat_<float>& response)
 {
 	int response_height = area_of_interest.rows - height + 1;
 	int response_width = area_of_interest.cols - width + 1;

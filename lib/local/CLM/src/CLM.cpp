@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,40 +45,171 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLM.h>
-
-#include <stdio.h>
-#include <iostream>
-
-#include <highgui.h>
-
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
-
-#include "CLM_utils.h"
+#include <CLM_utils.h>
 
 using namespace CLMTracker;
 
+//=============================================================================
+//=============================================================================
 
-//=============================================================================
-//=============================================================================
+// Constructors
+// A default constructor
+CLM::CLM()
+{
+	CLMParameters parameters;
+	this->Read(parameters.model_location);
+}
+
+// Constructor from a model file
+CLM::CLM(string fname)
+{
+	this->Read(fname);
+}
+
+// Copy constructor (makes a deep copy of CLM)
+CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
+	landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+	
+	// Load the CascadeClassifier (as it does not have a proper copy constructor)
+	if(!face_detector_location.empty())
+	{
+		this->face_detector_HAAR.load(face_detector_location);
+	}
+	// Make sure the matrices are allocated properly
+	this->triangulations.resize(other.triangulations.size());
+	for(size_t i = 0; i < other.triangulations.size(); ++i)
+	{
+		// Make sure the matrix is copied.
+		this->triangulations[i] = other.triangulations[i].clone();
+	}
+
+	// Make sure the matrices are allocated properly
+	for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
+	}
+
+	this->face_detector_HOG = dlib::get_frontal_face_detector();
+}
+
+// Assignment operator for lvalues (makes a deep copy of CLM)
+CLM & CLM::operator= (const CLM& other)
+{
+	if (this != &other) // protect against invalid self-assignment
+	{
+		pdm = PDM(other.pdm);
+		params_local = other.params_local.clone();
+		params_global = other.params_global;
+		detected_landmarks = other.detected_landmarks.clone();
+		
+		landmark_likelihoods =other.landmark_likelihoods.clone();
+		patch_experts = Patch_experts(other.patch_experts);
+		landmark_validator = DetectionValidator(other.landmark_validator);
+		face_detector_location = other.face_detector_location;
+
+		this->detection_success = other.detection_success;
+		this->tracking_initialised = other.tracking_initialised;
+		this->detection_certainty = other.detection_certainty;
+		this->model_likelihood = other.model_likelihood;
+		this->failures_in_a_row = other.failures_in_a_row;
+
+		// Load the CascadeClassifier (as it does not have a proper copy constructor)
+		if(!face_detector_location.empty())
+		{
+			this->face_detector_HAAR.load(face_detector_location);
+		}
+		// Make sure the matrices are allocated properly
+		this->triangulations.resize(other.triangulations.size());
+		for(size_t i = 0; i < other.triangulations.size(); ++i)
+		{
+			// Make sure the matrix is copied.
+			this->triangulations[i] = other.triangulations[i].clone();
+		}
+
+		// Make sure the matrices are allocated properly
+		for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+		{
+			// Make sure the matrix is copied.
+			this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
+		}
+	}
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	return *this;
+}
+
+// Move constructor
+CLM::CLM(const CLM&& other)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+
+	pdm = other.pdm;
+	params_local = other.params_local;
+	params_global = other.params_global;
+	detected_landmarks = other.detected_landmarks;
+	landmark_likelihoods = other.landmark_likelihoods;
+	patch_experts = other.patch_experts;
+	landmark_validator = other.landmark_validator;
+	face_detector_location = other.face_detector_location;
+
+	face_detector_HAAR = other.face_detector_HAAR;
+
+	triangulations = other.triangulations;
+	kde_resp_precalc = other.kde_resp_precalc;
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+}
+
+// Assignment operator for rvalues
+CLM & CLM::operator= (const CLM&& other)
+{
+	this->detection_success = other.detection_success;
+	this->tracking_initialised = other.tracking_initialised;
+	this->detection_certainty = other.detection_certainty;
+	this->model_likelihood = other.model_likelihood;
+	this->failures_in_a_row = other.failures_in_a_row;
+
+	pdm = other.pdm;
+	params_local = other.params_local;
+	params_global = other.params_global;
+	detected_landmarks = other.detected_landmarks;
+	landmark_likelihoods = other.landmark_likelihoods;
+	patch_experts = other.patch_experts;
+	landmark_validator = other.landmark_validator;
+	face_detector_location = other.face_detector_location;
+
+	face_detector_HAAR = other.face_detector_HAAR;
+
+	triangulations = other.triangulations;
+	kde_resp_precalc = other.kde_resp_precalc;
+
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	return *this;
+}
+
 
 void CLM::Read_CLM(string clm_location)
 {
 	// Location of modules
-	ifstream locations(clm_location.c_str());
+	ifstream locations(clm_location.c_str(), ios_base::in);
 
 	if(!locations.is_open())
 	{
@@ -117,7 +265,7 @@ void CLM::Read_CLM(string clm_location)
 		else if (module.compare("Triangulations") == 0) 
 		{       
 			cout << "Reading the Triangulations module from: " << location << "....";
-			ifstream triangulationFile(location.c_str());
+			ifstream triangulationFile(location.c_str(), ios_base::in);
 
 			CLMTracker::SkipComments(triangulationFile);
 
@@ -151,6 +299,9 @@ void CLM::Read_CLM(string clm_location)
 	// Initialise the patch experts
 	patch_experts.Read(intensity_expert_locations, depth_expert_locations, ccnf_expert_locations);
 
+	// Read in a face detector
+	face_detector_HOG = dlib::get_frontal_face_detector();
+
 }
 
 void CLM::Read(string main_location)
@@ -158,7 +309,7 @@ void CLM::Read(string main_location)
 
 	cout << "Reading the CLM landmark detector/tracker from: " << main_location << endl;
 	
-	ifstream locations(main_location.c_str());
+	ifstream locations(main_location.c_str(), ios_base::in);
 	if(!locations.is_open())
 	{
 		cout << "Couldn't open the model file, aborting" << endl;
@@ -182,11 +333,8 @@ void CLM::Read(string main_location)
 		// figure out which module is to be read from which file
 		lineStream >> module;
 				
-		getline(lineStream, location);
-
-		if(location.size() > 0)
-			location.erase(location.begin()); // remove the first space
-						
+		lineStream >> location;
+					
 		// remove carriage return at the end for compatibility with unix systems
 		if(location.size() > 0 && location.at(location.size()-1) == '\r')
 		{
@@ -202,7 +350,129 @@ void CLM::Read(string main_location)
 			// The CLM module includes the PDM and the patch experts
 			Read_CLM(location);
 		}
-		else if (module.compare("DetectionValidator") == 0) // Don't do face checking atm, as a new one needs to be trained
+		else if(module.compare("CLM_part") == 0)
+		{
+			string part_name;
+			lineStream >> part_name;
+			cout << "Reading part based module...." << part_name << endl;
+
+			vector<pair<int, int>> mappings;
+			while(!lineStream.eof())
+			{
+				int ind_in_main;
+				lineStream >> ind_in_main;
+				
+				int ind_in_part;
+				lineStream >> ind_in_part;
+				mappings.push_back(pair<int, int>(ind_in_main, ind_in_part));
+			}
+		
+			this->hierarchical_mapping.push_back(mappings);
+
+			CLM part_model(location);
+
+			this->hierarchical_models.push_back(part_model);
+
+			this->hierarchical_model_names.push_back(part_name);
+
+			CLMParameters params;
+			params.validate_detections = false;
+			params.refine_hierarchical = false;
+			params.refine_parameters = false;
+
+			if(part_name.compare("left_eye") == 0 || part_name.compare("right_eye") == 0)
+			{
+				
+				vector<int> windows_large;
+				windows_large.push_back(5);
+				windows_large.push_back(3);
+
+				vector<int> windows_small;
+				windows_small.push_back(5);
+				windows_small.push_back(3);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.1;
+				params.sigma = 2;
+			}
+			else if(part_name.compare("left_eye_28") == 0 || part_name.compare("right_eye_28") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(3);
+				windows_large.push_back(5);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(3);
+				windows_small.push_back(5);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.5;
+				params.sigma = 1.0;
+			}
+			else if(part_name.compare("mouth") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(7);
+				windows_large.push_back(7);
+
+				vector<int> windows_small;
+				windows_small.push_back(7);
+				windows_small.push_back(7);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 1.0;
+				params.sigma = 2.0;
+			}
+			else if(part_name.compare("brow") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(11);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(11);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 10.0;
+				params.sigma = 3.5;
+			}
+			else if(part_name.compare("inner") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 2.5;
+				params.sigma = 1.75;
+				params.weight_factor = 2.5;
+			}
+
+			this->hierarchical_params.push_back(params);
+
+			cout << "Done" << endl;
+		}
+		else if (module.compare("DetectionValidator") == 0)
 		{            
 			cout << "Reading the landmark validation module....";
 			landmark_validator.Read(location);
@@ -251,6 +521,19 @@ void CLM::Reset()
 	face_template = Mat_<uchar>();
 }
 
+// Resetting the model, choosing the face nearest (x,y)
+void CLM::Reset(double x, double y)
+{
+
+	// First reset the model overall
+	this->Reset();
+
+	// Now in the following frame when face detection takes place this is the point at which it will be preffered
+	this->preference_det.x = x;
+	this->preference_det.y = y;
+
+}
+
 // The main internal landmark detection call (should not be used externally?)
 bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CLMParameters& params)
 {
@@ -261,6 +544,61 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 	// Store the landmarks converged on in detected_landmarks
 	pdm.CalcShape2D(detected_landmarks, params_local, params_global);	
 	
+	if(params.refine_hierarchical && hierarchical_models.size() > 0)
+	{
+		bool parts_used = false;		
+
+		// TODO this can be TBBified?
+		for(size_t part_model = 0; part_model < hierarchical_models.size(); ++part_model)
+		{
+			
+			int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
+
+			vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
+
+			Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
+
+			// Extract the corresponding landmarks
+			for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+			{
+				part_model_locs.at<double>(mappings[mapping_ind].second) = detected_landmarks.at<double>(mappings[mapping_ind].first);
+				part_model_locs.at<double>(mappings[mapping_ind].second + n_part_points) = detected_landmarks.at<double>(mappings[mapping_ind].first + this->pdm.NumberOfPoints());
+			}
+						
+			// Fit the part based model PDM
+			hierarchical_models[part_model].pdm.CalcParams(hierarchical_models[part_model].params_global, hierarchical_models[part_model].params_local, part_model_locs);	
+			
+			// Only do this if we don't need to upsample
+			if(params_global[0] > 0.9 * hierarchical_models[part_model].patch_experts.patch_scaling[0])
+			{
+				parts_used = true;
+
+				this->hierarchical_params[part_model].window_sizes_current = this->hierarchical_params[part_model].window_sizes_init;
+
+				// Do the actual landmark detection
+				hierarchical_models[part_model].DetectLandmarks(image, depth, hierarchical_params[part_model]);
+
+				// Reincorporate the models into main tracker
+				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+				{
+					detected_landmarks.at<double>(mappings[mapping_ind].first) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second);
+					detected_landmarks.at<double>(mappings[mapping_ind].first + pdm.NumberOfPoints()) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second + hierarchical_models[part_model].pdm.NumberOfPoints());
+				}
+			}
+			else
+			{
+				hierarchical_models[part_model].pdm.CalcShape2D(hierarchical_models[part_model].detected_landmarks, hierarchical_models[part_model].params_local, hierarchical_models[part_model].params_global);
+			}
+		}
+
+		// Recompute main model based on the fit part models
+		if(parts_used)
+		{
+			pdm.CalcParams(params_global, params_local, detected_landmarks);		
+			pdm.CalcShape2D(detected_landmarks, params_local, params_global);
+		}
+	}
+
 	// Check detection correctness
 	if(params.validate_detections && fit_success)
 	{
@@ -312,44 +650,28 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		}
 	}
 
-	double curr_scale = params_global[0];
-
-	// Find the closest depth and colour patch scales, and start window_size below, this will make sure that the last iteration is done at the best scale available
-	int scale = -1;
-
-	double minDist;
-	for( size_t i = 0; i < patch_experts.patch_scaling.size(); ++i)
-	{
-		if(i==0 || std::abs(patch_experts.patch_scaling[i] - curr_scale) < minDist)
-		{
-			minDist = std::abs(patch_experts.patch_scaling[i] - curr_scale);
-			scale = i + 1;
-		}
-
-	}
-	
-	scale = scale - window_sizes.size();
-
-	if(scale < 0)
-		scale = 0;
-
 	int num_scales = patch_experts.patch_scaling.size();
 
 	// Storing the patch expert response maps
-	vector<Mat_<double> > patch_expert_responses(n);
+	vector<Mat_<float> > patch_expert_responses(n);
 
 	// Converting from image space to patch expert space (normalised for rotation and scale)
-	Matx22d sim_ref_to_img;
+	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
+	CLMParameters tmp_parameters = clm_parameters;
+
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
-	for(size_t witer = 0; witer < window_sizes.size(); witer++)
+	for(int scale = 0; scale < num_scales; scale++)
 	{
 
-		int window_size = window_sizes[witer];
+		int window_size = window_sizes[scale];
+
+		if(window_size == 0 ||  0.9 * patch_experts.patch_scaling[scale] > params_global[0])
+			continue;
 
 		// The patch expert response computation
-		if(witer != window_sizes.size() - 1)
+		if(scale != window_sizes.size() - 1)
 		{
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, depth_img_no_background, pdm, params_global, params_local, window_size, scale);
 		}
@@ -359,6 +681,18 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
+		if(clm_parameters.refine_parameters == true)
+		{
+			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov)
+			tmp_parameters.reg_factor = clm_parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			
+			if(tmp_parameters.reg_factor <= 0)
+				tmp_parameters.reg_factor = 0.001;
+
+			tmp_parameters.sigma = clm_parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.weight_factor = clm_parameters.weight_factor + 2 * clm_parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+		}
+
 		// Get the current landmark locations
 		pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -366,17 +700,11 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		int view_id = patch_experts.GetViewIdx(params_global, scale);
 
 		// the actual optimisation step
-		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, clm_parameters);
+		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, tmp_parameters);
 
 		// non-rigid optimisation
-		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, clm_parameters);
+		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
 		
-		// If there are more scales to go, and we don't need to upscale too much move to next scale level
-		if(scale < num_scales - 1 && 0.9 * patch_experts.patch_scaling[scale] < params_global[0])
-		{
-			scale++;			
-		}
-
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
 		{
@@ -388,29 +716,29 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	return true;
 }
 
-void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id, map<int, Mat_<double> >& kde_resp_precalc)
+void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& kde_resp_precalc)
 {
 	
 	int n = dxs.rows;
 	
-	Mat_<double> kde_resp;
-	double step_size = 0.1;
+	Mat_<float> kde_resp;
+	float step_size = 0.1;
 
 	// if this has not been precomputer, precompute it, otherwise use it
 	if(kde_resp_precalc.find(resp_size) == kde_resp_precalc.end())
 	{		
-		kde_resp = Mat_<double>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
-		MatIterator_<double> kde_it = kde_resp.begin();
+		kde_resp = Mat_<float>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
+		MatIterator_<float> kde_it = kde_resp.begin();
 
 		for(int x = 0; x < resp_size/step_size; x++)
 		{
-			double dx = x * step_size;
+			float dx = x * step_size;
 			for(int y = 0; y < resp_size/step_size; y++)
 			{
-				double dy = y * step_size;
+				float dy = y * step_size;
 
 				int ii,jj;
-				double v,vx,vy;
+				float v,vx,vy;
 			
 				for(ii = 0; ii < resp_size; ii++)
 				{
@@ -441,14 +769,14 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 	{
 		if(patch_experts.visibilities[scale][view_id].at<int>(i,0) == 0)
 		{
-			out_mean_shifts.at<double>(i,0) = 0;
-			out_mean_shifts.at<double>(i+n,0) = 0;
+			out_mean_shifts.at<float>(i,0) = 0;
+			out_mean_shifts.at<float>(i+n,0) = 0;
 			continue;
 		}
 
 		// indices of dx, dy
-		double dx = dxs.at<double>(i);
-		double dy = dys.at<double>(i);
+		float dx = dxs.at<float>(i);
+		float dy = dys.at<float>(i);
 
 		// Ensure that we are within bounds (important for precalculation)
 		if(dx < 0)
@@ -466,14 +794,14 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 		
 		int idx = closest_row * ((int)(resp_size/step_size + 0.5)) + closest_col; // Plus 0.5 is there, as C++ rounds down with int cast
 
-		MatIterator_<double> kde_it = kde_resp.begin() + kde_resp.cols*idx;
+		MatIterator_<float> kde_it = kde_resp.begin() + kde_resp.cols*idx;
 		
-		double mx=0.0;
-		double my=0.0;
-		double sum=0.0;
+		float mx=0.0;
+		float my=0.0;
+		float sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(int ii = 0; ii < resp_size; ii++)
 		{
@@ -481,7 +809,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 			{
 
 				// the KDE evaluation of that point multiplied by the probability at the current, xi, yi
-				double v = (*p++) * (*kde_it++);
+				float v = (*p++) * (*kde_it++);
 
 				sum += v;
 
@@ -492,24 +820,24 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<double>& out_mean_shifts, cons
 			}
 		}
 		
-		double msx = (mx/sum - dx);
-		double msy = (my/sum - dy);
+		float msx = (mx/sum - dx);
+		float msy = (my/sum - dy);
 
-		out_mean_shifts.at<double>(i,0) = msx;
-		out_mean_shifts.at<double>(i+n,0) = msy;
+		out_mean_shifts.at<float>(i,0) = msx;
+		out_mean_shifts.at<float>(i+n,0) = msy;
 
 	}
 
 }
 
-void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
+void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
 {
 	int n = pdm.NumberOfPoints();  
 
 	// Is the weight matrix needed at all
 	if(parameters.weight_factor > 0)
 	{
-		WeightMatrix = Mat_<double>::zeros(n*2, n*2);
+		WeightMatrix = Mat_<float>::zeros(n*2, n*2);
 
 		for (int p=0; p < n; p++)
 		{
@@ -517,10 +845,10 @@ void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, co
 			{
 
 				// for the x dimension
-				WeightMatrix.at<double>(p,p) = WeightMatrix.at<double>(p,p)  + patch_experts.ccnf_expert_intensity[scale][view_id][p].patch_confidence;
+				WeightMatrix.at<float>(p,p) = WeightMatrix.at<float>(p,p)  + patch_experts.ccnf_expert_intensity[scale][view_id][p].patch_confidence;
 				
 				// for they y dimension
-				WeightMatrix.at<double>(p+n,p+n) = WeightMatrix.at<double>(p,p);
+				WeightMatrix.at<float>(p+n,p+n) = WeightMatrix.at<float>(p,p);
 
 			}
 			else
@@ -529,27 +857,27 @@ void CLM::GetWeightMatrix(Mat_<double>& WeightMatrix, int scale, int view_id, co
 				for(size_t pc=0; pc < patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.size(); pc++)
 				{
 					// for the x dimension
-					WeightMatrix.at<double>(p,p) = WeightMatrix.at<double>(p,p)  + patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.at(pc).confidence;
+					WeightMatrix.at<float>(p,p) = WeightMatrix.at<float>(p,p)  + patch_experts.svr_expert_intensity[scale][view_id][p].svr_patch_experts.at(pc).confidence;
 				}	
 				// for the y dimension
-				WeightMatrix.at<double>(p+n,p+n) = WeightMatrix.at<double>(p,p);
+				WeightMatrix.at<float>(p+n,p+n) = WeightMatrix.at<float>(p,p);
 			}
 		}
 		WeightMatrix = parameters.weight_factor * WeightMatrix;
 	}
 	else
 	{
-		WeightMatrix = Mat_<double>::eye(n*2, n*2);
+		WeightMatrix = Mat_<float>::eye(n*2, n*2);
 	}
 
 }
 
 //=============================================================================
-double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<double> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
-		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22d& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
+double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
+		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const CLMParameters& parameters)
-{
-	
+{		
+
 	int n = pdm.NumberOfPoints();  
 	
 	// Mean, eigenvalues, eigenvectors
@@ -560,17 +888,19 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 	int m = pdm.NumberOfModes();
 	
 	Vec6d current_global(initial_global);
-	Mat_<double> current_local = initial_local.clone();
+
+	Mat_<float> current_local;
+	initial_local.convertTo(current_local, CV_32F);
 
 	Mat_<double> current_shape;
 	Mat_<double> previous_shape;
 
 	// Pre-calculate the regularisation term
-	Mat_<double> regTerm;
+	Mat_<float> regTerm;
 
 	if(rigid)
 	{
-		regTerm = Mat_<double>::zeros(6,6);
+		regTerm = Mat_<float>::zeros(6,6);
 	}
 	else
 	{
@@ -578,21 +908,21 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 
 		// Setting the regularisation to the inverse of eigenvalues
 		Mat(parameters.reg_factor / E).copyTo(regularisations(Rect(6, 0, m, 1)));			
-		regTerm = Mat::diag(regularisations.t());
+		Mat_<double> regTerm_d = Mat::diag(regularisations.t());
+		regTerm_d.convertTo(regTerm, CV_32F);
 	}	
 
-	Mat_<double> WeightMatrix;
+	Mat_<float> WeightMatrix;
 	GetWeightMatrix(WeightMatrix, scale, view_id, parameters);
 
-	Mat_<double> dxs, dys;
+	Mat_<float> dxs, dys;
 	
 	// The preallocated memory for the mean shifts
-	Mat_<double> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
+	Mat_<float> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
 
 	// Number of iterations
 	for(int iter = 0; iter < parameters.num_optimisation_iteration; iter++)
 	{
-
 		// get the current estimates of x
 		pdm.CalcShape2D(current_shape, current_local, current_global);
 		
@@ -608,7 +938,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		current_shape.copyTo(previous_shape);
 		
 		// Jacobian, and transposed weighted jacobian
-		Mat_<double> J, J_w_t;
+		Mat_<float> J, J_w_t;
 
 		// calculate the appropriate Jacobians in 2D, even though the actual behaviour is in 3D, using small angle approximation and oriented shape
 		if(rigid)
@@ -619,13 +949,15 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		{
 			pdm.ComputeJacobian(current_local, current_global, J, WeightMatrix, J_w_t);
 		}
-
+		
 		// useful for mean shift calculation
-		double a = -0.5/(parameters.sigma * parameters.sigma);
+		float a = -0.5/(parameters.sigma * parameters.sigma);
 
 		Mat_<double> current_shape_2D = current_shape.reshape(1, 2).t();
 		Mat_<double> base_shape_2D = base_shape.reshape(1, 2).t();
-		Mat_<double> offsets = (current_shape_2D - base_shape_2D) * Mat(sim_img_to_ref).t();
+
+		Mat_<float> offsets;
+		Mat((current_shape_2D - base_shape_2D) * Mat(sim_img_to_ref).t()).convertTo(offsets, CV_32F);
 		
 		dxs = offsets.col(0) + (resp_size-1)/2;
 		dys = offsets.col(1) + (resp_size-1)/2;
@@ -633,7 +965,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		NonVectorisedMeanShift_precalc_kde(mean_shifts, patch_expert_responses, dxs, dys, resp_size, a, scale, view_id, kde_resp_precalc);
 
 		// Now transform the mean shifts to the the image reference frame, as opposed to one of ref shape (object space)
-		Mat_<double> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
+		Mat_<float> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
 		
 		mean_shifts_2D = mean_shifts_2D * Mat(sim_ref_to_img).t();
 		mean_shifts = Mat(mean_shifts_2D.t()).reshape(1, n*2);		
@@ -648,13 +980,13 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 				Jx = cvScalar(0);
 				Mat Jy = J.row(i+n);
 				Jy = cvScalar(0);
-				mean_shifts.at<double>(i,0) = 0.0;
-				mean_shifts.at<double>(i+n,0) = 0.0;
+				mean_shifts.at<float>(i,0) = 0.0f;
+				mean_shifts.at<float>(i+n,0) = 0.0f;
 			}
 		}
 
 		// projection of the meanshifts onto the jacobians (using the weighted Jacobian, see Baltrusaitis 2013)
-		Mat_<double> J_w_t_m = J_w_t * mean_shifts;
+		Mat_<float> J_w_t_m = J_w_t * mean_shifts;
 
 		// Add the regularisation term
 		if(!rigid)
@@ -663,13 +995,13 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		}
 
 		// Calculating the Hessian approximation
-		Mat_<double> Hessian = J_w_t * J;
+		Mat_<float> Hessian = J_w_t * J;
 
 		// Add the Tikhonov regularisation
 		Hessian = Hessian + regTerm;
 
 		// Solve for the parameter update (from Baltrusaitis 2013 based on eq (36) Saragih 2011)
-		Mat_<double> param_update;
+		Mat_<float> param_update;
 		solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
 		
 		// update the reference
@@ -692,14 +1024,14 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 		{
 			continue;
 		}
-		double dx = dxs.at<double>(i);
-		double dy = dys.at<double>(i);
+		float dx = dxs.at<float>(i);
+		float dy = dys.at<float>(i);
 
 		int ii,jj;
-		double v,vx,vy,sum=0.0;
+		float v,vx,vy,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{
@@ -717,7 +1049,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 				sum += v;
 			}
 		}
-		landmark_lhoods.at<double>(i,0) = sum;
+		landmark_lhoods.at<double>(i,0) = (double)sum;
 
 		// the offset is there for numerical stability
 		loglhood += log(sum + 1e-8);
@@ -863,8 +1195,24 @@ Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy)
 	
 }
 
+// A utility bounding box function
+Rect_<double> CLM::GetBoundingBox() const
+{
+	Mat_<double> xs = this->detected_landmarks(Rect(0,0,1,this->detected_landmarks.rows/2));
+	Mat_<double> ys = this->detected_landmarks(Rect(0,this->detected_landmarks.rows/2, 1, this->detected_landmarks.rows/2));
+
+	double min_x, max_x;
+	double min_y, max_y;
+	cv::minMaxLoc(xs, &min_x, &max_x);
+	cv::minMaxLoc(ys, &min_y, &max_y);
+
+	// See if the detections intersect
+	Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
+	return model_rect;
+}
+
 // Legacy function not used at the moment
-void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<double> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
+void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
 {
 	
 	int n = dxs.rows;
@@ -887,7 +1235,7 @@ void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat
 		double v,vx,vy,mx=0.0,my=0.0,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<double> p = patch_expert_responses[i].begin();
+		MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{

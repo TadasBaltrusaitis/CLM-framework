@@ -52,8 +52,7 @@ else
     end
 end
       
-od = cd('../Release/');
-command = 'SimpleCLMImg.exe ';
+command = '"../Release/SimpleCLMImg.exe" ';
 
 if(any(strcmp(varargin, 'model')))
     model = varargin{find(strcmp(varargin, 'model')) + 1};
@@ -99,7 +98,6 @@ for i=1:numel(dataset_dirs)
     dos(command_c);
 
 end
-cd(od);
 toc
 
 %%
@@ -130,13 +128,10 @@ for i=1:numel(dirs)
     for g=1:numel(gt_labels)
         curr = curr+1;
         
-        gt_landmarks = importdata([dirs{i}, gt_labels(g).name], ' ', 3);
-        gt_landmarks = gt_landmarks.data;
-        
-        % find the corresponding detection
-        
-        landmark_det = importdata([landmark_det_dir, gt_labels(g).name], ' ', 3);
-        landmark_det = landmark_det.data;
+        gt_landmarks = dlmread([dirs{i}, gt_labels(g).name], ' ', 'A4..B71');
+       
+        % find the corresponding detection       
+        landmark_det = dlmread([landmark_det_dir, gt_labels(g).name], ' ', 'A4..B71');
         
         labels(:,:,curr) = gt_landmarks;
             
@@ -154,9 +149,13 @@ end
 % truth and detections
 if(size(shapes,2) == 66 && size(labels,2) == 68)
     inds_66 = [[1:60],[62:64],[66:68]];
+    
     labels = labels(inds_66,:,:);
     shapes = shapes(inds_66,:,:);
 end
+
+% Center the pixel
+labels = labels - 0.5;
 
 err_outline = compute_error(labels, shapes);
 

@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,30 +45,20 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
 
-// MultiTrackCLM.cpp : Defines the entry point for the console application.
-
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
-#include <CLM_utils.h>
+// MultiTrackCLM.cpp : Defines the entry point for the multiple face tracking console application.
+#include "CLM_core.h"
 
 #include <fstream>
 #include <sstream>
 
-#include <cv.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -79,11 +86,35 @@ vector<string> get_arguments(int argc, char **argv)
 
 	vector<string> arguments;
 
-	for(int i = 1; i < argc; ++i)
+	for(int i = 0; i < argc; ++i)
 	{
 		arguments.push_back(string(argv[i]));
 	}
 	return arguments;
+}
+
+void NonOverlapingDetections(const vector<CLMTracker::CLM>& clm_models, vector<Rect_<double> >& face_detections)
+{
+
+	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
+	for(size_t model = 0; model < clm_models.size(); ++model)
+	{
+
+		// See if the detections intersect
+		Rect_<double> model_rect = clm_models[model].GetBoundingBox();
+		
+		for(int detection = face_detections.size()-1; detection >=0; --detection)
+		{
+			double intersection_area = (model_rect & face_detections[detection]).area();
+			double union_area = model_rect.area() + face_detections[detection].area() - 2 * intersection_area;
+
+			// If the model is already tracking what we're detecting ignore the detection, this is determined by amount of overlap
+			if( intersection_area/union_area > 0.5)
+			{
+				face_detections.erase(face_detections.begin() + detection);
+			}
+		}
+	}
 }
 
 int main (int argc, char **argv)
@@ -92,7 +123,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files;
+	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -100,12 +131,19 @@ int main (int argc, char **argv)
 	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
     float fx = 600, fy = 600, cx = 0, cy = 0;
 			
-	CLMTracker::CLMParameters clm_parameters(arguments);
-	clm_parameters.use_face_template = true;
+	CLMTracker::CLMParameters clm_params(arguments);
+	clm_params.use_face_template = true;	
+	// This is so that the model would not try re-initialising itself
+	clm_params.reinit_video_every = -1;
+
+	clm_params.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR;
+
+	vector<CLMTracker::CLMParameters> clm_parameters;
+	clm_parameters.push_back(clm_params);	
 
 	// Get the input output file parameters
 	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -113,11 +151,11 @@ int main (int argc, char **argv)
 	vector<CLMTracker::CLM> clm_models;
 	vector<bool> active_models;
 
-	int num_faces_max = 3;
+	int num_faces_max = 4;
 
-	CLMTracker::CLM clm_model(clm_parameters.model_location);
-	clm_model.face_detector.load(clm_parameters.face_detector_location);
-	clm_model.face_detector_location = clm_parameters.face_detector_location;
+	CLMTracker::CLM clm_model(clm_parameters[0].model_location);
+	clm_model.face_detector_HAAR.load(clm_parameters[0].face_detector_location);
+	clm_model.face_detector_location = clm_parameters[0].face_detector_location;
 	
 	clm_models.reserve(num_faces_max);
 
@@ -128,6 +166,7 @@ int main (int argc, char **argv)
 	{
 		clm_models.push_back(clm_model);
 		active_models.push_back(false);
+		clm_parameters.push_back(clm_params);
 	}
 	
 	// If multiple video files are tracked, use this to indicate if we are done
@@ -140,9 +179,6 @@ int main (int argc, char **argv)
 	{
 		cx_undefined = true;
 	}		
-
-	// This is so that the model would not try re-initialising itself
-	clm_parameters.reinit_video_every = -1;
 	
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -215,6 +251,7 @@ int main (int argc, char **argv)
 		int64 t1,t0 = cv::getTickCount();
 		double fps = 10;
 
+
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
 		{		
@@ -255,51 +292,47 @@ int main (int argc, char **argv)
 					WARN_STREAM( "Can't find depth image" );
 				}
 			}
-			bool detection_success = false;
 
-			vector<Rect_<double>> face_detections;
+			vector<Rect_<double> > face_detections;
 
-			// Get the detections (every 8th frame for efficiency)
-			if(frame_count % 8 == 0)
-			{				
-				CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector);				
-			}
-
-			// Go over the model and eliminate detections that are not informative (there already is a tracker there)
-			for(size_t model = 0; model < clm_models.size(); ++model)
+			bool all_models_active = true;
+			for(unsigned int model = 0; model < clm_models.size(); ++model)
 			{
-				Mat_<double> xs = clm_models[model].detected_landmarks(Rect(0,0,1,clm_models[model].detected_landmarks.rows/2));
-				Mat_<double> ys = clm_models[model].detected_landmarks(Rect(0,clm_models[model].detected_landmarks.rows/2, 1, clm_models[model].detected_landmarks.rows/2));
-
-				double min_x, max_x;
-				double min_y, max_y;
-				cv::minMaxLoc(xs, &min_x, &max_x);
-				cv::minMaxLoc(ys, &min_y, &max_y);
-
-				// See if the detections intersect
-				Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
-
-				//cv::rectangle(disp_image, model_rect, Scalar(0,0,255), 2);
-
-				for(int detection = face_detections.size()-1; detection >=0; --detection)
+				if(!active_models[model])
 				{
-				
-					//cv::rectangle(disp_image, face_detections[detection], Scalar(0,255,0), 2);
-
-					// If the model is already tracking what we're detecting ignore the detection, this is determined by intersection area
-					if((model_rect & face_detections[detection]).area() > 0)
-					{
-						//cv::rectangle(disp_image, face_detections[detection], Scalar(255,0,0), 2);
-						face_detections.erase(face_detections.begin() + detection);
-					}
+					all_models_active = false;
 				}
 			}
-			
-			// Go through every model
-			for(size_t model = 0; model < clm_models.size(); ++model)
-			{
-				// If the current model has failed more than 5 times in a row, remove it
-				if(clm_models[model].failures_in_a_row > 5)
+						
+			// Get the detections (every 8th frame and when there are free models available for tracking)
+			if(frame_count % 8 == 0 && !all_models_active)
+			{				
+				if(clm_parameters[0].curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				{
+					vector<double> confidences;
+					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
+				}
+				else
+				{
+					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
+				}
+
+			}
+
+			// Keep only non overlapping detections (also convert to a concurrent vector
+			NonOverlapingDetections(clm_models, face_detections);
+
+			vector<tbb::atomic<bool> > face_detections_used(face_detections.size());
+
+			// Go through every model and update the tracking TODO pull out as a separate parallel/non-parallel method
+			tbb::parallel_for(0, (int)clm_models.size(), [&](int model){
+			//for(unsigned int model = 0; model < clm_models.size(); ++model)
+			//{
+
+				bool detection_success = false;
+
+				// If the current model has failed more than 4 times in a row, remove it
+				if(clm_models[model].failures_in_a_row > 4)
 				{				
 					active_models[model] = false;
 					clm_models[model].Reset();
@@ -309,33 +342,39 @@ int main (int argc, char **argv)
 				// If the model is inactive reactivate it with new detections
 				if(!active_models[model])
 				{
-					if(face_detections.size() > 0)
+					
+					for(size_t detection_ind = 0; detection_ind < face_detections.size(); ++detection_ind)
 					{
-						// Reinitialise the model
-						clm_models[model].Reset();
+						// if it was not taken by another tracker take it (if it is false swap it to true and enter detection, this makes it parallel safe)
+						if(face_detections_used[detection_ind].compare_and_swap(true, false) == false)
+						{
+					
+							// Reinitialise the model
+							clm_models[model].Reset();
 
-						// This ensures that a wider window is used for the initial landmark localisation
-						clm_models[model].detection_success = false;
-						detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[0], clm_models[model], clm_parameters);
+							// This ensures that a wider window is used for the initial landmark localisation
+							clm_models[model].detection_success = false;
+							detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clm_models[model], clm_parameters[model]);
+													
+							// This activates the model
+							active_models[model] = true;
 
-						// Visualise the reinitialisation
-						cv::rectangle(disp_image, face_detections[0], Scalar(255,255,0), 2);
-
-						// Remove the face detection as it has been used
-						face_detections.erase(face_detections.begin());
-						
-						// This activates the model
-						active_models[model] = true;
+							// break out of the loop as the tracker has been reinitialised
+							break;
+						}
 
 					}
 				}
 				else
 				{
 					// The actual facial landmark detection / tracking
-					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters);
+					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
 				}
-
-											
+			});
+								
+			// Go through every model and visualise the results
+			for(size_t model = 0; model < clm_models.size(); ++model)
+			{						
 				// Visualising the results
 				// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
 				double detection_certainty = clm_models[model].detection_certainty;
@@ -358,7 +397,7 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy, clm_parameters);
+					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy, clm_parameters[model]);
 					
 					// Draw it in reddish if uncertain, blueish if certain
 					CLMTracker::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
@@ -396,7 +435,7 @@ int main (int argc, char **argv)
 			active_models_st += active_m_C;
 			cv::putText(disp_image, active_models_st, cv::Point(10,60), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
 			
-			if(!clm_parameters.quiet_mode)
+			if(!clm_parameters[0].quiet_mode)
 			{
 				namedWindow("tracking_result",1);		
 				imshow("tracking_result", disp_image);

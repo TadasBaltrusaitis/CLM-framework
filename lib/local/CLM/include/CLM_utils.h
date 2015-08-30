@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,34 +45,15 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
-
 
 //  Header for all external CLM methods of interest to the user
 //
 //
 //  Tadas Baltrusaitis
 //  28/03/2014
-
 #ifndef __CLM_UTILS_h_
 #define __CLM_UTILS_h_
-
-#include <cv.h>
-#include <highgui.h>
-
-#include <stdio.h>
-#include <fstream>
-#include <iostream>
 
 #include "CLM.h"
 
@@ -72,7 +70,7 @@ namespace CLMTracker
 	// Helper functions for parsing the inputs
 	//=============================================================================================
 	void get_video_input_output_params(vector<string> &input_video_file, vector<string> &depth_dir,
-		vector<string> &output_pose_file, vector<string> &output_video_file, vector<string> &output_features_file, bool& camera_plane_pose, vector<string> &arguments);
+		vector<string> &output_pose_file, vector<string> &output_video_file, vector<string> &output_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments);
 
 	void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, vector<string> &arguments);
 
@@ -85,7 +83,7 @@ namespace CLMTracker
 	// This is a modified version of openCV code that allows for precomputed dfts of templates and for precomputed dfts of an image
 	// _img is the input img, _img_dft it's dft (optional), _integral_img the images integral image (optional), squared integral image (optional), 
 	// templ is the template we are convolving with, templ_dfts it's dfts at varying windows sizes (optional),  _result - the output, method the type of convolution
-	void matchTemplate_m( const Mat_<float>& input_img, Mat_<double>& img_dft, Mat& _integral_img, Mat& _integral_img_sq, const Mat_<float>& templ, map<int, Mat_<double> >& _templ_dfts, cv::Mat_<float>& result, int method );
+	void matchTemplate_m( const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method );
 
 	//===========================================================================
 	// Point set and landmark manipulation functions
@@ -104,9 +102,19 @@ namespace CLMTracker
 	void Project(Mat_<double>& dest, const Mat_<double>& mesh, double fx, double fy, double cx, double cy);
 	void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float fy, float cx, float cy);
 
+	// Drawing face bounding box
+	vector<pair<Point, Point>> CalculateBox(Vec6d pose, float fx, float fy, float cx, float cy);
+	void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thickness);
+
+	vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities);
+	vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D);
+	vector<Point2d> CalculateLandmarks(CLM& clm_model);
+	void DrawLandmarks(cv::Mat img, vector<Point> landmarks);
+
 	void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities);
 	void Draw(cv::Mat img, const Mat_<double>& shape2D);
 	void Draw(cv::Mat img, CLM& clm_model);
+
 
 	//===========================================================================
 	// Angle representation conversion helpers
@@ -131,7 +139,14 @@ namespace CLMTracker
 	// Face detection using Haar cascade classifier
 	bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity);
 	bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, CascadeClassifier& classifier);
-	bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity, CascadeClassifier& classifier);
+	// The preference point allows for disambiguation if multiple faces are present (pick the closest one), if it is not set the biggest face is chosen
+	bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity, CascadeClassifier& classifier, const cv::Point preference = Point(-1,-1));
+
+	// Face detection using HOG-SVM classifier
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences);
+	bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, std::vector<double>& confidences);
+	// The preference point allows for disambiguation if multiple faces are present (pick the closest one), if it is not set the biggest face is chosen
+	bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity, dlib::frontal_face_detector& classifier, double& confidence, const cv::Point preference = Point(-1,-1));
 
 	//============================================================================
 	// Matrix reading functionality

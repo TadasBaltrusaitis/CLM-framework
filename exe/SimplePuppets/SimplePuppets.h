@@ -4,7 +4,7 @@
 
 #include <cv.h>
 
-#include <CLM.h>
+#include <CLM_core.h>
 
 #include <gtk\gtk.h>
 #include <gdk\gdkkeysyms.h>

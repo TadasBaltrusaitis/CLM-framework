@@ -29,10 +29,10 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     % correct it so that the bounding box is just around the minimum
     % and maximum point in the initialised face
     tx = tx - a*(min(rot_m(1,:)) + max(rot_m(1,:)))/2;
-    ty = ty + a*(min(rot_m(2,:)) + max(rot_m(2,:)))/2;
+    ty = ty - a*(min(rot_m(2,:)) + max(rot_m(2,:)))/2;
 
-    % visualisation
-    %hold off;plot(a*rot_m(1,:)+tx, -a*rot_m(2,:)+ty,'.r');hold on;rectangle('Position', [bounding_box(1), bounding_box(2), bounding_box(3)-bounding_box(1), bounding_box(4)-bounding_box(2)]);
+    % visualisation of the initial state
+    %hold off;imshow(Image);hold on;plot(a*rot_m(1,:)+tx, a*rot_m(2,:)+ty,'.r');hold on;rectangle('Position', [bounding_box(1), bounding_box(2), bounding_box(3)-bounding_box(1), bounding_box(4)-bounding_box(2)]);
     global_params = [a, 0, 0, 0, tx, ty]';
     global_params(2:4) = orientation;
 
@@ -57,11 +57,13 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     [heightImg, widthImg] = size(GrayImage);
 
     % Some predefinitions for faster patch extraction
-    [xi, yi] = meshgrid(1:widthImg,1:heightImg);
+    [xi, yi] = meshgrid(0:widthImg-1,0:heightImg-1);
     xi = double(xi);
     yi = double(yi);
     
     GrayImageDb = double(GrayImage);
+    
+    clmParams_old = clmParams;
     
     % multi iteration refinement using NU-RLMS in each one
     for i=1:clmParams.numPatchIters
@@ -73,7 +75,7 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
        
         % The shape fitting is performed in the reference frame of the
         % patch training scale
-        refGlobal = [current_patch_scaling, 0, 0, 0, 100, 100]';
+        refGlobal = [current_patch_scaling, 0, 0, 0, 0, 0]';
 
         % the reference shape
         refShape = GetShapeOrtho(M, PDM.V, local_params, refGlobal);
@@ -94,7 +96,7 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
         
         % transform the current shape to the reference one, so we can
         % interpolate
-        shape2D_in_ref = (A_img2ref * (shape2D_img+1)')';
+        shape2D_in_ref = (A_img2ref * shape2D_img')';
         
         sideSizeX = (clmParams.window_size(i,1) - 1)/2;
         sideSizeY = (clmParams.window_size(i,2) - 1)/2;
@@ -116,10 +118,10 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
                 
                 actualLocs = (Ainv * pairs')';
                 
-                actualLocs(actualLocs(:,1) < 1,1) = 1;
-                actualLocs(actualLocs(:,2) < 1,2) = 1;
-                actualLocs(actualLocs(:,1) > widthImg,1) = widthImg;
-                actualLocs(actualLocs(:,2) > heightImg,2) = heightImg;
+                actualLocs(actualLocs(:,1) < 0,1) = 0;
+                actualLocs(actualLocs(:,2) < 0,2) = 0;
+                actualLocs(actualLocs(:,1) > widthImg - 1,1) = widthImg - 1;
+                actualLocs(actualLocs(:,2) > heightImg - 1,2) = heightImg - 1;
                 
                 [t_patch] = interp2_mine(xi, yi, GrayImageDb, actualLocs(:,1), actualLocs(:,2), 'bilinear');
                 t_patch = reshape(t_patch, size(xs));
@@ -198,6 +200,18 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
         end
         reliabilities = reliabilities(view,:);        
                
+        % deal with the fact that params might be different for different
+        % scales
+        if(numel(clmParams_old.regFactor) > 1)
+            clmParams.regFactor = clmParams_old.regFactor(i);
+        end
+        if(numel(clmParams_old.sigmaMeanShift) > 1)
+            clmParams.sigmaMeanShift = clmParams_old.sigmaMeanShift(i);
+        end
+        if(numel(clmParams_old.tikhonov_factor) > 1)
+            clmParams.tikhonov_factor = clmParams_old.tikhonov_factor(i);
+        end
+        
         % The actual NU-RLMS step
         
         % first the rigid transform
@@ -219,6 +233,8 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
             % only go up a scale if we don't need to upsample
             if(0.9 * patchExperts(scale+1).trainingScale < global_params(1))
                 scale = scale + 1;
+            else
+                break;
             end
         end
     end
@@ -228,7 +244,9 @@ function [ shape2D, global_params, local_params, final_lhood, landmark_lhoods, v
     
     % See how good the tracking was in the end
     [shape2D] = GetShapeOrtho(M, PDM.V, local_params, global_params);
-    shape2D = shape2D(:,1:2);
+    
+    % Moving to matlab format
+    shape2D = shape2D(:,1:2) + 1;
     
 end
 

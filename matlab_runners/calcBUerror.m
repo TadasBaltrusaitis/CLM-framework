@@ -1,4 +1,4 @@
-function [meanError, rmsError, errorVariance, all_errors] = calcBUerror(resDir, gtDir)
+function [meanError, all_rot_preds, all_rot_gts, all_errors, rels_all] = calcBUerror(resDir, gtDir)
 
 seqNames = {'jam1','jam2','jam3','jam4','jam5','jam6','jam7','jam8','jam9', ...
     'jim1','jim2','jim3','jim4','jim5','jim6','jim7','jim8','jim9', ...
@@ -10,12 +10,16 @@ rotMeanErr = zeros(numel(seqNames),3);
 rotRMS = zeros(numel(seqNames),3);
 rot = cell(1,numel(seqNames));
 rotg = cell(1,numel(seqNames));
+rels_all = [];
 
 for i = 1:numel(seqNames)
     
-    [frame time sc tx ty tz rx ry rz] = textread([resDir seqNames{i} '.txt'], '%f %f %f %f %f %f %f %f %f');
+    [frame rels sc tx ty tz rx ry rz] = textread([resDir seqNames{i} '.txt'], '%f %f %f %f %f %f %f %f %f');
     posesGround =  load ([gtDir seqNames{i} '.dat']);
 
+    % the reliabilities of head pose
+    rels_all = cat(1, rels_all, rels);
+    
     rot{i} = [rx ry rz];    
     % Flip because of different conventions
     rot{i}(:,2) = -rot{i}(:,2);
@@ -59,3 +63,6 @@ meanError = mean(abs((allRot(:,:)-allRotg(:,:))));
 all_errors = abs(allRot-allRotg);
 rmsError = sqrt(mean(((allRot(:,:)-allRotg(:,:))).^2)); 
 errorVariance = var(abs((allRot(:,:)-allRotg(:,:))));      
+
+all_rot_preds = allRot;
+all_rot_gts = allRotg;

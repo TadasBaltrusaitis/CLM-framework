@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,30 +45,16 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
 
-
 // SimpleCLM.cpp : Defines the entry point for the console application.
-
-#include <CLM.h>
-#include <CLMTracker.h>
-#include <CLMParameters.h>
-#include <CLM_utils.h>
+#include "CLM_core.h"
 
 #include <fstream>
 #include <sstream>
 
-#include <cv.h>
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -79,7 +82,7 @@ vector<string> get_arguments(int argc, char **argv)
 
 	vector<string> arguments;
 
-	for(int i = 1; i < argc; ++i)
+	for(int i = 0; i < argc; ++i)
 	{
 		arguments.push_back(string(argv[i]));
 	}
@@ -92,7 +95,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files;
+	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -101,12 +104,12 @@ int main (int argc, char **argv)
     float fx = 500, fy = 500, cx = 0, cy = 0;
 			
 	CLMTracker::CLMParameters clm_parameters(arguments);
-			
+
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, use_camera_plane_pose, arguments);
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -177,13 +180,19 @@ int main (int argc, char **argv)
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
-			pose_output_file.open (pose_output_files[f_n]);
+			pose_output_file.open (pose_output_files[f_n], ios_base::out);
 		}
 	
 		std::ofstream landmarks_output_file;		
 		if(!landmark_output_files.empty())
 		{
-			landmarks_output_file.open(landmark_output_files[f_n]);
+			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
+		}
+
+		std::ofstream landmarks_3D_output_file;
+		if(!landmark_3D_output_files.empty())
+		{
+			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 		}
 	
 		int frame_count = 0;
@@ -268,7 +277,7 @@ int main (int argc, char **argv)
 				if(detection_certainty < -1)
 					detection_certainty = -1;
 
-				detection_certainty = (detection_certainty + 1)/(visualisation_boundary +1);
+				double vis_certainty = (detection_certainty + 1)/(visualisation_boundary +1);
 
 				// A rough heuristic for box around the face width
 				int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
@@ -276,7 +285,7 @@ int main (int argc, char **argv)
 				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
 				// Draw it in reddish if uncertain, blueish if certain
-				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
+				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
 
 			}
 
@@ -313,15 +322,28 @@ int main (int argc, char **argv)
 				landmarks_output_file << frame_count + 1 << " " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++ i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i) << " ";
+					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
+			}
+
+			// Output the detected facial landmarks
+			if(!landmark_3D_output_files.empty())
+			{
+				landmarks_3D_output_file << frame_count + 1 << " " << detection_success;
+				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
+				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
+				{
+					landmarks_3D_output_file << " " << shape_3D.at<double>(i);
+				}
+				landmarks_3D_output_file << endl;
 			}
 
 			// Output the estimated head pose
 			if(!pose_output_files.empty())
 			{
-				pose_output_file << frame_count + 1 << " " << (float)frame_count * 1000/30 << " " << 1 << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
+				double confidence = 0.5 * (1 - detection_certainty);
+				pose_output_file << frame_count + 1 << " " << confidence << " " << detection_success << " " << pose_estimate_CLM[0] << " " << pose_estimate_CLM[1] << " " << pose_estimate_CLM[2] << " " << pose_estimate_CLM[3] << " " << pose_estimate_CLM[4] << " " << pose_estimate_CLM[5] << endl;
 			}				
 
 			// output the tracked video

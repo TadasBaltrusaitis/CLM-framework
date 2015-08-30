@@ -1,4 +1,4 @@
-function [meanError, rmsError, errorVariance, meanErrors, all_errors] = calcIctError(resDir, gtDir)
+function [meanError, all_rot_preds, all_rot_gts, meanErrors, all_errors, rels_all] = calcIctError(resDir, gtDir)
 %CALCICTERROR Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,11 +11,16 @@ function [meanError, rmsError, errorVariance, meanErrors, all_errors] = calcIctE
     rot = cell(1,numel(sequences));
     rotg = cell(1,numel(sequences));
 
+    rels_all = [];
+
     for i = 1:numel(sequences)
 
         [~, name,~] = fileparts(sequences(i).name);
-        [frame time sc tx ty tz rx ry rz] = textread([resDir '/' sequences(i).name], '%f %f %f %f %f %f %f %f %f');
+        [frame rels sc tx ty tz rx ry rz] = textread([resDir '/' sequences(i).name], '%f %f %f %f %f %f %f %f %f');
         [txg tyg tzg rxg ryg rzg] =  textread([gtDir name '/'  polhemus], '%f,%f,%f,%f,%f,%f');
+
+        % the reliabilities of head pose
+        rels_all = cat(1, rels_all, rels);
 
         rot{i} = [rx ry rz];
         
@@ -57,5 +62,8 @@ function [meanError, rmsError, errorVariance, meanErrors, all_errors] = calcIctE
     all_errors = abs(allRot-allRotg);
     rmsError = sqrt(mean(((allRot(:,:)-allRotg(:,:))).^2)); 
     errorVariance = var(abs((allRot(:,:)-allRotg(:,:))));  
+
+    all_rot_preds = allRot;
+    all_rot_gts = allRotg;
 end
 

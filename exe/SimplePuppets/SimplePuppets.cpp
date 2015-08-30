@@ -43,9 +43,11 @@
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
-#include <CLMTracker.h>
-#include <CLMParameters.h>
+#include "CLM_core.h"
 #include <Avatar.h>
+
+#include <opencv2/videoio/videoio.hpp>  // Video write
+#include <opencv2/videoio/videoio_c.h>  // Video write
 
 #include <iostream>
 #include <sstream>
@@ -218,7 +220,7 @@ vector<string> get_arguments(int argc, char **argv)
 
 	vector<string> arguments;
 
-	for(int i = 1; i < argc; ++i)
+	for(int i = 0; i < argc; ++i)
 	{
 		arguments.push_back(string(argv[i]));
 	}
@@ -341,13 +343,13 @@ void doFaceTracking(int argc, char **argv)
 		}
 
 		// Some initial parameters that can be overriden from command line	
-		vector<string> files, depth_dirs, outposes, outvideos, outfeatures;
+		vector<string> files, depth_dirs, outposes, outvideos, outfeatures, outfeatures3d;
 
 
 		// Get the input output file parameters
 		bool camera_plane_pose;
 
-		CLMTracker::get_video_input_output_params(files, depth_dirs, outposes, outvideos, outfeatures, camera_plane_pose, arguments);
+		CLMTracker::get_video_input_output_params(files, depth_dirs, outposes, outvideos, outfeatures, outfeatures3d, camera_plane_pose, arguments);
 		
 		int f_n = -1;
 

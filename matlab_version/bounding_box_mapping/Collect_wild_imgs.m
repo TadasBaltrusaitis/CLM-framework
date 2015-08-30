@@ -1,10 +1,5 @@
-function [images, detections, labels] = Collect_wild_imgs(root_test_data)
-       
-    use_afw = true;
-    use_lfpw = true;
-    use_helen = true;
-    use_ibug = true;
-    
+function [images, detections, labels] = Collect_wild_imgs(root_test_data, use_afw, use_lfpw, use_helen, use_ibug)
+           
     use_68 = true;           
     
     images = [];
@@ -64,13 +59,14 @@ end
 detections = zeros(num_imgs, 4);
 
 load([root_test_data, '/Bounding Boxes/bounding_boxes_afw.mat']);
+num_landmarks = 68;
 
 for imgs = 1:num_imgs
 
     [~,name,~] = fileparts(landmarkLabels(imgs).name);
+        
+    landmarks = dlmread([dataset_loc, landmarkLabels(imgs).name], ' ', [3,0,num_landmarks+2,1]);
     
-    landmarks = importdata([dataset_loc, landmarkLabels(imgs).name], ' ', 3);
-    landmarks = landmarks.data;
     if(~use_68)
         inds_frontal = [1:60,62:64,66:68];
         landmarks = landmarks(inds_frontal,:);
@@ -90,7 +86,7 @@ end
 
 function [images, detections, labels] = Collect_LFPW(root_test_data, use_68)
     
-dataset_loc = [root_test_data, '/lfpw/trainset/'];
+dataset_loc = [root_test_data, '/lfpw/testset/'];
 
 landmarkLabels = dir([dataset_loc '\*.pts']);
 
@@ -105,14 +101,16 @@ end
 
 detections = zeros(num_imgs, 4);
 
-load([root_test_data, '/Bounding Boxes/bounding_boxes_lfpw_trainset.mat']);
+load([root_test_data, '/Bounding Boxes/bounding_boxes_lfpw_testset.mat']);
+
+num_landmarks = 68;
 
 for imgs = 1:num_imgs
 
     [~,name,~] = fileparts(landmarkLabels(imgs).name);
-    
-    landmarks = importdata([dataset_loc, landmarkLabels(imgs).name], ' ', 3);
-    landmarks = landmarks.data;
+        
+    landmarks = dlmread([dataset_loc, landmarkLabels(imgs).name], ' ', [3,0,num_landmarks+2,1]);
+
     if(~use_68)
         inds_frontal = [1:60,62:64,66:68];
         landmarks = landmarks(inds_frontal,:);
@@ -151,13 +149,14 @@ end
 detections = zeros(num_imgs, 4);
 
 load([root_test_data, '/Bounding Boxes/bounding_boxes_ibug.mat']);
+num_landmarks = 68;
 
 for imgs = 1:num_imgs
 
     [~,name,~] = fileparts(landmarkLabels(imgs).name);
-    
-    landmarks = importdata([dataset_loc, landmarkLabels(imgs).name], ' ', 3);
-    landmarks = landmarks.data;
+        
+    landmarks = dlmread([dataset_loc, landmarkLabels(imgs).name], ' ', [3,0,num_landmarks+2,1]);
+
     if(~use_68)
         inds_frontal = [1:60,62:64,66:68];
         landmarks = landmarks(inds_frontal,:);
@@ -178,7 +177,7 @@ end
 
 function [images, detections, labels] = Collect_helen(root_test_data, use_68)
     
-dataset_loc = [root_test_data, '/helen/trainset/'];
+dataset_loc = [root_test_data, '/helen/testset/'];
 
 landmarkLabels = dir([dataset_loc '\*.pts']);
 
@@ -194,14 +193,14 @@ end
 
 detections = zeros(num_imgs, 4);
 
-load([root_test_data, '/Bounding Boxes/bounding_boxes_helen_trainset.mat']);
-
+load([root_test_data, '/Bounding Boxes/bounding_boxes_helen_testset.mat']);
+num_landmarks = 68;
 for imgs = 1:num_imgs
 
     [~,name,~] = fileparts(landmarkLabels(imgs).name);
     
-    landmarks = importdata([dataset_loc, landmarkLabels(imgs).name], ' ', 3);
-    landmarks = landmarks.data;
+    landmarks = dlmread([dataset_loc, landmarkLabels(imgs).name], ' ', [3,0,num_landmarks+2,1]);
+    
     if(~use_68)
         inds_frontal = [1:60,62:64,66:68];
         landmarks = landmarks(inds_frontal,:);

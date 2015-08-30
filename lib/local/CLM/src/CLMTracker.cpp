@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,26 +45,10 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLMTracker.h>
-
-#include "highgui.h"
-#include "cv.h"
-
-// For PI definition
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 using namespace CLMTracker;
 using namespace cv;
@@ -75,7 +76,7 @@ Vec6d CLMTracker::GetPoseCamera(CLM& clm_model, double fx, double fy, double cx,
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
 		double Z = fx / clm_model.params_global[0];
 	
@@ -110,14 +111,14 @@ Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, doubl
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
 		// This is used as an initial estimate for the iterative PnP algorithm
 		double Z = fx / clm_model.params_global[0];
 	
 		double X = ((clm_model.params_global[4] - cx) * (1.0/fx)) * Z;
 		double Y = ((clm_model.params_global[5] - cy) * (1.0/fy)) * Z;
-	
+ 
 		// Correction for orientation
 
 		// 2D points
@@ -142,7 +143,7 @@ Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double 
 		cv::solvePnP(landmarks_3D, landmarks_2D, camera_matrix, Mat(), vec_rot, vec_trans, true);
 
 		Vec3d euler = CLMTracker::AxisAngle2Euler(vec_rot);
-
+		
 		return Vec6d(vec_trans[0], vec_trans[1], vec_trans[2], vec_rot[0], vec_rot[1], vec_rot[2]);
 	}
 	else
@@ -277,7 +278,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 	// Only do it if there was a face detection at all
 	if(clm_model.tracking_initialised)
-	{		
+	{
 
 		// The area of interest search size will depend if the previous track was successful
 		if(!clm_model.detection_success)
@@ -289,7 +290,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 			params.window_sizes_current = params.window_sizes_small;
 		}
 
-		// Before the expensive landmark detection step apply a quick template tracking approach TODO parameters
+		// Before the expensive landmark detection step apply a quick template tracking approach
 		if(params.use_face_template && !clm_model.face_template.empty() && clm_model.detection_success)
 		{
 			CorrectGlobalParametersVideo(grayscale_image, clm_model, params);
@@ -311,26 +312,44 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 	// This is used for both detection (if it the tracking has not been initialised yet) or if the tracking failed (however we do this every n frames, for speed)
 	// This also has the effect of an attempt to reinitialise just after the tracking has failed, which is useful during large motions
-	if(!clm_model.tracking_initialised || (!clm_model.detection_success && params.reinit_video_every > 0 && clm_model.failures_in_a_row % params.reinit_video_every == 0))
+	if((!clm_model.tracking_initialised && (clm_model.failures_in_a_row + 1) % (params.reinit_video_every * 6) == 0) 
+		|| (clm_model.tracking_initialised && !clm_model.detection_success && params.reinit_video_every > 0 && clm_model.failures_in_a_row % params.reinit_video_every == 0))
 	{
-		
+
 		Rect_<double> bounding_box;
 
 		// If the face detector has not been initialised read it in
-		if(clm_model.face_detector.empty())
+		if(clm_model.face_detector_HAAR.empty())
 		{
-			clm_model.face_detector.load(params.face_detector_location);
+			clm_model.face_detector_HAAR.load(params.face_detector_location);
 			clm_model.face_detector_location = params.face_detector_location;
 		}
 
-		bool face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector);
+		Point preference_det(-1, -1);
+		if(clm_model.preference_det.x != -1 && clm_model.preference_det.y != -1)
+		{
+			preference_det.x = clm_model.preference_det.x * grayscale_image.cols;
+			preference_det.y = clm_model.preference_det.y * grayscale_image.rows;
+			clm_model.preference_det = Point(-1, -1);
+		}
+
+		bool face_detection_success;
+		if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+		{
+			double confidence;
+			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence, preference_det);
+		}
+		else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+		{
+			face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR, preference_det);
+		}
 
 		// Attempt to detect landmarks using the detected face (if unseccessful the detection will be ignored)
 		if(face_detection_success)
 		{
 			// Indicate that tracking has started as a face was detected
 			clm_model.tracking_initialised = true;
-
+						
 			// Keep track of old model values so that they can be restored if redetection fails
 			Vec6d params_global_init = clm_model.params_global;
 			Mat_<double> params_local_init = clm_model.params_local.clone();
@@ -371,7 +390,18 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 				return true;
 			}
 		}
+	}
 
+	// if the model has not been initialised yet class it as a failure
+	if(!clm_model.tracking_initialised)
+	{
+		clm_model.failures_in_a_row++;
+	}
+
+	// un-initialise the tracking
+	if(	clm_model.failures_in_a_row > 100)
+	{
+		clm_model.tracking_initialised = false;
 	}
 
 	return clm_model.detection_success;
@@ -423,6 +453,8 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 		rotation_hypotheses.push_back(Vec3d(0,0,0));
 		rotation_hypotheses.push_back(Vec3d(0,0.5236,0));
 		rotation_hypotheses.push_back(Vec3d(0,-0.5236,0));
+		rotation_hypotheses.push_back(Vec3d(0.5236,0,0));
+		rotation_hypotheses.push_back(Vec3d(-0.5236,0,0));
 	}
 	else
 	{
@@ -480,15 +512,23 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	Rect_<double> bounding_box;
 
 	// If the face detector has not been initialised read it in
-	if(clm_model.face_detector.empty())
+	if(clm_model.face_detector_HAAR.empty())
 	{
-		clm_model.face_detector.load(params.face_detector_location);
+		clm_model.face_detector_HAAR.load(params.face_detector_location);
 		clm_model.face_detector_location = params.face_detector_location;
 	}
 		
-	// Initialise the face detector
-	CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector);
-	
+	// Detect the face first
+	if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+	{
+		double confidence;
+		CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
+	}
+	else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+	{
+		CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
+	}
+
 	return DetectLandmarksInImage(grayscale_image, depth_image, bounding_box, clm_model, params);
 
 }

@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,26 +45,10 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
 #include <CLM_utils.h>
-
-#include <math.h>
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
-
-#include <iostream>
-#include <sstream>
 
 using namespace boost::filesystem;
 
@@ -57,9 +58,47 @@ using namespace std;
 namespace CLMTracker
 {
 
+// Useful utility for creating directories for storing the output files
+void create_directory_from_file(string output_path)
+{
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(path(output_path).parent_path());
+
+	if(!p.empty() && !boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
+// Useful utility for creating directories for storing the output files
+void create_directories(string output_path)
+{
+
+	// Creating the right directory structure
+	
+	// First get rid of the file
+	auto p = path(output_path);
+
+	if(!p.empty() && !boost::filesystem::exists(p))		
+	{
+		bool success = boost::filesystem::create_directories(p);
+		if(!success)
+		{
+			cout << "Failed to create a directory... " << p.string() << endl;
+		}
+	}
+}
+
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
-	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_features_files, bool& camera_plane_pose, vector<string> &arguments)
+	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 
@@ -78,8 +117,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		if (arguments[i].compare("-root") == 0) 
 		{                    
 			root = arguments[i + 1];
-			valid[i] = false;
-			valid[i+1] = false;			
+			// Do not discard root as it might be used in other later steps
 			i++;
 		}		
 	}
@@ -88,7 +126,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 	{
 		if (arguments[i].compare("-f") == 0) 
 		{                    
-			input_video_files.push_back(root + arguments[i + 1]);
+			input_video_files.push_back(root + arguments[i + 1]);			
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
@@ -103,13 +141,23 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-op") == 0)
 		{
 			output_pose_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
 		} 
 		else if (arguments[i].compare("-of") == 0)
 		{
-			output_features_files.push_back(root + arguments[i + 1]);
+			output_2d_landmark_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i+1] = false;
+			i++;
+		} 
+		else if (arguments[i].compare("-of3D") == 0)
+		{
+			output_3D_landmark_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -117,6 +165,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		else if (arguments[i].compare("-ov") == 0)
 		{
 			output_video_files.push_back(root + arguments[i + 1]);
+			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -241,13 +290,16 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 					vector<path> file_in_directory;                                
 					copy(directory_iterator(image_directory), directory_iterator(), back_inserter(file_in_directory));
+					
+					// Sort the images in the directory first
+					sort(file_in_directory.begin(), file_in_directory.end()); 
 
 					for (vector<path>::const_iterator file_iterator (file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 					{
 						// Possible image extension .jpg and .png
-						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0)
+						if(file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".png") == 0 || file_iterator->extension().string().compare(".bmp") == 0)
 						{
-								
+							
 								
 							input_image_files.push_back(file_iterator->string());
 								
@@ -260,7 +312,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 							if(exists(bbox))
 							{
 
-								std::ifstream in_bbox(bbox.string().c_str());
+								std::ifstream in_bbox(bbox.string().c_str(), ios_base::in);
 
 								double min_x, min_y, max_x, max_y;
 
@@ -286,6 +338,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 		else if (arguments[i].compare("-ofdir") == 0) 
 		{
 			out_pts_dir = arguments[i + 1];
+			create_directories(out_pts_dir);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -293,6 +346,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 		else if (arguments[i].compare("-oidir") == 0) 
 		{
 			out_img_dir = arguments[i + 1];
+			create_directories(out_img_dir);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
@@ -327,6 +381,11 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			path fname = image_loc.filename();
 			fname = fname.replace_extension("jpg");
 			output_image_files.push_back(out_img_dir + "/" + fname.string());
+			
+		}
+		if(!input_image_files.empty())
+		{
+			create_directory_from_file(output_image_files[0]);
 		}
 	}
 
@@ -338,8 +397,9 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 			path fname = image_loc.filename();
 			fname = fname.replace_extension("pts");
-			output_feature_files.push_back(out_pts_dir + "/" + fname.string());
+			output_feature_files.push_back(out_pts_dir + "/" + fname.string());			
 		}
+		create_directory_from_file(output_feature_files[0]);
 	}
 
 	// Make sure the same number of images and bounding boxes is present, if any bounding boxes are defined
@@ -359,64 +419,55 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 }
 
-
 //===========================================================================
 // Fast patch expert response computation (linear model across a ROI) using normalised cross-correlation
 //===========================================================================
 
-// A helper for matchTemplate
-void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const cv::Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& corr,
-                cv::Point anchor, double delta, int borderType )
+void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, Mat_<float>& corr)
 {
-    const double blockScale = 4.5;
-    const int minBlockSize = 256;
+	// Our model will always be under min block size so can ignore this
+    //const double blockScale = 4.5;
+    //const int minBlockSize = 256;
 
-    CV_Assert( img.dims <= 2 && templ.dims <= 2 && corr.dims <= 2 );
-		
-    cv::Size blocksize, dftsize;
+	int maxDepth = CV_64F;
 
-    blocksize.width = cvRound(templ.cols*blockScale);
-    blocksize.width = std::max( blocksize.width, minBlockSize - templ.cols + 1 );
-    blocksize.width = std::min( blocksize.width, corr.cols );
-    blocksize.height = cvRound(templ.rows*blockScale);
-    blocksize.height = std::max( blocksize.height, minBlockSize - templ.rows + 1 );
-    blocksize.height = std::min( blocksize.height, corr.rows );
+	Size dftsize;
+	
+    dftsize.width = getOptimalDFTSize(corr.cols + _templ.cols - 1);
+    dftsize.height = getOptimalDFTSize(corr.rows + _templ.rows - 1);
 
-    dftsize.width = std::max(cv::getOptimalDFTSize(blocksize.width + templ.cols - 1), 2);
-    dftsize.height = cv::getOptimalDFTSize(blocksize.height + templ.rows - 1);
-    if( dftsize.width <= 0 || dftsize.height <= 0 )
-        CV_Error( CV_StsOutOfRange, "the input arrays are too big" );
-
-    // recompute block size
-    blocksize.width = dftsize.width - templ.cols + 1;
+    // Compute block size
+    Size blocksize;
+    blocksize.width = dftsize.width - _templ.cols + 1;
     blocksize.width = MIN( blocksize.width, corr.cols );
-    blocksize.height = dftsize.height - templ.rows + 1;
+    blocksize.height = dftsize.height - _templ.rows + 1;
     blocksize.height = MIN( blocksize.height, corr.rows );
+	
+	cv::Mat_<double> dftTempl;
 
-    cv::Mat_<double> dftImg(dftsize, 0.0);
-
-	cv::Mat_<double> dftTempl( dftsize.height, dftsize.width);
-
-	// if this has not been precomputer, precompute it, otherwise use it
+	// if this has not been precomputed, precompute it, otherwise use it
 	if(_templ_dfts.find(dftsize.width) == _templ_dfts.end())
 	{
-		cv::Mat_<float> src = templ;
+		dftTempl.create(dftsize.height, dftsize.width);
+
+		cv::Mat_<float> src = _templ;
 
 		// TODO simplify no need for rect?
 		cv::Mat_<double> dst(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
-		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, templ.cols, templ.rows));
+		
+		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, _templ.cols, _templ.rows));
 			
 		if( dst1.data != src.data )
 			src.convertTo(dst1, dst1.depth());
 
-		if( dst.cols > templ.cols )
+		if( dst.cols > _templ.cols )
 		{
-			cv::Mat_<double> part(dst, cv::Range(0, templ.rows), cv::Range(templ.cols, dst.cols));
+			cv::Mat_<double> part(dst, cv::Range(0, _templ.rows), cv::Range(_templ.cols, dst.cols));
 			part.setTo(0);
 		}
 
 		// Perform DFT of the template
-		dft(dst, dst, 0, templ.rows);
+		dft(dst, dst, 0, _templ.rows);
 		
 		_templ_dfts[dftsize.width] = dftTempl;
 
@@ -427,97 +478,72 @@ void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const c
 		dftTempl = _templ_dfts.find(dftsize.width)->second;
 	}
 
-    int tileCountX = (corr.cols + blocksize.width - 1)/blocksize.width;
-    int tileCountY = (corr.rows + blocksize.height - 1)/blocksize.height;
-    int tileCount = tileCountX * tileCountY;
+	Size bsz(std::min(blocksize.width, corr.cols), std::min(blocksize.height, corr.rows));
+	Mat src;
 
-    cv::Size wholeSize = img.size();
-    cv::Point roiofs(0,0);
-    cv::Mat img0 = img;
+	Mat cdst(corr, Rect(0, 0, bsz.width, bsz.height));
+	
+	cv::Mat_<double> dftImg;
 
-    if( !(borderType & cv::BORDER_ISOLATED) )
-    {
-        img.locateROI(wholeSize, roiofs);
-        img0.adjustROI(roiofs.y, wholeSize.height-img.rows-roiofs.y,
-                       roiofs.x, wholeSize.width-img.cols-roiofs.x);
-    }
-    borderType |= cv::BORDER_ISOLATED;
+	if(img_dft.empty())
+	{
+		dftImg.create(dftsize);
+		dftImg.setTo(0.0);
 
-    // calculate correlation by blocks
-    for( int i = 0; i < tileCount; i++ )
-    {
+		Size dsz(bsz.width + _templ.cols - 1, bsz.height + _templ.rows - 1);
 
-        int x = (i%tileCountX)*blocksize.width;
-        int y = (i/tileCountX)*blocksize.height;
+		int x2 = std::min(img.cols, dsz.width);
+		int y2 = std::min(img.rows, dsz.height);
 
-        cv::Size bsz(std::min(blocksize.width, corr.cols - x),
-                 std::min(blocksize.height, corr.rows - y));
-        cv::Size dsz(bsz.width + templ.cols - 1, bsz.height + templ.rows - 1);
-        int x0 = x - anchor.x + roiofs.x, y0 = y - anchor.y + roiofs.y;
-        int x1 = std::max(0, x0), y1 = std::max(0, y0);
-        int x2 = std::min(img0.cols, x0 + dsz.width);
-        int y2 = std::min(img0.rows, y0 + dsz.height);
-        cv::Mat src0(img0, cv::Range(y1, y2), cv::Range(x1, x2));
-        cv::Mat dst(dftImg, cv::Rect(0, 0, dsz.width, dsz.height));
-        cv::Mat dst1(dftImg, cv::Rect(x1-x0, y1-y0, x2-x1, y2-y1));
-        cv::Mat cdst(corr, cv::Rect(x, y, bsz.width, bsz.height));
+		Mat src0(img, Range(0, y2), Range(0, x2));
+		Mat dst(dftImg, Rect(0, 0, dsz.width, dsz.height));
+		Mat dst1(dftImg, Rect(0, 0, x2, y2));
 
-        cv::Mat src = src0;
-					
-        if( dst1.data != src.data )
-            src.convertTo(dst1, dst1.depth());
+		src = src0;
+		
+		if( dst1.data != src.data )
+			src.convertTo(dst1, dst1.depth());
 
-        if( x2 - x1 < dsz.width || y2 - y1 < dsz.height )
-            copyMakeBorder(dst1, dst, y1-y0, dst.rows-dst1.rows-(y1-y0),
-                            x1-x0, dst.cols-dst1.cols-(x1-x0), borderType);
-		if(img_dft.empty())
-		{
-			dft( dftImg, dftImg, 0, dsz.height );
-			img_dft = dftImg.clone();
-		}
-		else
-		{
-			dftImg = img_dft.clone();
-		}
+		dft( dftImg, dftImg, 0, dsz.height );
+		img_dft = dftImg.clone();
+	}
 
-		// TODO no need for Rect?
-		cv::Mat dftTempl1(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
+	Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
+	mulSpectrums(img_dft, dftTempl1, dftImg, 0, true);
+	dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
 
-        mulSpectrums(dftImg, dftTempl1, dftImg, 0, true);
-        dft( dftImg, dftImg, cv::DFT_INVERSE + cv::DFT_SCALE, bsz.height );
+	src = dftImg(Rect(0, 0, bsz.width, bsz.height));
 
-        src = dftImg(cv::Rect(0, 0, bsz.width, bsz.height));
+	src.convertTo(cdst, CV_32F);
 
-        src.convertTo(cdst, CV_32F, 1, delta);
-
-    }
 }
 
-/*****************************************************************************************/
-// The template matching code from OpenCV with some precomputation optimisations
-void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>& templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& result, int method )
-{
-    CV_Assert( CV_TM_SQDIFF <= method && method <= CV_TM_CCOEFF_NORMED );
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
+void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method )
+{
+
+        int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
                   method == CV_TM_CCOEFF || method == CV_TM_CCOEFF_NORMED ? 1 : 2;
     bool isNormed = method == CV_TM_CCORR_NORMED ||
                     method == CV_TM_SQDIFF_NORMED ||
                     method == CV_TM_CCOEFF_NORMED;
 	
-    cv::Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
-    result.create(corrSize);
-
-    crossCorr_m( input_img, img_dft, templ, _templ_dfts, result, cv::Point(0,0), 0, 0);
+	// Assume result is defined properly
+	if(result.empty())
+	{
+		Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
+		result.create(corrSize);
+	}
+    CLMTracker::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
 
     if( method == CV_TM_CCORR )
         return;
 
     double invArea = 1./((double)templ.rows * templ.cols);
 
-    cv::Mat sum, sqsum;
-    cv::Scalar templMean, templSdv;
-
+    Mat sum, sqsum;
+    Scalar templMean, templSdv;
     double *q0 = 0, *q1 = 0, *q2 = 0, *q3 = 0;
     double templNorm = 0, templSum2 = 0;
 
@@ -528,8 +554,8 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 		{
 			integral(input_img, _integral_img, CV_64F);
 		}
-		
 		sum = _integral_img;
+
         templMean = mean(templ);
     }
     else
@@ -542,32 +568,28 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 
 		sum = _integral_img;
 		sqsum = _integral_img_sq;
-		
-		// TODO this can be precomputed
+
         meanStdDev( templ, templMean, templSdv );
 
-        templNorm = CV_SQR(templSdv[0]) + CV_SQR(templSdv[1]) +
-                    CV_SQR(templSdv[2]) + CV_SQR(templSdv[3]);
+        templNorm = templSdv[0]*templSdv[0] + templSdv[1]*templSdv[1] + templSdv[2]*templSdv[2] + templSdv[3]*templSdv[3];
 
         if( templNorm < DBL_EPSILON && method == CV_TM_CCOEFF_NORMED )
         {
-			result.setTo(1);
+			result.setTo(1.0);
             return;
         }
 
-        templSum2 = templNorm +
-                     CV_SQR(templMean[0]) + CV_SQR(templMean[1]) +
-                     CV_SQR(templMean[2]) + CV_SQR(templMean[3]);
+        templSum2 = templNorm + templMean[0]*templMean[0] + templMean[1]*templMean[1] + templMean[2]*templMean[2] + templMean[3]*templMean[3];
 
         if( numType != 1 )
         {
-            templMean = cv::Scalar::all(0);
+            templMean = Scalar::all(0);
             templNorm = templSum2;
         }
 
         templSum2 /= invArea;
-        templNorm = sqrt(templNorm);
-        templNorm /= sqrt(invArea); // care of accuracy here
+        templNorm = std::sqrt(templNorm);
+        templNorm /= std::sqrt(invArea); // care of accuracy here
 
         q0 = (double*)sqsum.data;
         q1 = q0 + templ.cols;
@@ -583,29 +605,32 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
     int sumstep = sum.data ? (int)(sum.step / sizeof(double)) : 0;
     int sqstep = sqsum.data ? (int)(sqsum.step / sizeof(double)) : 0;
 
-    for( int i = 0; i < result.rows; i++ )
+    int i, j;
+
+    for( i = 0; i < result.rows; i++ )
     {
-        float* rrow = (float*)(result.data + i*result.step);
+        float* rrow = result.ptr<float>(i);
         int idx = i * sumstep;
         int idx2 = i * sqstep;
 
-        for( int j = 0; j < result.cols; j++, idx += 1, idx2 += 1 )
+        for( j = 0; j < result.cols; j++, idx += 1, idx2 += 1 )
         {
             double num = rrow[j], t;
             double wndMean2 = 0, wndSum2 = 0;
 
             if( numType == 1 )
             {
+
                 t = p0[idx] - p1[idx] - p2[idx] + p3[idx];
-                wndMean2 += CV_SQR(t);
+                wndMean2 += t*t;
                 num -= t*templMean[0];
-                
+
                 wndMean2 *= invArea;
             }
 
             if( isNormed || numType == 2 )
             {
-                
+
                 t = q0[idx2] - q1[idx2] - q2[idx2] + q3[idx2];
                 wndSum2 += t;
 
@@ -618,7 +643,7 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
 
             if( isNormed )
             {
-                t = sqrt(MAX(wndSum2 - wndMean2,0))*templNorm;
+                t = std::sqrt(MAX(wndSum2 - wndMean2,0))*templNorm;
                 if( fabs(num) < t )
                     num /= t;
                 else if( fabs(num) < t*1.125 )
@@ -631,6 +656,7 @@ void matchTemplate_m( const Mat_<float>& input_img, cv::Mat_<double>& img_dft, c
         }
     }
 }
+
 
 //===========================================================================
 // Point set and landmark manipulation functions
@@ -826,37 +852,254 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 
 }
 
-// Drawing landmarks on a face image
-void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
+vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, float cx, float cy)
+{
+	double boxVerts[] = {-1, 1, -1,
+						1, 1, -1,
+						1, 1, 1,
+						-1, 1, 1,
+						1, -1, 1,
+						1, -1, -1,
+						-1, -1, -1,
+						-1, -1, 1};
+
+	vector<std::pair<int,int>> edges;
+	edges.push_back(pair<int,int>(0,1));
+	edges.push_back(pair<int,int>(1,2));
+	edges.push_back(pair<int,int>(2,3));
+	edges.push_back(pair<int,int>(0,3));
+	edges.push_back(pair<int,int>(2,4));
+	edges.push_back(pair<int,int>(1,5));
+	edges.push_back(pair<int,int>(0,6));
+	edges.push_back(pair<int,int>(3,7));
+	edges.push_back(pair<int,int>(6,5));
+	edges.push_back(pair<int,int>(5,4));
+	edges.push_back(pair<int,int>(4,7));
+	edges.push_back(pair<int,int>(7,6));
+
+	// The size of the head is roughly 200mm x 200mm x 200mm
+	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
+
+	Matx33d rot = CLMTracker::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
+	Mat_<double> rotBox;
+	
+	// Rotate the box
+	rotBox = Mat(rot) * box.t();
+	rotBox = rotBox.t();
+
+	// Move the bounding box to head position
+	rotBox.col(0) = rotBox.col(0) + pose[0];
+	rotBox.col(1) = rotBox.col(1) + pose[1];
+	rotBox.col(2) = rotBox.col(2) + pose[2];
+
+	// draw the lines
+	Mat_<double> rotBoxProj;
+	Project(rotBoxProj, rotBox, fx, fy, cx, cy);
+
+	vector<std::pair<Point,Point>> lines;
+	
+	for (size_t i = 0; i < edges.size(); ++i)
+	{
+		Mat_<double> begin;
+		Mat_<double> end;
+	
+		rotBoxProj.row(edges[i].first).copyTo(begin);
+		rotBoxProj.row(edges[i].second).copyTo(end);
+
+		Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
+		Point p2((int)end.at<double>(0), (int)end.at<double>(1));
+		
+		lines.push_back(pair<Point, Point>(p1,p2));
+		
+	}
+
+	return lines;
+}
+
+void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thickness)
+{
+	Rect image_rect(0,0,image.cols, image.rows);
+	
+	for (size_t i = 0; i < lines.size(); ++i)
+	{
+		Point p1 = lines.at(i).first;
+		Point p2 = lines.at(i).second;
+		// Only draw the line if one of the points is inside the image
+		if(p1.inside(image_rect) || p2.inside(image_rect))
+		{
+			cv::line(image, p1, p2, color, thickness);
+		}
+		
+	}
+
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
+	vector<Point2d> landmarks;
 
 	for( int i = 0; i < n; ++i)
 	{		
 		if(visibilities.at<int>(i))
 		{
+			Point2d featurePoint(shape2D.at<double>(i), shape2D.at<double>(i +n));
+
+			landmarks.push_back(featurePoint);
+		}
+	}
+
+	return landmarks;
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
+{
+	
+	int n;
+	vector<Point2d> landmarks;
+	
+	if(shape2D.cols == 2)
+	{
+		n = shape2D.rows;
+	}
+	else if(shape2D.cols == 1)
+	{
+		n = shape2D.rows/2;
+	}
+
+	for( int i = 0; i < n; ++i)
+	{		
+		Point2d featurePoint;
+		if(shape2D.cols == 1)
+		{
+			featurePoint = Point2d(shape2D.at<double>(i), shape2D.at<double>(i +n));
+		}
+		else
+		{
+			featurePoint = Point2d(shape2D.at<double>(i, 0), shape2D.at<double>(i, 1));
+		}
+
+		landmarks.push_back(featurePoint);
+	}
+	
+	return landmarks;
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<cv::Point2d> CalculateLandmarks(CLM& clm_model)
+{
+
+	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
+
+	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
+	return CalculateLandmarks(clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
+
+}
+
+// Drawing landmarks on a face image
+void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
+{
+	int n = shape2D.rows/2;
+
+	// Drawing feature points
+	if(n >= 66)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			if(visibilities.at<int>(i))
+			{
+				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+				// A rough heuristic for drawn point size
+				int thickness = (int)std::ceil(3.0* ((double)img.cols) / 640.0);
+				int thickness_2 = (int)std::ceil(1.0* ((double)img.cols) / 640.0);
+
+				cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
+				cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			}
+		}
+	}
+	else if(n == 28) // drawing eyes
+	{
+		for( int i = 0; i < n; ++i)
+		{		
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
 
-			cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-			cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			int next_point = i + 1;
+			if(i == 7)
+				next_point = 0;
+			if(i == 19)
+				next_point = 8;
+			if(i == 27)
+				next_point = 20;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			if( i < 8 || i > 19)
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+			else
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2);
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+
 		}
 	}
-	
+	else if(n == 6)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+			// A rough heuristic for drawn point size
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+			int next_point = i + 1;
+			if(i == 5)
+				next_point = 0;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+		}
+	}
 }
 
 // Drawing landmarks on a face image
 void Draw(cv::Mat img, const Mat_<double>& shape2D)
 {
-	int n = shape2D.rows/2;
+	
+	int n;
+	
+	if(shape2D.cols == 2)
+	{
+		n = shape2D.rows;
+	}
+	else if(shape2D.cols == 1)
+	{
+		n = shape2D.rows/2;
+	}
 
 	for( int i = 0; i < n; ++i)
 	{		
-		Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
-
+		Point featurePoint;
+		if(shape2D.cols == 1)
+		{
+			featurePoint = Point((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+		}
+		else
+		{
+			featurePoint = Point((int)shape2D.at<double>(i, 0), (int)shape2D.at<double>(i, 1));
+		}
 		// A rough heuristic for drawn point size
 		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
 		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
@@ -877,6 +1120,28 @@ void Draw(cv::Mat img, CLM& clm_model)
 	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
 	Draw(img, clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
 
+	// If the model has hierarchical updates draw those too
+	for(int i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	{
+		if(clm_model.hierarchical_models[i].pdm.NumberOfPoints() != clm_model.hierarchical_mapping[i].size())
+		{
+			Draw(img, clm_model.hierarchical_models[i]);
+		}
+	}
+}
+
+void DrawLandmarks(cv::Mat img, vector<Point> landmarks)
+{
+	for(Point p : landmarks)
+	{		
+		// A rough heuristic for drawn point size
+		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
+		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+
+		cv::circle(img, p, 1, Scalar(0,0,255), thickness);
+		cv::circle(img, p, 1, Scalar(255,0,0), thickness_2);
+	}
+	
 }
 
 //===========================================================================
@@ -979,7 +1244,7 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 {
 		
 	vector<Rect> face_detections;
-	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, CV_HAAR_DO_CANNY_PRUNING, Size(50, 50)); 		
+	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, 0, Size(50, 50)); 		
 
 	// Convert from int bounding box do a double one with corrections
 	o_regions.resize(face_detections.size());
@@ -1005,7 +1270,7 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_image, CascadeClassifier& classifier)
+bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_image, CascadeClassifier& classifier, cv::Point preference)
 {
 	// The tracker can return multiple faces
 	vector<Rect_<double> > face_detections;
@@ -1015,18 +1280,35 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	if(detect_success)
 	{
 		
+		bool use_preferred = (preference.x != -1) && (preference.y != -1);
+
 		if(face_detections.size() > 1)
 		{
-			// keep the closest one (this is a hack for the experiment)
+			// keep the closest one if preference point not set
 			double best = -1;
 			int bestIndex = -1;
 			for( size_t i = 0; i < face_detections.size(); ++i)
 			{
-				// Pick a closest face
-				if(i == 0 || face_detections[i].width > best)
+				double dist;
+				bool better;
+
+				if(use_preferred)
 				{
-					bestIndex = i;
-					best = face_detections[i].width;
+					dist = sqrt((preference.x) * (face_detections[i].width/2 + face_detections[i].x) + 
+								(preference.y) * (face_detections[i].height/2 + face_detections[i].y));
+					better = dist < best;
+				}
+				else
+				{
+					dist = face_detections[i].width;
+					better = face_detections[i].width > best;
+				}
+
+				// Pick a closest face to preffered point or the biggest face
+				if(i == 0 || better)
+				{
+					bestIndex = i;	
+					best = dist;
 				}									
 			}
 
@@ -1043,6 +1325,119 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	{
 		// if not detected
 		o_region = Rect_<double>(0,0,0,0);
+	}
+	return detect_success;
+}
+
+bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences)
+{
+	dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
+
+	return DetectFacesHOG(o_regions, intensity, detector, confidences);
+
+}
+
+bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& detector, std::vector<double>& o_confidences)
+{
+		
+	Mat_<uchar> upsampled_intensity;
+
+	double scaling = 1.3;
+
+	cv::resize(intensity, upsampled_intensity, cv::Size((int)(intensity.cols * scaling), (int)(intensity.rows * scaling)));
+
+	dlib::cv_image<uchar> cv_grayscale(upsampled_intensity);
+
+	std::vector<dlib::full_detection> face_detections;
+	detector(cv_grayscale, face_detections, -0.2);
+
+	// Convert from int bounding box do a double one with corrections
+	o_regions.resize(face_detections.size());
+	o_confidences.resize(face_detections.size());
+
+	for( size_t face = 0; face < o_regions.size(); ++face)
+	{
+		// CLM expect the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
+
+		// The scalings were learned using the Face Detections on LFPW and Helen using ground truth and detections from the HOG detector
+
+		// Move the face slightly to the right (as the width was made smaller)
+		o_regions[face].x = (face_detections[face].rect.get_rect().tl_corner().x() + 0.0389 * face_detections[face].rect.get_rect().width())/scaling;
+		// Shift face down as OpenCV Haar Cascade detects the forehead as well, and we're not interested
+		o_regions[face].y = (face_detections[face].rect.get_rect().tl_corner().y() + 0.1278 * face_detections[face].rect.get_rect().height())/scaling;
+
+		// Correct for scale
+		o_regions[face].width = (face_detections[face].rect.get_rect().width() * 0.9611)/scaling; 
+		o_regions[face].height = (face_detections[face].rect.get_rect().height() * 0.9388)/scaling;
+
+		o_confidences[face] = face_detections[face].detection_confidence;
+		
+		
+	}
+	return o_regions.size() > 0;
+}
+
+bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence, cv::Point preference)
+{
+	// The tracker can return multiple faces
+	vector<Rect_<double> > face_detections;
+	vector<double> confidences;
+
+	bool detect_success = CLMTracker::DetectFacesHOG(face_detections, intensity_img, detector, confidences);
+					
+	if(detect_success)
+	{
+
+		bool use_preferred = (preference.x != -1) && (preference.y != -1);
+
+		// keep the most confident one or the one closest to preference point if set
+		double best_so_far;
+		if(use_preferred)
+		{			
+			best_so_far = sqrt((preference.x - (face_detections[0].width/2 + face_detections[0].x)) * (preference.x - (face_detections[0].width/2 + face_detections[0].x)) + 
+							   (preference.y - (face_detections[0].height/2 + face_detections[0].y)) * (preference.y - (face_detections[0].height/2 + face_detections[0].y)));
+		}
+		else
+		{
+			best_so_far = confidences[0];
+		}
+		int bestIndex = 0;
+
+		for( size_t i = 1; i < face_detections.size(); ++i)
+		{
+
+			double dist;
+			bool better;
+
+			if(use_preferred)
+			{
+				dist = sqrt((preference.x - (face_detections[0].width/2 + face_detections[0].x)) * (preference.x - (face_detections[0].width/2 + face_detections[0].x)) + 
+							   (preference.y - (face_detections[0].height/2 + face_detections[0].y)) * (preference.y - (face_detections[0].height/2 + face_detections[0].y)));
+				better = dist < best_so_far;
+			}
+			else
+			{
+				dist = confidences[i];
+				better = dist > best_so_far;
+			}
+
+			// Pick a closest face
+			if(better)
+			{
+				best_so_far = dist;
+				bestIndex = i;
+			}									
+		}
+
+		o_region = face_detections[bestIndex];
+		confidence = confidences[bestIndex];
+	}
+	else
+	{
+		// if not detected
+		o_region = Rect_<double>(0,0,0,0);
+		// A completely unreliable detection (shouldn't really matter what is returned here)
+		confidence = -2;		
 	}
 	return detect_success;
 }

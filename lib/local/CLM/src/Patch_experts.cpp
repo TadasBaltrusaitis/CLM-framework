@@ -1,21 +1,38 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, Tadas Baltrusaitis, all rights reserved.
+// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// all rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without 
-// modification, are permitted provided that the following conditions are met:
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
-//     * The software is provided under the terms of this licence stricly for
-//       academic, non-commercial, not-for-profit purposes.
-//     * Redistributions of source code must retain the above copyright notice, 
-//       this list of conditions (licence) and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright 
-//       notice, this list of conditions (licence) and the following disclaimer 
-//       in the documentation and/or other materials provided with the 
-//       distribution.
-//     * The name of the author may not be used to endorse or promote products 
-//       derived from this software without specific prior written permission.
-//     * As this software depends on other libraries, the user must adhere to 
-//       and keep in place any licencing terms of those libraries.
+// Notwithstanding the license granted herein, Licensee acknowledges that certain components
+// of the Software may be covered by so-called “open source” software licenses (“Open Source
+// Components”), which means any software licenses approved as open source licenses by the
+// Open Source Initiative or any substantially similar licenses, including without limitation any
+// license that, as a condition of distribution of the software licensed under such license,
+// requires that the distributor make the software available in source code format. Licensor shall
+// provide a list of Open Source Components for a particular version of the Software upon
+// Licensee’s request. Licensee will comply with the applicable terms of such licenses and to
+// the extent required by the licenses covering Open Source Components, the terms of such
+// licenses will apply in lieu of the terms of this Agreement. To the extent the terms of the
+// licenses applicable to Open Source Components prohibit any of the restrictions in this
+// License Agreement with respect to such Open Source Component, such restrictions will not
+// apply to such Open Source Component. To the extent the terms of the licenses applicable to
+// Open Source Components require Licensor to make an offer to provide source code or
+// related information in connection with the Software, such offer is hereby made. Any request
+// for source code or related information should be directed to cl-face-tracker-distribution@lists.cam.ac.uk
+// Licensee acknowledges receipt of notices for the Open Source Components for the initial
+// delivery of the Software.
+
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
@@ -28,27 +45,10 @@
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
-// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED 
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO 
-// EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
-// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///////////////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
 
-#include <Patch_experts.h>
-#include <stdio.h>
-#include <iostream>
-#include <highgui.h>
-
-// For PI definition
-#define _USE_MATH_DEFINES
-#include <math.h>
-
+#include "Patch_experts.h"
 #include "CLM_utils.h"
 
 using namespace cv;
@@ -60,7 +60,7 @@ using namespace CLMTracker;
 // Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 // The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 // Also need to provide the size of the area of interest and the desired scale of analysis
-void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, Matx22d& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
+void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22f& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
 							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale)
 {
 
@@ -86,11 +86,16 @@ void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, 
 	Mat_<double> image_shape_2D = landmark_locations.reshape(1, 2).t();
 
 	sim_img_to_ref = AlignShapesWithScale(image_shape_2D, reference_shape_2D);
-	sim_ref_to_img = sim_img_to_ref.inv(DECOMP_LU);
+	Matx22d sim_ref_to_img_d = sim_img_to_ref.inv(DECOMP_LU);
 
-	double a1 = sim_ref_to_img(0,0);
-	double b1 = -sim_ref_to_img(0,1);
+	double a1 = sim_ref_to_img_d(0,0);
+	double b1 = -sim_ref_to_img_d(0,1);
 		
+	sim_ref_to_img(0,0) = (float)sim_ref_to_img_d(0,0);
+	sim_ref_to_img(0,1) = (float)sim_ref_to_img_d(0,1);
+	sim_ref_to_img(1,0) = (float)sim_ref_to_img_d(1,0);
+	sim_ref_to_img(1,1) = (float)sim_ref_to_img_d(1,1);
+
 	// Indicates the legal pixels in a depth image, if available (used for CLM-Z area of interest (window) interpolation)
 	Mat_<uchar> mask;
 	if(!depth_image.empty())
@@ -110,9 +115,12 @@ void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, 
 		// Retrieve the correct sigma component size
 		for( size_t w_size = 0; w_size < this->sigma_components.size(); ++w_size)
 		{
-			if(window_size*window_size == this->sigma_components[w_size][0].rows)
+			if(!this->sigma_components[w_size].empty())
 			{
-				sigma_components = this->sigma_components[w_size];
+				if(window_size*window_size == this->sigma_components[w_size][0].rows)
+				{
+					sigma_components = this->sigma_components[w_size];
+				}
 			}
 		}			
 
@@ -134,106 +142,107 @@ void Patch_experts::Response(vector<cv::Mat_<double> >& patch_expert_responses, 
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-	for(int i = 0; i < n; i++)
+	tbb::parallel_for(0, (int)n, [&](int i){
+	//for(int i = 0; i < n; i++)
 	{
 			
 		if(visibilities[scale][view_id].rows == n)
 		{
-			if(visibilities[scale][view_id].at<int>(i,0) == 0)
+			if(visibilities[scale][view_id].at<int>(i,0) != 0)
 			{
-				continue;
-			}
-		}
 
-		// Work out how big the area of interest has to be to get a response of window size
-		int area_of_interest_width;
-		int area_of_interest_height;
+				// Work out how big the area of interest has to be to get a response of window size
+				int area_of_interest_width;
+				int area_of_interest_height;
 
-		if(use_ccnf)
-		{
-			area_of_interest_width = window_size + ccnf_expert_intensity[scale][view_id][i].width - 1; 
-			area_of_interest_height = window_size + ccnf_expert_intensity[scale][view_id][i].height - 1;				
-		}
-		else
-		{
-			area_of_interest_width = window_size + svr_expert_intensity[scale][view_id][i].width - 1; 
-			area_of_interest_height = window_size + svr_expert_intensity[scale][view_id][i].height - 1;
-		}
+				if(use_ccnf)
+				{
+					area_of_interest_width = window_size + ccnf_expert_intensity[scale][view_id][i].width - 1; 
+					area_of_interest_height = window_size + ccnf_expert_intensity[scale][view_id][i].height - 1;				
+				}
+				else
+				{
+					area_of_interest_width = window_size + svr_expert_intensity[scale][view_id][i].width - 1; 
+					area_of_interest_height = window_size + svr_expert_intensity[scale][view_id][i].height - 1;
+				}
 			
-		// scale and rotate to mean shape to reference frame
-		Mat sim = (Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
+				// scale and rotate to mean shape to reference frame
+				Mat sim = (Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
 
-		// Extract the region of interest around the current landmark location
-		Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
+				// Extract the region of interest around the current landmark location
+				Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
 
-		// Using C style openCV as it does what we need
-		CvMat area_of_interest_o = area_of_interest;
-		CvMat sim_o = sim;
-		IplImage im_o = grayscale_image;			
-		cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
+				// Using C style openCV as it does what we need
+				CvMat area_of_interest_o = area_of_interest;
+				CvMat sim_o = sim;
+				IplImage im_o = grayscale_image;			
+				cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
 			
-		// get the correct size response window			
-		patch_expert_responses[i] = Mat_<double>(window_size, window_size);
+				// get the correct size response window			
+				patch_expert_responses[i] = Mat_<float>(window_size, window_size);
 
-		// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
-		if(!ccnf_expert_intensity.empty())
-		{				
+				// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
+				if(!ccnf_expert_intensity.empty())
+				{				
 
-			ccnf_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
-		}
-		else
-		{
-			svr_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
-		}
+					ccnf_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
+				}
+				else
+				{
+					svr_expert_intensity[scale][view_id][i].Response(area_of_interest, patch_expert_responses[i]);
+				}
 			
-		// if we have a corresponding depth patch and it is visible		
-		if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
-		{
+				// if we have a corresponding depth patch and it is visible		
+				if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
+				{
 
-			Mat_<double> dProb = patch_expert_responses[i].clone();
-			Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
+					Mat_<float> dProb = patch_expert_responses[i].clone();
+					Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
 			
 
-			CvMat dimg_o = depthWindow;
-			Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
-			CvMat mimg_o = maskWindow;
+					CvMat dimg_o = depthWindow;
+					Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
+					CvMat mimg_o = maskWindow;
 
-			IplImage d_o = depth_image;
-			IplImage m_o = mask;
+					IplImage d_o = depth_image;
+					IplImage m_o = mask;
 
-			cvGetQuadrangleSubPix(&d_o,&dimg_o,&sim_o);
+					cvGetQuadrangleSubPix(&d_o,&dimg_o,&sim_o);
 				
-			cvGetQuadrangleSubPix(&m_o,&mimg_o,&sim_o);
+					cvGetQuadrangleSubPix(&m_o,&mimg_o,&sim_o);
 
-			depthWindow.setTo(0, maskWindow < 1);
+					depthWindow.setTo(0, maskWindow < 1);
 
-			svr_expert_depth[scale][view_id][i].ResponseDepth(depthWindow, dProb);
+					svr_expert_depth[scale][view_id][i].ResponseDepth(depthWindow, dProb);
 							
-			// Sum to one
-			double sum = cv::sum(patch_expert_responses[i])[0];
+					// Sum to one
+					double sum = cv::sum(patch_expert_responses[i])[0];
 
-			// To avoid division by 0 issues
-			if(sum == 0)
-			{
-				sum = 1;
+					// To avoid division by 0 issues
+					if(sum == 0)
+					{
+						sum = 1;
+					}
+
+					patch_expert_responses[i] /= sum;
+
+					// Sum to one
+					sum = cv::sum(dProb)[0];
+					// To avoid division by 0 issues
+					if(sum == 0)
+					{
+						sum = 1;
+					}
+
+					dProb /= sum;
+
+					patch_expert_responses[i] = patch_expert_responses[i] + dProb;
+
+				}
 			}
-
-			patch_expert_responses[i] /= sum;
-
-			// Sum to one
-			sum = cv::sum(dProb)[0];
-			// To avoid division by 0 issues
-			if(sum == 0)
-			{
-				sum = 1;
-			}
-
-			dProb /= sum;
-
-			patch_expert_responses[i] = patch_expert_responses[i] + dProb;
-
 		}
 	}
+	});
 
 }
 
@@ -362,7 +371,7 @@ void Patch_experts::Read(vector<string> intensity_svr_expert_locations, vector<s
 void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<cv::Vec3d>& centers, std::vector<cv::Mat_<int> >& visibility, std::vector<std::vector<Multi_SVR_patch_expert> >& patches, double& scale)
 {
 
-	ifstream patchesFile(expert_location.c_str());
+	ifstream patchesFile(expert_location.c_str(), ios_base::in);
 
 	if(patchesFile.is_open())
 	{

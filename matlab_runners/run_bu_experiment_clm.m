@@ -1,7 +1,6 @@
 function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargin)
    
-    oldDir = chdir('../Release/');
-    clm_exe = '"SimpleCLM.exe"';
+    clm_exe = '"../Release/SimpleCLM.exe"';
 
     output = 'CLM';
     
@@ -72,8 +71,6 @@ function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargi
     
     timeTakenGAVAM = toc;
     fps = 9000 / timeTakenGAVAM;
-
-    chdir(oldDir);
     
     % tell the caller where the output was written
     resDir = [bu_dir output];

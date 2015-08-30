@@ -1,5 +1,5 @@
 function [ decision ] = face_check_nn( img, shape, global_params, nns )
-%FACE_CHECK_WILD Summary of this function goes here
+%FACE_CHECK_NN Summary of this function goes here
 %   Detailed explanation goes here
 
 if(size(img,3) == 3)

@@ -4,7 +4,6 @@ addpath(genpath('../fitting/'));
 addpath('../models/');
 addpath(genpath('../face_detection'));
 addpath('../CCNF/');
-addpath('../face_validation_svr');
 
 %% 
 vid_dir = '../../videos/';
@@ -26,6 +25,10 @@ record = true;
 % [patches] = Load_Patch_Experts( '../models/general/', 'svr_patches_*_general.mat', [], [], clmParams);
 
 clmParams.multi_modal_types  = patches(1).multi_modal_types;
+
+% load the face validator and add its dependency
+load('../face_validation/trained/face_check_cnn_68.mat', 'face_check_cnns');
+addpath(genpath('../face_validation'));
 
 %%
 for v=1:numel(vids)
@@ -123,8 +126,9 @@ for v=1:numel(vids)
                         % detection
                         shape_new = GetShapeOrtho(pdm.M, pdm.V, params, g_param_n);
                     
-                        dec = face_check_wild(image, shape_new, g_param);
-                        if(dec < -0.5)
+                        dec = face_check_cnn(image, shape_new, g_param, face_check_cnns);
+                        
+                        if(dec < 0.5)
                             det = true;
                             g_param = g_param_n;
                             l_param = l_param_n;
@@ -148,9 +152,10 @@ for v=1:numel(vids)
             [shape,g_param,l_param,lhood,lmark_lhood,view_used] = Fitting_from_bb(image, d_image, bbox, pdm, patches, clmParams, 'gparam', g_param, 'lparam', l_param);
             all_local_params(i,:) = l_param;
             all_global_params(i,:) = g_param;
-
-            dec = face_check_wild(image, shape, g_param);
-            if(dec < -0.5)
+            
+            dec = face_check_cnn(image, shape, g_param, face_check_cnns);
+            
+            if(dec < 0.5)
                 clmParams.window_size = [19,19; 17,17;];
                 clmParams.numPatchIters = 2;
                 det = true;

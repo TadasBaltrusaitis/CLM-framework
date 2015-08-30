@@ -5,8 +5,7 @@
 
 #include <GL/glut.h>
 #include <cv.h>
-#include <PAW.h>
-#include <CLM_utils.h>
+#include <CLM_core.h>
 
 using namespace std;
 

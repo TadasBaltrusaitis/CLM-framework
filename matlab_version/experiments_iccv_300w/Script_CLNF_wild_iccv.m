@@ -20,8 +20,8 @@ end
    
 clmParams = struct;
 
-clmParams.window_size = [25,25; 25,25; 25,25;];
-% clmParams.window_size = [15,15; 15,15; 15,15;];
+clmParams.window_size = [25,25; 23,23; 21,21; 19,19;];
+
 clmParams.numPatchIters = size(clmParams.window_size,1);
 
 [patches] = Load_Patch_Experts( '../models/wild/', 'ccnf_patches_*_wild.mat', [], [], clmParams);
@@ -42,9 +42,9 @@ pdm.E = double(E);
 pdm.V = double(V);
 
 % the default model parameters to use
-clmParams.regFactor = 25;               
-clmParams.sigmaMeanShift = 2;
-clmParams.tikhonov_factor = 5;
+clmParams.regFactor = [35, 27, 20, 5];
+clmParams.sigmaMeanShift = [1.25, 1.375, 1.5, 1.75]; 
+clmParams.tikhonov_factor = [2.5, 5, 7.5, 12.5];
 
 clmParams.startScale = 1;
 clmParams.num_RLMS_iter = 10;
@@ -58,10 +58,8 @@ experiment.params = clmParams;
 
 num_points = numel(M)/3;
 
-errors = zeros(numel(images),1);
 shapes_all = zeros(size(labels,2),size(labels,3), size(labels,1));
 labels_all = zeros(size(labels,2),size(labels,3), size(labels,1));
-errors_normed = zeros(numel(images),1);
 lhoods = zeros(numel(images),1);
 all_lmark_lhoods = zeros(num_points, numel(images));
 all_views_used = zeros(numel(images),1);
@@ -81,9 +79,6 @@ for i=1:numel(images)
     end              
 
     bbox = detections(i,:);
-
-    % Correct the bounding box to 0 indexed format
-    bbox = bbox - 1;
     
     % have a multi-view version
     if(multi_view)
@@ -115,22 +110,18 @@ for i=1:numel(images)
     all_views_used(i) = view_used;
 
     % shape correction for matlab format
-    shapes_all(:,:,i) = shape + 1;
+    shapes_all(:,:,i) = shape;
     labels_all(:,:,i) = labels(i,:,:);
 
     if(mod(i, 200)==0)
         fprintf('%d done\n', i );
     end
-
-    valid_points =  sum(squeeze(labels(i,:,:)),2) > 0;
-    valid_points(1:17) = 0;
-
-    actualShape = squeeze(labels(i,:,:));
-    errors(i) = sqrt(mean(sum((actualShape(valid_points,:) - shape(valid_points,:)).^2,2)));      
-    width = ((max(actualShape(valid_points,1)) - min(actualShape(valid_points,1)))+(max(actualShape(valid_points,2)) - min(actualShape(valid_points,2))))/2;
-    errors_normed(i) = errors(i)/width;                                    
+    
     lhoods(i) = lhood;
     if(verbose)
+        % Center the pixel
+        actualShape = squeeze(labels(i,:,:)) - 0.5;
+
         [height_img, width_img,~] = size(image_orig);
         width = max(actualShape(:,1)) - min(actualShape(:,1));
         height = max(actualShape(:,2)) - min(actualShape(:,2));
@@ -175,12 +166,10 @@ for i=1:numel(images)
 
 end
 toc
-experiment.errors = errors;
-experiment.errors_normed = errors_normed;
+experiment.errors_normed = compute_error(labels_all - 0.5, shapes_all);
 experiment.lhoods = lhoods;
 experiment.shapes = shapes_all;
 experiment.labels = labels_all;
-experiment.ibug_error = compute_error(labels_all, shapes_all);
 experiment.all_lmark_lhoods = all_lmark_lhoods;
 experiment.all_views_used = all_views_used;
 % save the experiment
@@ -190,7 +179,7 @@ else
     experiments = cat(1, experiments, experiment);
 end
 fprintf('experiment %d done: mean normed error %.3f median normed error %.4f\n', ...
-    numel(experiments), mean(errors_normed), median(errors_normed));
+    numel(experiments), mean(experiment.errors_normed), median(experiment.errors_normed));
 
 %%
 output_results = 'results/results_wild_clnf.mat';
