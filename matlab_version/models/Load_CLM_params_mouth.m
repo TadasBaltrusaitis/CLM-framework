@@ -1,13 +1,11 @@
 function [ clmParams, pdm_mouth] = Load_CLM_params_mouth() 
 %LOAD_CLM_PARAMS_WILD Summary of this function goes here
 %   Detailed explanation goes here
-%     clmParams.window_size = [25,25; 25,25; 25,25; 25,25];
-%     clmParams.window_size = [19,19; 19,19; 19,19; 19,19];
-    clmParams.window_size = [23,23];
+    clmParams.window_size = [17,17; 17,17];
     clmParams.numPatchIters = size(clmParams.window_size,1);
     
     % the PDM created from in the wild data
-    pdmLoc = ['../models/pdm/pdm_20_mouth.mat'];
+    pdmLoc = ['../models/hierarch_pdm/pdm_20_mouth.mat'];
 
     load(pdmLoc);
 
@@ -17,12 +15,12 @@ function [ clmParams, pdm_mouth] = Load_CLM_params_mouth()
     pdm_mouth.V = double(V);
     
     % the default model parameters to use
-    clmParams.regFactor = 2;               
-    clmParams.sigmaMeanShift = 1.5;
+    clmParams.regFactor = 1;               
+    clmParams.sigmaMeanShift = 2.0;
     clmParams.tikhonov_factor = 0;
 
     clmParams.startScale = 1;
-    clmParams.num_RLMS_iter = 10;
+    clmParams.num_RLMS_iter = 5;
     clmParams.fTol = 0.01;
     clmParams.useMultiScale = true;
     clmParams.use_multi_modal = 1;

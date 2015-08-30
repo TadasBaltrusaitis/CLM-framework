@@ -2,13 +2,13 @@
 // Copyright (C) 2014, University of Southern California and University of Cambridge,
 // all rights reserved.
 //
-// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
 // HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -1003,21 +1003,75 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
 
-	for( int i = 0; i < n; ++i)
-	{		
-		if(visibilities.at<int>(i))
-		{
+	// Drawing feature points
+	if(n >= 66)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			if(visibilities.at<int>(i))
+			{
+				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+				// A rough heuristic for drawn point size
+				int thickness = (int)std::ceil(3.0* ((double)img.cols) / 640.0);
+				int thickness_2 = (int)std::ceil(1.0* ((double)img.cols) / 640.0);
+
+				cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
+				cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			}
+		}
+	}
+	else if(n == 28) // drawing eyes
+	{
+		for( int i = 0; i < n; ++i)
+		{		
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
 
-			cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-			cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			int next_point = i + 1;
+			if(i == 7)
+				next_point = 0;
+			if(i == 19)
+				next_point = 8;
+			if(i == 27)
+				next_point = 20;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			if( i < 8 || i > 19)
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+			else
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2);
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+
 		}
 	}
-	
+	else if(n == 6)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+			// A rough heuristic for drawn point size
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+			int next_point = i + 1;
+			if(i == 5)
+				next_point = 0;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+		}
+	}
 }
 
 // Drawing landmarks on a face image
@@ -1066,6 +1120,14 @@ void Draw(cv::Mat img, CLM& clm_model)
 	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
 	Draw(img, clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
 
+	// If the model has hierarchical updates draw those too
+	for(int i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	{
+		if(clm_model.hierarchical_models[i].pdm.NumberOfPoints() != clm_model.hierarchical_mapping[i].size())
+		{
+			Draw(img, clm_model.hierarchical_models[i]);
+		}
+	}
 }
 
 void DrawLandmarks(cv::Mat img, vector<Point> landmarks)

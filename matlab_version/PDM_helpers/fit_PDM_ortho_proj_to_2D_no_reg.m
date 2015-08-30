@@ -77,7 +77,10 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D_
         
         % RLMS style update
         p_delta = (J'*J + regularisations) \ (J'*error_res(:) - regularisations*[p_global;params]);
-                                
+
+        % not to overshoot
+        p_delta = 0.5 * p_delta;
+        
         [params, p_global] = CalcReferenceUpdate(p_delta, params, p_global);
         
         a = p_global(1);

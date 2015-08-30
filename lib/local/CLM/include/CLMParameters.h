@@ -2,13 +2,13 @@
 // Copyright (C) 2014, University of Southern California and University of Cambridge,
 // all rights reserved.
 //
-// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
 // HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -113,6 +113,12 @@ struct CLMParameters
 	// Should the results be visualised and reported to console
 	bool quiet_mode;
 
+	// Should the model be refined hierarchically (if available)
+	bool refine_hierarchical;
+
+	// Should the parameters be refined for different scales
+	bool refine_parameters;
+
 	CLMParameters()
 	{
 		// initialise the default values
@@ -210,12 +216,12 @@ struct CLMParameters
 			else if (arguments[i].compare("-clmwild") == 0) 
 			{                    
 				// For in the wild fitting these parameters are suitable
-				window_sizes_init = vector<int>(3);
-				window_sizes_init[0] = 15; window_sizes_init[1] = 13; window_sizes_init[2] = 11;
+				window_sizes_init = vector<int>(4);
+				window_sizes_init[0] = 15; window_sizes_init[1] = 13; window_sizes_init[2] = 11; window_sizes_init[3] = 9;
 
-				sigma = 2;
-				reg_factor = 25;
-				weight_factor = 5;
+				sigma = 1.25;
+				reg_factor = 35;
+				weight_factor = 2.5;
 				num_optimisation_iteration = 10;
 
 				valid[i] = false;
@@ -260,17 +266,26 @@ struct CLMParameters
 			// using an external face checker based on SVM
 			validate_detections = true;
 
-			window_sizes_small = vector<int>(2);
-			window_sizes_init = vector<int>(3);
+			// Using hierarchical refinement by default (can be turned off)
+			refine_hierarchical = true;
+
+			// Refining parameters by default
+			refine_parameters = true;
+
+			window_sizes_small = vector<int>(4);
+			window_sizes_init = vector<int>(4);
 
 			// For fast tracking
-			window_sizes_small[0] = 9;
-			window_sizes_small[1] = 7;
+			window_sizes_small[0] = 0;
+			window_sizes_small[1] = 9;
+			window_sizes_small[2] = 7;
+			window_sizes_small[3] = 5;
 
 			// Just for initialisation
 			window_sizes_init.at(0) = 11;
 			window_sizes_init.at(1) = 9;
 			window_sizes_init.at(2) = 7;
+			window_sizes_init.at(3) = 5;
 			
 			face_template_scale = 0.3;
 			// Off by default (as it might lead to some slight inaccuracies in slowly moving faces)
@@ -283,9 +298,9 @@ struct CLMParameters
 
 			sigma = 1.5;
 			reg_factor = 25;
-			weight_factor = 0; // By default do not use NU-RLMS, as weight factor is dependent on the database and needs to be estimated
+			weight_factor = 0; // By default do not use NU-RLMS for videos as it does not work as well for them
 
-			validation_boundary = -0.4;
+			validation_boundary = -0.45;
 
 			limit_pose = true;
 			multi_view = false;

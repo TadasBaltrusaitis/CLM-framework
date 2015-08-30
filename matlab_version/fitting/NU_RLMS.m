@@ -235,11 +235,6 @@ function [meanShifts] = meanShiftParallel(patchResponses, sigma, dxs, dys, iis, 
 
     msx = mxs ./ sumVs - dxs;
     msy = mys ./ sumVs - dys;
-    
-    % if we are sampling outside the range ignore
-    illegalValues = dxs < 0 | dxs > patchSize(1) | dys < 0 | dys > patchSize(2);
-    msx(illegalValues) = 0;
-    msy(illegalValues) = 0;
 
     meanShifts = [msx, msy];
     
