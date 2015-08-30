@@ -1,5 +1,4 @@
-oldDir = chdir('../Release/');
-clm_exe = '"SimpleCLM.exe"';
+clm_exe = '"../Release/SimpleCLM.exe"';
 
 output = '../matlab_runners/demo_vid/';
 
@@ -49,4 +48,3 @@ for i=1:numel(in_files)
 end
 
 dos(command);
-chdir(oldDir);

@@ -852,26 +852,226 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 
 }
 
-// Drawing landmarks on a face image
-void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
+vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, float cx, float cy)
+{
+	double boxVerts[] = {-1, 1, -1,
+						1, 1, -1,
+						1, 1, 1,
+						-1, 1, 1,
+						1, -1, 1,
+						1, -1, -1,
+						-1, -1, -1,
+						-1, -1, 1};
+
+	vector<std::pair<int,int>> edges;
+	edges.push_back(pair<int,int>(0,1));
+	edges.push_back(pair<int,int>(1,2));
+	edges.push_back(pair<int,int>(2,3));
+	edges.push_back(pair<int,int>(0,3));
+	edges.push_back(pair<int,int>(2,4));
+	edges.push_back(pair<int,int>(1,5));
+	edges.push_back(pair<int,int>(0,6));
+	edges.push_back(pair<int,int>(3,7));
+	edges.push_back(pair<int,int>(6,5));
+	edges.push_back(pair<int,int>(5,4));
+	edges.push_back(pair<int,int>(4,7));
+	edges.push_back(pair<int,int>(7,6));
+
+	// The size of the head is roughly 200mm x 200mm x 200mm
+	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
+
+	Matx33d rot = CLMTracker::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
+	Mat_<double> rotBox;
+	
+	// Rotate the box
+	rotBox = Mat(rot) * box.t();
+	rotBox = rotBox.t();
+
+	// Move the bounding box to head position
+	rotBox.col(0) = rotBox.col(0) + pose[0];
+	rotBox.col(1) = rotBox.col(1) + pose[1];
+	rotBox.col(2) = rotBox.col(2) + pose[2];
+
+	// draw the lines
+	Mat_<double> rotBoxProj;
+	Project(rotBoxProj, rotBox, fx, fy, cx, cy);
+
+	vector<std::pair<Point,Point>> lines;
+	
+	for (size_t i = 0; i < edges.size(); ++i)
+	{
+		Mat_<double> begin;
+		Mat_<double> end;
+	
+		rotBoxProj.row(edges[i].first).copyTo(begin);
+		rotBoxProj.row(edges[i].second).copyTo(end);
+
+		Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
+		Point p2((int)end.at<double>(0), (int)end.at<double>(1));
+		
+		lines.push_back(pair<Point, Point>(p1,p2));
+		
+	}
+
+	return lines;
+}
+
+void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thickness)
+{
+	Rect image_rect(0,0,image.cols, image.rows);
+	
+	for (size_t i = 0; i < lines.size(); ++i)
+	{
+		Point p1 = lines.at(i).first;
+		Point p2 = lines.at(i).second;
+		// Only draw the line if one of the points is inside the image
+		if(p1.inside(image_rect) || p2.inside(image_rect))
+		{
+			cv::line(image, p1, p2, color, thickness);
+		}
+		
+	}
+
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
+	vector<Point2d> landmarks;
 
 	for( int i = 0; i < n; ++i)
 	{		
 		if(visibilities.at<int>(i))
 		{
+			Point2d featurePoint(shape2D.at<double>(i), shape2D.at<double>(i +n));
+
+			landmarks.push_back(featurePoint);
+		}
+	}
+
+	return landmarks;
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
+{
+	
+	int n;
+	vector<Point2d> landmarks;
+	
+	if(shape2D.cols == 2)
+	{
+		n = shape2D.rows;
+	}
+	else if(shape2D.cols == 1)
+	{
+		n = shape2D.rows/2;
+	}
+
+	for( int i = 0; i < n; ++i)
+	{		
+		Point2d featurePoint;
+		if(shape2D.cols == 1)
+		{
+			featurePoint = Point2d(shape2D.at<double>(i), shape2D.at<double>(i +n));
+		}
+		else
+		{
+			featurePoint = Point2d(shape2D.at<double>(i, 0), shape2D.at<double>(i, 1));
+		}
+
+		landmarks.push_back(featurePoint);
+	}
+	
+	return landmarks;
+}
+
+// Computing landmarks (to be drawn later possibly)
+vector<cv::Point2d> CalculateLandmarks(CLM& clm_model)
+{
+
+	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
+
+	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
+	return CalculateLandmarks(clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
+
+}
+
+// Drawing landmarks on a face image
+void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities)
+{
+	int n = shape2D.rows/2;
+
+	// Drawing feature points
+	if(n >= 66)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			if(visibilities.at<int>(i))
+			{
+				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+				// A rough heuristic for drawn point size
+				int thickness = (int)std::ceil(3.0* ((double)img.cols) / 640.0);
+				int thickness_2 = (int)std::ceil(1.0* ((double)img.cols) / 640.0);
+
+				cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
+				cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			}
+		}
+	}
+	else if(n == 28) // drawing eyes
+	{
+		for( int i = 0; i < n; ++i)
+		{		
 			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
-			int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
-			int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
 
-			cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-			cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+			int next_point = i + 1;
+			if(i == 7)
+				next_point = 0;
+			if(i == 19)
+				next_point = 8;
+			if(i == 27)
+				next_point = 20;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			if( i < 8 || i > 19)
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+			else
+				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2);
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+
 		}
 	}
-	
+	else if(n == 6)
+	{
+		for( int i = 0; i < n; ++i)
+		{		
+			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+
+			// A rough heuristic for drawn point size
+			int thickness = 1.0;
+			int thickness_2 = 1.0;
+
+			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
+			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
+			
+			int next_point = i + 1;
+			if(i == 5)
+				next_point = 0;
+
+			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+		}
+	}
 }
 
 // Drawing landmarks on a face image
@@ -920,6 +1120,28 @@ void Draw(cv::Mat img, CLM& clm_model)
 	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
 	Draw(img, clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
 
+	// If the model has hierarchical updates draw those too
+	for(int i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	{
+		if(clm_model.hierarchical_models[i].pdm.NumberOfPoints() != clm_model.hierarchical_mapping[i].size())
+		{
+			Draw(img, clm_model.hierarchical_models[i]);
+		}
+	}
+}
+
+void DrawLandmarks(cv::Mat img, vector<Point> landmarks)
+{
+	for(Point p : landmarks)
+	{		
+		// A rough heuristic for drawn point size
+		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
+		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
+
+		cv::circle(img, p, 1, Scalar(0,0,255), thickness);
+		cv::circle(img, p, 1, Scalar(255,0,0), thickness_2);
+	}
+	
 }
 
 //===========================================================================

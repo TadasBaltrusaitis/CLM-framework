@@ -2,14 +2,12 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
 %FITPDMTO2DSHAPE Summary of this function goes here
 %   Detailed explanation goes here
 
-    a = 1;
-    R = eye(3);
-    T = [0;0];
-    
+
+
     params = zeros(size(E));
     
     hidden = false;
-    
+        
     % if some of the points are unavailable modify M, V, and shape2D (can
     % later infer the actual shape from this)
     if(sum(shape2D(:)==0) > 0)        
@@ -28,8 +26,30 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
         M = M(~inds_to_rem);
         V = V(~inds_to_rem,:);
         
-    end    
-       
+    end
+    
+    num_points = numel(M) / 3;
+    
+    m = reshape(M, num_points, 3)';
+    width_model = max(m(1,:)) - min(m(1,:));
+    height_model = max(m(2,:)) - min(m(2,:));
+
+    bounding_box = [min(shape2D(:,1)), min(shape2D(:,2)),...
+                    max(shape2D(:,1)), max(shape2D(:,2))];
+    
+    a = (((bounding_box(3) - bounding_box(1)) / width_model) + ((bounding_box(4) - bounding_box(2))/ height_model)) / 2;
+        
+    tx = (bounding_box(3) + bounding_box(1))/2;
+    ty = (bounding_box(4) + bounding_box(2))/2;
+    
+    % correct it so that the bounding box is just around the minimum
+    % and maximum point in the initialised face
+    tx = tx - a*(min(m(1,:)) + max(m(1,:)))/2;
+    ty = ty - a*(min(m(2,:)) + max(m(2,:)))/2;    
+    
+    R = eye(3); 
+    T = [tx; ty];
+    
     currShape = getShapeOrtho(M, V, params, R, T, a);
     
     currError = getRMSerror(currShape, shape2D);
@@ -59,7 +79,10 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
         
         % RLMS style update
         p_delta = (J'*J + regularisations) \ (J'*error_res(:) - regularisations*[p_global;params]);
-                                
+        
+        % not to overshoot
+        p_delta = 0.5 * p_delta;
+        
         [params, p_global] = CalcReferenceUpdate(p_delta, params, p_global);
         
         a = p_global(1);

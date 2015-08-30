@@ -333,11 +333,8 @@ void CLM::Read(string main_location)
 		// figure out which module is to be read from which file
 		lineStream >> module;
 				
-		getline(lineStream, location);
-
-		if(location.size() > 0)
-			location.erase(location.begin()); // remove the first space
-						
+		lineStream >> location;
+					
 		// remove carriage return at the end for compatibility with unix systems
 		if(location.size() > 0 && location.at(location.size()-1) == '\r')
 		{
@@ -353,7 +350,129 @@ void CLM::Read(string main_location)
 			// The CLM module includes the PDM and the patch experts
 			Read_CLM(location);
 		}
-		else if (module.compare("DetectionValidator") == 0) // Don't do face checking atm, as a new one needs to be trained
+		else if(module.compare("CLM_part") == 0)
+		{
+			string part_name;
+			lineStream >> part_name;
+			cout << "Reading part based module...." << part_name << endl;
+
+			vector<pair<int, int>> mappings;
+			while(!lineStream.eof())
+			{
+				int ind_in_main;
+				lineStream >> ind_in_main;
+				
+				int ind_in_part;
+				lineStream >> ind_in_part;
+				mappings.push_back(pair<int, int>(ind_in_main, ind_in_part));
+			}
+		
+			this->hierarchical_mapping.push_back(mappings);
+
+			CLM part_model(location);
+
+			this->hierarchical_models.push_back(part_model);
+
+			this->hierarchical_model_names.push_back(part_name);
+
+			CLMParameters params;
+			params.validate_detections = false;
+			params.refine_hierarchical = false;
+			params.refine_parameters = false;
+
+			if(part_name.compare("left_eye") == 0 || part_name.compare("right_eye") == 0)
+			{
+				
+				vector<int> windows_large;
+				windows_large.push_back(5);
+				windows_large.push_back(3);
+
+				vector<int> windows_small;
+				windows_small.push_back(5);
+				windows_small.push_back(3);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.1;
+				params.sigma = 2;
+			}
+			else if(part_name.compare("left_eye_28") == 0 || part_name.compare("right_eye_28") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(3);
+				windows_large.push_back(5);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(3);
+				windows_small.push_back(5);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 0.5;
+				params.sigma = 1.0;
+			}
+			else if(part_name.compare("mouth") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(7);
+				windows_large.push_back(7);
+
+				vector<int> windows_small;
+				windows_small.push_back(7);
+				windows_small.push_back(7);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 1.0;
+				params.sigma = 2.0;
+			}
+			else if(part_name.compare("brow") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(11);
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(11);
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 10.0;
+				params.sigma = 3.5;
+			}
+			else if(part_name.compare("inner") == 0)
+			{
+				vector<int> windows_large;
+				windows_large.push_back(9);
+
+				vector<int> windows_small;
+				windows_small.push_back(9);
+
+				params.window_sizes_init = windows_large;
+				params.window_sizes_small = windows_small;
+				params.window_sizes_current = windows_large;
+
+				params.reg_factor = 2.5;
+				params.sigma = 1.75;
+				params.weight_factor = 2.5;
+			}
+
+			this->hierarchical_params.push_back(params);
+
+			cout << "Done" << endl;
+		}
+		else if (module.compare("DetectionValidator") == 0)
 		{            
 			cout << "Reading the landmark validation module....";
 			landmark_validator.Read(location);
@@ -425,6 +544,61 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 	// Store the landmarks converged on in detected_landmarks
 	pdm.CalcShape2D(detected_landmarks, params_local, params_global);	
 	
+	if(params.refine_hierarchical && hierarchical_models.size() > 0)
+	{
+		bool parts_used = false;		
+
+		// TODO this can be TBBified?
+		for(size_t part_model = 0; part_model < hierarchical_models.size(); ++part_model)
+		{
+			
+			int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
+
+			vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
+
+			Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
+
+			// Extract the corresponding landmarks
+			for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+			{
+				part_model_locs.at<double>(mappings[mapping_ind].second) = detected_landmarks.at<double>(mappings[mapping_ind].first);
+				part_model_locs.at<double>(mappings[mapping_ind].second + n_part_points) = detected_landmarks.at<double>(mappings[mapping_ind].first + this->pdm.NumberOfPoints());
+			}
+						
+			// Fit the part based model PDM
+			hierarchical_models[part_model].pdm.CalcParams(hierarchical_models[part_model].params_global, hierarchical_models[part_model].params_local, part_model_locs);	
+			
+			// Only do this if we don't need to upsample
+			if(params_global[0] > 0.9 * hierarchical_models[part_model].patch_experts.patch_scaling[0])
+			{
+				parts_used = true;
+
+				this->hierarchical_params[part_model].window_sizes_current = this->hierarchical_params[part_model].window_sizes_init;
+
+				// Do the actual landmark detection
+				hierarchical_models[part_model].DetectLandmarks(image, depth, hierarchical_params[part_model]);
+
+				// Reincorporate the models into main tracker
+				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
+				{
+					detected_landmarks.at<double>(mappings[mapping_ind].first) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second);
+					detected_landmarks.at<double>(mappings[mapping_ind].first + pdm.NumberOfPoints()) = hierarchical_models[part_model].detected_landmarks.at<double>(mappings[mapping_ind].second + hierarchical_models[part_model].pdm.NumberOfPoints());
+				}
+			}
+			else
+			{
+				hierarchical_models[part_model].pdm.CalcShape2D(hierarchical_models[part_model].detected_landmarks, hierarchical_models[part_model].params_local, hierarchical_models[part_model].params_global);
+			}
+		}
+
+		// Recompute main model based on the fit part models
+		if(parts_used)
+		{
+			pdm.CalcParams(params_global, params_local, detected_landmarks);		
+			pdm.CalcShape2D(detected_landmarks, params_local, params_global);
+		}
+	}
+
 	// Check detection correctness
 	if(params.validate_detections && fit_success)
 	{
@@ -476,27 +650,6 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		}
 	}
 
-	double curr_scale = params_global[0];
-
-	// Find the closest depth and colour patch scales, and start window_size below, this will make sure that the last iteration is done at the best scale available
-	int scale = -1;
-
-	double minDist;
-	for( size_t i = 0; i < patch_experts.patch_scaling.size(); ++i)
-	{
-		if(i==0 || std::abs(patch_experts.patch_scaling[i] - curr_scale) < minDist)
-		{
-			minDist = std::abs(patch_experts.patch_scaling[i] - curr_scale);
-			scale = i + 1;
-		}
-
-	}
-	
-	scale = scale - window_sizes.size();
-
-	if(scale < 0)
-		scale = 0;
-
 	int num_scales = patch_experts.patch_scaling.size();
 
 	// Storing the patch expert response maps
@@ -506,14 +659,19 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
+	CLMParameters tmp_parameters = clm_parameters;
+
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
-	for(size_t witer = 0; witer < window_sizes.size(); witer++)
+	for(int scale = 0; scale < num_scales; scale++)
 	{
 
-		int window_size = window_sizes[witer];
+		int window_size = window_sizes[scale];
+
+		if(window_size == 0 ||  0.9 * patch_experts.patch_scaling[scale] > params_global[0])
+			continue;
 
 		// The patch expert response computation
-		if(witer != window_sizes.size() - 1)
+		if(scale != window_sizes.size() - 1)
 		{
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, depth_img_no_background, pdm, params_global, params_local, window_size, scale);
 		}
@@ -523,6 +681,18 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
+		if(clm_parameters.refine_parameters == true)
+		{
+			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov)
+			tmp_parameters.reg_factor = clm_parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			
+			if(tmp_parameters.reg_factor <= 0)
+				tmp_parameters.reg_factor = 0.001;
+
+			tmp_parameters.sigma = clm_parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.weight_factor = clm_parameters.weight_factor + 2 * clm_parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+		}
+
 		// Get the current landmark locations
 		pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -530,21 +700,11 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		int view_id = patch_experts.GetViewIdx(params_global, scale);
 
 		// the actual optimisation step
-		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, clm_parameters);
+		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, tmp_parameters);
 
 		// non-rigid optimisation
-		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, clm_parameters);
+		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
 		
-		// If there are more scales to go, and we don't need to upscale too much move to next scale level
-		if(scale < num_scales - 1 && 0.9 * patch_experts.patch_scaling[scale] < params_global[0])
-		{
-			scale++;			
-		}
-		else
-		{
-			// If we can't go up a scale just break, no point doing same scale over again
-			break;
-		}
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
 		{
@@ -716,8 +876,8 @@ void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, con
 double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const CLMParameters& parameters)
-{
-	
+{		
+
 	int n = pdm.NumberOfPoints();  
 	
 	// Mean, eigenvalues, eigenvectors
@@ -763,7 +923,6 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 	// Number of iterations
 	for(int iter = 0; iter < parameters.num_optimisation_iteration; iter++)
 	{
-
 		// get the current estimates of x
 		pdm.CalcShape2D(current_shape, current_local, current_global);
 		

@@ -170,7 +170,7 @@ void PDM::CalcShape2D(Mat_<double>& out_shape, const Mat_<double>& params_local,
 // This all assumes that the bounding box describes face from left outline to right outline of the face and chin to eyebrows
 void PDM::CalcParams(Vec6d& out_params_global, const Rect_<double>& bounding_box, const Mat_<double>& params_local, const Vec3d rotation)
 {
-	
+
 	// get the shape instance based on local params
 	Mat_<double> current_shape(mean_shape.size());
 
@@ -482,6 +482,198 @@ void PDM::UpdateModelParameters(const Mat_<float>& delta_p, Mat_<float>& params_
 	{
 		params_local = params_local + delta_p(cv::Rect(0,6,1, this->NumberOfModes()));
 	}
+
+}
+
+void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_local, const Mat_<double>& landmark_locations, const Vec3d rotation)
+{
+		
+	int m = this->NumberOfModes();
+	int n = this->NumberOfPoints();
+
+	Mat_<int> visi_ind_2D(n * 2, 1, 1);
+	Mat_<int> visi_ind_3D(3 * n , 1, 1);
+
+	for(size_t i = 0; i < n; ++i)
+	{
+		// If the landmark is invisible indicate this
+		if(landmark_locations.at<double>(i) == 0)
+		{
+			visi_ind_2D.at<int>(i) = 0;
+			visi_ind_2D.at<int>(i+n) = 0;
+			visi_ind_3D.at<int>(i) = 0;
+			visi_ind_3D.at<int>(i+n) = 0;
+			visi_ind_3D.at<int>(i+2*n) = 0;
+		}
+	}
+
+	// As this might be subsampled have special versions
+	Mat_<double> M(0, mean_shape.cols, 0.0);
+	Mat_<double> V(0, princ_comp.cols, 0.0);
+
+	for(size_t i = 0; i < n * 3; ++i)
+	{
+		if(visi_ind_3D.at<int>(i) == 1)
+		{
+			cv::vconcat(M, this->mean_shape.row(i), M);
+			cv::vconcat(V, this->princ_comp.row(i), V);
+		}
+	}
+
+	Mat_<double> m_old = this->mean_shape.clone();
+	Mat_<double> v_old = this->princ_comp.clone();
+
+	this->mean_shape = M;
+	this->princ_comp = V;
+
+	// The new number of points
+	n  = M.rows / 3;
+
+	// Extract the relevant landmark locations
+	Mat_<double> landmark_locs_vis(n*2, 1, 0.0);
+	int k = 0;
+	for(size_t i = 0; i < visi_ind_2D.rows; ++i)
+	{
+		if(visi_ind_2D.at<int>(i) == 1)
+		{
+			landmark_locs_vis.at<double>(k) = landmark_locations.at<double>(i);
+			k++;
+		}		
+	}
+
+	// Compute the initial global parameters
+	double min_x;
+	double max_x;
+	cv::minMaxLoc(landmark_locations(Rect(0, 0, 1, this->NumberOfPoints())), &min_x, &max_x);
+
+	double min_y;
+	double max_y;
+	cv::minMaxLoc(landmark_locations(Rect(0, this->NumberOfPoints(), 1, this->NumberOfPoints())), &min_y, &max_y);
+
+	double width = abs(min_x - max_x);
+	double height = abs(min_y - max_y);
+
+	Rect model_bbox;
+	CalcBoundingBox(model_bbox, Vec6d(1.0, 0.0, 0.0, 0.0, 0.0, 0.0), cv::Mat_<double>(this->NumberOfModes(), 1, 0.0));
+
+	Rect bbox((int)min_x, (int)min_y, (int)width, (int)height);
+
+	double scaling = ((width / model_bbox.width) + (height / model_bbox.height)) / 2;
+        
+    Vec3d rotation_init = rotation;
+	Matx33d R = Euler2RotationMatrix(rotation_init);
+    Vec2d translation((min_x + max_x) / 2.0, (min_y + max_y) / 2.0);
+    
+	Mat_<float> loc_params(this->NumberOfModes(),1, 0.0);
+	Vec6d glob_params(scaling, rotation_init[0], rotation_init[1], rotation_init[2], translation[0], translation[1]);
+
+	// get the 3D shape of the object
+	Mat_<double> loc_params_d;
+	loc_params.convertTo(loc_params_d, CV_64F);
+	Mat_<double> shape_3D = M + V * loc_params_d;
+
+	Mat_<double> curr_shape(2*n, 1);
+	
+	// for every vertex
+	for(int i = 0; i < n; i++)
+	{
+		// Transform this using the weak-perspective mapping to 2D from 3D
+		curr_shape.at<double>(i  ,0) = scaling * ( R(0,0) * shape_3D.at<double>(i, 0) + R(0,1) * shape_3D.at<double>(i+n  ,0) + R(0,2) * shape_3D.at<double>(i+n*2,0) ) + translation[0];
+		curr_shape.at<double>(i+n,0) = scaling * ( R(1,0) * shape_3D.at<double>(i, 0) + R(1,1) * shape_3D.at<double>(i+n  ,0) + R(1,2) * shape_3D.at<double>(i+n*2,0) ) + translation[1];
+	}
+		    
+    double currError = cv::norm(curr_shape - landmark_locs_vis);
+
+	Mat_<float> regularisations = Mat_<double>::zeros(1, 6 + m);
+
+	double reg_factor = 1;
+
+	// Setting the regularisation to the inverse of eigenvalues
+	Mat(reg_factor / this->eigen_values).copyTo(regularisations(Rect(6, 0, m, 1)));
+	Mat_<double> regTerm_d = Mat::diag(regularisations.t());
+	regTerm_d.convertTo(regularisations, CV_32F);    
+    
+	Mat_<float> WeightMatrix = Mat_<float>::eye(n*2, n*2);
+
+    for (size_t i = 0; i < 1000; ++i)
+	{
+		// get the 3D shape of the object
+		Mat_<double> loc_params_d;
+		loc_params.convertTo(loc_params_d, CV_64F);
+		shape_3D = M + V * loc_params_d;
+
+		shape_3D = shape_3D.reshape(1, 3);
+
+		Matx23d R_2D(R(0,0), R(0,1), R(0,2), R(1,0), R(1,1), R(1,2)); 
+
+		Mat_<double> curr_shape_2D = scaling * shape_3D.t() * Mat(R_2D).t();
+        curr_shape_2D.col(0) = curr_shape_2D.col(0) + translation(0);
+		curr_shape_2D.col(1) = curr_shape_2D.col(1) + translation(1);
+
+		curr_shape_2D = Mat(curr_shape_2D.t()).reshape(1, n * 2);
+		
+		Mat_<float> error_resid;
+		Mat(landmark_locs_vis - curr_shape_2D).convertTo(error_resid, CV_32F);
+        
+		Mat_<float> J, J_w_t;
+		this->ComputeJacobian(loc_params, glob_params, J, WeightMatrix, J_w_t);
+        
+		// projection of the meanshifts onto the jacobians (using the weighted Jacobian, see Baltrusaitis 2013)
+		Mat_<float> J_w_t_m = J_w_t * error_resid;
+
+		// Add the regularisation term
+		J_w_t_m(Rect(0,6,1, m)) = J_w_t_m(Rect(0,6,1, m)) - regularisations(Rect(6,6, m, m)) * loc_params;
+
+		Mat_<float> Hessian = J_w_t * J;
+
+		// Add the Tikhonov regularisation
+		Hessian = Hessian + regularisations;
+
+		// Solve for the parameter update (from Baltrusaitis 2013 based on eq (36) Saragih 2011)
+		Mat_<float> param_update;
+		solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
+
+		// To not overshoot, have the gradient decent rate a bit smaller
+		param_update = 0.5 * param_update;
+
+		UpdateModelParameters(param_update, loc_params, glob_params);		
+        
+        scaling = glob_params[0];
+		rotation_init[0] = glob_params[1];
+		rotation_init[1] = glob_params[2];
+		rotation_init[2] = glob_params[3];
+
+		translation[0] = glob_params[4];
+		translation[1] = glob_params[5];
+        
+		R = Euler2RotationMatrix(rotation_init);
+
+		R_2D(0,0) = R(0,0);R_2D(0,1) = R(0,1); R_2D(0,2) = R(0,2);
+		R_2D(1,0) = R(1,0);R_2D(1,1) = R(1,1); R_2D(1,2) = R(1,2); 
+
+		curr_shape_2D = scaling * shape_3D.t() * Mat(R_2D).t();
+        curr_shape_2D.col(0) = curr_shape_2D.col(0) + translation(0);
+		curr_shape_2D.col(1) = curr_shape_2D.col(1) + translation(1);
+
+		curr_shape_2D = Mat(curr_shape_2D.t()).reshape(1, n * 2);
+        
+        double error = cv::norm(curr_shape_2D - landmark_locs_vis);
+        
+        if(0.999 * currError < error)
+		{
+            break;
+		}
+        
+        currError = error;
+        
+	}
+
+	out_params_global = glob_params;
+	loc_params.convertTo(out_params_local, CV_64F);
+    	
+	this->mean_shape = m_old;
+	this->princ_comp = v_old;
+
 
 }
 

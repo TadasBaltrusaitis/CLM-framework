@@ -115,9 +115,12 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 		// Retrieve the correct sigma component size
 		for( size_t w_size = 0; w_size < this->sigma_components.size(); ++w_size)
 		{
-			if(window_size*window_size == this->sigma_components[w_size][0].rows)
+			if(!this->sigma_components[w_size].empty())
 			{
-				sigma_components = this->sigma_components[w_size];
+				if(window_size*window_size == this->sigma_components[w_size][0].rows)
+				{
+					sigma_components = this->sigma_components[w_size];
+				}
 			}
 		}			
 
