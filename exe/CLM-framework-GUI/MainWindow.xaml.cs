@@ -663,8 +663,14 @@ namespace CLM_framework_GUI
 
                         var au_regs_scaled = new Dictionary<String, double>();
                         foreach (var au_reg in au_regs)
+                        {
                             au_regs_scaled[au_reg.Key] = au_reg.Value / 5.0;
-
+                            if (au_regs_scaled[au_reg.Key] < 0)
+                                au_regs_scaled[au_reg.Key] = 0;
+                            
+                            if (au_regs_scaled[au_reg.Key] > 1)
+                                au_regs_scaled[au_reg.Key] = 1;
+                        }
                         auRegGraph.Update(au_regs_scaled);
                     }
 
