@@ -52,8 +52,8 @@ clnf_hierarch_error = compute_error( labels,  shapes);
 plot(error_x, error_y, 'r','DisplayName', 'CLNF hierarch', 'LineWidth',line_width);
 
 
-set(gca,'xtick',[0:0.04:0.12])
-xlim([0,0.12]);
+set(gca,'xtick',[0:0.02:0.08])
+xlim([0,0.08]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on

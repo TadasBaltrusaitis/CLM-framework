@@ -52,3 +52,14 @@ CMakeCache.txt
 videos/images_track/
 matlab_runners/yt_features/
 matlab_runners/yt_features_clm/
+lib/local/CLM_Interop/Release/
+exe/HeadPose-live/obj/Release/
+lib/local/CLM_Interop/Debug/
+exe/HeadPose-live/obj/Debug/
+exe/HeadPose-file/obj/Release/
+lib/local/CamCom/Debug/
+lib/local/CamCom/Release/
+lib/local/OpenCVWrappers/Debug/
+exe/HeadPose-file/obj/Debug/
+exe/CLM-framework-GUI/obj/
+lib/local/OpenCVWrappers/Release/
