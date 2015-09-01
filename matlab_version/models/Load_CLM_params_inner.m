@@ -15,9 +15,9 @@ function [ clmParams, pdm_mouth] = Load_CLM_params_inner()
     pdm_mouth.V = double(V);
     
     % the default model parameters to use
-    clmParams.regFactor = 5;               
+    clmParams.regFactor = 2.5;               
     clmParams.sigmaMeanShift = 1.75;
-    clmParams.tikhonov_factor = 12.5;
+    clmParams.tikhonov_factor = 2.5;
     
     clmParams.startScale = 1;
     clmParams.num_RLMS_iter = 5;
