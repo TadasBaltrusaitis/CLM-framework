@@ -22,7 +22,7 @@ bool KIOSKMODE = false;
 
 // TODO rem as well
  //if the computer is fast enough, it deals with side-lighting quite well. It blends a heavily-blurred original face below the new one
-bool UNDERLAYER = true;
+bool UNDERLAYER = false;
 
 int window_height_global = 480;
 int window_width_global = 640;
@@ -34,6 +34,11 @@ bool INIT = false;
 void sendFaceBackgroundBool(bool under)
 {		//sent by the main loop to toggle background image
 	UNDERLAYER = under;
+}
+
+void changeFullScreen()
+{
+	glutFullScreenToggle();
 }
 
 //OpenCV -> OpenGL
@@ -892,5 +897,6 @@ void faceAnimate(const Mat& original_image_bgr, const Mat_<double>& shape_origin
 	result_image = Mat::zeros(original_image_bgr.rows, original_image_bgr.cols, original_image_bgr.type());
 
 	extractResultImage(shape_original_image, result_image);	
+
 
 }

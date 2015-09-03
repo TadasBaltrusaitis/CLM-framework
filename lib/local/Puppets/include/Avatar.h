@@ -35,6 +35,8 @@ void sendReplace_Face(bool replace);
 
 void sendFaceBackgroundBool(bool under);
 
+void changeFullScreen();
+
 // Drawing texture helper
 void drawTexture(GLuint texture_index, const Mat_<double>& shape_in_texture, const Size& texture_size, const Mat_<double>& shape_in_output, const Size& output_size, const Mat_<int>& triangles, bool cull_faces);
 

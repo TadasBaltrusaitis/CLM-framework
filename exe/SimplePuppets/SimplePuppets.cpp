@@ -857,6 +857,9 @@ static gboolean on_key_press( GtkWidget *widget, GdkEvent  *event, gpointer   da
       use_webcam();
 	  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check)));
       break;
+	case GDK_f:
+	  changeFullScreen();
+      break;
     default:
       return FALSE; 
   }
