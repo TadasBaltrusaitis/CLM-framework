@@ -581,9 +581,11 @@ void doFaceTracking(int argc, char **argv)
 				CLMTracker::Draw(disp, clm_model);				
 
 			}
-			if(frame_processed % 100 == 0)
+
+			if(restart_track)
 			{
 				clm_model.Reset();
+				restart_track = false;
 			}
 
 			if(frame_processed % 10 == 0)
@@ -859,6 +861,9 @@ static gboolean on_key_press( GtkWidget *widget, GdkEvent  *event, gpointer   da
       break;
 	case GDK_f:
 	  changeFullScreen();
+      break;
+	case GDK_r:
+	  restart_track = true;
       break;
     default:
       return FALSE; 

@@ -305,7 +305,7 @@ struct CLMParameters
 			limit_pose = true;
 			multi_view = false;
 
-			reinit_video_every = 4;
+			reinit_video_every = 6;
 						
 			// Face detection
 			#if OS_UNIX

@@ -38,7 +38,7 @@ void sendFaceBackgroundBool(bool under)
 
 void changeFullScreen()
 {
-	glutFullScreenToggle();
+	glutFullScreenToggle();	
 }
 
 //OpenCV -> OpenGL
@@ -76,7 +76,7 @@ GLuint matToTexture(const cv::Mat& mat)
 
 	//set length of one complete row in data (doesn't need to equal image.cols)
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, continuous_mat.step/continuous_mat.elemSize());
-
+	
 	int step     = continuous_mat.step;
 	int texture_height   = continuous_mat.rows;
 	int texture_width    = continuous_mat.cols;
