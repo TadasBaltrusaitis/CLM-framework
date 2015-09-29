@@ -70,6 +70,17 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
+# Move the hierarchical CLM models
+file(GLOB files "lib/local/CLM/model/model*")
+foreach(file ${files})
+	if (MSVC)
+		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model)
+		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Release/model)
+	else(MSVC)
+		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/model)
+	endif(MSVC)
+endforeach()
+
 file(GLOB files "lib/local/CLM/model/detection_validation/*.txt")
 foreach(file ${files})
 	if (MSVC)

@@ -1,7 +1,6 @@
-clear
 clm_exe = '"../Release/SimpleCLM.exe"';
 
-output = 'demo_vid/';
+output = '../matlab_runners/demo_vid/';
 
 if(~exist(output, 'file'))
     mkdir(output)

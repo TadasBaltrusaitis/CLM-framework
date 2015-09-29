@@ -25,7 +25,7 @@ clnf_error = compute_error( labels,  shapes);
 [error_x, error_y] = cummErrorCurve(clnf_error);
 hold on;
 
-plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, '--g','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clm_general.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -39,8 +39,21 @@ clm_error = compute_error( labels,  shapes);
 
 plot(error_x, error_y, '--b','DisplayName', 'CLM+', 'LineWidth',line_width);
 
-set(gca,'xtick',[0:0.05:0.15])
-xlim([0,0.15]);
+load('results/results_wild_clnf_general_final_inner.mat');
+labels = experiments.labels([1:60,62:64,66:end],:,:);
+shapes = experiments.shapes([1:60,62:64,66:end],:,:);
+labels = labels(18:end,:,:) - 0.5;
+shapes = shapes(18:end,:,:);
+
+clnf_hierarch_error = compute_error( labels,  shapes);
+
+[error_x, error_y] = cummErrorCurve(clnf_hierarch_error);
+
+plot(error_x, error_y, 'r','DisplayName', 'CLNF hierarch', 'LineWidth',line_width);
+
+
+set(gca,'xtick',[0:0.02:0.08])
+xlim([0,0.08]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on
@@ -71,7 +84,7 @@ clnf_error = compute_error( labels,  shapes);
 [error_x, error_y] = cummErrorCurve(clnf_error);
 hold on;
 
-plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, '--g','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clm_general.mat');
 experiments(1).labels = experiments(1).labels - 0.5;
@@ -83,8 +96,18 @@ clm_error = compute_error( experiments(1).labels,  experiments(1).shapes);
 
 plot(error_x, error_y, '--b','DisplayName', 'CLM+', 'LineWidth',line_width);
 
-set(gca,'xtick',[0:0.025:0.1])
-xlim([0,0.1]);
+load('results/results_wild_clnf_general_final_inner.mat');
+experiments(1).labels = experiments(1).labels - 0.5;
+experiments(1).shapes = experiments(1).shapes;
+
+clnf_hierarch_error = compute_error( experiments(1).labels,  experiments(1).shapes);
+
+[error_x, error_y] = cummErrorCurve(clnf_hierarch_error);
+
+plot(error_x, error_y, 'r','DisplayName', 'CLNF hierarch', 'LineWidth',line_width);
+
+set(gca,'xtick',[0:0.02:0.08])
+xlim([0,0.08]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on

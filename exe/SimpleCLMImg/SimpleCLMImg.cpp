@@ -94,12 +94,20 @@ void convert_to_grayscale(const Mat& in, Mat& out)
 			cvtColor(in, out, CV_BGR2GRAY);
 		}
 	}
+	else if(in.channels() == 4)
+	{
+		cvtColor(in, out, CV_BGRA2GRAY);
+	}
 	else
 	{
 		if(in.depth() == CV_16U)
 		{
 			Mat tmp = in / 256;
 			out = tmp.clone();
+		}
+		else if(in.depth() != CV_8U)
+		{
+			in.convertTo(out, CV_8U);
 		}
 		else
 		{
@@ -223,7 +231,7 @@ int main (int argc, char **argv)
 		// Making sure the image is in uchar grayscale
 		Mat_<uchar> grayscale_image;		
 		convert_to_grayscale(read_image, grayscale_image);
-					
+		
 		// if no pose defined we just use a face detector
 		if(bounding_boxes.empty())
 		{
