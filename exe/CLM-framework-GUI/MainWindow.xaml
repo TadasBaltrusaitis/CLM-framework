@@ -20,6 +20,8 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open video(s)" Click="videoFileOpenClick">
                 </MenuItem>
+                <MenuItem Header="Open image(s)" Click="imageFileOpenClick">
+                </MenuItem>                
                 <MenuItem Header="Open image sequence" Click="imageSequenceFileOpenClick">
                 </MenuItem>
                 <MenuItem Header="Open webcam" Click="openWebcamClick">

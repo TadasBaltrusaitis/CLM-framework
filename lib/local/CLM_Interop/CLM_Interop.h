@@ -51,7 +51,7 @@ namespace CLM_Interop {
 
 		public ref class CLMParameters
 		{
-		private:
+		public:
 			::CLMTracker::CLMParameters* params;
 
 		public:
@@ -81,6 +81,8 @@ namespace CLM_Interop {
 		public:
 
 			::CLMTracker::CLM* clm;
+			CascadeClassifier* classifier;
+			
 
 		public:
 
@@ -116,6 +118,69 @@ namespace CLM_Interop {
 
 			bool DetectLandmarksInVideo(RawImage^ image, CLMParameters^ clmParams) {
 				return ::CLMTracker::DetectLandmarksInVideo(image->Mat, *clm, *clmParams->getParams());
+			}
+
+			bool DetectFaceLandmarksInImage(RawImage^ image, CLMParameters^ clmParams) {
+				return ::CLMTracker::DetectLandmarksInImage(image->Mat, *clm, *clmParams->getParams());
+			}
+
+			List<List<System::Tuple<double,double>^>^>^ DetectMultiFaceLandmarksInImage(RawImage^ image, CLMParameters^ clmParams) {
+
+				List<List<System::Tuple<double,double>^>^>^ all_landmarks = gcnew List<List<System::Tuple<double,double>^>^>();
+
+				// Detect faces in an image
+				vector<Rect_<double> > face_detections;
+				
+				if(clmParams->params->curr_face_detector == ::CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				{
+					vector<double> confidences;
+		
+					dlib::frontal_face_detector face_detector_hog = dlib::get_frontal_face_detector();
+
+					::CLMTracker::DetectFacesHOG(face_detections, image->Mat, face_detector_hog, confidences);
+				}
+				else
+				{
+					if(classifier== 0)
+					{
+						classifier = new CascadeClassifier(clmParams->params->face_detector_location);	
+					}
+					::CLMTracker::DetectFaces(face_detections, image->Mat, *classifier);
+				}
+
+				// Detect landmarks around detected faces
+				int face_det = 0;
+				// perform landmark detection for every face detected
+				for(size_t face=0; face < face_detections.size(); ++face)
+				{
+					Mat depth;
+					// if there are multiple detections go through them
+					bool success = ::CLMTracker::DetectLandmarksInImage(image->Mat, depth, face_detections[face], *clm, *clmParams->getParams());
+
+					if(success)
+					{
+						List<System::Tuple<double,double>^>^ landmarks_curr = gcnew List<System::Tuple<double,double>^>();
+						if(clm->detected_landmarks.cols == 1)
+						{
+							int n = clm->detected_landmarks.rows / 2;								 
+							for(int i = 0; i < n; ++i)
+							{
+								landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(i,0), clm->detected_landmarks.at<double>(i+n,0)));
+							}
+						}
+						else
+						{
+							int n = clm->detected_landmarks.cols / 2;		
+							for(int i = 0; i < clm->detected_landmarks.cols; ++i)
+							{
+								landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(0,i), clm->detected_landmarks.at<double>(0,i+1)));
+							}
+						}
+						all_landmarks->Add(landmarks_curr);
+					}
+				}
+
+				return all_landmarks;
 			}
 
 			void GetCorrectedPoseCamera(List<double>^ pose, double fx, double fy, double cx, double cy, CLMParameters^ clmParams) {

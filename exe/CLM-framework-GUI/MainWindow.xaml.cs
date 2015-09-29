@@ -162,6 +162,13 @@ namespace CLM_framework_GUI
 
         }
 
+        private List<List<Tuple<double, double>>> ProcessImage(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame)
+        {
+            List<List<Tuple<double,double>>> landmark_detections = clm_model.DetectMultiFaceLandmarksInImage(grayscale_frame, clm_params);
+            return landmark_detections;
+
+        }
+
         private void SetupRecording(String root, String filename, int width, int height)
         {
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
@@ -428,7 +435,7 @@ namespace CLM_framework_GUI
         }
 
         // The main function call for processing images, video files or webcam feed
-        private void ProcessingLoop(String[] filenames, int cam_id = -1, int width = -1, int height = -1)
+        private void ProcessingLoop(String[] filenames, int cam_id = -1, int width = -1, int height = -1, bool multi_face = false)
         {
             thread_running = true;
 
@@ -463,9 +470,10 @@ namespace CLM_framework_GUI
 
                         // Start the actual processing                        
                         VideoLoop();
-
+                        
                         // Clear up the recording
                         StopRecording();
+
                     }
                     else
                     {
@@ -476,6 +484,36 @@ namespace CLM_framework_GUI
 
                         // Display message box
                         MessageBox.Show(messageBoxText, caption, button, icon);
+                    }
+                }
+                else if (cam_id == -3)
+                {
+                    // Loading a video file (or a number of them)
+                    foreach (string filename in filenames)
+                    {
+                        if (!thread_running)
+                        {
+                            continue;
+                        }
+
+                        capture = new Capture(filename);
+
+                        if (capture.isOpened())
+                        {
+                            // Start the actual processing                        
+                            ProcessImage();
+
+                        }
+                        else
+                        {
+                            string messageBoxText = "File is not an image or the decoder is not supported.";
+                            string caption = "Not valid file";
+                            MessageBoxButton button = MessageBoxButton.OK;
+                            MessageBoxImage icon = MessageBoxImage.Warning;
+
+                            // Display message box
+                            MessageBox.Show(messageBoxText, caption, button, icon);
+                        }
                     }
                 }
                 else
@@ -559,6 +597,80 @@ namespace CLM_framework_GUI
             }));
 
         }
+
+        // Capturing and processing the video frame by frame
+        private void ProcessImage()
+        {
+            Thread.CurrentThread.IsBackground = true;
+
+            clm_model.Reset();
+            face_analyser.Reset();
+
+
+            //////////////////////////////////////////////
+            // CAPTURE FRAME AND DETECT LANDMARKS FOLLOWED BY THE REQUIRED IMAGE PROCESSING
+            //////////////////////////////////////////////
+            RawImage frame = null;
+            double progress = -1;
+
+            frame = new RawImage(capture.GetNextFrame(mirror_image));
+            progress = capture.GetProgress();
+
+            if (frame.Width == 0)
+            {
+                // This indicates that we reached the end of the video file
+                return;
+            }
+            
+            var grayFrame = new RawImage(capture.GetCurrentFrameGray());
+
+            if (grayFrame == null)
+            {
+                Console.WriteLine("Gray is empty");
+                return;
+            }
+
+            List<List<Tuple<double, double>>> landmark_detections = ProcessImage(clm_model, clm_params, frame, grayFrame);
+
+            List<Point> landmark_points = new List<Point>();
+
+            for(int i = 0; i < landmark_detections.Count; ++i)
+            {
+
+                List<Tuple<double,double>> landmarks = landmark_detections[i];
+                foreach (var p in landmarks)
+                {
+                    landmark_points.Add(new Point(p.Item1, p.Item2));
+                }
+            }
+
+            // Visualisation
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                if (show_tracked_video)
+                {
+                    if (latest_img == null)
+                    {
+                        latest_img = frame.CreateWriteableBitmap();
+                    }
+
+                    frame.UpdateWriteableBitmap(latest_img);
+
+                    video.Source = latest_img;
+                    video.Confidence = 1;
+                    video.FPS = processing_fps.GetFPS();
+                    video.Progress = progress;
+
+                    video.OverlayLines = new List<Tuple<Point,Point>>();
+
+                    video.OverlayPoints = landmark_points;
+                }
+               
+            }));
+
+            latest_img = null;
+        }
+
 
         // Capturing and processing the video frame by frame
         private void VideoLoop()
@@ -788,6 +900,33 @@ namespace CLM_framework_GUI
                 thread_running = false;
                 processing_thread.Join();
             }
+        }
+
+        private void imageFileOpenClick(object sender, RoutedEventArgs e)
+        {
+            new Thread(() => imageOpen()).Start();
+        }
+
+        private void imageOpen()
+        {
+            StopTracking();
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
+            {
+                var d = new OpenFileDialog();
+                d.Multiselect = true;
+                d.Filter = "Image files|*.jpg;*.jpeg;*.bmp;*.png;*.gif";
+
+                if (d.ShowDialog(this) == true)
+                {
+
+                    string[] image_files = d.FileNames;
+
+                    processing_thread = new Thread(() => ProcessingLoop(image_files, -3));
+                    processing_thread.Start();
+
+                }
+            }));
         }
 
         private void videoFileOpenClick(object sender, RoutedEventArgs e)
