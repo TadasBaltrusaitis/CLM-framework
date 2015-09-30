@@ -79,11 +79,11 @@ namespace CLM_framework_GUI
         CameraSelection cam_sec;
         
         // Recording parameters (default values)
-        bool record_aus = true; // Recording Action Units
-        bool record_pose = true; // head location and orientation
-        bool record_params = true; // rigid and non-rigid shape parameters
-        bool record_2D_landmarks = true; // 2D landmark location
-        bool record_3D_landmarks = true; // 3D landmark locations in world coordinates
+        bool record_aus = false; // Recording Action Units
+        bool record_pose = false; // head location and orientation
+        bool record_params = false; // rigid and non-rigid shape parameters
+        bool record_2D_landmarks = false; // 2D landmark location
+        bool record_3D_landmarks = false; // 3D landmark locations in world coordinates
         bool record_HOG = false; // HOG features extracted from face images
         bool record_aligned = false; // aligned face images
         bool record_tracked_vid = false;
@@ -451,7 +451,7 @@ namespace CLM_framework_GUI
             // Create the video capture and call the VideoLoop
             if(filenames != null)
             {
-
+                clm_params.optimiseForVideo();
                 if (cam_id == -2)
                 {
                     List<String> image_files_all = new List<string>();
@@ -488,7 +488,9 @@ namespace CLM_framework_GUI
                 }
                 else if (cam_id == -3)
                 {
-                    // Loading a video file (or a number of them)
+                    SetupImageMode();
+                    clm_params.optimiseForImages();
+                    // Loading an image file (or a number of them)
                     foreach (string filename in filenames)
                     {
                         if (!thread_running)
@@ -518,6 +520,7 @@ namespace CLM_framework_GUI
                 }
                 else
                 {
+                    clm_params.optimiseForVideo();
                     // Loading a video file (or a number of them)
                     foreach (string filename in filenames)
                     {
@@ -1164,6 +1167,47 @@ namespace CLM_framework_GUI
                 MainGrid.ColumnDefinitions[3].Width = new GridLength(1.6, GridUnitType.Star);
             }
         
+        }
+
+        private void SetupImageMode()
+        {
+            // Turn off recording
+            record_aus = false;
+            record_aligned = false;
+            record_HOG = false;
+            record_tracked_vid = false;
+            record_2D_landmarks = false;
+            record_3D_landmarks = false;
+            record_params = false;
+            record_pose = false;
+
+            // Turn off unneeded visualisations
+            show_tracked_video = true;
+            show_appearance = false;
+            show_geometry = false;
+            show_aus = false;
+
+            // Actually update the GUI accordingly
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 2000), (Action)(() =>
+            {
+                RecordAUCheckBox.IsChecked = record_aus;
+                RecordAlignedCheckBox.IsChecked = record_aligned;
+                RecordTrackedVidCheckBox.IsChecked = record_tracked_vid;
+                RecordHOGCheckBox.IsChecked = record_HOG;
+                RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
+                RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
+                RecordParamsCheckBox.IsChecked = record_params;
+                RecordPoseCheckBox.IsChecked = record_pose;
+
+                ShowVideoCheckBox.IsChecked = true;
+                ShowAppearanceFeaturesCheckBox.IsChecked = false;
+                ShowGeometryFeaturesCheckBox.IsChecked = false;
+                ShowAUsCheckBox.IsChecked = false;
+
+                VisualisationCheckBox_Click(null, null);
+            }));
+
+            // TODO change what next and back buttons do?
         }
 
         private void recordCheckBox_click(object sender, RoutedEventArgs e)

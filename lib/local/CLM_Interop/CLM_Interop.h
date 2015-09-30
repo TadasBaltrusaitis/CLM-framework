@@ -65,6 +65,46 @@ namespace CLM_Interop {
 				params = new ::CLMTracker::CLMParameters(args);
 			}
 
+			void optimiseForVideo()
+			{
+				params->window_sizes_small = vector<int>(4);
+				params->window_sizes_init = vector<int>(4);
+
+				// For fast tracking
+				params->window_sizes_small[0] = 0;
+				params->window_sizes_small[1] = 9;
+				params->window_sizes_small[2] = 7;
+				params->window_sizes_small[3] = 5;
+
+				// Just for initialisation
+				params->window_sizes_init.at(0) = 11;
+				params->window_sizes_init.at(1) = 9;
+				params->window_sizes_init.at(2) = 7;
+				params->window_sizes_init.at(3) = 5;
+
+				// For first frame use the initialisation
+				params->window_sizes_current = params->window_sizes_init;
+
+				params->sigma = 1.5;
+				params->reg_factor = 25;
+				params->weight_factor = 0;
+			}			
+
+			void optimiseForImages()
+			{
+				params->window_sizes_init = vector<int>(4);
+				params->window_sizes_init[0] = 15; params->window_sizes_init[1] = 13; 
+				params->window_sizes_init[2] = 11; 
+				params->window_sizes_init[3] = 9;
+
+				params->multi_view = true;
+
+				params->sigma = 1.25;
+				params->reg_factor = 35;
+				params->weight_factor = 2.5;
+				params->num_optimisation_iteration = 10;
+			}			
+
 			::CLMTracker::CLMParameters* getParams() {
 				return params;
 			}
@@ -157,27 +197,25 @@ namespace CLM_Interop {
 					// if there are multiple detections go through them
 					bool success = ::CLMTracker::DetectLandmarksInImage(image->Mat, depth, face_detections[face], *clm, *clmParams->getParams());
 
-					if(success)
+					List<System::Tuple<double,double>^>^ landmarks_curr = gcnew List<System::Tuple<double,double>^>();
+					if(clm->detected_landmarks.cols == 1)
 					{
-						List<System::Tuple<double,double>^>^ landmarks_curr = gcnew List<System::Tuple<double,double>^>();
-						if(clm->detected_landmarks.cols == 1)
+						int n = clm->detected_landmarks.rows / 2;								 
+						for(int i = 0; i < n; ++i)
 						{
-							int n = clm->detected_landmarks.rows / 2;								 
-							for(int i = 0; i < n; ++i)
-							{
-								landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(i,0), clm->detected_landmarks.at<double>(i+n,0)));
-							}
+							landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(i,0), clm->detected_landmarks.at<double>(i+n,0)));
 						}
-						else
-						{
-							int n = clm->detected_landmarks.cols / 2;		
-							for(int i = 0; i < clm->detected_landmarks.cols; ++i)
-							{
-								landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(0,i), clm->detected_landmarks.at<double>(0,i+1)));
-							}
-						}
-						all_landmarks->Add(landmarks_curr);
 					}
+					else
+					{
+						int n = clm->detected_landmarks.cols / 2;		
+						for(int i = 0; i < clm->detected_landmarks.cols; ++i)
+						{
+							landmarks_curr->Add(gcnew System::Tuple<double,double>(clm->detected_landmarks.at<double>(0,i), clm->detected_landmarks.at<double>(0,i+1)));
+						}
+					}
+					all_landmarks->Add(landmarks_curr);
+
 				}
 
 				return all_landmarks;
