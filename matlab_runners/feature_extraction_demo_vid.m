@@ -29,6 +29,8 @@ for i=1:numel(in_files)
     outputFile_fp = [output name '_fp.txt'];
     outputFile_3Dfp = [output name '_fp3D.txt'];
         
+    output_aus = [output name '_au.txt'];
+    
     if(~exist([output name], 'file'))
         mkdir([output name]);
     end
@@ -41,6 +43,8 @@ for i=1:numel(in_files)
     
     command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"' ' -of3D "' outputFile_3Dfp '"']);
     
+    command = cat(2, command, [' -oaus "' output_aus '" ']);
+    
     command = cat(2, command, [' -simaligndir "' outputDir_aligned '" -hogalign "' outputHOG_aligned '"' ' -oparams "' output_shape_params '"']);    
                  
 end
@@ -52,7 +56,7 @@ chdir(oldDir);
 filename = [output name];
 
 % Output shape parameters (6 rigid and rest non-rigid)
-shape_params  = dlmread([filename, '.params.txt'], ' ');
+shape_params  = dlmread([filename, '.params.txt'], ',', 1, 0);
 
 % This indicates which frames were succesfully tracked
 valid_frames = shape_params(:,2);

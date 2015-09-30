@@ -51,7 +51,7 @@
 using namespace cv;
 using namespace std;
 
-namespace FaceAnalyser
+namespace FaceAnalysis
 {
 
 	// Pick only the more stable/rigid points under changes of expression

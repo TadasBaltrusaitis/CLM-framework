@@ -64,9 +64,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreLinkEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,6 +90,9 @@
       <Command>
       </Command>
     </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\3rdParty\dlib\dlib.vcxproj">
@@ -98,10 +103,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SVM_dynamic_lin.cpp" />
+    <ClCompile Include="src\SVM_static_lin.cpp" />
+    <ClCompile Include="src\SVR_dynamic_lin_regressors.cpp" />
+    <ClCompile Include="src\SVR_static_lin_regressors.cpp" />
+    <ClInclude Include="include\FaceAnalyser.h" />
     <ClInclude Include="include\Face_utils.h">
       <FileType>CppCode</FileType>
     </ClInclude>
+    <ClCompile Include="src\FaceAnalyser.cpp" />
     <ClCompile Include="src\Face_utils.cpp" />
+    <ClInclude Include="include\SVM_dynamic_lin.h" />
+    <ClInclude Include="include\SVM_static_lin.h" />
+    <ClInclude Include="include\SVR_dynamic_lin_regressors.h" />
+    <ClInclude Include="include\SVR_static_lin_regressors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
