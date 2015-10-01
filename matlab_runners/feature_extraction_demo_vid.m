@@ -64,18 +64,18 @@ valid_frames = shape_params(:,2);
 shape_params = shape_params(:,3:end);
 
 % Output landmark points
-landmark_points  = dlmread([filename, '_fp.txt'], ' ');
+landmark_points  = dlmread([filename, '_fp.txt'], ',', 1, 0);
 landmark_points = landmark_points(:,3:end);
 plot(landmark_points(1,1:end/2), -landmark_points(1,end/2+1:end), '.');axis equal;
 
 % Output 3D landmark points
-landmark_3D_points  = dlmread([filename, '_fp3D.txt'], ' ');
+landmark_3D_points  = dlmread([filename, '_fp3D.txt'], ',', 1, 0);
 landmark_3D_points = landmark_3D_points(:,3:end);
 figure
 plot3(landmark_3D_points(1,1:end/3), landmark_3D_points(1,end/3+1:2*end/3), landmark_3D_points(1,2*end/3+1:end), '.');axis equal;
 
 % Output pose
-head_pose  = dlmread([filename, '_pose.txt'], ' ');
+head_pose  = dlmread([filename, '_pose.txt'], ',', 1, 0);
 head_pose = head_pose(:,4:end);
 
 % Output HOG files

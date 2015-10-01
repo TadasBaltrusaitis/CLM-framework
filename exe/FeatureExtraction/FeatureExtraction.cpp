@@ -392,6 +392,7 @@ int main (int argc, char **argv)
 	bool video_input = true;
 	bool verbose = true;
 	bool images_as_video = false;
+	bool webcam = false;
 
 	vector<vector<string> > input_image_files;
 
@@ -532,6 +533,7 @@ int main (int argc, char **argv)
 			{
 				INFO_STREAM( "Attempting to capture from device: " << device );
 				video_capture = VideoCapture( device );
+				webcam = true;
 
 				// Read a first frame often empty in camera
 				Mat captured_image;
@@ -580,12 +582,43 @@ int main (int argc, char **argv)
 		if(!landmark_output_files.empty())
 		{
 			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
+
+			landmarks_output_file << "frame, success";
+			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			{
+
+				landmarks_output_file << ", x" << i;
+			}
+			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			{
+
+				landmarks_output_file << ", y" << i;
+			}
+			landmarks_output_file << endl;
 		}
 
 		std::ofstream landmarks_3D_output_file;		
 		if(!landmark_3D_output_files.empty())
 		{
 			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
+
+			landmarks_3D_output_file << "frame, success";
+			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			{
+
+				landmarks_3D_output_file << ", X" << i;
+			}
+			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			{
+
+				landmarks_3D_output_file << ", Y" << i;
+			}
+			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			{
+
+				landmarks_3D_output_file << ", Z" << i;
+			}
+			landmarks_3D_output_file << endl;
 		}
 
 		// Outputting model parameters (rigid and non-rigid), the first parameters are the 6 rigid shape parameters, they are followed by the non rigid shape parameters
@@ -708,7 +741,7 @@ int main (int argc, char **argv)
 			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
 			{
-				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, false, false, !clm_parameters.quiet_mode);
+				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, webcam, !clm_parameters.quiet_mode);
 				face_analyser.GetLatestAlignedFace(sim_warped_img);
 
 				//FaceAnalysis::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
@@ -824,10 +857,10 @@ int main (int argc, char **argv)
 			// Output the detected facial landmarks
 			if(!landmark_output_files.empty())
 			{
-				landmarks_output_file << frame_count + 1 << " " << detection_success;
+				landmarks_output_file << frame_count + 1 << ", " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++i)
 				{
-					landmarks_output_file << " " << clm_model.detected_landmarks.at<double>(i);
+					landmarks_output_file << ", " << clm_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
@@ -835,11 +868,11 @@ int main (int argc, char **argv)
 			// Output the detected facial landmarks
 			if(!landmark_3D_output_files.empty())
 			{
-				landmarks_3D_output_file << frame_count + 1 << " " << detection_success;
+				landmarks_3D_output_file << frame_count + 1 << ", " << detection_success;
 				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
 				{
-					landmarks_3D_output_file << " " << shape_3D.at<double>(i);
+					landmarks_3D_output_file << ", " << shape_3D.at<double>(i);
 				}
 				landmarks_3D_output_file << endl;
 			}
@@ -866,7 +899,7 @@ int main (int argc, char **argv)
 					<< ", " << pose_estimate_CLM[0] << ", " << pose_estimate_CLM[1] << ", " << pose_estimate_CLM[2]
 				    << ", " << pose_estimate_CLM[3] << ", " << pose_estimate_CLM[4] << ", " << pose_estimate_CLM[5] << endl;
 			}				
-			
+						
 			if(!output_au_files.empty())
 			{
 				double confidence = 0.5 * (1 - detection_certainty);
@@ -891,7 +924,7 @@ int main (int argc, char **argv)
 				
 				for(auto au_class : aus_class)
 				{
-					au_output_file << " " << au_class.second;
+					au_output_file << ", " << au_class.second;
 				}
 
 				if(aus_class.size() == 0)
@@ -969,6 +1002,74 @@ int main (int argc, char **argv)
 		pose_output_file.close();
 		landmarks_output_file.close();
 
+		vector<double> certainties;
+		vector<bool> successes;
+		vector<std::pair<std::string, vector<double>>> predictions_reg;
+		vector<std::pair<std::string, vector<double>>> predictions_class;
+
+		face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes);
+		face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes);
+
+		// Output all of the AU stuff with offline correction and cleanup
+		if(!output_au_files.empty())
+		{			
+
+			au_output_file.close();
+
+			au_output_file.open (output_au_files[f_n], ios_base::out);
+
+			au_output_file << "frame, success, confidence";
+			for(auto reg_name : predictions_reg)
+			{
+				au_output_file << ", " << reg_name.first << "_r";
+			}
+			
+			for(auto class_name : predictions_class)
+			{
+				au_output_file << ", " << class_name.first << "_c";
+			}
+			au_output_file << endl;
+
+			for(size_t frame = 0; frame < certainties.size(); ++frame)
+			{
+				double detection_certainty = certainties[frame];
+				bool detection_success = successes[frame];
+
+				double confidence = 0.5 * (1 - detection_certainty);
+
+				au_output_file << frame_count + 1 << ", " << detection_success << ", " << confidence;
+				auto aus_reg = face_analyser.GetCurrentAUsReg();
+				
+				for(auto au_reg : predictions_reg)
+				{
+					au_output_file << ", " << au_reg.second[frame];
+				}
+
+				if(aus_reg.size() == 0)
+				{
+					for(size_t p = 0; p < face_analyser.GetAURegNames().size(); ++p)
+					{
+						au_output_file << ", 0";
+					}
+				}
+
+				auto aus_class = face_analyser.GetCurrentAUsClass();
+				
+				for(auto au_class : predictions_class)
+				{
+					au_output_file << ", " << au_class.second[frame];
+				}
+
+				if(aus_class.size() == 0)
+				{
+					for(size_t p = 0; p < face_analyser.GetAUClassNames().size(); ++p)
+					{
+						au_output_file << ", 0";
+					}
+				}
+				au_output_file << endl;
+			}
+		}
 		// break out of the loop if done with all the files (or using a webcam)
 		if(f_n == files.size() -1 || files.empty())
 		{

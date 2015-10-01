@@ -170,7 +170,7 @@ void FaceAnalyser::ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& 
 	}
 }
 
-void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm_model, double timestamp_seconds, bool dynamic_shift, bool dynamic_scale, bool visualise)
+void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm_model, double timestamp_seconds, bool online, bool visualise)
 {
 	// Check if a reset is needed first (TODO same person no reset)
 	//if(face_bounding_box.area() > 0)
@@ -283,17 +283,65 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 		FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_visualisation);
 	}
 
-	// TODO how to deal with predictions when tracking just fails?
+	// Perform AU prediction	
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use);
 
-	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dynamic_shift, dynamic_scale, clm_model.detection_success);
+	std::vector<std::pair<std::string, double>> AU_predictions_reg_corrected;
+	if(online)
+	{
+		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clm_model.detection_success);
+	}
 
+	// Keep only closer to in-plane faces
+	double angle_norm = cv::sqrt(clm_model.params_global[2] * clm_model.params_global[2] + clm_model.params_global[3] * clm_model.params_global[3]);
+
+	// Add the reg predictions to the historic data
+	for (size_t au = 0; au < AU_predictions_reg.size(); ++au)
+	{
+
+		// Find the appropriate AU (if not found add it)		
+		// Only add if the detection was successful and not too out of plane
+		if(clm_model.detection_success && angle_norm < 0.4)
+		{
+			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
+		}
+		else
+		{
+			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(-100.0);
+		}
+	}
+	
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
+
+	for (size_t au = 0; au < AU_predictions_class.size(); ++au)
+	{
+
+		// Find the appropriate AU (if not found add it)		
+		// Only add if the detection was successful and not too out of plane
+		if(clm_model.detection_success && angle_norm < 0.4)
+		{
+			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
+		}
+		else
+		{
+			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(-100.0);
+		}
+	}
+	
+
+	if(online)
+	{
+		AU_predictions_reg = AU_predictions_reg_corrected;
+	}
 
 	this->current_time_seconds = timestamp_seconds;
 
 	view_used = orientation_to_use;
+			
+	bool success = clm_model.detection_success && angle_norm < 0.4;
 
+	confidences.push_back(clm_model.detection_certainty);
+	valid_preds.push_back(success);
 }
 
 void FaceAnalyser::GetGeomDescriptor(Mat_<double>& geom_desc)
@@ -301,7 +349,7 @@ void FaceAnalyser::GetGeomDescriptor(Mat_<double>& geom_desc)
 	geom_desc = this->geom_descriptor_frame.clone();
 }
 
-void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model, bool dyn_shift, bool dyn_scale)
+void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const CLMTracker::CLM& clm_model, bool online)
 {
 	// Store the descriptor
 	hog_desc_frame = hog_features.clone();
@@ -310,10 +358,55 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 	Vec3d curr_orient(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]);
 	int orientation_to_use = GetViewId(this->head_orientations, curr_orient);
 
-	// Perform AU prediction
-	AU_predictions_reg = PredictCurrentAUs(orientation_to_use, dyn_shift, dyn_scale);
+	// Perform AU prediction	
+	AU_predictions_reg = PredictCurrentAUs(orientation_to_use);
+
+	std::vector<std::pair<std::string, double>> AU_predictions_reg_corrected;
+	if(online)
+	{
+		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clm_model.detection_success);
+	}
+
+	// Keep only closer to in-plane faces
+	double angle_norm = cv::sqrt(clm_model.params_global[2] * clm_model.params_global[2] + clm_model.params_global[3] * clm_model.params_global[3]);
+
+	// Add the reg predictions to the historic data
+	for (size_t au = 0; au < AU_predictions_reg.size(); ++au)
+	{
+
+		// Find the appropriate AU (if not found add it)		
+		// Only add if the detection was successful and not too out of plane
+		if(clm_model.detection_success && angle_norm < 0.4)
+		{
+			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
+		}
+		else
+		{
+			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(-100.0);
+		}
+	}
 
 	AU_predictions_class = PredictCurrentAUsClass(orientation_to_use);
+
+	for (size_t au = 0; au < AU_predictions_class.size(); ++au)
+	{
+
+		// Find the appropriate AU (if not found add it)		
+		// Only add if the detection was successful and not too out of plane
+		if(clm_model.detection_success && angle_norm < 0.4)
+		{
+			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
+		}
+		else
+		{
+			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(-100.0);
+		}
+	}
+
+	if(online)
+	{
+		AU_predictions_reg = AU_predictions_reg_corrected;
+	}
 
 	for(size_t i = 0; i < AU_predictions_reg.size(); ++i)
 	{
@@ -325,6 +418,96 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 	}
 
 	view_used = orientation_to_use;
+
+	bool success = clm_model.detection_success && angle_norm < 0.4;
+
+	confidences.push_back(clm_model.detection_certainty);
+	valid_preds.push_back(success);
+}
+
+void FaceAnalyser::ExtractAllPredictionsOfflineReg(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes)
+{
+	au_predictions.clear();
+	// First extract the valid AU values and put them in a different format
+	vector<vector<double>> aus_valid;
+	vector<double> offsets;
+	confidences = this->confidences;
+	successes = this->valid_preds;
+
+	for(auto au_iter = AU_predictions_reg_all_hist.begin(); au_iter != AU_predictions_reg_all_hist.end(); ++au_iter)
+	{
+		vector<double> au_good;
+		string au_name = au_iter->first;
+		vector<double> au_vals = au_iter->second;
+		
+		au_predictions.push_back(std::pair<string,vector<double>>(au_name, au_vals));
+
+		for(size_t frame = 0; frame < au_vals.size(); ++frame)
+		{
+
+			if(successes[frame])
+			{
+				au_good.push_back(au_vals[frame]);
+			}
+
+		}
+
+		if(!au_good.empty())
+		{
+			std::sort(au_good.begin(), au_good.end());
+			offsets.push_back(au_good.at((int)au_good.size()/4));
+		}
+		else
+		{
+			offsets.push_back(0.0);
+		}
+		aus_valid.push_back(au_good);
+	}
+
+	// sort each of the aus
+	for(size_t au = 0; au < au_predictions.size(); ++au)
+	{
+		for(size_t frame = 0; frame < au_predictions[au].second.size(); ++frame)
+		{
+
+			if(successes[frame])
+			{
+				double scaling = 1;
+				
+				au_predictions[au].second[frame] = (au_predictions[au].second[frame] - offsets[au]) * scaling;
+				
+				if(au_predictions[au].second[frame] < 0.5)
+					au_predictions[au].second[frame] = 0;
+
+				if(au_predictions[au].second[frame] > 5)
+					au_predictions[au].second[frame] = 5;
+
+			}
+			else
+			{
+				au_predictions[au].second[frame] = 0;
+			}
+		}
+	}
+
+
+}
+
+void FaceAnalyser::ExtractAllPredictionsOfflineClass(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes)
+{
+	au_predictions.clear();
+
+	for(auto au_iter = AU_predictions_class_all_hist.begin(); au_iter != AU_predictions_class_all_hist.end(); ++au_iter)
+	{
+		string au_name = au_iter->first;
+		vector<double> au_vals = au_iter->second;
+		
+		au_predictions.push_back(std::pair<string,vector<double>>(au_name, au_vals));
+
+	}
+
+	confidences = this->confidences;
+	successes = this->valid_preds;
 }
 
 // Reset the models
@@ -462,7 +645,7 @@ void FaceAnalyser::ExtractMedian(cv::Mat_<unsigned int>& histogram, int hist_cou
 	}
 }
 // Apply the current predictors to the currently stored descriptors
-vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_shift, bool dyn_scale, bool update_track, bool clip_values)
+vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view)
 {
 
 	vector<pair<string, double>> predictions;
@@ -489,64 +672,71 @@ vector<pair<string, double>> FaceAnalyser::PredictCurrentAUs(int view, bool dyn_
 			predictions.push_back(pair<string, double>(svr_lin_dyn_aus[i], svr_lin_dyn_preds[i]));
 		}
 
-		// Correction that drags the predicion to 0 (assuming the bottom 10% of predictions are of neutral expresssions)
-		vector<double> correction(predictions.size(), 0.0);
+	}
 
-		if(update_track)
-		{
-			UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, -3, 5, 10);
-		}
+	return predictions;
+}
 
-		if(dyn_shift)
+vector<pair<string, double>> FaceAnalyser::CorrectOnlineAUs(std::vector<std::pair<std::string, double>> predictions_orig, int view, bool dyn_shift, bool dyn_scale, bool update_track, bool clip_values)
+{
+	// Correction that drags the predicion to 0 (assuming the bottom 10% of predictions are of neutral expresssions)
+	vector<double> correction(predictions_orig.size(), 0.0);
+
+	vector<pair<string, double>> predictions = predictions_orig;
+
+	if(update_track)
+	{
+		UpdatePredictionTrack(au_prediction_correction_histogram[view], au_prediction_correction_count[view], correction, predictions, 0.10, 200, -3, 5, 10);
+	}
+
+	if(dyn_shift)
+	{
+		for(size_t i = 0; i < correction.size(); ++i)
 		{
-			for(size_t i = 0; i < correction.size(); ++i)
-			{
-				predictions[i].second = predictions[i].second - correction[i];
-			}
+			predictions[i].second = predictions[i].second - correction[i];
 		}
-		if(dyn_scale)
+	}
+	if(dyn_scale)
+	{
+		// Some scaling for effect better visualisation
+		// Also makes sense as till the maximum expression is seen, it is hard to tell how expressive a persons face is
+		if(dyn_scaling[view].empty())
 		{
-			// Some scaling for effect better visualisation
-			// Also makes sense as till the maximum expression is seen, it is hard to tell how expressive a persons face is
-			if(dyn_scaling[view].empty())
-			{
-				dyn_scaling[view] = vector<double>(predictions.size(), 5.0);
-			}
+			dyn_scaling[view] = vector<double>(predictions.size(), 5.0);
+		}
 		
-			for(size_t i = 0; i < predictions.size(); ++i)
-			{
-				// First establish presence (assume it is maximum as we have not seen max) 
-				// TODO this could be more robust by removing some outliers, or by doing it only for certain AUs?
-				if(predictions[i].second > 1)
-				{
-					double scaling_curr = 5.0 / predictions[i].second;
-				
-					if(scaling_curr < dyn_scaling[view][i])
-					{
-						dyn_scaling[view][i] = scaling_curr;
-					}
-					predictions[i].second = predictions[i].second * dyn_scaling[view][i];
-				}
-
-				if(predictions[i].second > 5)
-				{
-					predictions[i].second = 5;
-				}
-			}
-		}
-
-		if(clip_values)
+		for(size_t i = 0; i < predictions.size(); ++i)
 		{
-			for(size_t i = 0; i < correction.size(); ++i)
+			// First establish presence (assume it is maximum as we have not seen max) 
+			// TODO this could be more robust by removing some outliers, or by doing it only for certain AUs?
+			if(predictions[i].second > 1)
 			{
-				if(predictions[i].second < 0)
-					predictions[i].second = 0;
-				if(predictions[i].second > 5)
-					predictions[i].second = 5;
+				double scaling_curr = 5.0 / predictions[i].second;
+				
+				if(scaling_curr < dyn_scaling[view][i])
+				{
+					dyn_scaling[view][i] = scaling_curr;
+				}
+				predictions[i].second = predictions[i].second * dyn_scaling[view][i];
+			}
+
+			if(predictions[i].second > 5)
+			{
+				predictions[i].second = 5;
 			}
 		}
 	}
 
+	if(clip_values)
+	{
+		for(size_t i = 0; i < correction.size(); ++i)
+		{
+			if(predictions[i].second < 0)
+				predictions[i].second = 0;
+			if(predictions[i].second > 5)
+				predictions[i].second = 5;
+		}
+	}
 	return predictions;
 }
 
