@@ -1,5 +1,4 @@
-oldDir = chdir('../Release/');
-clm_exe = '"FeatureExtraction.exe"';
+clm_exe = '"../Release/FeatureExtraction.exe"';
 
 output = '../matlab_runners/output_features_seq/';
 
@@ -45,7 +44,6 @@ for i=1:numel(in_dirs)
 end
 
 dos(command);
-chdir(oldDir);
 
 %% Demonstrating reading the output files
 filename = [output name];
