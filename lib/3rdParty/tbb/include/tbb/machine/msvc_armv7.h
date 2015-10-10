@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #if !defined(__TBB_machine_H) || defined(__TBB_msvc_armv7_H)
@@ -101,26 +93,41 @@ inline void __TBB_machine_pause (int32_t delay )
     }
 }
 
+// API to retrieve/update FPU control setting
+#define __TBB_CPU_CTL_ENV_PRESENT 1
+
 namespace tbb {
-    namespace internal {
-        template <typename T, size_t S>
-        struct machine_load_store_relaxed {
-            static inline T load ( const volatile T& location ) {
-                const T value = location;
+namespace internal {
 
-                /*
-                * An extra memory barrier is required for errata #761319
-                * Please see http://infocenter.arm.com/help/topic/com.arm.doc.uan0004a
-                */
-                __TBB_acquire_consistency_helper();
-                return value;
-            }
+template <typename T, size_t S>
+struct machine_load_store_relaxed {
+    static inline T load ( const volatile T& location ) {
+        const T value = location;
 
-            static inline void store ( volatile T& location, T value ) {
-                location = value;
-            }
-        };
-    }} // namespaces internal, tbb
+        /*
+        * An extra memory barrier is required for errata #761319
+        * Please see http://infocenter.arm.com/help/topic/com.arm.doc.uan0004a
+        */
+        __TBB_acquire_consistency_helper();
+        return value;
+    }
+
+    static inline void store ( volatile T& location, T value ) {
+        location = value;
+    }
+};
+
+class cpu_ctl_env {
+private:
+    unsigned int my_ctl;
+public:
+    bool operator!=( const cpu_ctl_env& ctl ) const { return my_ctl != ctl.my_ctl; }
+    void get_env() { my_ctl = _control87(0, 0); }
+    void set_env() const { _control87( my_ctl, ~0U ); }
+};
+
+} // namespace internal
+} // namespaces tbb
 
 // Machine specific atomic operations
 #define __TBB_CompareAndSwap4(P,V,C) __TBB_machine_cmpswp4(P,V,C)
@@ -147,18 +154,6 @@ extern "C" __declspec(dllimport) int __stdcall SwitchToThread( void );
 #else
 #define __TBB_Yield() __yield()
 #endif
-
-// API to retrieve/update FPU control setting
-#define __TBB_CPU_CTL_ENV_PRESENT 1
-
-typedef unsigned int __TBB_cpu_ctl_env_t;
-
-inline void __TBB_get_cpu_ctl_env ( __TBB_cpu_ctl_env_t* ctl ) {
-    *ctl = _control87(0, 0);
-}
-inline void __TBB_set_cpu_ctl_env ( const __TBB_cpu_ctl_env_t* ctl ) {
-    _control87( *ctl, ~0U );
-}
 
 // Machine specific atomic operations
 #define __TBB_AtomicOR(P,V)     __TBB_machine_OR(P,V)

@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #ifndef __TBB_parallel_for_H
@@ -37,9 +29,12 @@
 
 namespace tbb {
 
-namespace interface6 {
+namespace interface7 {
 //! @cond INTERNAL
 namespace internal {
+
+    //! allocate right task with new parent
+    void* allocate_sibling(task* start_for_task, size_t bytes);
 
     //! Task type used in parallel_for
     /** @ingroup algorithms */
@@ -50,20 +45,25 @@ namespace internal {
         typename Partitioner::task_partition_type my_partition;
         /*override*/ task* execute();
 
+        //! Update affinity info, if any.
+        /*override*/ void note_affinity( affinity_id id ) {
+            my_partition.note_affinity( id );
+        }
+
     public:
         //! Constructor for root task.
         start_for( const Range& range, const Body& body, Partitioner& partitioner ) :
-            my_range(range),    
+            my_range(range),
             my_body(body),
             my_partition(partitioner)
         {
         }
         //! Splitting constructor used to generate children.
         /** parent_ becomes left child.  Newly constructed object is right child. */
-        start_for( start_for& parent_, split ) :
-            my_range(parent_.my_range,split()),
+        start_for( start_for& parent_, typename Partitioner::split_type& split_obj) :
+            my_range(parent_.my_range, split_obj),
             my_body(parent_.my_body),
-            my_partition(parent_.my_partition, split())
+            my_partition(parent_.my_partition, split_obj)
         {
             my_partition.set_affinity(*this);
         }
@@ -72,14 +72,10 @@ namespace internal {
         start_for( start_for& parent_, const Range& r, depth_t d ) :
             my_range(r),
             my_body(parent_.my_body),
-            my_partition(parent_.my_partition,split())
+            my_partition(parent_.my_partition, split())
         {
             my_partition.set_affinity(*this);
             my_partition.align_depth( d );
-        }
-        //! Update affinity info, if any.
-        /*override*/ void note_affinity( affinity_id id ) {
-            my_partition.note_affinity( id );
         }
         static void run(  const Range& range, const Body& body, Partitioner& partitioner ) {
             if( !range.empty() ) {
@@ -102,44 +98,69 @@ namespace internal {
             }
         }
 #endif /* __TBB_TASK_GROUP_CONTEXT */
-        //! create a continuation task, serve as callback for partitioner
-        flag_task *create_continuation() {
-            return new( allocate_continuation() ) flag_task();
-        }
-        //! Run body for range
+        //! Run body for range, serves as callback for partitioner
         void run_body( Range &r ) { my_body( r ); }
+
+        //! spawn right task, serves as callback for partitioner
+        void offer_work(typename Partitioner::split_type& split_obj) {
+            spawn( *new( allocate_sibling(static_cast<task*>(this), sizeof(start_for)) ) start_for(*this, split_obj) );
+        }
+        //! spawn right task, serves as callback for partitioner
+        void offer_work(const Range& r, depth_t d = 0) {
+            spawn( *new( allocate_sibling(static_cast<task*>(this), sizeof(start_for)) ) start_for(*this, r, d) );
+        }
     };
 
+    //! allocate right task with new parent
+    // TODO: 'inline' here is to avoid multiple definition error but for sake of code size this should not be inlined
+    inline void* allocate_sibling(task* start_for_task, size_t bytes) {
+        task* parent_ptr = new( start_for_task->allocate_continuation() ) flag_task();
+        start_for_task->set_parent(parent_ptr);
+        parent_ptr->set_ref_count(2);
+        return &parent_ptr->allocate_child().allocate(bytes);
+    }
+
+    //! execute task for parallel_for
     template<typename Range, typename Body, typename Partitioner>
     task* start_for<Range,Body,Partitioner>::execute() {
         my_partition.check_being_stolen( *this );
         my_partition.execute(*this, my_range);
         return NULL;
-    } 
+    }
 } // namespace internal
 //! @endcond
 } // namespace interfaceX
 
 //! @cond INTERNAL
 namespace internal {
-    using interface6::internal::start_for;
-    
+    using interface7::internal::start_for;
+
     //! Calls the function with values from range [begin, end) with a step provided
     template<typename Function, typename Index>
     class parallel_for_body : internal::no_assign {
         const Function &my_func;
         const Index my_begin;
-        const Index my_step; 
+        const Index my_step;
     public:
-        parallel_for_body( const Function& _func, Index& _begin, Index& _step) 
+        parallel_for_body( const Function& _func, Index& _begin, Index& _step )
             : my_func(_func), my_begin(_begin), my_step(_step) {}
-        
-        void operator()( tbb::blocked_range<Index>& r ) const {
+
+        void operator()( const tbb::blocked_range<Index>& r ) const {
+            // A set of local variables to help the compiler with vectorization of the following loop.
+            Index b = r.begin();
+            Index e = r.end();
+            Index ms = my_step;
+            Index k = my_begin + b*ms;
+
 #if __INTEL_COMPILER
 #pragma ivdep
+#if __TBB_ASSERT_ON_VECTORIZATION_FAILURE
+#pragma vector always assert
 #endif
-            for( Index i = r.begin(),  k = my_begin + i * my_step; i < r.end(); i++, k = k + my_step)
+#endif
+            for ( Index i = b; i < e; ++i, k += ms ) {
                 my_func( k );
+            }
         }
     };
 } // namespace internal
@@ -158,7 +179,7 @@ namespace internal {
     See also requirements on \ref range_req "Range" and \ref parallel_for_body_req "parallel_for Body". **/
 //@{
 
-//! Parallel iteration over range with default partitioner. 
+//! Parallel iteration over range with default partitioner.
 /** @ingroup algorithms **/
 template<typename Range, typename Body>
 void parallel_for( const Range& range, const Body& body ) {
@@ -232,7 +253,7 @@ void parallel_for_impl(Index first, Index last, Index step, const Function& f, P
         internal::parallel_for_body<Function, Index> body(f, first, step);
         tbb::parallel_for(range, body, partitioner);
     }
-}    
+}
 
 //! Parallel iteration over a range of integers with a step provided and default partitioner
 template <typename Index, typename Function>
@@ -350,4 +371,3 @@ using strict_ppl::parallel_for;
 #endif
 
 #endif /* __TBB_parallel_for_H */
-

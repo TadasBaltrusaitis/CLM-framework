@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 /* Container implementations in this header are based on PPL implementations 
@@ -48,6 +40,7 @@
 #include <functional>   // Need std::equal_to (in ../concurrent_unordered_*.h)
 #include <string>       // For tbb_hasher
 #include <cstring>      // Need std::memset
+#include <algorithm>    // Need std::swap
 
 #if !TBB_USE_EXCEPTIONS && _MSC_VER
     #pragma warning (pop)
@@ -56,11 +49,12 @@
 #include "../atomic.h"
 #include "../tbb_exception.h"
 #include "../tbb_allocator.h"
-#include "tbb/atomic.h"
 
 #if __TBB_INITIALIZER_LISTS_PRESENT
     #include <initializer_list>
 #endif
+
+#include "_tbb_hash_compare_impl.h"
 
 namespace tbb {
 namespace interface5 {
@@ -266,12 +260,21 @@ public:
         sokey_t    my_order_key; // Order key for this element
     };
 
+    // Allocate a new node with the given order key; used to allocate dummy nodes
+    nodeptr_t create_node(sokey_t order_key) {
+        nodeptr_t pnode = my_node_allocator.allocate(1);
+        pnode->init(order_key);
+        return (pnode);
+    }
+
     // Allocate a new node with the given order key and value
-    nodeptr_t create_node(sokey_t order_key, const T &value) {
+    template<typename Arg>
+    nodeptr_t create_node(sokey_t order_key, __TBB_FORWARDING_REF(Arg) t){
         nodeptr_t pnode = my_node_allocator.allocate(1);
 
+        //TODO: use RAII scoped guard instead of explicit catch
         __TBB_TRY {
-            new(static_cast<void*>(&pnode->my_element)) T(value);
+            new(static_cast<void*>(&pnode->my_element)) T(tbb::internal::forward<Arg>(t));
             pnode->init(order_key);
         } __TBB_CATCH(...) {
             my_node_allocator.deallocate(pnode, 1);
@@ -281,10 +284,19 @@ public:
         return (pnode);
     }
 
-    // Allocate a new node with the given order key; used to allocate dummy nodes
-    nodeptr_t create_node(sokey_t order_key) {
+    // Allocate a new node with the given parameters for constructing value
+    template<typename __TBB_PARAMETER_PACK Args>
+    nodeptr_t create_node_v( __TBB_FORWARDING_REF(Args) __TBB_PARAMETER_PACK args){
         nodeptr_t pnode = my_node_allocator.allocate(1);
-        pnode->init(order_key);
+
+        //TODO: use RAII scoped guard instead of explicit catch
+        __TBB_TRY {
+            new(static_cast<void*>(&pnode->my_element)) T(__TBB_PACK_EXPANSION(tbb::internal::forward<Args>(args)));
+        } __TBB_CATCH(...) {
+            my_node_allocator.deallocate(pnode, 1);
+            __TBB_RETHROW();
+        }
+
         return (pnode);
     }
 
@@ -293,7 +305,7 @@ public:
     {
         // Immediately allocate a dummy node with order key of 0. This node
         // will always be the head of the list.
-        my_head = create_node(0);
+        my_head = create_node(sokey_t(0));
     }
 
     ~split_ordered_list()
@@ -470,30 +482,27 @@ public:
         my_node_allocator.deallocate(pnode, 1);
     }
 
-    // Try to insert a new element in the list. If insert fails, return the node that
-    // was inserted instead.
-    nodeptr_t try_insert(nodeptr_t previous, nodeptr_t new_node, nodeptr_t current_node) {
+    // Try to insert a new element in the list.
+    // If insert fails, return the node that was inserted instead.
+    static nodeptr_t try_insert_atomic(nodeptr_t previous, nodeptr_t new_node, nodeptr_t current_node) {
         new_node->my_next = current_node;
         return previous->atomic_set_next(new_node, current_node);
     }
 
     // Insert a new element between passed in iterators
-    std::pair<iterator, bool> try_insert(raw_iterator it, raw_iterator next, const value_type &value, sokey_t order_key, size_type *new_count)
+    std::pair<iterator, bool> try_insert(raw_iterator it, raw_iterator next, nodeptr_t pnode, size_type *new_count)
     {
-        nodeptr_t pnode = create_node(order_key, value);
-        nodeptr_t inserted_node = try_insert(it.get_node_ptr(), pnode, next.get_node_ptr());
+        nodeptr_t inserted_node = try_insert_atomic(it.get_node_ptr(), pnode, next.get_node_ptr());
 
         if (inserted_node == pnode)
         {
             // If the insert succeeded, check that the order is correct and increment the element count
-            check_range();
-            *new_count = __TBB_FetchAndAddW((uintptr_t*)&my_element_count, uintptr_t(1));
+            check_range(it, next);
+            *new_count = tbb::internal::as_atomic(my_element_count).fetch_and_increment();
             return std::pair<iterator, bool>(iterator(pnode, this), true);
         }
         else
         {
-            // If the insert failed (element already there), then delete the new one
-            destroy_node(pnode);
             return std::pair<iterator, bool>(end(), false);
         }
     }
@@ -522,12 +531,12 @@ public:
                 __TBB_ASSERT(get_order_key(it) < order_key, "Invalid node order in the list");
 
                 // Try to insert it in the right place
-                nodeptr_t inserted_node = try_insert(it.get_node_ptr(), dummy_node, where.get_node_ptr());
+                nodeptr_t inserted_node = try_insert_atomic(it.get_node_ptr(), dummy_node, where.get_node_ptr());
 
                 if (inserted_node == dummy_node)
                 {
                     // Insertion succeeded, check the list for order violations
-                    check_range();
+                    check_range(it, where);
                     return raw_iterator(dummy_node);
                 }
                 else
@@ -595,7 +604,7 @@ public:
             nodeptr_t pnode = it.get_node_ptr();
 
             nodeptr_t dummy_node = pnode->is_dummy() ? create_node(pnode->get_order_key()) : create_node(pnode->get_order_key(), pnode->my_element);
-            previous_node = try_insert(previous_node, dummy_node, NULL);
+            previous_node = try_insert_atomic(previous_node, dummy_node, NULL);
             __TBB_ASSERT(previous_node != NULL, "Insertion must succeed");
             raw_const_iterator where = it++;
             source.erase_node(get_iterator(begin_iterator), where);
@@ -605,18 +614,29 @@ public:
 
 
 private:
+    //Need to setup private fields of split_ordered_list in move constructor and assignment of concurrent_unordered_base
+    template <typename Traits>
+    friend class concurrent_unordered_base;
 
     // Check the list for order violations
+    void check_range( raw_iterator first, raw_iterator last )
+    {
+#if TBB_USE_ASSERT
+        for (raw_iterator it = first; it != last; ++it)
+        {
+            raw_iterator next = it;
+            ++next;
+
+            __TBB_ASSERT(next == raw_end() || get_order_key(next) >= get_order_key(it), "!!! List order inconsistency !!!");
+        }
+#else
+        tbb::internal::suppress_unused_warning(first, last);
+#endif
+    }
     void check_range()
     {
 #if TBB_USE_ASSERT
-        for (raw_iterator it = raw_begin(); it != raw_end(); ++it)
-        {
-            raw_iterator next_iterator = it;
-            ++next_iterator;
-
-            __TBB_ASSERT(next_iterator == end() || next_iterator.get_node_ptr()->get_order_key() >= it.get_node_ptr()->get_order_key(), "!!! List order inconsistency !!!");
-        }
+        check_range( raw_begin(), raw_end() );
 #endif
     }
 
@@ -625,32 +645,9 @@ private:
     nodeptr_t                                             my_head;            // pointer to head node
 };
 
-// Template class for hash compare
-template<typename Key, typename Hasher, typename Key_equality>
-class hash_compare
-{
-public:
-    hash_compare() {}
-
-    hash_compare(Hasher a_hasher) : my_hash_object(a_hasher) {}
-
-    hash_compare(Hasher a_hasher, Key_equality a_keyeq) : my_hash_object(a_hasher), my_key_compare_object(a_keyeq) {}
-
-    size_t operator()(const Key& key) const {
-        return ((size_t)my_hash_object(key));
-    }
-
-    bool operator()(const Key& key1, const Key& key2) const {
-        return (!my_key_compare_object(key1, key2));
-    }
-
-    Hasher       my_hash_object;        // The hash object
-    Key_equality my_key_compare_object; // The equality comparator object
-};
-
-#if _MSC_VER
+#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
 #pragma warning(push)
-#pragma warning(disable: 4127) // warning 4127 -- while (true) has a constant expression in it (for allow_multimapping)
+#pragma warning(disable: 4127) // warning C4127: conditional expression is constant
 #endif
 
 template <typename Traits>
@@ -664,6 +661,8 @@ protected:
     typedef typename Traits::hash_compare hash_compare;
     typedef typename Traits::value_compare value_compare;
     typedef typename Traits::allocator_type allocator_type;
+    typedef typename hash_compare::hasher hasher;
+    typedef typename hash_compare::key_equal key_equal;
     typedef typename allocator_type::pointer pointer;
     typedef typename allocator_type::const_pointer const_pointer;
     typedef typename allocator_type::reference reference;
@@ -683,14 +682,24 @@ protected:
     using Traits::get_key;
     using Traits::allow_multimapping;
 
+    static const size_type initial_bucket_number = 8;                               // Initial number of buckets
 private:
     typedef std::pair<iterator, iterator> pairii_t;
     typedef std::pair<const_iterator, const_iterator> paircc_t;
 
     static size_type const pointers_per_table = sizeof(size_type) * 8;              // One bucket segment per bit
-    static const size_type initial_bucket_number = 8;                               // Initial number of buckets
     static const size_type initial_bucket_load = 4;                                // Initial maximum number of elements per bucket
 
+    struct call_internal_clear_on_exit{
+        concurrent_unordered_base* my_instance;
+        call_internal_clear_on_exit(concurrent_unordered_base* instance) : my_instance(instance) {}
+        void dismiss(){ my_instance = NULL;}
+        ~call_internal_clear_on_exit(){
+            if (my_instance){
+                my_instance->internal_clear();
+            }
+        }
+    };
 protected:
     // Constructors/Destructors
     concurrent_unordered_base(size_type n_of_buckets = initial_bucket_number,
@@ -713,9 +722,59 @@ protected:
     concurrent_unordered_base(const concurrent_unordered_base& right)
         : Traits(right.my_hash_compare), my_solist(right.get_allocator()), my_allocator(right.get_allocator())
     {
+        //FIXME:exception safety seems to be broken here
         internal_init();
         internal_copy(right);
     }
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    concurrent_unordered_base(concurrent_unordered_base&& right)
+        : Traits(right.my_hash_compare), my_solist(right.get_allocator()), my_allocator(right.get_allocator())
+    {
+        internal_init();
+        swap(right);
+    }
+
+    concurrent_unordered_base(concurrent_unordered_base&& right, const allocator_type& a)
+        : Traits(right.my_hash_compare), my_solist(a), my_allocator(a)
+    {
+        call_internal_clear_on_exit clear_buckets_on_exception(this);
+
+        internal_init();
+        if (a == right.get_allocator()){
+            this->swap(right);
+        }else{
+            my_maximum_bucket_size = right.my_maximum_bucket_size;
+            my_number_of_buckets = right.my_number_of_buckets;
+            my_solist.my_element_count = right.my_solist.my_element_count;
+
+            if (! right.my_solist.empty()){
+                nodeptr_t previous_node = my_solist.my_head;
+
+                // Move all elements one by one, including dummy ones
+                for (raw_const_iterator it = ++(right.my_solist.raw_begin()), last = right.my_solist.raw_end(); it != last; ++it)
+                {
+                    const nodeptr_t pnode = it.get_node_ptr();
+                    nodeptr_t node;
+                    if (pnode->is_dummy()) {
+                        node = my_solist.create_node(pnode->get_order_key());
+                        size_type bucket = __TBB_ReverseBits(pnode->get_order_key()) % my_number_of_buckets;
+                        set_bucket(bucket, node);
+                    }else{
+                        node = my_solist.create_node(pnode->get_order_key(), std::move(pnode->my_element));
+                    }
+
+                    previous_node = my_solist.try_insert_atomic(previous_node, node, NULL);
+                    __TBB_ASSERT(previous_node != NULL, "Insertion of node failed. Concurrent inserts in constructor ?");
+                }
+                my_solist.check_range();
+            }
+        }
+
+        clear_buckets_on_exception.dismiss();
+    }
+
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
 
     concurrent_unordered_base& operator=(const concurrent_unordered_base& right) {
         if (this != &right)
@@ -723,15 +782,39 @@ protected:
         return (*this);
     }
 
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    concurrent_unordered_base& operator=(concurrent_unordered_base&& other)
+    {
+        if(this != &other){
+            typedef typename tbb::internal::allocator_traits<allocator_type>::propagate_on_container_move_assignment pocma_t;
+            if(pocma_t::value || this->my_allocator == other.my_allocator) {
+                concurrent_unordered_base trash (std::move(*this));
+                swap(other);
+                if (pocma_t::value) {
+                    using std::swap;
+                    //TODO: swapping allocators here may be a problem, replace with single direction moving
+                    swap(this->my_solist.my_node_allocator, other.my_solist.my_node_allocator);
+                    swap(this->my_allocator, other.my_allocator);
+                }
+            } else {
+                concurrent_unordered_base moved_copy(std::move(other),this->my_allocator);
+                this->swap(moved_copy);
+            }
+        }
+        return *this;
+    }
+
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
+
 #if __TBB_INITIALIZER_LISTS_PRESENT
     //! assignment operator from initializer_list
-    concurrent_unordered_base& operator=(std::initializer_list<value_type> const& il)
+    concurrent_unordered_base& operator=(std::initializer_list<value_type> il)
     {
         this->clear();
         this->insert(il.begin(),il.end());
         return (*this);
     }
-#endif //# __TBB_INITIALIZER_LISTS_PRESENT
+#endif // __TBB_INITIALIZER_LISTS_PRESENT
 
 
     ~concurrent_unordered_base() {
@@ -883,11 +966,48 @@ public:
         return insert(value).first;
     }
 
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    std::pair<iterator, bool> insert(value_type&& value) {
+        return internal_insert(std::move(value));
+    }
+
+    iterator insert(const_iterator, value_type&& value) {
+        // Ignore hint
+        return insert(std::move(value)).first;
+    }
+
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    template<typename... Args>
+    std::pair<iterator, bool> emplace(Args&&... args) {
+        nodeptr_t pnode = my_solist.create_node_v(tbb::internal::forward<Args>(args)...);
+        const sokey_t hashed_element_key = (sokey_t) my_hash_compare(get_key(pnode->my_element));
+        const sokey_t order_key = split_order_key_regular(hashed_element_key);
+        pnode->init(order_key);
+
+        return internal_insert(pnode->my_element, pnode);
+    }
+
+    template<typename... Args>
+    iterator emplace_hint(const_iterator, Args&&... args) {
+        // Ignore hint
+        return emplace(tbb::internal::forward<Args>(args)...).first;
+    }
+
+#endif // __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#endif // __TBB_CPP11_RVALUE_REF_PRESENT
+
     template<class Iterator>
     void insert(Iterator first, Iterator last) {
         for (Iterator it = first; it != last; ++it)
             insert(*it);
     }
+
+#if __TBB_INITIALIZER_LISTS_PRESENT
+    //! Insert initializer list
+    void insert(std::initializer_list<value_type> il) {
+        insert(il.begin(), il.end());
+    }
+#endif
 
     iterator unsafe_erase(const_iterator where) {
         return internal_erase(where);
@@ -917,6 +1037,14 @@ public:
     }
 
     // Observers
+    hasher hash_function() const {
+        return my_hash_compare.my_hash_object;
+    }
+
+    key_equal key_eq() const {
+        return my_hash_compare.my_key_compare_object;
+    }
+
     void clear() {
         // Clear list
         my_solist.clear();
@@ -1036,12 +1164,12 @@ public:
         return my_solist.first_real_iterator(it);
     }
 
-    const_local_iterator unsafe_cbegin(size_type /*bucket*/) const {
-        return ((const self_type *) this)->begin();
+    const_local_iterator unsafe_cbegin(size_type bucket) const {
+        return ((const self_type *) this)->unsafe_begin(bucket);
     }
 
-    const_local_iterator unsafe_cend(size_type /*bucket*/) const {
-        return ((const self_type *) this)->end();
+    const_local_iterator unsafe_cend(size_type bucket) const {
+        return ((const self_type *) this)->unsafe_end(bucket);
     }
 
     // Hash policy
@@ -1119,8 +1247,9 @@ private:
         }
     }
 
+    //TODO: why not use std::distance?
     // Hash APIs
-    size_type internal_distance(const_iterator first, const_iterator last) const
+    static size_type internal_distance(const_iterator first, const_iterator last)
     {
         size_type num = 0;
 
@@ -1131,11 +1260,13 @@ private:
     }
 
     // Insert an element in the hash given its value
-    std::pair<iterator, bool> internal_insert(const value_type& value)
+    template< typename ValueType>
+    std::pair<iterator, bool> internal_insert( __TBB_FORWARDING_REF(ValueType) value, nodeptr_t pnode = NULL)
     {
         sokey_t order_key = (sokey_t) my_hash_compare(get_key(value));
         size_type bucket = order_key % my_number_of_buckets;
 
+        //TODO:refactor the get_bucket related stuff into separate function something like acquire_bucket(key_type)
         // If bucket is empty, initialize it first
         if (!is_initialized(bucket))
             init_bucket(bucket);
@@ -1153,10 +1284,16 @@ private:
 
         for (;;)
         {
-            if (where == last || solist_t::get_order_key(where) > order_key)
+            if (where == last || solist_t::get_order_key(where) > order_key ||
+                    // if multimapped, stop at the first item equal to us.
+                    (allow_multimapping && solist_t::get_order_key(where) == order_key &&
+                     !my_hash_compare(get_key(*where), get_key(value))))
             {
-                // Try to insert it in the right place
-                std::pair<iterator, bool> result = my_solist.try_insert(it, where, value, order_key, &new_count);
+                 if (!pnode)
+                     pnode = my_solist.create_node(order_key, tbb::internal::forward<ValueType>(value));
+            
+                // Try to insert 'pnode' between 'it' and 'where'
+                std::pair<iterator, bool> result = my_solist.try_insert(it, where, pnode, &new_count);
                 
                 if (result.second)
                 {
@@ -1176,12 +1313,13 @@ private:
                     continue;
                 }
             }
-            else if (!allow_multimapping && solist_t::get_order_key(where) == order_key && my_hash_compare(get_key(*where), get_key(value)) == 0)
-            {
-                // Element already in the list, return it
+            else if (!allow_multimapping && solist_t::get_order_key(where) == order_key &&
+                    my_hash_compare(get_key(*where), get_key(value)) == 0)
+            { // Element already in the list, return it
+                 if (pnode)
+                     my_solist.destroy_node(pnode);            
                 return std::pair<iterator, bool>(my_solist.get_iterator(where), false);
             }
-
             // Move the iterator forward
             it = where;
             ++where;
@@ -1225,7 +1363,8 @@ private:
     // Erase an element from the list. This is not a concurrency safe function.
     iterator internal_erase(const_iterator it)
     {
-        key_type key = get_key(*it);
+        //const reference extends lifetime of possible temporary coming from get_key
+        const key_type& key = get_key(*it);
         sokey_t order_key = (sokey_t) my_hash_compare(key);
         size_type bucket = order_key % my_number_of_buckets;
 
@@ -1397,51 +1536,12 @@ private:
     float                                                         my_maximum_bucket_size;     // Maximum size of the bucket
     atomic<raw_iterator*>                                         my_buckets[pointers_per_table]; // The segment table
 };
-#if _MSC_VER
-#pragma warning(pop) // warning 4127 -- while (true) has a constant expression in it
+#if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
+#pragma warning(pop) // warning 4127 is back
 #endif
 
-//! Hash multiplier
-static const size_t hash_multiplier = tbb::internal::select_size_t_constant<2654435769U, 11400714819323198485ULL>::value;
 } // namespace internal
 //! @endcond
-//! Hasher functions
-template<typename T>
-inline size_t tbb_hasher( const T& t ) {
-    return static_cast<size_t>( t ) * internal::hash_multiplier;
-}
-template<typename P>
-inline size_t tbb_hasher( P* ptr ) {
-    size_t const h = reinterpret_cast<size_t>( ptr );
-    return (h >> 3) ^ h;
-}
-template<typename E, typename S, typename A>
-inline size_t tbb_hasher( const std::basic_string<E,S,A>& s ) {
-    size_t h = 0;
-    for( const E* c = s.c_str(); *c; ++c )
-        h = static_cast<size_t>(*c) ^ (h * internal::hash_multiplier);
-    return h;
-}
-template<typename F, typename S>
-inline size_t tbb_hasher( const std::pair<F,S>& p ) {
-    return tbb_hasher(p.first) ^ tbb_hasher(p.second);
-}
 } // namespace interface5
-using interface5::tbb_hasher;
-
-
-// Template class for hash compare
-template<typename Key>
-class tbb_hash
-{
-public:
-    tbb_hash() {}
-
-    size_t operator()(const Key& key) const
-    {
-        return tbb_hasher(key);
-    }
-};
-
 } // namespace tbb
-#endif// __TBB__concurrent_unordered_impl_H
+#endif // __TBB__concurrent_unordered_impl_H

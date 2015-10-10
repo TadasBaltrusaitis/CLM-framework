@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #ifndef __TBB_atomic_H
@@ -425,7 +417,7 @@ struct atomic: internal::atomic_impl<T> {
 #if __TBB_ATOMIC_CTORS
     #define __TBB_DECL_ATOMIC(T)                                                                    \
         template<> struct atomic<T>: internal::atomic_impl_with_arithmetic<T,T,char> {              \
-            atomic() = default;                                                                             \
+            atomic() = default;                                                                     \
             constexpr atomic(T arg): internal::atomic_impl_with_arithmetic<T,T,char>(arg) {}        \
                                                                                                     \
             T operator=( T rhs ) {return store_with_release(rhs);}                                  \
@@ -458,7 +450,7 @@ __TBB_DECL_ATOMIC(unsigned long)
    perspective of /Wp64. */
 #define __TBB_DECL_ATOMIC_ALT(T,U) \
     template<> struct atomic<T>: internal::atomic_impl_with_arithmetic<T,T,char> {             \
-        atomic() = default ;                                                                            \
+        atomic() = default ;                                                                   \
         constexpr atomic(T arg): internal::atomic_impl_with_arithmetic<T,T,char>(arg) {}       \
         T operator=( U rhs ) {return store_with_release(T(rhs));}                              \
         atomic<T>& operator=( const atomic<T>& rhs ) {store_with_release(rhs); return *this;}  \
@@ -527,10 +519,10 @@ template <memory_semantics M, typename T>
 T load ( const atomic<T>& a ) { return a.template load<M>(); }
 
 template <memory_semantics M, typename T>
-void store ( atomic<T>& a, T value ) { return a.template store<M>(value); }
+void store ( atomic<T>& a, T value ) { a.template store<M>(value); }
 
 namespace interface6{
-//! Make an atomic for use in an initialization (list), as an alternative to zero-initializaton or normal assignment.
+//! Make an atomic for use in an initialization (list), as an alternative to zero-initialization or normal assignment.
 template<typename T>
 atomic<T> make_atomic(T t) {
     atomic<T> a;
@@ -541,6 +533,12 @@ atomic<T> make_atomic(T t) {
 using interface6::make_atomic;
 
 namespace internal {
+template<memory_semantics M, typename T >
+void swap(atomic<T> & lhs, atomic<T> & rhs){
+    T tmp = load<M>(lhs);
+    store<M>(lhs,load<M>(rhs));
+    store<M>(rhs,tmp);
+}
 
 // only to aid in the gradual conversion of ordinary variables to proper atomics
 template<typename T>

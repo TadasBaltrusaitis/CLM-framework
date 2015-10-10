@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #ifndef __TBB_pipeline_H 
@@ -34,8 +26,7 @@
 #include "tbb_allocator.h"
 #include <cstddef>
 
-//TODO: consider more accurate method to check if need to implement <type_trais> ourself
-#if !TBB_IMPLEMENT_CPP0X
+#if __TBB_CPP11_TYPE_PROPERTIES_PRESENT || __TBB_TR1_TYPE_PROPERTIES_IN_STD_PRESENT
 #include <type_traits>
 #endif
 
@@ -216,7 +207,9 @@ public:
 protected:
     thread_bound_filter(mode filter_mode): 
          filter(static_cast<mode>(filter_mode | filter::filter_is_bound))
-    {}
+    {
+        __TBB_ASSERT(filter_mode & filter::filter_is_serial, "thread-bound filters must be serial");
+    }
 public:
     //! If a data item is available, invoke operator() on that item.  
     /** This interface is non-blocking.
@@ -328,9 +321,13 @@ namespace internal {
 
 template<typename T> struct tbb_large_object {enum { value = sizeof(T) > sizeof(void *) }; };
 
-#if TBB_IMPLEMENT_CPP0X
-// cannot use SFINAE in current compilers.  Explicitly list the types we wish to be
-// placed as-is in the pipeline input_buffers.
+// Obtain type properties in one or another way
+#if   __TBB_CPP11_TYPE_PROPERTIES_PRESENT
+template<typename T> struct tbb_trivially_copyable { enum { value = std::is_trivially_copyable<T>::value }; };
+#elif __TBB_TR1_TYPE_PROPERTIES_IN_STD_PRESENT
+template<typename T> struct tbb_trivially_copyable { enum { value = std::has_trivial_copy_constructor<T>::value }; };
+#else
+// Explicitly list the types we wish to be placed as-is in the pipeline input_buffers.
 template<typename T> struct tbb_trivially_copyable { enum { value = false }; };
 template<typename T> struct tbb_trivially_copyable <T*> { enum { value = true }; };
 template<> struct tbb_trivially_copyable <short> { enum { value = true }; };
@@ -341,13 +338,7 @@ template<> struct tbb_trivially_copyable <long> { enum { value = !tbb_large_obje
 template<> struct tbb_trivially_copyable <unsigned long> { enum { value = !tbb_large_object<long>::value }; };
 template<> struct tbb_trivially_copyable <float> { enum { value = !tbb_large_object<float>::value }; };
 template<> struct tbb_trivially_copyable <double> { enum { value = !tbb_large_object<double>::value }; };
-#else
-#if __GNUC__==4 && __GNUC_MINOR__>=4 && __GXX_EXPERIMENTAL_CXX0X__
-template<typename T> struct tbb_trivially_copyable { enum { value = std::has_trivial_copy_constructor<T>::value }; };
-#else
-template<typename T> struct tbb_trivially_copyable { enum { value = std::is_trivially_copyable<T>::value }; };
-#endif //
-#endif // TBB_IMPLEMENT_CPP0X
+#endif // Obtaining type properties
 
 template<typename T> struct is_large_object {enum { value = tbb_large_object<T>::value || !tbb_trivially_copyable<T>::value }; };
 
@@ -604,6 +595,7 @@ class filter_t {
     template<typename T_, typename V_, typename U_>
     friend filter_t<T_,U_> operator& (const filter_t<T_,V_>& , const filter_t<V_,U_>& );
 public:
+    // TODO: add move-constructors, move-assignment, etc. where C++11 is available.
     filter_t() : root(NULL) {}
     filter_t( const filter_t<T,U>& rhs ) : root(rhs.root) {
         if( root ) root->add_ref();
