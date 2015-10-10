@@ -71,6 +71,8 @@
 #  endif
 #endif
 
+//! @cond IGNORED
+
 namespace cv
 {
 #ifdef HAVE_TBB
@@ -127,54 +129,12 @@ namespace cv
     CV_EXPORTS const char* currentParallelFramework();
 } //namespace cv
 
-#define CV_INIT_ALGORITHM(classname, algname, memberinit) \
-    static inline ::cv::Algorithm* create##classname##_hidden() \
-    { \
-        return new classname; \
-    } \
-    \
-    static inline ::cv::Ptr< ::cv::Algorithm> create##classname##_ptr_hidden() \
-    { \
-        return ::cv::makePtr<classname>(); \
-    } \
-    \
-    static inline ::cv::AlgorithmInfo& classname##_info() \
-    { \
-        static ::cv::AlgorithmInfo classname##_info_var(algname, create##classname##_hidden); \
-        return classname##_info_var; \
-    } \
-    \
-    static ::cv::AlgorithmInfo& classname##_info_auto = classname##_info(); \
-    \
-    ::cv::AlgorithmInfo* classname::info() const \
-    { \
-        static volatile bool initialized = false; \
-        \
-        if( !initialized ) \
-        { \
-            initialized = true; \
-            classname obj; \
-            memberinit; \
-        } \
-        return &classname##_info(); \
-    }
-
-
-
 /****************************************************************************************\
 *                                  Common declarations                                   *
 \****************************************************************************************/
 
 /* the alignment of all the allocated buffers */
 #define  CV_MALLOC_ALIGN    16
-
-#ifdef __GNUC__
-#  define CV_DECL_ALIGNED(x) __attribute__ ((aligned (x)))
-#elif defined _MSC_VER
-#  define CV_DECL_ALIGNED(x) __declspec(align(x))
-#else
-#  define CV_DECL_ALIGNED(x)
-#endif
 
 /* IEEE754 constants and macros */
 #define  CV_TOGGLE_FLT(x) ((x)^((int)(x) < 0 ? 0x7fffffff : 0))
@@ -204,6 +164,27 @@ namespace cv
 CV_EXPORTS void scalarToRawData(const cv::Scalar& s, void* buf, int type, int unroll_to = 0);
 }
 
+// property implementation macros
+
+#define CV_IMPL_PROPERTY_RO(type, name, member) \
+    inline type get##name() const { return member; }
+
+#define CV_HELP_IMPL_PROPERTY(r_type, w_type, name, member) \
+    CV_IMPL_PROPERTY_RO(r_type, name, member) \
+    inline void set##name(w_type val) { member = val; }
+
+#define CV_HELP_WRAP_PROPERTY(r_type, w_type, name, internal_name, internal_obj) \
+    r_type get##name() const { return internal_obj.get##internal_name(); } \
+    void set##name(w_type val) { internal_obj.set##internal_name(val); }
+
+#define CV_IMPL_PROPERTY(type, name, member) CV_HELP_IMPL_PROPERTY(type, type, name, member)
+#define CV_IMPL_PROPERTY_S(type, name, member) CV_HELP_IMPL_PROPERTY(type, const type &, name, member)
+
+#define CV_WRAP_PROPERTY(type, name, internal_name, internal_obj)  CV_HELP_WRAP_PROPERTY(type, type, name, internal_name, internal_obj)
+#define CV_WRAP_PROPERTY_S(type, name, internal_name, internal_obj) CV_HELP_WRAP_PROPERTY(type, const type &, name, internal_name, internal_obj)
+
+#define CV_WRAP_SAME_PROPERTY(type, name, internal_obj) CV_WRAP_PROPERTY(type, name, name, internal_obj)
+#define CV_WRAP_SAME_PROPERTY_S(type, name, internal_obj) CV_WRAP_PROPERTY_S(type, name, name, internal_obj)
 
 /****************************************************************************************\
 *                     Structures and macros for integration with IPP                     *
@@ -300,5 +281,16 @@ typedef enum CvStatus
     CV_OK                       =   CV_NO_ERR
 }
 CvStatus;
+
+#ifdef HAVE_TEGRA_OPTIMIZATION
+namespace tegra {
+
+CV_EXPORTS bool useTegra();
+CV_EXPORTS void setUseTegra(bool flag);
+
+}
+#endif
+
+//! @endcond
 
 #endif // __OPENCV_CORE_PRIVATE_HPP__
