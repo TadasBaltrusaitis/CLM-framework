@@ -34,7 +34,7 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\3rdParty\dlib\dlib.props" />
-    <Import Project="..\..\3rdParty\boost\boost_vs2012d.props" />
+    <Import Project="..\..\3rdParty\boost\boost_d.props" />
     <Import Project="..\..\3rdParty\OpenCV3.0\openCV3.0d.props" />
     <Import Project="..\..\3rdParty\tbb\tbb_d.props" />
   </ImportGroup>
@@ -42,7 +42,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\3rdParty\dlib\dlib.props" />
     <Import Project="..\..\3rdParty\tbb\tbb.props" />
-    <Import Project="..\..\3rdParty\boost\boost_vs2012.props" />
+    <Import Project="..\..\3rdParty\boost\boost.props" />
     <Import Project="..\..\3rdParty\OpenCV3.0\openCV3.0.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
