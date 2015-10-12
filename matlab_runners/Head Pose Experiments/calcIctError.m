@@ -1,0 +1,69 @@
+function [meanError, all_rot_preds, all_rot_gts, meanErrors, all_errors, rels_all] = calcIctError(resDir, gtDir)
+%CALCICTERROR Summary of this function goes here
+%   Detailed explanation goes here
+
+    polhemus = 'polhemusNorm.csv';
+
+    sequences = dir([resDir '*.txt']);
+
+    rotMeanErr = zeros(numel(sequences),3);
+    rotRMS = zeros(numel(sequences),3);
+    rot = cell(1,numel(sequences));
+    rotg = cell(1,numel(sequences));
+
+    rels_all = [];
+
+    for i = 1:numel(sequences)
+
+        [~, name,~] = fileparts(sequences(i).name);
+        [frame rels sc tx ty tz rx ry rz] = textread([resDir '/' sequences(i).name], '%f %f %f %f %f %f %f %f %f');
+        [txg tyg tzg rxg ryg rzg] =  textread([gtDir name '/'  polhemus], '%f,%f,%f,%f,%f,%f');
+
+        % the reliabilities of head pose
+        rels_all = cat(1, rels_all, rels);
+
+        rot{i} = [rx ry rz];
+        
+        rotg{i} = [rxg ryg rzg];
+        
+        % Correct the first frame so it corresponds to (0,0,0), as slightly
+        % different pose might be assumed frontal and this corrects for
+        % that
+                
+        % Work out the correction matrix for ground truth
+        rot_corr_gt = Euler2Rot(rotg{i}(1,:));        
+        for r_e = 1:size(rotg{i},1)
+            rot_curr_gt = Euler2Rot(rotg{i}(r_e,:));
+            rot_new_gt = rot_corr_gt' * rot_curr_gt;
+            rotg{i}(r_e,:) = Rot2Euler(rot_new_gt);
+        end
+        
+        % Work out the correction matrix for estimates
+        rot_corr_est = Euler2Rot(rot{i}(1,:));        
+        for r_e = 1:size(rot{i},1)
+            rot_curr_est = Euler2Rot(rot{i}(r_e,:));
+            rot_new_est = rot_corr_est' * rot_curr_est;
+            rot{i}(r_e,:) = Rot2Euler(rot_new_est);
+        end
+        
+        % Convert the ground truth and estimates to degrees
+        rot{i} = rot{i} * (180/ pi);
+        rotg{i} = rotg{i} * (180/ pi);
+
+        % Now compute the errors
+        rotMeanErr(i,:) = mean(abs((rot{i}(:,:)-rotg{i}(:,:))));
+        rotRMS(i,:) = sqrt(mean(((rot{i}(:,:)-rotg{i}(:,:))).^2)); 
+        
+    end
+    allRot = cell2mat(rot');
+    allRotg = cell2mat(rotg');
+    meanErrors = rotMeanErr;
+    meanError = mean(abs((allRot(:,:)-allRotg(:,:))));
+    all_errors = abs(allRot-allRotg);
+    rmsError = sqrt(mean(((allRot(:,:)-allRotg(:,:))).^2)); 
+    errorVariance = var(abs((allRot(:,:)-allRotg(:,:))));  
+
+    all_rot_preds = allRot;
+    all_rot_gts = allRotg;
+end
+

@@ -1,3 +1,0 @@
-Model, mean,  median
-CLNF:  0.0573,   0.0526
-CLM:   0.0683,   0.0603

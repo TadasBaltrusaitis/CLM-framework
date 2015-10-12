@@ -64,3 +64,14 @@ exe/HeadPose-file/obj/Debug/
 exe/CLM-framework-GUI/obj/
 lib/local/OpenCVWrappers/Release/
 matlab_runners/AU_preds/
+matlab_runners/Feature Point Experiments/out_wild_clnf_wild/
+matlab_runners/Feature Point Experiments/out_wild_clnf/
+matlab_runners/Feature Point Experiments/out_wild_svr/
+matlab_runners/Feature Point Experiments/out_wild_svr_wild/
+matlab_runners/Demos/output_features_vid/
+matlab_runners/Demos/demo_vid/
+matlab_runners/Demos/demo_img/
+matlab_runners/Action Unit Experiments/AU_preds/
+matlab_runners/Demos/output_features_seq/
+matlab_runners/Feature Point Experiments/yt_features/
+matlab_runners/Feature Point Experiments/yt_features_clm/
