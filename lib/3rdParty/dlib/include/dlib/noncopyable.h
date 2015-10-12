@@ -10,7 +10,7 @@
 #ifndef BOOST_NONCOPYABLE_HPP_INCLUDED
 #define BOOST_NONCOPYABLE_HPP_INCLUDED
 
-namespace boost 
+namespace dlib 
 {
 
     namespace noncopyable_  // protection from unintended ADL
@@ -40,7 +40,7 @@ namespace boost
 
 namespace dlib
 {
-    using boost::noncopyable;
+    using dlib::noncopyable;
 }
 
 #endif  // DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED

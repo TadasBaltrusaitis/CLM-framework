@@ -9,9 +9,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\boost\x86\vc11\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_filesystem-vc110-mt-1_54.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libboost_filesystem-vc110-mt-1_59.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-	
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
