@@ -75,3 +75,5 @@ matlab_runners/Action Unit Experiments/AU_preds/
 matlab_runners/Demos/output_features_seq/
 matlab_runners/Feature Point Experiments/yt_features/
 matlab_runners/Feature Point Experiments/yt_features_clm/
+exe/SimpleCLM/output_vids/
+exe/SimpleCLM/output_features/
