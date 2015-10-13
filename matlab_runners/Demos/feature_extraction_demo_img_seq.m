@@ -37,7 +37,11 @@ for i=1:numel(in_dirs)
     
     output_shape_params = [output name '.params.txt'];
     
+    output_aus = [output name '_au.txt'];
+    
     command = cat(2, command, ['-asvid -fdir "' in_dirs{i} '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"' ' -of3D "' outputFile_3Dfp '"']);
+    
+    command = cat(2, command, [' -oaus "' output_aus '" ']);
     
     command = cat(2, command, [' -simalignvid "' output_avi_aligned '" -hogalign "' outputHOG_aligned '"' ' -oparams "' output_shape_params '"']);    
                  

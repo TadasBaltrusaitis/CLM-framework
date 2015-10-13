@@ -627,7 +627,7 @@ int main (int argc, char **argv)
 		{
 			params_output_file.open(params_output_files[f_n], ios_base::out);
 
-			params_output_file << "frame, success, scale, tx, ty, rx, ry, rz";
+			params_output_file << "frame, success, scale, rx, ry, rz, tx, ty";
 			for(int i = 0; i < clm_model.pdm.NumberOfModes(); ++i)
 			{
 
@@ -816,12 +816,13 @@ int main (int argc, char **argv)
 				CLMTracker::Draw(captured_image, clm_model);
 				//CLMTracker::Draw(captured_image, clm_model);
 
-				if(detection_certainty > 1)
-					detection_certainty = 1;
-				if(detection_certainty < -1)
-					detection_certainty = -1;
+				double vis_certainty = detection_certainty;
+				if (vis_certainty > 1)
+					vis_certainty = 1;
+				if (vis_certainty < -1)
+					vis_certainty = -1;
 
-				detection_certainty = (detection_certainty + 1)/(visualisation_boundary +1);
+				vis_certainty = (vis_certainty + 1) / (visualisation_boundary + 1);
 
 				// A rough heuristic for box around the face width
 				int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
@@ -829,7 +830,7 @@ int main (int argc, char **argv)
 				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
 
 				// Draw it in reddish if uncertain, blueish if certain
-				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
+				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
 			}
 			
