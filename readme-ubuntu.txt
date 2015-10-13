@@ -30,8 +30,7 @@ Need to do the following:
 	make -j2
 	sudo make install	
 	
-5. Get Boost: sudo apt-get install libboost1.53-all-dev
-	alternatively: sudo apt-get install libboost-all-dev
+5. Get Boost: sudo apt-get install libboost-all-dev
 
 6. Make the actual CLM-framework and compile it using
 	cd CLM-framework	
@@ -52,6 +51,9 @@ for multiple faces (face detection slows it a bit):
 for feature extraction (i.e. HOG and similarity aligned faces amongst landmark locations and pose files):
 	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"
 
+for Action Unit extraction	
+	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -oaus "output_features/default_au.txt"
+	
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
 

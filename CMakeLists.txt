@@ -46,7 +46,7 @@ endif(WIN32)
 
 if(UNIX)
 	find_package( OpenCV 3.0 REQUIRED )
-	find_package( Boost REQUIRED COMPONENTS filesystem system)
+	find_package( Boost 1.5.9 REQUIRED COMPONENTS filesystem system)
 	MESSAGE("Boost information:") 
 	MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
 	MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
