@@ -43,4 +43,3 @@ for i=1:numel(in_files)
 end
 
 dos(command);
-chdir(oldDir);
