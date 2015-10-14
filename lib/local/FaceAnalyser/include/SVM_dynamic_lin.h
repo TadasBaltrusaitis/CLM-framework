@@ -52,7 +52,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <cv.h>
+#include <opencv2/core/core.hpp>
 
 namespace FaceAnalysis
 {

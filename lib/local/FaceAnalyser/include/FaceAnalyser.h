@@ -54,7 +54,7 @@
 #include <string>
 #include <vector>
 
-#include <cv.h>
+#include <opencv2/core/core.hpp>
 
 #include "CLM_core.h"
 
@@ -94,7 +94,7 @@ public:
 	void GetLatestNeutralHOG(Mat_<double>& hog_descriptor, int& num_rows, int& num_cols);
 	void GetLatestNeutralFace(Mat& image);
 	
-	Mat_<int> FaceAnalyser::GetTriangulation();
+	Mat_<int> GetTriangulation();
 
 	Mat_<uchar> GetLatestAlignedFaceGrayscale();
 	
@@ -206,7 +206,7 @@ private:
 	std::vector<std::pair<std::string, double>> PredictCurrentAUsClass(int view);
 
 	// special step for online (rather than offline AU prediction)
-	std::vector<pair<string, double>> FaceAnalyser::CorrectOnlineAUs(std::vector<std::pair<std::string, double>> predictions_orig, int view, bool dyn_shift = false, bool dyn_scale = false, bool update_track = true, bool clip_values = false);
+	std::vector<pair<string, double>> CorrectOnlineAUs(std::vector<std::pair<std::string, double>> predictions_orig, int view, bool dyn_shift = false, bool dyn_scale = false, bool update_track = true, bool clip_values = false);
 
 	void ReadAU(std::string au_location);
 
