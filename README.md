@@ -17,6 +17,6 @@ http://youtu.be/LDBu0BLKVDw
 
 ## Instalation
 
-For Windows systems open and compile CLM_framework_vs2012.sln (requires VisualStudio 2012). All the required libraries are included with the code.
+For Windows systems open and compile CLM_framework_vs2012.sln (requires VisualStudio 2012) or CLM_framework_vs2013.sln (requires VisualStudio 2013). All the required libraries are included with the code.
 
 For Unix based systems follow readme-ubuntu.txt
