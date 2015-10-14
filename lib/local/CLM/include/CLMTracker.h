@@ -93,15 +93,15 @@ namespace CLMTracker
 
 	// The head pose returned is in camera space, however, the orientation can be either with respect to camera itself or the camera plane
 	// The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-	Vec6d GetPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
-	Vec6d GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params);
+	Vec6d GetPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params);
 	
 	// Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to orthographic camera issue
 	// This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
 	// These methods attempt to correct for that (Experimental)
 	// The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-	Vec6d GetCorrectedPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
-	Vec6d GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params);
+	Vec6d GetCorrectedPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params);
 
 	//===========================================================================
 

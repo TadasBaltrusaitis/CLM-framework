@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// Copyright (C) 2015, University of Cambridge,
 // all rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -35,7 +35,7 @@
 
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
-//       reports and manuals, must cite one of the following works:
+//       reports and manuals, must cite one of the following works (the related one preferrably):
 //
 //       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 3D
 //       Constrained Local Model for Rigid and Non-Rigid Facial Tracking.
@@ -44,6 +44,15 @@
 //       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
+//
+//       Tadas Baltrusaitis, Marwa Mahmoud, and Peter Robinson.
+//		 Cross-dataset learning and person-specific normalisation for automatic Action Unit detection
+//       Facial Expression Recognition and Analysis Challenge 2015,
+//       IEEE International Conference on Automatic Face and Gesture Recognition, 2015
+//
+//       Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling
+//		 Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+//       in IEEE International. Conference on Computer Vision (ICCV), 2015
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +68,7 @@
 
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
+#include <GazeEstimation.h>
 
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
@@ -382,7 +392,9 @@ int main (int argc, char **argv)
     float fx = 500, fy = 500, cx = 0, cy = 0;
 			
 	CLMTracker::CLMParameters clm_parameters(arguments);
-			
+	// TODO a command line argument
+	clm_parameters.track_gaze = true;
+
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
@@ -771,6 +783,18 @@ int main (int argc, char **argv)
 			else
 			{
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
+			}
+
+			if (clm_parameters.track_gaze)
+			{
+
+				Point3f gazeDirection0 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, true);
+				Point3f gazeDirection1 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, false);
+
+				if (detection_success)
+				{
+					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				}
 			}
 
 			if(hog_output_file.is_open())

@@ -127,7 +127,7 @@ void PDM::Clamp(cv::Mat_<float>& local_params, Vec6d& params_global, const CLMPa
 }
 //===========================================================================
 // Compute the 3D representation of shape (in object space) using the local parameters
-void PDM::CalcShape3D(cv::Mat_<double>& out_shape, const Mat_<double>& p_local)
+void PDM::CalcShape3D(cv::Mat_<double>& out_shape, const Mat_<double>& p_local) const
 {
 	out_shape.create(mean_shape.rows, mean_shape.cols);
 	out_shape = mean_shape + princ_comp*p_local;

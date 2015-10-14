@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLM_vs2013", "exe\SimpleCLM\SimpleCLM_vs2013.vcxproj", "{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLMImg_vs2013", "exe\SimpleCLMImg\SimpleCLMImg_vs2013.vcxproj", "{DDC3535E-526C-44EC-9DF4-739E2D3A323B}"
@@ -17,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlib", "lib\3rdParty\dlib\d
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FeatureExtraction_vs2013", "exe\FeatureExtraction\FeatureExtraction_vs2013.vcxproj", "{8A23C00D-767D-422D-89A3-CF225E3DAB4B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalyser", "lib\local\FaceAnalyser\FaceAnalyser_vs2013.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalyser_vs2013", "lib\local\FaceAnalyser\FaceAnalyser_vs2013.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,5 +62,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
