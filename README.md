@@ -2,11 +2,13 @@
 
 Framework for various Constrained Local Model based face tracking and landmark detection algorithms and their extensions/applications. Includes CLM, CLM-Z and CLNF algorithms. More details can be found in Readme.txt.
 
-The code was written mainly by Tadas Baltrusaitis during his time at the Computer Laboratory, University of Cambridge, and Institute for Creative Technologies, University of Southern California.
+The framework also includes brand new Facial Action Unit detection in videos system (see Readme_action_units.txt).
+
+The code was written mainly by Tadas Baltrusaitis during his time at the Language Technologies Institute at the Carnegie Mellon University; Computer Laboratory, University of Cambridge; and Institute for Creative Technologies, University of Southern California.
 
 Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code.
 
-The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.2.0 and I recommend you download it.
+The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.0 and I recommend you download it.
 
 Some examples of the system in action:
 http://youtu.be/V7rV0uy7heQ
