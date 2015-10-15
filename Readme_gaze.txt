@@ -2,14 +2,12 @@ For Windows this software comes prepackaged with all the necessary binaries and 
 
 --------------------------- Matlab example ---------------------------------
 
-An example of how to use the code to extract facial action units and other features can be found in:
-matlab_runners/Demos/feature_extraction_demo_vid.m
-and
-matlab_runners/Demos/feature_extraction_demo_img_seq.m
+An example of how to use the code to extract gaze can be found in:
+matlab_runners/Demos/gaze_extraction_demo_vid.m
 
-The output AUs will be found in a specified CSV file (see command line arguments) that contains the AU predictions for intensity (e.g. AU01_r) and occurence (e.g. AU04_c).
+The output gaze vectors (for each eye) will be found in a specified CSV file (see command line arguments).
 
--------- Command line parameters for Action Unit and other feature extraction (FeatureExtraction) --------------------------
+-------- Command line parameters for FeatureExtraction executable --------------------------
 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values and no output)
 
@@ -41,6 +39,6 @@ Parameters for output
 //       in Facial Expression Recognition and Analysis Challenge 2015, IEEE International Conference on Automatic Face and Gesture Recognition, 2015
 //
 //
-//       Erroll Wood, Tadas Baltru≈°aitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling
+//       Erroll Wood, Tadas Baltruöaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling
 //	 Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
 //       in IEEE International. Conference on Computer Vision (ICCV), 2015

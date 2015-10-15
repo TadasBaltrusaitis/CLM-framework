@@ -772,10 +772,7 @@ int main (int argc, char **argv)
 				gazeDirection0 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, true);
 				gazeDirection1 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, false);
 
-				if (detection_success)
-				{
-					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
-				}
+
 			}
 
 			// Do face alignment
@@ -878,6 +875,10 @@ int main (int argc, char **argv)
 				// Draw it in reddish if uncertain, blueish if certain
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
+				if (detection_success)
+				{
+					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				}
 			}
 			
 			// Work out the framerate
