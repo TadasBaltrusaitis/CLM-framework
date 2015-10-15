@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #ifndef __TBB_concurrent_hash_map_H
@@ -40,6 +32,7 @@
 #include <iterator>
 #include <utility>      // Need std::pair
 #include <cstring>      // Need std::memset
+#include <algorithm>    // Need std::swap
 
 #if !TBB_USE_EXCEPTIONS && _MSC_VER
     #pragma warning (pop)
@@ -49,10 +42,9 @@
 #include "tbb_allocator.h"
 #include "spin_rw_mutex.h"
 #include "atomic.h"
-#include "aligned_space.h"
 #include "tbb_exception.h"
 #include "tbb_profiling.h"
-#include "internal/_concurrent_unordered_impl.h" // Need tbb_hasher
+#include "internal/_tbb_hash_compare_impl.h"
 #if __TBB_INITIALIZER_LISTS_PRESENT
 #include <initializer_list>
 #endif
@@ -64,13 +56,6 @@
 #endif
 
 namespace tbb {
-
-//! hash_compare that is default argument for concurrent_hash_map
-template<typename Key>
-struct tbb_hash_compare {
-    static size_t hash( const Key& a ) { return tbb_hasher(a); }
-    static bool equal( const Key& a, const Key& b ) { return a == b; }
-};
 
 namespace interface5 {
 
@@ -306,12 +291,13 @@ namespace interface5 {
         }
         //! Swap hash_map_bases
         void internal_swap(hash_map_base &table) {
-            std::swap(this->my_mask, table.my_mask);
-            std::swap(this->my_size, table.my_size);
+            using std::swap;
+            swap(this->my_mask, table.my_mask);
+            swap(this->my_size, table.my_size);
             for(size_type i = 0; i < embedded_buckets; i++)
-                std::swap(this->my_embedded_segment[i].node_list, table.my_embedded_segment[i].node_list);
+                swap(this->my_embedded_segment[i].node_list, table.my_embedded_segment[i].node_list);
             for(size_type i = embedded_block; i < pointers_per_table; i++)
-                std::swap(this->my_table[i], table.my_table[i]);
+                swap(this->my_table[i], table.my_table[i]);
         }
     };
 
@@ -478,19 +464,6 @@ namespace interface5 {
             my_midpoint(r.my_midpoint),
             my_grainsize(r.my_grainsize)
         {}
-#if TBB_DEPRECATED
-        //! Init range with iterators and grainsize specified
-        hash_map_range( const Iterator& begin_, const Iterator& end_, size_type grainsize_ = 1 ) :
-            my_begin(begin_),
-            my_end(end_),
-            my_grainsize(grainsize_)
-        {
-            if(!my_end.my_index && !my_end.my_bucket) // end
-                my_end.my_index = my_end.my_map->my_mask + 1;
-            set_midpoint();
-            __TBB_ASSERT( grainsize_>0, "grainsize must be positive" );
-        }
-#endif
         //! Init range with container and grainsize specified
         hash_map_range( const map_type &map, size_type grainsize_ = 1 ) :
             my_begin( Iterator( map, 0, map.my_embedded_segment, map.my_embedded_segment->node_list ) ),
@@ -527,6 +500,12 @@ namespace interface5 {
 
     } // internal
 //! @endcond
+
+#if _MSC_VER && !defined(__INTEL_COMPILER)
+    // Suppress "conditional expression is constant" warning.
+    #pragma warning( push )
+    #pragma warning( disable: 4127 )
+#endif
 
 //! Unordered map from Key to T.
 /** concurrent_hash_map is associative container with concurrent access.
@@ -593,6 +572,19 @@ protected:
         value_type item;
         node( const Key &key ) : item(key, T()) {}
         node( const Key &key, const T &t ) : item(key, t) {}
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+        node( const Key &key, T &&t ) : item(key, std::move(t)) {}
+        node( value_type&& i ) : item(std::move(i)){}
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+        template<typename... Args>
+        node( Args&&... args ) : item(std::forward<Args>(args)...) {}
+#if __TBB_COPY_FROM_NON_CONST_REF_BROKEN
+        node( value_type& i ) : item(const_cast<const value_type&>(i)) {}
+#endif //__TBB_COPY_FROM_NON_CONST_REF_BROKEN
+#endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#endif //__TBB_CPP11_RVALUE_REF_PRESENT
+        node( const value_type& i ) : item(i) {}
+
         // exception-safe allocation, see C++ Standard 2003, clause 5.3.4p17
         void *operator new( size_t /*size*/, node_allocator_type &a ) {
             void *ptr = a.allocate(1);
@@ -607,6 +599,31 @@ protected:
     void delete_node( node_base *n ) {
         my_allocator.destroy( static_cast<node*>(n) );
         my_allocator.deallocate( static_cast<node*>(n), 1);
+    }
+
+    static node* allocate_node_copy_construct(node_allocator_type& allocator, const Key &key, const T * t){
+        return  new( allocator ) node(key, *t);
+    }
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    static node* allocate_node_move_construct(node_allocator_type& allocator, const Key &key, const T * t){
+        return  new( allocator ) node(key, std::move(*const_cast<T*>(t)));
+    }
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    template<typename... Args>
+    static node* allocate_node_emplace_construct(node_allocator_type& allocator, Args&&... args){
+        return  new( allocator ) node(std::forward<Args>(args)...);
+    }
+#endif //#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#endif
+
+    static node* allocate_node_default_construct(node_allocator_type& allocator, const Key &key, const T * ){
+        return  new( allocator ) node(key);
+    }
+
+    static node* do_not_allocate_node(node_allocator_type& , const Key &, const T * ){
+        __TBB_ASSERT(false,"this dummy function should not be called");
+        return NULL;
     }
 
     node *search_bucket( const key_type &key, bucket *b ) const {
@@ -673,6 +690,16 @@ protected:
         }
     }
 
+    struct call_clear_on_leave {
+        concurrent_hash_map* my_ch_map;
+        call_clear_on_leave( concurrent_hash_map* a_ch_map ) : my_ch_map(a_ch_map) {}
+        void dismiss() {my_ch_map = 0;}
+        ~call_clear_on_leave(){
+            if (my_ch_map){
+                my_ch_map->clear();
+            }
+        }
+    };
 public:
 
     class accessor;
@@ -685,7 +712,7 @@ public:
         typedef const typename concurrent_hash_map::value_type value_type;
 
         //! True if result is empty.
-        bool empty() const {return !my_node;}
+        bool empty() const { return !my_node; }
 
         //! Set to null
         void release() {
@@ -738,27 +765,49 @@ public:
     };
 
     //! Construct empty table.
-    concurrent_hash_map(const allocator_type &a = allocator_type())
+    concurrent_hash_map( const allocator_type &a = allocator_type() )
         : internal::hash_map_base(), my_allocator(a)
     {}
 
     //! Construct empty table with n preallocated buckets. This number serves also as initial concurrency level.
-    concurrent_hash_map(size_type n, const allocator_type &a = allocator_type())
+    concurrent_hash_map( size_type n, const allocator_type &a = allocator_type() )
         : my_allocator(a)
     {
         reserve( n );
     }
 
     //! Copy constructor
-    concurrent_hash_map( const concurrent_hash_map& table, const allocator_type &a = allocator_type())
+    concurrent_hash_map( const concurrent_hash_map &table, const allocator_type &a = allocator_type() )
         : internal::hash_map_base(), my_allocator(a)
     {
         internal_copy(table);
     }
 
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    //! Move constructor
+    concurrent_hash_map( concurrent_hash_map &&table )
+        : internal::hash_map_base(), my_allocator(std::move(table.get_allocator()))
+    {
+        swap(table);
+    }
+
+    //! Move constructor 
+    concurrent_hash_map( concurrent_hash_map &&table, const allocator_type &a )
+        : internal::hash_map_base(), my_allocator(a)
+    {
+        if (a == table.get_allocator()){
+            this->swap(table);
+        }else{
+            call_clear_on_leave scope_guard(this);
+            internal_copy(std::make_move_iterator(table.begin()), std::make_move_iterator(table.end()));
+            scope_guard.dismiss();
+        }
+    }
+#endif //__TBB_CPP11_RVALUE_REF_PRESENT
+
     //! Construction with copying iteration range and given allocator instance
     template<typename I>
-    concurrent_hash_map(I first, I last, const allocator_type &a = allocator_type())
+    concurrent_hash_map( I first, I last, const allocator_type &a = allocator_type() )
         : my_allocator(a)
     {
         reserve( std::distance(first, last) ); // TODO: load_factor?
@@ -767,7 +816,7 @@ public:
 
 #if __TBB_INITIALIZER_LISTS_PRESENT
     //! Construct empty table with n preallocated buckets. This number serves also as initial concurrency level.
-    concurrent_hash_map(const std::initializer_list<value_type> &il, const allocator_type &a = allocator_type())
+    concurrent_hash_map( std::initializer_list<value_type> il, const allocator_type &a = allocator_type() )
         : my_allocator(a)
     {
         reserve(il.size());
@@ -777,7 +826,7 @@ public:
 #endif //__TBB_INITIALIZER_LISTS_PRESENT
 
     //! Assignment
-    concurrent_hash_map& operator=( const concurrent_hash_map& table ) {
+    concurrent_hash_map& operator=( const concurrent_hash_map &table ) {
         if( this!=&table ) {
             clear();
             internal_copy(table);
@@ -785,9 +834,28 @@ public:
         return *this;
     }
 
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    //! Move Assignment
+    concurrent_hash_map& operator=( concurrent_hash_map &&table ) {
+        if(this != &table){
+            typedef typename tbb::internal::allocator_traits<allocator_type>::propagate_on_container_move_assignment pocma_t;
+            if(pocma_t::value || this->my_allocator == table.my_allocator) {
+                concurrent_hash_map trash (std::move(*this));
+                //TODO: swapping allocators here may be a problem, replace with single direction moving iff pocma is set
+                this->swap(table);
+            } else {
+                //do per element move
+                concurrent_hash_map moved_copy(std::move(table), this->my_allocator);
+                this->swap(moved_copy);
+            }
+        }
+        return *this;
+    }
+#endif //__TBB_CPP11_RVALUE_REF_PRESENT
+
 #if __TBB_INITIALIZER_LISTS_PRESENT
     //! Assignment
-    concurrent_hash_map& operator=( const std::initializer_list<value_type> &il ) {
+    concurrent_hash_map& operator=( std::initializer_list<value_type> il ) {
         clear();
         reserve(il.size());
         internal_copy(il.begin(), il.end());
@@ -820,12 +888,12 @@ public:
     //------------------------------------------------------------------------
     // STL support - not thread-safe methods
     //------------------------------------------------------------------------
-    iterator begin() {return iterator(*this,0,my_embedded_segment,my_embedded_segment->node_list);}
-    iterator end() {return iterator(*this,0,0,0);}
-    const_iterator begin() const {return const_iterator(*this,0,my_embedded_segment,my_embedded_segment->node_list);}
-    const_iterator end() const {return const_iterator(*this,0,0,0);}
-    std::pair<iterator, iterator> equal_range( const Key& key ) { return internal_equal_range(key, end()); }
-    std::pair<const_iterator, const_iterator> equal_range( const Key& key ) const { return internal_equal_range(key, end()); }
+    iterator begin() { return iterator( *this, 0, my_embedded_segment, my_embedded_segment->node_list ); }
+    iterator end() { return iterator( *this, 0, 0, 0 ); }
+    const_iterator begin() const { return const_iterator( *this, 0, my_embedded_segment, my_embedded_segment->node_list ); }
+    const_iterator end() const { return const_iterator( *this, 0, 0, 0 ); }
+    std::pair<iterator, iterator> equal_range( const Key& key ) { return internal_equal_range( key, end() ); }
+    std::pair<const_iterator, const_iterator> equal_range( const Key& key ) const { return internal_equal_range( key, end() ); }
 
     //! Number of items in table.
     size_type size() const { return my_size; }
@@ -843,7 +911,7 @@ public:
     allocator_type get_allocator() const { return this->my_allocator; }
 
     //! swap two instances. Iterators are invalidated
-    void swap(concurrent_hash_map &table);
+    void swap( concurrent_hash_map &table );
 
     //------------------------------------------------------------------------
     // concurrent map operations
@@ -851,63 +919,113 @@ public:
 
     //! Return count of items (0 or 1)
     size_type count( const Key &key ) const {
-        return const_cast<concurrent_hash_map*>(this)->lookup(/*insert*/false, key, NULL, NULL, /*write=*/false );
+        return const_cast<concurrent_hash_map*>(this)->lookup(/*insert*/false, key, NULL, NULL, /*write=*/false, &do_not_allocate_node );
     }
 
     //! Find item and acquire a read lock on the item.
     /** Return true if item is found, false otherwise. */
     bool find( const_accessor &result, const Key &key ) const {
         result.release();
-        return const_cast<concurrent_hash_map*>(this)->lookup(/*insert*/false, key, NULL, &result, /*write=*/false );
+        return const_cast<concurrent_hash_map*>(this)->lookup(/*insert*/false, key, NULL, &result, /*write=*/false, &do_not_allocate_node );
     }
 
     //! Find item and acquire a write lock on the item.
     /** Return true if item is found, false otherwise. */
     bool find( accessor &result, const Key &key ) {
         result.release();
-        return lookup(/*insert*/false, key, NULL, &result, /*write=*/true );
+        return lookup(/*insert*/false, key, NULL, &result, /*write=*/true, &do_not_allocate_node );
     }
 
     //! Insert item (if not already present) and acquire a read lock on the item.
     /** Returns true if item is new. */
     bool insert( const_accessor &result, const Key &key ) {
         result.release();
-        return lookup(/*insert*/true, key, NULL, &result, /*write=*/false );
+        return lookup(/*insert*/true, key, NULL, &result, /*write=*/false, &allocate_node_default_construct );
     }
 
     //! Insert item (if not already present) and acquire a write lock on the item.
     /** Returns true if item is new. */
     bool insert( accessor &result, const Key &key ) {
         result.release();
-        return lookup(/*insert*/true, key, NULL, &result, /*write=*/true );
+        return lookup(/*insert*/true, key, NULL, &result, /*write=*/true, &allocate_node_default_construct );
     }
 
     //! Insert item by copying if there is no such key present already and acquire a read lock on the item.
     /** Returns true if item is new. */
     bool insert( const_accessor &result, const value_type &value ) {
         result.release();
-        return lookup(/*insert*/true, value.first, &value.second, &result, /*write=*/false );
+        return lookup(/*insert*/true, value.first, &value.second, &result, /*write=*/false, &allocate_node_copy_construct );
     }
 
     //! Insert item by copying if there is no such key present already and acquire a write lock on the item.
     /** Returns true if item is new. */
     bool insert( accessor &result, const value_type &value ) {
         result.release();
-        return lookup(/*insert*/true, value.first, &value.second, &result, /*write=*/true );
+        return lookup(/*insert*/true, value.first, &value.second, &result, /*write=*/true, &allocate_node_copy_construct );
     }
 
     //! Insert item by copying if there is no such key present already
     /** Returns true if item is inserted. */
     bool insert( const value_type &value ) {
-        return lookup(/*insert*/true, value.first, &value.second, NULL, /*write=*/false );
+        return lookup(/*insert*/true, value.first, &value.second, NULL, /*write=*/false, &allocate_node_copy_construct );
     }
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    //! Insert item by copying if there is no such key present already and acquire a read lock on the item.
+    /** Returns true if item is new. */
+    bool insert( const_accessor &result, value_type && value ) {
+        return generic_move_insert(result, std::move(value));
+    }
+
+    //! Insert item by copying if there is no such key present already and acquire a write lock on the item.
+    /** Returns true if item is new. */
+    bool insert( accessor &result, value_type && value ) {
+        return generic_move_insert(result, std::move(value));
+    }
+
+    //! Insert item by copying if there is no such key present already
+    /** Returns true if item is inserted. */
+    bool insert( value_type && value ) {
+        return generic_move_insert(accessor_not_used(), std::move(value));
+    }
+
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    //! Insert item by copying if there is no such key present already and acquire a read lock on the item.
+    /** Returns true if item is new. */
+    template<typename... Args>
+    bool emplace( const_accessor &result, Args&&... args ) {
+        return generic_emplace(result, std::forward<Args>(args)...);
+    }
+
+    //! Insert item by copying if there is no such key present already and acquire a write lock on the item.
+    /** Returns true if item is new. */
+    template<typename... Args>
+    bool emplace( accessor &result, Args&&... args ) {
+        return generic_emplace(result, std::forward<Args>(args)...);
+    }
+
+    //! Insert item by copying if there is no such key present already
+    /** Returns true if item is inserted. */
+    template<typename... Args>
+    bool emplace( Args&&... args ) {
+        return generic_emplace(accessor_not_used(), std::forward<Args>(args)...);
+    }
+#endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#endif //__TBB_CPP11_RVALUE_REF_PRESENT
 
     //! Insert range [first, last)
     template<typename I>
-    void insert(I first, I last) {
-        for(; first != last; ++first)
+    void insert( I first, I last ) {
+        for ( ; first != last; ++first )
             insert( *first );
     }
+
+#if __TBB_INITIALIZER_LISTS_PRESENT
+    //! Insert initializer list
+    void insert( std::initializer_list<value_type> il ) {
+        insert( il.begin(), il.end() );
+    }
+#endif //__TBB_INITIALIZER_LISTS_PRESENT
 
     //! Erase item.
     /** Return true if item was erased by particularly this call. */
@@ -927,7 +1045,32 @@ public:
 
 protected:
     //! Insert or find item and optionally acquire a lock on the item.
-    bool lookup( bool op_insert, const Key &key, const T *t, const_accessor *result, bool write );
+    bool lookup(bool op_insert, const Key &key, const T *t, const_accessor *result, bool write,  node* (*allocate_node)(node_allocator_type& ,  const Key &, const T * ), node *tmp_n = 0  ) ;
+
+    struct accessor_not_used { void release(){}};
+    friend const_accessor* accessor_location( accessor_not_used const& ){ return NULL;}
+    friend const_accessor* accessor_location( const_accessor & a )      { return &a;}
+
+    friend bool is_write_access_needed( accessor const& )           { return true;}
+    friend bool is_write_access_needed( const_accessor const& )     { return false;}
+    friend bool is_write_access_needed( accessor_not_used const& )  { return false;}
+
+#if __TBB_CPP11_RVALUE_REF_PRESENT
+    template<typename Accessor>
+    bool generic_move_insert( Accessor && result, value_type && value ) {
+        result.release();
+        return lookup(/*insert*/true, value.first, &value.second, accessor_location(result), is_write_access_needed(result), &allocate_node_move_construct );
+    }
+
+#if __TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+    template<typename Accessor, typename... Args>
+    bool generic_emplace( Accessor && result, Args &&... args ) {
+        result.release();
+        node * node_ptr = allocate_node_emplace_construct(my_allocator, std::forward<Args>(args)...);
+        return lookup(/*insert*/true, node_ptr->item.first, NULL, accessor_location(result), is_write_access_needed(result), &do_not_allocate_node, node_ptr );
+    }
+#endif //__TBB_CPP11_VARIADIC_TEMPLATES_PRESENT
+#endif //__TBB_CPP11_RVALUE_REF_PRESENT
 
     //! delete item by accessor
     bool exclude( const_accessor &item_accessor );
@@ -940,7 +1083,7 @@ protected:
     void internal_copy( const concurrent_hash_map& source );
 
     template<typename I>
-    void internal_copy(I first, I last);
+    void internal_copy( I first, I last );
 
     //! Fast find when no concurrent erasure is used. For internal use inside TBB only!
     /** Return pointer to item with given key, or NULL if no such item exists.
@@ -950,7 +1093,7 @@ protected:
         hashcode_t m = (hashcode_t) itt_load_word_with_acquire( my_mask );
         node *n;
     restart:
-        __TBB_ASSERT((m&(m+1))==0, NULL);
+        __TBB_ASSERT((m&(m+1))==0, "data structure is invalid");
         bucket *b = get_bucket( h & m );
         // TODO: actually, notification is unnecessary here, just hiding double-check
         if( itt_load_word_with_acquire(b->node_list) == internal::rehash_req )
@@ -972,23 +1115,17 @@ protected:
     }
 };
 
-#if _MSC_VER && !defined(__INTEL_COMPILER)
-    // Suppress "conditional expression is constant" warning.
-    #pragma warning( push )
-    #pragma warning( disable: 4127 )
-#endif
-
 template<typename Key, typename T, typename HashCompare, typename A>
-bool concurrent_hash_map<Key,T,HashCompare,A>::lookup( bool op_insert, const Key &key, const T *t, const_accessor *result, bool write ) {
+bool concurrent_hash_map<Key,T,HashCompare,A>::lookup( bool op_insert, const Key &key, const T *t, const_accessor *result, bool write, node* (*allocate_node)(node_allocator_type& , const Key&, const T*), node *tmp_n ) {
     __TBB_ASSERT( !result || !result->my_node, NULL );
     bool return_value;
     hashcode_t const h = my_hash_compare.hash( key );
     hashcode_t m = (hashcode_t) itt_load_word_with_acquire( my_mask );
     segment_index_t grow_segment = 0;
-    node *n, *tmp_n = 0;
+    node *n;
     restart:
     {//lock scope
-        __TBB_ASSERT((m&(m+1))==0, NULL);
+        __TBB_ASSERT((m&(m+1))==0, "data structure is invalid");
         return_value = false;
         // get bucket
         bucket_accessor b( this, h & m );
@@ -999,8 +1136,7 @@ bool concurrent_hash_map<Key,T,HashCompare,A>::lookup( bool op_insert, const Key
             // [opt] insert a key
             if( !n ) {
                 if( !tmp_n ) {
-                    if(t) tmp_n = new( my_allocator ) node(key, *t);
-                    else  tmp_n = new( my_allocator ) node(key);
+                    tmp_n = allocate_node(my_allocator, key, t);
                 }
                 if( !b.is_writer() && !b.upgrade_to_writer() ) { // TODO: improved insertion
                     // Rerun search_list, in case another thread inserted the item during the upgrade.
@@ -1063,7 +1199,7 @@ template<typename I>
 std::pair<I, I> concurrent_hash_map<Key,T,HashCompare,A>::internal_equal_range( const Key& key, I end_ ) const {
     hashcode_t h = my_hash_compare.hash( key );
     hashcode_t m = my_mask;
-    __TBB_ASSERT((m&(m+1))==0, NULL);
+    __TBB_ASSERT((m&(m+1))==0, "data structure is invalid");
     h &= m;
     bucket *b = get_bucket( h );
     while( b->node_list == internal::rehash_req ) {
@@ -1146,8 +1282,10 @@ restart:
 
 template<typename Key, typename T, typename HashCompare, typename A>
 void concurrent_hash_map<Key,T,HashCompare,A>::swap(concurrent_hash_map<Key,T,HashCompare,A> &table) {
-    std::swap(this->my_allocator, table.my_allocator);
-    std::swap(this->my_hash_compare, table.my_hash_compare);
+    //TODO: respect C++11 allocator_traits<A>::propogate_on_constainer_swap
+    using std::swap;
+    swap(this->my_allocator, table.my_allocator);
+    swap(this->my_hash_compare, table.my_hash_compare);
     internal_swap(table);
 }
 
@@ -1220,7 +1358,7 @@ void concurrent_hash_map<Key,T,HashCompare,A>::rehash(size_type sz) {
 template<typename Key, typename T, typename HashCompare, typename A>
 void concurrent_hash_map<Key,T,HashCompare,A>::clear() {
     hashcode_t m = my_mask;
-    __TBB_ASSERT((m&(m+1))==0, NULL);
+    __TBB_ASSERT((m&(m+1))==0, "data structure is invalid");
 #if TBB_USE_ASSERT || TBB_USE_PERFORMANCE_WARNINGS || __TBB_STATISTICS
 #if TBB_USE_PERFORMANCE_WARNINGS || __TBB_STATISTICS
     int current_size = int(my_size), buckets = int(m)+1, empty_buckets = 0, overpopulated_buckets = 0; // usage statistics
@@ -1318,10 +1456,10 @@ template<typename I>
 void concurrent_hash_map<Key,T,HashCompare,A>::internal_copy(I first, I last) {
     hashcode_t m = my_mask;
     for(; first != last; ++first) {
-        hashcode_t h = my_hash_compare.hash( first->first );
+        hashcode_t h = my_hash_compare.hash( (*first).first );
         bucket *b = get_bucket( h & m );
         __TBB_ASSERT( b->node_list != internal::rehash_req, "Invalid bucket in destination table");
-        node *n = new( my_allocator ) node(first->first, first->second);
+        node *n = new( my_allocator ) node(*first);
         add_to_bucket( b, n );
         ++my_size; // TODO: replace by non-atomic op
     }

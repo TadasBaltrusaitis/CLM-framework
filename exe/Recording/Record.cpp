@@ -52,6 +52,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <iostream>
+
 #include <windows.h>
 
 #include <opencv2/core/core.hpp>

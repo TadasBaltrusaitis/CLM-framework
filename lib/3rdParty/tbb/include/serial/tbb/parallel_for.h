@@ -1,29 +1,21 @@
 /*
-    Copyright 2005-2013 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
 
-    This file is part of Threading Building Blocks.
+    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
+    you can redistribute it and/or modify it under the terms of the GNU General Public License
+    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
+    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See  the GNU General Public License for more details.   You should have received a copy of
+    the  GNU General Public License along with Threading Building Blocks; if not, write to the
+    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
 
-    Threading Building Blocks is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
-
-    Threading Building Blocks is distributed in the hope that it will be
-    useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Threading Building Blocks; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    As a special exception, you may use this file as part of a free software
-    library without restriction.  Specifically, if other files instantiate
-    templates or use macros or inline functions from this file, or you compile
-    this file and link it with other files to produce an executable, this
-    file does not by itself cause the resulting executable to be covered by
-    the GNU General Public License.  This exception does not however
-    invalidate any other reasons why the executable file might be covered by
-    the GNU General Public License.
+    As a special exception,  you may use this file  as part of a free software library without
+    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
+    functions from this file, or you compile this file and link it with other files to produce
+    an executable,  this file does not by itself cause the resulting executable to be covered
+    by the GNU General Public License. This exception does not however invalidate any other
+    reasons why the executable file might be covered by the GNU General Public License.
 */
 
 #ifndef __TBB_SERIAL_parallel_for_H
@@ -51,7 +43,7 @@
 
 namespace tbb {
 namespace serial {
-namespace interface6 {
+namespace interface7 {
 
 // parallel_for serial annotated implementation
 
@@ -72,10 +64,10 @@ class start_for : tbb::internal::no_copy {
 
     //! Splitting constructor used to generate children.
     /** this becomes left child.  Newly constructed object is right child. */
-    start_for( start_for& parent_, split ) :
-        my_range( parent_.my_range, split() ),
+    start_for( start_for& parent_, typename Partitioner::split_type& split_obj ) :
+        my_range( parent_.my_range, split_obj ),
         my_body( parent_.my_body ),
-        my_partition( parent_.my_partition, split() )
+        my_partition( parent_.my_partition, split_obj )
     {
     }
 
@@ -94,14 +86,15 @@ public:
 
 template< typename Range, typename Body, typename Partitioner >
 void start_for< Range, Body, Partitioner >::execute() {
-    if( !my_range.is_divisible() || !my_partition.divisions_left() ) {
+    if( !my_range.is_divisible() || !my_partition.is_divisible() ) {
         ANNOTATE_TASK_BEGIN( tbb_parallel_for_range );
         {
             my_body( my_range );
         }
         ANNOTATE_TASK_END( tbb_parallel_for_range );
     } else {
-        start_for b( *this, split() );
+        typename Partitioner::split_type split_obj;
+        start_for b( *this, split_obj );
         this->execute(); // Execute the left interval first to keep the serial order.
         b.execute();     // Execute the right interval then.
     }
@@ -111,28 +104,28 @@ void start_for< Range, Body, Partitioner >::execute() {
 /** @ingroup algorithms **/
 template<typename Range, typename Body>
 void parallel_for( const Range& range, const Body& body ) {
-    serial::interface6::start_for<Range,Body,const __TBB_DEFAULT_PARTITIONER>::run(range,body,__TBB_DEFAULT_PARTITIONER());
+    serial::interface7::start_for<Range,Body,const __TBB_DEFAULT_PARTITIONER>::run(range,body,__TBB_DEFAULT_PARTITIONER());
 }
 
 //! Parallel iteration over range with simple partitioner.
 /** @ingroup algorithms **/
 template<typename Range, typename Body>
 void parallel_for( const Range& range, const Body& body, const simple_partitioner& partitioner ) {
-    serial::interface6::start_for<Range,Body,const simple_partitioner>::run(range,body,partitioner);
+    serial::interface7::start_for<Range,Body,const simple_partitioner>::run(range,body,partitioner);
 }
 
 //! Parallel iteration over range with auto_partitioner.
 /** @ingroup algorithms **/
 template<typename Range, typename Body>
 void parallel_for( const Range& range, const Body& body, const auto_partitioner& partitioner ) {
-    serial::interface6::start_for<Range,Body,const auto_partitioner>::run(range,body,partitioner);
+    serial::interface7::start_for<Range,Body,const auto_partitioner>::run(range,body,partitioner);
 }
 
 //! Parallel iteration over range with affinity_partitioner.
 /** @ingroup algorithms **/
 template<typename Range, typename Body>
 void parallel_for( const Range& range, const Body& body, affinity_partitioner& partitioner ) {
-    serial::interface6::start_for<Range,Body,affinity_partitioner>::run(range,body,partitioner);
+    serial::interface7::start_for<Range,Body,affinity_partitioner>::run(range,body,partitioner);
 }
 
 //! Implementation of parallel iteration over stepped range of integers with explicit step and partitioner (ignored)
@@ -194,14 +187,14 @@ void parallel_for(Index first, Index last, const Function& f, affinity_partition
     parallel_for_impl(first, last, static_cast<Index>(1), f, p);
 }
 
-} // namespace interface6
+} // namespace interface7
 
-using interface6::parallel_for;
+using interface7::parallel_for;
 
 } // namespace serial
 
 #ifndef __TBB_NORMAL_EXECUTION
-using serial::interface6::parallel_for;
+using serial::interface7::parallel_for;
 #endif
 
 } // namespace tbb

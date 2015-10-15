@@ -30,8 +30,8 @@ Need to do the following:
 	make -j2
 	sudo make install	
 	
-5. Get Boost: sudo apt-get install libboost-all-dev
-	alternatively: sudo apt-get install libboost1.53-all-dev
+5. Get Boost: sudo apt-get install libboost1.55-all-dev
+	alternatively: sudo apt-get install libboost-all-dev
 
 6. Make the actual CLM-framework and compile it using
 	cd CLM-framework	
@@ -43,15 +43,18 @@ Need to do the following:
 for videos:	
 	./bin/SimpleCLM -f "./videos/changeLighting.wmv" -f "./videos/0188_03_021_al_pacino.avi" -f "./videos/0217_03_006_alanis_morissette.avi" -f "./videos/0244_03_004_anderson_cooper.avi" -f "./videos/0294_02_004_angelina_jolie.avi" -f "./videos/0417_02_003_bill_clinton.avi" -f "./videos/0490_03_007_bill_gates.avi" -f "./videos/0686_02_003_gloria_estefan.avi" -f "./videos/1034_03_006_jet_li.avi" -f "./videos/1192_01_006_julia_roberts.avi" -f "./videos/1461_01_021_noam_chomsky.avi" -f "./videos/1804_03_006_sylvester_stallone.avi" -f "./videos/1815_01_008_tony_blair.avi" -f "./videos/1869_03_009_victoria_beckham.avi" -f "./videos/1878_01_002_vladimir_putin.avi"
 	
-for images (slow due to dlib face detection in Unix being slow):
+for images:
 	./bin/SimpleCLMImg -fdir "./videos/" -ofdir "./demo_img/" -oidir "./demo_img/" -clmwild
 
-for multiple faces (face detection slows it a bit):
+for multiple faces:
 	./bin/MultiTrackCLM -f ./videos/multi_face.avi
 
 for feature extraction (i.e. HOG and similarity aligned faces amongst landmark locations and pose files):
 	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"
 
+for Action Unit extraction	
+	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -oaus "output_features/default_au.txt"
+	
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
 

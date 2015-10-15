@@ -242,6 +242,8 @@ or
 SimpleCLMImg.exe -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
 
 Basic landmark tracking in videos. From Matlab run "matlab_runners/run_demo_video.m", alternatively go to Release folder and from command line execute: SimpleCLM.exe -f "../videos/changeLighting.wmv" -f "../videos/0188_03_021_al_pacino.avi" -f "../videos/0217_03_006_alanis_morissette.avi" -f "../videos/0244_03_004_anderson_cooper.avi" -f "../videos/0294_02_004_angelina_jolie.avi" -f "../videos/0417_02_003_bill_clinton.avi" -f "../videos/0490_03_007_bill_gates.avi" -f "../videos/0686_02_003_gloria_estefan.avi" -f "../videos/1034_03_006_jet_li.avi" -f "../videos/1192_01_006_julia_roberts.avi" -f "../videos/1461_01_021_noam_chomsky.avi" -f "../videos/1804_03_006_sylvester_stallone.avi" -f "../videos/1815_01_008_tony_blair.avi" -f "../videos/1869_03_009_victoria_beckham.avi" -f "../videos/1878_01_002_vladimir_putin.avi"
+
+More examples of how to use the command line and more demos can be found in the ./matlab_runners folder and in the Readme.txt there
 		
 ------------ Depth data ------------------------------------------------
 Currently depth stream is expected to be in the format of a collection of 8 or 16-bit .png files in a folder with a naming scheme: depth00001.png, depth00002.png, ... depthxxxxx.png, with each .png.
@@ -264,10 +266,10 @@ decision_boundary - this is used to determine when the SVM classifier thinks tha
 	
 Results that you should expect on running the code on the publicly available datasets can be found in:
 
-matlab_runners/results/landmark_detections.txt - the results on landmark detection on in the wild dataset
+matlab_runners/Feature Point Experiments/results/landmark_detections.txt - the results on landmark detection on in the wild dataset
 
-matlab_runners/results/Pose_clm_ccnf_v1.txt - the results of head pose tracking using CLNF on 3 datasets (BU, BIWI and ICT-3DHP)
-matlab_runners/results/Pose_clm_svr_v1.txt - the results of head pose tracking uding CLM and CLM-Zon 3 datasets (BU, BIWI and ICT-3DHP)
+matlab_runners/Head Pose Experiments/results/Pose_clm_ccnf_v1.txt - the results of head pose tracking using CLNF on 3 datasets (BU, BIWI and ICT-3DHP)
+matlab_runners/Head Pose Experiments/results/Pose_clm_svr_v1.txt - the results of head pose tracking uding CLM and CLM-Zon 3 datasets (BU, BIWI and ICT-3DHP)
 
 --------------------------------------- Final remarks -----------------------------------------------------------------------------	
 

@@ -77,7 +77,8 @@ namespace CLM_framework_GUI
 
         // For selecting webcams
         CameraSelection cam_sec;
-        
+        bool using_webcam;
+
         // Recording parameters (default values)
         bool record_aus = false; // Recording Action Units
         bool record_pose = false; // head location and orientation
@@ -437,6 +438,11 @@ namespace CLM_framework_GUI
         // The main function call for processing images, video files or webcam feed
         private void ProcessingLoop(String[] filenames, int cam_id = -1, int width = -1, int height = -1, bool multi_face = false)
         {
+            if (filenames == null)
+                using_webcam = true;
+            else
+                using_webcam = false;
+
             thread_running = true;
 
             mirror_image = false;
@@ -763,7 +769,7 @@ namespace CLM_framework_GUI
                 // The face analysis step (only done if recording AUs, HOGs or video)
                 if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid)
                 {
-                    face_analyser.AddNextFrame(frame, clm_model, dynamic_AU_shift, dynamic_AU_scale, show_appearance, record_tracked_vid);
+                    face_analyser.AddNextFrame(frame, clm_model, using_webcam, show_appearance, record_tracked_vid);
                 }
 
                 // Visualisation

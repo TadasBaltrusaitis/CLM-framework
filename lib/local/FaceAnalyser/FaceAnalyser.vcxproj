@@ -13,14 +13,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}</ProjectGuid>
     <RootNamespace>FaceAnalyser</RootNamespace>
-    <ProjectName>FaceAnalysis</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -35,7 +34,7 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\3rdParty\dlib\dlib.props" />
-    <Import Project="..\..\3rdParty\boost\boost_vs2012d.props" />
+    <Import Project="..\..\3rdParty\boost\boost_d.props" />
     <Import Project="..\..\3rdParty\OpenCV3.0\openCV3.0d.props" />
     <Import Project="..\..\3rdParty\tbb\tbb_d.props" />
   </ImportGroup>
@@ -43,7 +42,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\3rdParty\dlib\dlib.props" />
     <Import Project="..\..\3rdParty\tbb\tbb.props" />
-    <Import Project="..\..\3rdParty\boost\boost_vs2012.props" />
+    <Import Project="..\..\3rdParty\boost\boost.props" />
     <Import Project="..\..\3rdParty\OpenCV3.0\openCV3.0.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -60,33 +59,27 @@
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>./include;$(SolutionDir)lib\local\CLM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreLinkEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300d.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"
-xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>
       </SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)lib\local\CLM\include;./include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,10 +91,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir
       </Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"
-xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -113,7 +103,6 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\FaceAnalyser.cpp" />
     <ClCompile Include="src\SVM_dynamic_lin.cpp" />
     <ClCompile Include="src\SVM_static_lin.cpp" />
     <ClCompile Include="src\SVR_dynamic_lin_regressors.cpp" />
@@ -122,6 +111,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir
     <ClInclude Include="include\Face_utils.h">
       <FileType>CppCode</FileType>
     </ClInclude>
+    <ClCompile Include="src\FaceAnalyser.cpp" />
     <ClCompile Include="src\Face_utils.cpp" />
     <ClInclude Include="include\SVM_dynamic_lin.h" />
     <ClInclude Include="include\SVM_static_lin.h" />

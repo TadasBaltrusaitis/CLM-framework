@@ -1,7 +1,5 @@
 svr_disfa/AU_1_static.dat AU01
-svm_combined/AU_1_static_combined_all.dat AU01
 svr_disfa/AU_2_static.dat AU02
-svm_combined/AU_2_static_combined_all.dat AU02
 svr_disfa/AU_4_static.dat AU04
 svm_combined/AU_4_static_combined_all.dat AU04
 svr_disfa/AU_5_static.dat AU05
