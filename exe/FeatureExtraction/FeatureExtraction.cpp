@@ -146,7 +146,7 @@ void create_directory(string output_path)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, vector<string> &output_au_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_gaze_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, vector<string> &output_au_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
 {
 	output_similarity_aligned.clear();
 	vid_output = false;
@@ -203,7 +203,15 @@ void get_output_feature_params(vector<string> &output_similarity_aligned, bool &
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
-		}		
+		}	
+		else if (arguments[i].compare("-ogaze") == 0)
+		{
+			output_gaze_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i + 1] = false;
+			i++;
+		}
 		else if (arguments[i].compare("-simaligndir") == 0) 
 		{                    
 			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
@@ -432,6 +440,7 @@ int main (int argc, char **argv)
 	vector<string> output_au_files;
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
+	vector<string> gaze_output_files;
 
 	double sim_scale = 0.7;
 	int sim_size = 112;
@@ -441,7 +450,7 @@ int main (int argc, char **argv)
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, output_au_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
+	get_output_feature_params(output_similarity_align, video_output, gaze_output_files, output_hog_align_files, params_output_files, output_au_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
 
@@ -581,6 +590,15 @@ int main (int argc, char **argv)
 		}
 	
 		// Creating output files
+		std::ofstream gaze_output_file;
+		if (!gaze_output_files.empty())
+		{
+			gaze_output_file.open(gaze_output_files[f_n], ios_base::out);
+
+			gaze_output_file << "frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1";
+			gaze_output_file << endl;
+		}
+
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
@@ -745,7 +763,21 @@ int main (int argc, char **argv)
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 
-			
+			// Gaze tracking
+			Point3f gazeDirection0;
+			Point3f gazeDirection1;
+			if (clm_parameters.track_gaze)
+			{
+
+				gazeDirection0 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, true);
+				gazeDirection1 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, false);
+
+				if (detection_success)
+				{
+					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				}
+			}
+
 			// Do face alignment
 			Mat sim_warped_img;			
 			Mat_<double> hog_descriptor;
@@ -785,17 +817,7 @@ int main (int argc, char **argv)
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 			}
 
-			if (clm_parameters.track_gaze)
-			{
 
-				Point3f gazeDirection0 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, true);
-				Point3f gazeDirection1 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, false);
-
-				if (detection_success)
-				{
-					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
-				}
-			}
 
 			if(hog_output_file.is_open())
 			{
@@ -925,6 +947,16 @@ int main (int argc, char **argv)
 				    << ", " << pose_estimate_CLM[3] << ", " << pose_estimate_CLM[4] << ", " << pose_estimate_CLM[5] << endl;
 			}				
 						
+			// Output the estimated head pose
+			if (!gaze_output_files.empty())
+			{
+				double confidence = 0.5 * (1 - detection_certainty);
+				gaze_output_file << frame_count + 1 << ", " << confidence << ", " << detection_success
+					<< ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
+					<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z << endl;
+			}
+
+
 			if(!output_au_files.empty())
 			{
 				double confidence = 0.5 * (1 - detection_certainty);
@@ -1025,6 +1057,7 @@ int main (int argc, char **argv)
 		clm_model.Reset();
 
 		pose_output_file.close();
+		gaze_output_file.close();
 		landmarks_output_file.close();
 
 		vector<double> certainties;
