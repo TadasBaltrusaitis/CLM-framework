@@ -219,7 +219,7 @@ namespace Camera_Interop {
 				auto media_types = cameras[i].media_types();
 
 				List<Tuple<int,int>^>^ resolutions;
-				set<pair<pair<int, int>, media_type>> res_set;
+				set<pair<int, int>> res_set;
 
 				// If we have them just use pre-loaded resolutions
 				if(managed_camera_list_initial->ContainsKey(name_managed))
@@ -232,7 +232,7 @@ namespace Camera_Interop {
 					for (size_t m = 0; m < media_types.size(); ++m)
 					{
 						auto media_type_curr = media_types[m];		
-						res_set.insert(pair<pair<int, int>, media_type>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height), media_type_curr));
+						res_set.insert(pair<int, int>(pair<int,int>(media_type_curr.resolution().width, media_type_curr.resolution().height)));
 					}
 				}								
 				
@@ -243,7 +243,7 @@ namespace Camera_Interop {
 				{
 					for (auto beg = res_set.begin(); beg != res_set.end(); ++beg)
 					{
-						auto resolution = gcnew Tuple<int, int>(beg->first.first, beg->first.second);
+						auto resolution = gcnew Tuple<int, int>(beg->first, beg->first);
 
 						cap1.set(CV_CAP_PROP_FRAME_WIDTH, resolution->Item1);
 						cap1.set(CV_CAP_PROP_FRAME_HEIGHT, resolution->Item2);

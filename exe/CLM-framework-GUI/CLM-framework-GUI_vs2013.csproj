@@ -144,13 +144,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\local\CLM_Interop\CLM_Interop.vcxproj">
+    <ProjectReference Include="..\..\lib\local\CLM_Interop\CLM_Interop_vs2013.vcxproj">
       <Project>{f9e266f2-eb80-45e9-bd1e-b4d7028745b5}</Project>
-      <Name>CLM_Interop</Name>
+      <Name>CppInterop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\local\OpenCVWrappers\OpenCVWrappers.vcxproj">
+    <ProjectReference Include="..\..\lib\local\OpenCVWrappers\OpenCVWrappers_vs2013.vcxproj">
       <Project>{dc02d40e-2926-459e-88be-33d032e85706}</Project>
-      <Name>OpenCVWrappers</Name>
+      <Name>OpenCVWrappers_vs2013</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

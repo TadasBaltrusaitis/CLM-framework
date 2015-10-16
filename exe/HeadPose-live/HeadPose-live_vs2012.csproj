@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}</ProjectGuid>
+    <ProjectGuid>{2029BC8D-4AEF-42F7-BE74-641686AB3016}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeadPoseFile</RootNamespace>
-    <AssemblyName>HeadPose-file</AssemblyName>
+    <RootNamespace>HeadPoseLive</RootNamespace>
+    <AssemblyName>HeadPose-live</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,8 +62,8 @@
     <Compile Include="Liability.xaml.cs">
       <DependentUpon>Liability.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SelectFiles.xaml.cs">
-      <DependentUpon>SelectFiles.xaml</DependentUpon>
+    <Compile Include="TextEntryWindow.xaml.cs">
+      <DependentUpon>TextEntryWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Liability.xaml">
       <SubType>Designer</SubType>
@@ -81,7 +81,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SelectFiles.xaml">
+    <Page Include="TextEntryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -114,22 +114,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\local\CLM_Interop\CLM_Interop.vcxproj">
+    <Content Include="libzmq.dll" />
+    <Resource Include="logo1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\local\CLM_Interop\CLM_Interop_vs2012.vcxproj">
       <Project>{f9e266f2-eb80-45e9-bd1e-b4d7028745b5}</Project>
-      <Name>CLM_Interop</Name>
+      <Name>CppInterop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\local\OpenCVWrappers\OpenCVWrappers.vcxproj">
+    <ProjectReference Include="..\..\lib\local\OpenCVWrappers\OpenCVWrappers_vs2012.vcxproj">
       <Project>{dc02d40e-2926-459e-88be-33d032e85706}</Project>
-      <Name>OpenCVWrappers</Name>
+      <Name>OpenCVWrappers_vs2012</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CLM-framework-GUI\CLM-framework-GUI.csproj">
+    <ProjectReference Include="..\CLM-framework-GUI\CLM-framework-GUI_vs2012.csproj">
       <Project>{2542a0f9-7047-435c-9de6-ffb4e725735e}</Project>
       <Name>CLM-framework-GUI</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="libzmq.dll" />
-    <Resource Include="logo1.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -137,7 +137,8 @@
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\ZeroMQ\libzmq.dll" "$(ProjectDir)"
 xcopy /I /E /Y /D "$(ProjectDir)logo1.png" "$(SolutionDir)/$(Configuration)"
 xcopy /I /E /Y /D "$(ProjectDir)logo1.ico" "$(SolutionDir)/$(Configuration)"
-xcopy /I /E /Y /D "$(ProjectDir)instructions.txt" "$(SolutionDir)/$(Configuration)"</PreBuildEvent>
+xcopy /I /E /Y /D "$(ProjectDir)testing_head_pose.py" "$(SolutionDir)/$(Configuration)"
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

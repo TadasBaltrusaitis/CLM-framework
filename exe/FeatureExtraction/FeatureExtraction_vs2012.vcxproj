@@ -106,7 +106,7 @@
     <ProjectReference Include="..\..\lib\local\CLM\CLM_vs2012.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\local\FaceAnalyser\FaceAnalyser.vcxproj">
+    <ProjectReference Include="..\..\lib\local\FaceAnalyser\FaceAnalyser_vs2012.vcxproj">
       <Project>{0e7fc556-0e80-45ea-a876-dde4c2fedcd7}</Project>
     </ProjectReference>
   </ItemGroup>
