@@ -43,6 +43,17 @@ gaze  = dlmread([filename, '_gaze.txt'], ',', 1, 0);
 % This indicates which frames were succesfully tracked
 valid_frames = gaze(:,3);
 
-gaze = gaze(:,4:end);
+% only picking left, right and up down views for visualisation
+gaze = gaze(:,[4,5,6,7,8,9]);
+gaze = (gaze(:,[1,2,3]) + gaze(:,[4,5,6]))/2;
+gaze(:,1) = smooth(gaze(:,1));
+gaze(:,2) = smooth(gaze(:,2));
+gaze(:,3) = smooth(gaze(:,3));
 
-plot(gaze);
+plot(gaze(:,1), 'DisplayName', 'Left - right');
+hold on;
+plot(gaze(:,2), 'DisplayName', 'Up - down');
+xlabel('Frame') % x-axis label
+ylabel('Gaze vector size') % y-axis label
+legend('show');
+hold off;

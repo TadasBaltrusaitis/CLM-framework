@@ -1,4 +1,4 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework_vs2012.sln" using Visual Studio 2012.
+﻿For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework_vs2012.sln" using Visual Studio 2012.
 
 --------------------------- Matlab example ---------------------------------
 
@@ -21,7 +21,8 @@ Parameters for input
 
 Parameters for output
 	-op <location of output pose file>, the file format is as follows: frame_number, confidence, detection_success X Y Z Rx Ry Rz
-	-ogaze <location of output file>, the file format is as follows: frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1
+	-ogaze <location of output file>, the file format is as follows: frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1
+		The gaze is output as 4 vectors, first two vectors are in world coordinate space describing the gaze direction of both eyes, the second two vectors describe the gaze in head coordinate space (so if the eyes are rolled up, the vectors will indicate up even if the head is turned or tilted)
 	-of <location of output landmark points file>, the file format is as follows: frame_number detection_success x_1 x_2 ... x_n y_1 y_2 ... y_n
 	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number detection_success X_1 X_2 ... X_n Y_1 Y_2 ... Y_n Z_1 Z_2 ... Z_n
 	-ov <location of tracked video>

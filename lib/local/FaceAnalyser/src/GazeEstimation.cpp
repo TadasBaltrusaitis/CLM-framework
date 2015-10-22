@@ -89,7 +89,7 @@ Point3f GetPupilPosition(Mat_<double> eyeLdmks3d){
 	return p;
 }
 
-Point3f FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, float fx, float fy, float cx, float cy, bool left_eye)
+void FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
 {
 	Vec6d headPose = CLMTracker::GetPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 	Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
@@ -132,8 +132,10 @@ Point3f FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTr
 	Point3f eyeballCentre = Point3f(eyeballCentreMat);
 
 	Point3f gazeVecAxis = RaySphereIntersect(Point3f(0,0,0), rayDir, eyeballCentre, 12) - eyeballCentre;
+	
+	gaze_absolute = gazeVecAxis / norm(gazeVecAxis);
 
-	return gazeVecAxis / norm(gazeVecAxis);
+	gaze_head = Point3f(rotMat * Vec3d(gaze_absolute.x, gaze_absolute.y, gaze_absolute.z));
 }
 
 

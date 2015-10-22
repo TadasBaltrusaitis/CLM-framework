@@ -595,7 +595,7 @@ int main (int argc, char **argv)
 		{
 			gaze_output_file.open(gaze_output_files[f_n], ios_base::out);
 
-			gaze_output_file << "frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1";
+			gaze_output_file << "frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1";
 			gaze_output_file << endl;
 		}
 
@@ -763,16 +763,18 @@ int main (int argc, char **argv)
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 
-			// Gaze tracking
+			// Gaze tracking, absolute gaze direction
 			Point3f gazeDirection0;
 			Point3f gazeDirection1;
+
+			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
+			Point3f gazeDirection0_head;
+			Point3f gazeDirection1_head;
+
 			if (clm_parameters.track_gaze)
 			{
-
-				gazeDirection0 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, true);
-				gazeDirection1 = FaceAnalysis::EstimateGaze(clm_model, clm_parameters, fx, fy, cx, cy, false);
-
-
+				FaceAnalysis::EstimateGaze(clm_model, clm_parameters, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clm_model, clm_parameters, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
 			}
 
 			// Do face alignment
@@ -875,7 +877,7 @@ int main (int argc, char **argv)
 				// Draw it in reddish if uncertain, blueish if certain
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
-				if (detection_success)
+				if (clm_parameters.track_gaze && detection_success)
 				{
 					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 				}
@@ -954,7 +956,9 @@ int main (int argc, char **argv)
 				double confidence = 0.5 * (1 - detection_certainty);
 				gaze_output_file << frame_count + 1 << ", " << confidence << ", " << detection_success
 					<< ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
-					<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z << endl;
+					<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z 
+					<< ", " << gazeDirection0_head.x << ", " << gazeDirection0_head.y << ", " << gazeDirection0_head.z
+					<< ", " << gazeDirection1_head.x << ", " << gazeDirection1_head.y << ", " << gazeDirection1_head.z << endl;
 			}
 
 

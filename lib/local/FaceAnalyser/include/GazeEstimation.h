@@ -53,7 +53,7 @@ using namespace cv;
 namespace FaceAnalysis
 {
 
-	Point3f EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, float fx, float fy, float cx, float cy, bool left_eye);
+	void EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye);
 	void DrawGaze(Mat img, const CLMTracker::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
 
 }
