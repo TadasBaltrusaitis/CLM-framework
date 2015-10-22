@@ -94,7 +94,7 @@ class PDM{
 		void Clamp(Mat_<float>& params_local, Vec6d& params_global, const CLMParameters& params);
 
 		// Compute shape in object space (3D)
-		void CalcShape3D(Mat_<double>& out_shape, const Mat_<double>& params_local);
+		void CalcShape3D(Mat_<double>& out_shape, const Mat_<double>& params_local) const;
 
 		// Compute shape in image space (2D)
 		void CalcShape2D(Mat_<double>& out_shape, const Mat_<double>& params_local, const Vec6d& params_global) const;

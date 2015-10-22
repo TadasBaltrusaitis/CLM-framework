@@ -72,7 +72,9 @@ CLM::CLM(string fname)
 
 // Copy constructor (makes a deep copy of CLM)
 CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
-	landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location)
+	landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location),
+	hierarchical_mapping(other.hierarchical_mapping), hierarchical_models(other.hierarchical_models), hierarchical_model_names(other.hierarchical_model_names),
+	hierarchical_params(other.hierarchical_params)
 {
 	this->detection_success = other.detection_success;
 	this->tracking_initialised = other.tracking_initialised;
@@ -101,6 +103,7 @@ CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clon
 	}
 
 	this->face_detector_HOG = dlib::get_frontal_face_detector();
+
 }
 
 // Assignment operator for lvalues (makes a deep copy of CLM)
@@ -552,6 +555,14 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 		for(size_t part_model = 0; part_model < hierarchical_models.size(); ++part_model)
 		{
 			
+			// Only do the synthetic eye models if we're doing gaze
+			if ((hierarchical_model_names[part_model].compare("right_eye_28") == 0 ||
+				hierarchical_model_names[part_model].compare("left_eye_28") == 0)
+				&& !params.track_gaze)
+			{
+				continue;
+			}
+
 			int n_part_points = hierarchical_models[part_model].pdm.NumberOfPoints();
 
 			vector<pair<int,int>> mappings = this->hierarchical_mapping[part_model];
@@ -1154,7 +1165,7 @@ bool CLM::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dept
 }
 
 // Getting a 3D shape model from the current detected landmarks (in camera space)
-Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy)
+Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy) const
 {
 	int n = this->detected_landmarks.rows/2;
 

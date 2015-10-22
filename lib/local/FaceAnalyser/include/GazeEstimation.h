@@ -36,62 +36,25 @@
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
 //
-//       Tadas Baltrusaitis, Marwa Mahmoud, and Peter Robinson.
-//		 Cross-dataset learning and person-specific normalisation for automatic Action Unit detection
-//       Facial Expression Recognition and Analysis Challenge 2015,
-//       IEEE International Conference on Automatic Face and Gesture Recognition, 2015
+//       Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling
+//		 Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+//       in IEEE International. Conference on Computer Vision (ICCV), 2015
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef __SVMSTATICLIN_h_
-#define __SVMSTATICLIN_h_
+#ifndef __GAZEESTIMATION_h_
+#define __GAZEESTIMATION_h_
 
-#include <vector>
-#include <string>
+#include "opencv2/core/core.hpp"
+#include "CLM_core.h"
 
-#include <stdio.h>
-#include <iostream>
-
-#include <opencv2/core/core.hpp>
+using namespace cv;
 
 namespace FaceAnalysis
 {
 
-// Collection of linear SVR regressors for AU prediction
-class SVM_static_lin{
+	void EstimateGaze(const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye);
+	void DrawGaze(Mat img, const CLMTracker::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
 
-public:
-
-	SVM_static_lin()
-	{}
-
-	// Predict the AU from HOG appearance of the face
-	void Predict(std::vector<double>& predictions, std::vector<std::string>& names, const cv::Mat_<double>& fhog_descriptor, const cv::Mat_<double>& geom_params);
-
-	// Reading in the model (or adding to it)
-	void Read(std::ifstream& stream, const std::vector<std::string>& au_names);
-
-	std::vector<std::string> GetAUNames()
-	{
-		return AU_names;
-	}
-
-private:
-
-	// The names of Action Units this model is responsible for
-	std::vector<std::string> AU_names;
-
-	// For normalisation
-	cv::Mat_<double> means;
-	
-	// For actual prediction
-	cv::Mat_<double> support_vectors;	
-	cv::Mat_<double> biases;
-
-	std::vector<double> pos_classes;
-	std::vector<double> neg_classes;
-
-};
-  //===========================================================================
 }
 #endif

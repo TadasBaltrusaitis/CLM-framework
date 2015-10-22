@@ -55,7 +55,7 @@ using namespace cv;
 
 // Getting a head pose estimate from the currently detected landmarks (rotation with respect to camera)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
+Vec6d CLMTracker::GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -74,7 +74,7 @@ Vec6d CLMTracker::GetPoseCamera(CLM& clm_model, double fx, double fy, double cx,
 
 // Getting a head pose estimate from the currently detected landmarks (rotation with respect to camera plane)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
+Vec6d CLMTracker::GetPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
@@ -109,7 +109,7 @@ Vec6d CLMTracker::GetPoseCameraPlane(CLM& clm_model, double fx, double fy, doubl
 // This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
 // This method returns a corrected pose estimate with respect to the camera plane (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
+Vec6d CLMTracker::GetCorrectedPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
 	{
@@ -156,7 +156,7 @@ Vec6d CLMTracker::GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double 
 // This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
 // This method returns a corrected pose estimate with respect to a point camera (NOTE not the camera plane) (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetCorrectedPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params)
+Vec6d CLMTracker::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy, const CLMParameters& params)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{

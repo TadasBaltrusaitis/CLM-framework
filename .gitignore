@@ -78,3 +78,5 @@ matlab_runners/Feature Point Experiments/yt_features_clm/
 exe/SimpleCLM/output_vids/
 exe/SimpleCLM/output_features/
 exe/FeatureExtraction/output_features/
+exe/Recording/recording/
+videos/aligned/

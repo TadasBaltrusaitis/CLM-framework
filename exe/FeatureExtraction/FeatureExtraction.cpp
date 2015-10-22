@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// Copyright (C) 2015, University of Cambridge,
 // all rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -35,7 +35,7 @@
 
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
-//       reports and manuals, must cite one of the following works:
+//       reports and manuals, must cite one of the following works (the related one preferrably):
 //
 //       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 3D
 //       Constrained Local Model for Rigid and Non-Rigid Facial Tracking.
@@ -44,6 +44,15 @@
 //       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
+//
+//       Tadas Baltrusaitis, Marwa Mahmoud, and Peter Robinson.
+//		 Cross-dataset learning and person-specific normalisation for automatic Action Unit detection
+//       Facial Expression Recognition and Analysis Challenge 2015,
+//       IEEE International Conference on Automatic Face and Gesture Recognition, 2015
+//
+//       Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling
+//		 Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+//       in IEEE International. Conference on Computer Vision (ICCV), 2015
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +68,7 @@
 
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
+#include <GazeEstimation.h>
 
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
@@ -136,7 +146,7 @@ void create_directory(string output_path)
 }
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
-void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, vector<string> &output_au_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned, bool &vid_output, vector<string> &output_gaze_files, vector<string> &output_hog_aligned_files, vector<string> &output_model_param_files, vector<string> &output_au_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
 {
 	output_similarity_aligned.clear();
 	vid_output = false;
@@ -193,7 +203,15 @@ void get_output_feature_params(vector<string> &output_similarity_aligned, bool &
 			valid[i] = false;
 			valid[i+1] = false;			
 			i++;
-		}		
+		}	
+		else if (arguments[i].compare("-ogaze") == 0)
+		{
+			output_gaze_files.push_back(output_root + arguments[i + 1]);
+			create_directory_from_file(output_root + arguments[i + 1]);
+			valid[i] = false;
+			valid[i + 1] = false;
+			i++;
+		}
 		else if (arguments[i].compare("-simaligndir") == 0) 
 		{                    
 			output_similarity_aligned.push_back(output_root + arguments[i + 1]);
@@ -382,7 +400,9 @@ int main (int argc, char **argv)
     float fx = 500, fy = 500, cx = 0, cy = 0;
 			
 	CLMTracker::CLMParameters clm_parameters(arguments);
-			
+	// TODO a command line argument
+	clm_parameters.track_gaze = true;
+
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
@@ -420,6 +440,7 @@ int main (int argc, char **argv)
 	vector<string> output_au_files;
 	vector<string> output_hog_align_files;
 	vector<string> params_output_files;
+	vector<string> gaze_output_files;
 
 	double sim_scale = 0.7;
 	int sim_size = 112;
@@ -429,7 +450,7 @@ int main (int argc, char **argv)
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align, video_output, output_hog_align_files, params_output_files, output_au_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
+	get_output_feature_params(output_similarity_align, video_output, gaze_output_files, output_hog_align_files, params_output_files, output_au_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
 	
 	// Used for image masking
 
@@ -569,6 +590,15 @@ int main (int argc, char **argv)
 		}
 	
 		// Creating output files
+		std::ofstream gaze_output_file;
+		if (!gaze_output_files.empty())
+		{
+			gaze_output_file.open(gaze_output_files[f_n], ios_base::out);
+
+			gaze_output_file << "frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1";
+			gaze_output_file << endl;
+		}
+
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
 		{
@@ -733,7 +763,20 @@ int main (int argc, char **argv)
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 
-			
+			// Gaze tracking, absolute gaze direction
+			Point3f gazeDirection0;
+			Point3f gazeDirection1;
+
+			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
+			Point3f gazeDirection0_head;
+			Point3f gazeDirection1_head;
+
+			if (clm_parameters.track_gaze)
+			{
+				FaceAnalysis::EstimateGaze(clm_model, clm_parameters, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clm_model, clm_parameters, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+			}
+
 			// Do face alignment
 			Mat sim_warped_img;			
 			Mat_<double> hog_descriptor;
@@ -772,6 +815,8 @@ int main (int argc, char **argv)
 			{
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
 			}
+
+
 
 			if(hog_output_file.is_open())
 			{
@@ -832,6 +877,10 @@ int main (int argc, char **argv)
 				// Draw it in reddish if uncertain, blueish if certain
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
+				if (clm_parameters.track_gaze && detection_success)
+				{
+					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				}
 			}
 			
 			// Work out the framerate
@@ -901,6 +950,18 @@ int main (int argc, char **argv)
 				    << ", " << pose_estimate_CLM[3] << ", " << pose_estimate_CLM[4] << ", " << pose_estimate_CLM[5] << endl;
 			}				
 						
+			// Output the estimated head pose
+			if (!gaze_output_files.empty())
+			{
+				double confidence = 0.5 * (1 - detection_certainty);
+				gaze_output_file << frame_count + 1 << ", " << confidence << ", " << detection_success
+					<< ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
+					<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z 
+					<< ", " << gazeDirection0_head.x << ", " << gazeDirection0_head.y << ", " << gazeDirection0_head.z
+					<< ", " << gazeDirection1_head.x << ", " << gazeDirection1_head.y << ", " << gazeDirection1_head.z << endl;
+			}
+
+
 			if(!output_au_files.empty())
 			{
 				double confidence = 0.5 * (1 - detection_certainty);
@@ -1001,6 +1062,7 @@ int main (int argc, char **argv)
 		clm_model.Reset();
 
 		pose_output_file.close();
+		gaze_output_file.close();
 		landmarks_output_file.close();
 
 		vector<double> certainties;
