@@ -124,7 +124,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\lib\local\OpenCVWrappers\OpenCVWrappers_vs2013.vcxproj">
       <Project>{dc02d40e-2926-459e-88be-33d032e85706}</Project>
-      <Name>OpenCVWrappers_vs2013</Name>
+      <Name>OpenCVWrappers</Name>
     </ProjectReference>
     <ProjectReference Include="..\CLM-framework-GUI\CLM-framework-GUI_vs2013.csproj">
       <Project>{2542a0f9-7047-435c-9de6-ffb4e725735e}</Project>
