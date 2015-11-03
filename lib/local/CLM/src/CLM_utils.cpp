@@ -1121,7 +1121,7 @@ void Draw(cv::Mat img, CLM& clm_model)
 	Draw(img, clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
 
 	// If the model has hierarchical updates draw those too
-	for(int i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	for(size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
 	{
 		if(clm_model.hierarchical_models[i].pdm.NumberOfPoints() != clm_model.hierarchical_mapping[i].size())
 		{

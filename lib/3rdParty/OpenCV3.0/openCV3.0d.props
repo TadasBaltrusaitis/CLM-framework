@@ -12,9 +12,9 @@
       <AdditionalDependencies>opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300d.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
-xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_world300d.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.0\x86\$(PlatformToolset)\bin\opencv_ffmpeg300.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.0\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

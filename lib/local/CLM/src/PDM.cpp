@@ -494,7 +494,7 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 	Mat_<int> visi_ind_2D(n * 2, 1, 1);
 	Mat_<int> visi_ind_3D(3 * n , 1, 1);
 
-	for(size_t i = 0; i < n; ++i)
+	for(int i = 0; i < n; ++i)
 	{
 		// If the landmark is invisible indicate this
 		if(landmark_locations.at<double>(i) == 0)
@@ -511,7 +511,7 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 	Mat_<double> M(0, mean_shape.cols, 0.0);
 	Mat_<double> V(0, princ_comp.cols, 0.0);
 
-	for(size_t i = 0; i < n * 3; ++i)
+	for(int i = 0; i < n * 3; ++i)
 	{
 		if(visi_ind_3D.at<int>(i) == 1)
 		{
@@ -532,7 +532,7 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
 	// Extract the relevant landmark locations
 	Mat_<double> landmark_locs_vis(n*2, 1, 0.0);
 	int k = 0;
-	for(size_t i = 0; i < visi_ind_2D.rows; ++i)
+	for(int i = 0; i < visi_ind_2D.rows; ++i)
 	{
 		if(visi_ind_2D.at<int>(i) == 1)
 		{

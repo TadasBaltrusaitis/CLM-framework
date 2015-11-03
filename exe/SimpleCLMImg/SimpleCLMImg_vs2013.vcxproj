@@ -96,7 +96,7 @@
     <ClCompile Include="SimpleCLMImg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\local\CLM\CLM_vs2012.vcxproj">
+    <ProjectReference Include="..\..\lib\local\CLM\CLM_vs2013.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>
   </ItemGroup>
