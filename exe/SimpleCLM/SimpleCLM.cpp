@@ -254,11 +254,11 @@ int main (int argc, char **argv)
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
+				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
 			}
 			else
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy, clm_parameters);
+				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
 			}
 
 			// Visualising the results
@@ -282,7 +282,7 @@ int main (int argc, char **argv)
 				// A rough heuristic for box around the face width
 				int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 				
-				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy, clm_parameters);
+				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
 
 				// Draw it in reddish if uncertain, blueish if certain
 				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1-vis_certainty)*255.0,0, vis_certainty*255), thickness, fx, fy, cx, cy);
