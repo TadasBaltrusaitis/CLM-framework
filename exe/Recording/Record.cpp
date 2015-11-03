@@ -93,7 +93,7 @@ const std::string currentDateTime() {
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[80];
-    tstruct = *localtime(&now);
+    localtime_s(&tstruct, &now);
     // Visit http://www.cplusplus.com/reference/clibrary/ctime/strftime/
     // for more information about date/time format
     strftime(buf, sizeof(buf), "%Y-%m-%d-%H-%M", &tstruct);
@@ -179,20 +179,28 @@ int main (int argc, char **argv)
 
 	ofstream outlog;
 	outlog.open((outroot + outfile + ".log").c_str(), ios_base::out);
+	outlog << "frame, time(ms)" << endl;
+
+	double freq = cv::getTickFrequency();
+
+	double init_time = cv::getTickCount();
 
 	int frameProc = 0;
 	while(!img.empty())
 	{		
 		
 		namedWindow("rec",1);
-
-		outlog << frameProc + 1 << " " << time(0);
-		outlog << endl;
-						
-		vCap >> img;
 		
+		vCap >> img;
+		double curr_time = (cv::getTickCount() - init_time) / freq;
+		curr_time *= 1000;
+
 		video_writer << img;
 
+		outlog << frameProc + 1 << " " << curr_time;
+		outlog << endl;
+						
+		
 		imshow("rec", img);
 
 		frameProc++;

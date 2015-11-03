@@ -117,7 +117,7 @@
     <ProjectReference Include="..\CamCom\CamCom_vs2013.vcxproj">
       <Project>{de6f7dff-8aae-4908-82f7-245d62cab8c9}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\CLM\CLM_vs2012.vcxproj">
+    <ProjectReference Include="..\CLM\CLM_vs2013.vcxproj">
       <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\FaceAnalyser\FaceAnalyser_vs2013.vcxproj">

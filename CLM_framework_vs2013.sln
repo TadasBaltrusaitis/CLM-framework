@@ -22,6 +22,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceAnalyser", "lib\local\FaceAnalyser\FaceAnalyser_vs2013.vcxproj", "{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLM-framework-GUI_vs2013", "exe\CLM-framework-GUI\CLM-framework-GUI_vs2013.csproj", "{2542A0F9-7047-435C-9DE6-FFB4E725735E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9} = {DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadPose-file_vs2013", "exe\HeadPose-file\HeadPose-file_vs2013.csproj", "{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}"
 EndProject
@@ -186,8 +189,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

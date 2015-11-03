@@ -2,13 +2,15 @@
 
 Framework for various Constrained Local Model based face tracking and landmark detection algorithms and their extensions/applications. Includes CLM, CLM-Z and CLNF algorithms. More details can be found in Readme.txt.
 
-The framework also includes brand new Facial Action Unit detection in videos system (see Readme_action_units.txt).
+The framework also includes a brand new Facial Action Unit detection in videos system (see Readme_action_units.txt).
+
+The framework also includes a brand new gaze estimation system as well (see Readme_gaze.txt).
 
 The code was written mainly by Tadas Baltrusaitis during his time at the Language Technologies Institute at the Carnegie Mellon University; Computer Laboratory, University of Cambridge; and Institute for Creative Technologies, University of Southern California.
 
-Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code.
+Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code, and Erroll Wood for the gaze estimation work.
 
-The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.0 and I recommend you download it.
+The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.5 and I recommend you download it.
 
 Some examples of the system in action:
 http://youtu.be/V7rV0uy7heQ
@@ -17,6 +19,6 @@ http://youtu.be/LDBu0BLKVDw
 
 ## Instalation
 
-For Windows systems open and compile CLM_framework_vs2012.sln (requires VisualStudio 2012) or CLM_framework_vs2013.sln (requires VisualStudio 2013). All the required libraries are included with the code.
+For Windows systems open and compile CLM_framework_vs2013.sln (requires VisualStudio 2012) or CLM_framework_vs2013.sln (requires VisualStudio 2013). All the required libraries are included with the code.
 
 For Unix based systems follow readme-ubuntu.txt
