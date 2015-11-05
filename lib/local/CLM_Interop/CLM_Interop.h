@@ -63,6 +63,8 @@ namespace CLM_Interop {
 				args.push_back(root_std);
 
 				params = new ::CLMTracker::CLMParameters(args);
+
+				params->track_gaze = true;
 			}
 
 			void optimiseForVideo()
@@ -221,8 +223,8 @@ namespace CLM_Interop {
 				return all_landmarks;
 			}
 
-			void GetCorrectedPoseCamera(List<double>^ pose, double fx, double fy, double cx, double cy, CLMParameters^ clmParams) {
-				auto pose_vec = ::CLMTracker::GetCorrectedPoseCamera(*clm, fx, fy, cx, cy, *clmParams->getParams());
+			void GetCorrectedPoseCamera(List<double>^ pose, double fx, double fy, double cx, double cy) {
+				auto pose_vec = ::CLMTracker::GetCorrectedPoseCamera(*clm, fx, fy, cx, cy);
 				pose->Clear();
 				for(int i = 0; i < 6; ++i)
 				{
@@ -230,8 +232,8 @@ namespace CLM_Interop {
 				}
 			}
 
-			void GetCorrectedPoseCameraPlane(List<double>^ pose, double fx, double fy, double cx, double cy, CLMParameters^ clmParams) {
-				auto pose_vec = ::CLMTracker::GetCorrectedPoseCameraPlane(*clm, fx, fy, cx, cy, *clmParams->getParams());
+			void GetCorrectedPoseCameraPlane(List<double>^ pose, double fx, double fy, double cx, double cy) {
+				auto pose_vec = ::CLMTracker::GetCorrectedPoseCameraPlane(*clm, fx, fy, cx, cy);
 				pose->Clear();
 				for(int i = 0; i < 6; ++i)
 				{
@@ -279,8 +281,8 @@ namespace CLM_Interop {
 			}
 
 			List<Tuple<System::Windows::Point, System::Windows::Point>^>^ CalculateBox(float fx, float fy, float cx, float cy) {
-				::CLMTracker::CLMParameters params = ::CLMTracker::CLMParameters();
-				cv::Vec6d pose = ::CLMTracker::GetCorrectedPoseCameraPlane(*clm, fx,fy, cx, cy, params);
+
+				cv::Vec6d pose = ::CLMTracker::GetCorrectedPoseCameraPlane(*clm, fx,fy, cx, cy);
 
 				vector<pair<Point, Point>> vecLines = ::CLMTracker::CalculateBox(pose, fx, fy, cx, cy);
 

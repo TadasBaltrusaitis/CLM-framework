@@ -21,6 +21,7 @@
 #include <CLM_interop.h>
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
+#include <GazeEstimation.h>
 
 using namespace System;
 using namespace OpenCVWrappers;
@@ -50,6 +51,16 @@ private:
 	int* num_cols;
 	bool* good_frame;
 	cv::VideoWriter* tracked_vid_writer;
+
+	// Variable storing gaze for recording
+
+	// Absolute gaze direction
+	cv::Point3f* gazeDirection0;
+	cv::Point3f* gazeDirection1;
+
+	// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
+	cv::Point3f* gazeDirection0_head;
+	cv::Point3f* gazeDirection1_head;
 
 public:
 
@@ -91,6 +102,11 @@ public:
 		align_output_dir = new string();
 
 		hog_output_file = new std::ofstream();
+
+		gazeDirection0 = new cv::Point3f();
+		gazeDirection1 = new cv::Point3f();
+		gazeDirection0_head = new cv::Point3f();
+		gazeDirection1_head = new cv::Point3f();
 	}
 
 	void SetupAlignedImageRecording(System::String^ directory)
@@ -170,7 +186,7 @@ public:
 		tracked_vid_writer->write(*tracked_face);
 	}
 
-	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, bool online, bool vis_hog, bool vis_tracked) {
+	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, double fx, double fy, double cx, double cy, bool online, bool vis_hog, bool vis_tracked) {
 			
 		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, online, vis_hog);
 
@@ -202,8 +218,32 @@ public:
 			}
 			tracked_face->deallocate();
 		}
+
+		// After the AUs have been detected do some gaze estimation as well
+		FaceAnalysis::EstimateGaze(*clm->getCLM(), *gazeDirection0, *gazeDirection0_head, fx, fy, cx, cy, true);
+		FaceAnalysis::EstimateGaze(*clm->getCLM(), *gazeDirection1, *gazeDirection1_head, fx, fy, cx, cy, false);
+
 	}
 		
+	Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>^ GetGazeCamera()
+	{
+
+		auto gaze0 = gcnew Tuple<double, double, double>(gazeDirection0->x, gazeDirection0->y, gazeDirection0->z);
+		auto gaze1 = gcnew Tuple<double, double, double>(gazeDirection1->x, gazeDirection1->y, gazeDirection1->z);
+
+		return gcnew Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>(gaze0, gaze1);
+
+	}
+
+	Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>^ GetGazeHead()
+	{
+		auto gaze0 = gcnew Tuple<double, double, double>(gazeDirection0_head->x, gazeDirection0_head->y, gazeDirection0_head->z);
+		auto gaze1 = gcnew Tuple<double, double, double>(gazeDirection1_head->x, gazeDirection1_head->y, gazeDirection1_head->z);
+
+		return gcnew Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>(gaze0, gaze1);
+
+	}
+
 	List<System::String^>^ GetClassActionUnitsNames()
 	{
 		auto names = face_analyser->GetAUClassNames();
@@ -288,6 +328,11 @@ public:
 		delete align_output_dir;
 		delete face_analyser;
 		delete tracked_face;
+
+		delete gazeDirection0;
+		delete gazeDirection1;
+		delete gazeDirection0_head;
+		delete gazeDirection1_head;
 
 		if(tracked_vid_writer != 0)
 		{

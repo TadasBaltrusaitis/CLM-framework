@@ -397,7 +397,7 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy, clm_parameters[model]);
+					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
 					CLMTracker::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);

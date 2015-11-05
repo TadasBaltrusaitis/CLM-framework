@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-rigid  -verbose -f "../../videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-f "C:\Users\tbaltrus\Documents\CLM-framework\videos\default.wmv"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

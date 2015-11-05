@@ -406,7 +406,7 @@ namespace HeadPoseLive
                     {
                         // Add objects to recording queues
                         List<double> pose = new List<double>();
-                        clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+                        clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
                         RawImage image = new RawImage(frame);
                         recording_objects.Enqueue(new Tuple<RawImage, bool, List<double>>(image, detectionSucceeding, pose));
  
@@ -440,7 +440,7 @@ namespace HeadPoseLive
                             latest_img = frame.CreateWriteableBitmap();
 
                         List<double> pose = new List<double>();
-                        clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+                        clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
 
                         int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
                         int yaw_abs = Math.Abs(yaw);

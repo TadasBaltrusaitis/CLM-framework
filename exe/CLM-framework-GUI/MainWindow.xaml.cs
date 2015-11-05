@@ -86,6 +86,7 @@ namespace CLM_framework_GUI
         bool record_2D_landmarks = false; // 2D landmark location
         bool record_3D_landmarks = false; // 3D landmark locations in world coordinates
         bool record_HOG = false; // HOG features extracted from face images
+        bool record_gaze = false; // Gaze recording
         bool record_aligned = false; // aligned face images
         bool record_tracked_vid = false;
 
@@ -109,6 +110,7 @@ namespace CLM_framework_GUI
         StreamWriter output_3D_landmarks_file;
         StreamWriter output_au_class;
         StreamWriter output_au_reg;
+        StreamWriter output_gaze;
 
         // Where the recording is done (by default in a record directory, from where the application executed)
         String record_root = "./record";
@@ -248,6 +250,14 @@ namespace CLM_framework_GUI
             
             }
 
+            if(record_gaze)
+            {
+                String filename_gaze = root + "/" + filename + ".gaze";
+                output_gaze = new StreamWriter(filename_gaze);
+
+                output_gaze.Write("frame, success, confidence, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1");                
+            }
+
             if (record_3D_landmarks)
             {
                 String filename_3d_landmarks = root + "/" + filename + ".landmarks_3d";
@@ -305,6 +315,9 @@ namespace CLM_framework_GUI
             if (record_3D_landmarks && output_3D_landmarks_file != null)
                 output_3D_landmarks_file.Close();
 
+            if (record_gaze && output_gaze != null)
+                output_gaze.Close();
+
             if (record_HOG)
                 face_analyser.StopHOGRecording();
 
@@ -327,12 +340,12 @@ namespace CLM_framework_GUI
         }
 
         // Recording the relevant objects
-        private void RecordFrame(CLM clm_model, CLMParameters clm_params, bool success_b, int frame_ind, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
+        private void RecordFrame(CLM clm_model, bool success_b, int frame_ind, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
         {
             double confidence = (-clm_model.GetConfidence())/2.0 + 0.5;
             
             List<double> pose = new List<double>();
-            clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+            clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
 
             int success = 0;
             if (success_b)
@@ -763,13 +776,13 @@ namespace CLM_framework_GUI
                     confidence = 1;
 
                 List<double> pose = new List<double>();
-                clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy, clm_params);
+                clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
                 // The face analysis step (only done if recording AUs, HOGs or video)
                 if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid)
                 {
-                    face_analyser.AddNextFrame(frame, clm_model, using_webcam, show_appearance, record_tracked_vid);
+                    face_analyser.AddNextFrame(frame, clm_model, fx, fy, cx, cy, using_webcam, show_appearance, record_tracked_vid);
                 }
 
                 // Visualisation
@@ -795,7 +808,6 @@ namespace CLM_framework_GUI
                         auRegGraph.Update(au_regs_scaled);
                     }
 
-
                     if (show_geometry)
                     {
                         int yaw = (int)(pose[4] * 180 / Math.PI + 0.5);
@@ -811,6 +823,28 @@ namespace CLM_framework_GUI
                         ZPoseLabel.Content = (int)pose[2] + " mm";
 
                         nonRigidGraph.Update(non_rigid_params);
+
+                        // Update eye gaze
+                        var gaze_both = face_analyser.GetGazeCamera();
+                        double x = (gaze_both.Item1.Item1 + gaze_both.Item2.Item1) / 2.0;
+                        double y = (gaze_both.Item1.Item2 + gaze_both.Item2.Item2) / 2.0;
+
+                        // Tweak it to a more presentable value
+                        x = (int)(x * 35);
+                        y = (int)(y * 70);
+
+                        if (x < -10)
+                            x = -10;
+                        if (x > 10)
+                            x = 10;
+                        if (y < -10)
+                            y = -10;
+                        if (y > 10)
+                            y = 10;
+
+                        GazeXLabel.Content = x/10.0;
+                        GazeYLabel.Content = y/10.0;
+
                     }
 
                     if (show_tracked_video)
@@ -866,7 +900,7 @@ namespace CLM_framework_GUI
                 }));
 
                 // Recording the tracked model
-                RecordFrame(clm_model, clm_params, detectionSucceeding, frame_id, frame, grayFrame, fx, fy, cx, cy);
+                RecordFrame(clm_model, detectionSucceeding, frame_id, frame, grayFrame, fx, fy, cx, cy);
 
                 if (reset)
                 {

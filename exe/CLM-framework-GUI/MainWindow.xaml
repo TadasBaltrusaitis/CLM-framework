@@ -85,36 +85,51 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Grid.Row="0" HorizontalAlignment="Center">
-                    <StackPanel Width="120" >
-                        <Label Name="headOrientationLabel" FontSize="18"  HorizontalContentAlignment="Left">Orientation</Label>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Turn:</Label>
-                            <Label Name="YawLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0°</Label>
+                <StackPanel Orientation="Vertical"  Grid.Row="0" >
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel Width="120" >
+                            <Label Name="headOrientationLabel" FontSize="18"  HorizontalContentAlignment="Left">Orientation</Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Turn:</Label>
+                                <Label Name="YawLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0°</Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
+                                <Label Name="PitchLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Tilt:</Label>
+                                <Label Name="RollLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
-                            <Label Name="PitchLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Tilt:</Label>
-                            <Label Name="RollLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
+                        <Line X1="0" X2="0" Y1="20" Y2="90" Width="2" Stroke="Gray"></Line>
+                        <StackPanel>
+                            <Label Name="headPoseLabel" FontSize="18" HorizontalContentAlignment="Left">Pose</Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">X:</Label>
+                                <Label Name="XPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Y:</Label>
+                                <Label Name="YPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Z:</Label>
+                                <Label Name="ZPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <Line X1="0" X2="0" Y1="20" Y2="90" Width="2" Stroke="Gray"></Line>
                     <StackPanel>
-                        <Label Name="headPoseLabel" FontSize="18" HorizontalContentAlignment="Left">Pose</Label>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">X:</Label>
-                            <Label Name="XPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Y:</Label>
-                            <Label Name="YPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Z:</Label>
-                            <Label Name="ZPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
+                        <StackPanel Width="120" >
+                            <Label Name="gazePanelLabel" FontSize="18"  HorizontalContentAlignment="Left">Gaze</Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,-5,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Left-right:</Label>
+                                <Label Margin="0,-5,0,0" Name="GazeXLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0</Label>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Margin="5,-5,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
+                                <Label Margin="0,-5,0,0"  Name="GazeYLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0</Label>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
