@@ -529,8 +529,14 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 		CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
 	}
 
-	return DetectLandmarksInImage(grayscale_image, depth_image, bounding_box, clm_model, params);
-
+	if(bounding_box.width == 0)
+	{
+		return false;
+	}
+	else
+	{
+		return DetectLandmarksInImage(grayscale_image, depth_image, bounding_box, clm_model, params);
+	}
 }
 
 // Versions not using depth images
