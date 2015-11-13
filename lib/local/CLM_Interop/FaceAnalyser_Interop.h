@@ -62,6 +62,9 @@ private:
 	cv::Point3f* gazeDirection0_head;
 	cv::Point3f* gazeDirection1_head;
 
+	cv::Point3f* pupil_left;
+	cv::Point3f* pupil_right;
+
 public:
 
 	FaceAnalyserManaged(System::String^ root, bool dynamic) 
@@ -107,6 +110,9 @@ public:
 		gazeDirection1 = new cv::Point3f();
 		gazeDirection0_head = new cv::Point3f();
 		gazeDirection1_head = new cv::Point3f();
+
+		pupil_left = new cv::Point3f();
+		pupil_right = new cv::Point3f();
 	}
 
 	void SetupAlignedImageRecording(System::String^ directory)
@@ -223,6 +229,28 @@ public:
 		FaceAnalysis::EstimateGaze(*clm->getCLM(), *gazeDirection0, *gazeDirection0_head, fx, fy, cx, cy, true);
 		FaceAnalysis::EstimateGaze(*clm->getCLM(), *gazeDirection1, *gazeDirection1_head, fx, fy, cx, cy, false);
 
+		// Grab pupil locations
+		int part_left = -1;
+		int part_right = -1;
+		for (size_t i = 0; i < clm->getCLM()->hierarchical_models.size(); ++i)
+		{
+			if (clm->getCLM()->hierarchical_model_names[i].compare("left_eye_28") == 0)
+			{
+				part_left = i;
+			}
+			if (clm->getCLM()->hierarchical_model_names[i].compare("right_eye_28") == 0)
+			{
+				part_right = i;
+			}
+		}
+
+		cv::Mat_<double> eyeLdmks3d_left = clm->getCLM()->hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
+		Point3f pupil_left_h = FaceAnalysis::GetPupilPosition(eyeLdmks3d_left);
+		pupil_left->x = pupil_left_h.x; pupil_left->y = pupil_left_h.y; pupil_left->z = pupil_left_h.z;
+
+		cv::Mat_<double> eyeLdmks3d_right = clm->getCLM()->hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
+		Point3f pupil_right_h = FaceAnalysis::GetPupilPosition(eyeLdmks3d_right);
+		pupil_right->x = pupil_right_h.x; pupil_right->y = pupil_right_h.y; pupil_right->z = pupil_right_h.z;
 	}
 		
 	Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>^ GetGazeCamera()
@@ -243,6 +271,33 @@ public:
 		return gcnew Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>(gaze0, gaze1);
 
 	}
+
+	List<Tuple<System::Windows::Point, System::Windows::Point>^>^ CalculateGazeLines(float fx, float fy, float cx, float cy) 
+	{
+		
+		cv::Mat_<double> cameraMat = (cv::Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);
+
+		vector<Point3d> points_left;
+		points_left.push_back(Point3d(*pupil_left));
+		points_left.push_back(Point3d(*pupil_left + *gazeDirection0*40.0));
+
+		vector<Point3d> points_right;
+		points_right.push_back(Point3d(*pupil_right));
+		points_right.push_back(Point3d(*pupil_right + *gazeDirection1*40.0));
+
+		vector<Point2d> imagePoints_left;
+		projectPoints(points_left, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_left);
+		
+		vector<Point2d> imagePoints_right;
+		projectPoints(points_right, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_right);
+		
+		auto lines = gcnew List<Tuple<System::Windows::Point, System::Windows::Point>^>();
+		lines->Add(gcnew Tuple<System::Windows::Point, System::Windows::Point>(System::Windows::Point(imagePoints_left[0].x, imagePoints_left[0].y), System::Windows::Point(imagePoints_left[1].x, imagePoints_left[1].y)));
+		lines->Add(gcnew Tuple<System::Windows::Point, System::Windows::Point>(System::Windows::Point(imagePoints_right[0].x, imagePoints_right[0].y), System::Windows::Point(imagePoints_right[1].x, imagePoints_right[1].y)));
+
+		return lines;
+	}
+
 
 	List<System::String^>^ GetClassActionUnitsNames()
 	{
@@ -333,6 +388,9 @@ public:
 		delete gazeDirection1;
 		delete gazeDirection0_head;
 		delete gazeDirection1_head;
+
+		delete pupil_left;
+		delete pupil_right;
 
 		if(tracked_vid_writer != 0)
 		{

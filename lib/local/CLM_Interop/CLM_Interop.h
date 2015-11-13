@@ -280,6 +280,7 @@ namespace CLM_Interop {
 				::CLMTracker::DrawLandmarks(img->Mat, vecLandmarks);
 			}
 
+
 			List<Tuple<System::Windows::Point, System::Windows::Point>^>^ CalculateBox(float fx, float fy, float cx, float cy) {
 
 				cv::Vec6d pose = ::CLMTracker::GetCorrectedPoseCameraPlane(*clm, fx,fy, cx, cy);

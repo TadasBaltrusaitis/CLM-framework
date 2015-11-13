@@ -95,12 +95,9 @@ namespace CLM_framework_GUI
         bool show_appearance = true;
         bool show_geometry = true;
         bool show_aus = true;
-
-        // TODO remove some bad classifiers
-
+        
         // TODO classifiers converted to regressors
 
-        // TODO track length (part of video?), can have a nice bar at the bottom
         // TODO indication that track is done        
 
         // The recording managers
@@ -140,6 +137,7 @@ namespace CLM_framework_GUI
                 RecordAlignedCheckBox.IsChecked = record_aligned;
                 RecordTrackedVidCheckBox.IsChecked = record_tracked_vid;
                 RecordHOGCheckBox.IsChecked = record_HOG;
+                RecordGazeCheckBox.IsChecked = record_gaze;
                 RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
@@ -316,7 +314,7 @@ namespace CLM_framework_GUI
                 output_3D_landmarks_file.Close();
 
             if (record_gaze && output_gaze != null)
-                output_gaze.Close();
+                output_gaze.Close();             
 
             if (record_HOG)
                 face_analyser.StopHOGRecording();
@@ -429,6 +427,24 @@ namespace CLM_framework_GUI
                     output_au_reg.Write(",{0:F2}", au_regs[name_reg]);
                 }
                 output_au_reg.WriteLine();
+
+            }
+
+            if(record_gaze)
+            {
+
+                var gaze_cam = face_analyser.GetGazeCamera();
+                var gaze_head = face_analyser.GetGazeHead();
+
+                output_gaze.Write(String.Format("{0},{1},{2:F3}", frame_ind, success, confidence));
+
+                output_gaze.Write(String.Format(",{0:F3},{1:F3},{2:F3},{3:F3},{4:F3},{5:F3}", gaze_cam.Item1.Item1, gaze_cam.Item1.Item2, gaze_cam.Item1.Item3,
+                    gaze_cam.Item2.Item1, gaze_cam.Item2.Item2, gaze_cam.Item2.Item3));
+
+                output_gaze.Write(String.Format(",{0:F3},{1:F3},{2:F3},{3:F3},{4:F3},{5:F3}", gaze_head.Item1.Item1, gaze_head.Item1.Item2, gaze_head.Item1.Item3,
+                    gaze_head.Item2.Item1, gaze_head.Item2.Item2, gaze_head.Item2.Item3));
+
+                output_gaze.WriteLine();
 
             }
 
@@ -759,14 +775,7 @@ namespace CLM_framework_GUI
 
                 bool detectionSucceeding = ProcessFrame(clm_model, clm_params, frame, grayFrame, fx, fy, cx, cy);
 
-                List<Tuple<Point, Point>> lines = null;
-                List<Tuple<double, double>> landmarks = null;
-                
-                if (detectionSucceeding)
-                {
-                    landmarks = clm_model.CalculateLandmarks();
-                    lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
-                }
+
                 
                 double confidence = (-clm_model.GetConfidence()) / 2.0 + 0.5;
 
@@ -780,9 +789,21 @@ namespace CLM_framework_GUI
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
 
                 // The face analysis step (only done if recording AUs, HOGs or video)
-                if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid)
+                if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid || record_gaze)
                 {
                     face_analyser.AddNextFrame(frame, clm_model, fx, fy, cx, cy, using_webcam, show_appearance, record_tracked_vid);
+                }
+
+                List<Tuple<Point, Point>> lines = null;
+                List<Tuple<double, double>> landmarks = null;
+                List<Tuple<Point, Point>> gaze_lines = null;
+
+                if (detectionSucceeding)
+                {
+                    landmarks = clm_model.CalculateLandmarks();
+                    lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
+                    gaze_lines = face_analyser.CalculateGazeLines((float)fx, (float)fy, (float)cx, (float)cy);
+
                 }
 
                 // Visualisation
@@ -845,6 +866,7 @@ namespace CLM_framework_GUI
                         GazeXLabel.Content = x/10.0;
                         GazeYLabel.Content = y/10.0;
 
+
                     }
 
                     if (show_tracked_video)
@@ -865,6 +887,7 @@ namespace CLM_framework_GUI
                         {
                             video.OverlayLines.Clear();
                             video.OverlayPoints.Clear();
+                            video.GazeLines.Clear();
                         }
                         else
                         {
@@ -877,6 +900,8 @@ namespace CLM_framework_GUI
                             }
 
                             video.OverlayPoints = landmark_points;
+
+                            video.GazeLines = gaze_lines;
                         }
                     }
 
@@ -1215,6 +1240,7 @@ namespace CLM_framework_GUI
             record_aus = false;
             record_aligned = false;
             record_HOG = false;
+            record_gaze = false;
             record_tracked_vid = false;
             record_2D_landmarks = false;
             record_3D_landmarks = false;
@@ -1234,6 +1260,7 @@ namespace CLM_framework_GUI
                 RecordAlignedCheckBox.IsChecked = record_aligned;
                 RecordTrackedVidCheckBox.IsChecked = record_tracked_vid;
                 RecordHOGCheckBox.IsChecked = record_HOG;
+                RecordGazeCheckBox.IsChecked = record_gaze;
                 RecordLandmarks2DCheckBox.IsChecked = record_2D_landmarks;
                 RecordLandmarks3DCheckBox.IsChecked = record_3D_landmarks;
                 RecordParamsCheckBox.IsChecked = record_params;
@@ -1255,6 +1282,7 @@ namespace CLM_framework_GUI
             record_aus = RecordAUCheckBox.IsChecked;
             record_aligned = RecordAlignedCheckBox.IsChecked;
             record_HOG = RecordHOGCheckBox.IsChecked;
+            record_gaze = RecordGazeCheckBox.IsChecked;
             record_tracked_vid = RecordTrackedVidCheckBox.IsChecked;
             record_2D_landmarks = RecordLandmarks2DCheckBox.IsChecked;
             record_3D_landmarks = RecordLandmarks3DCheckBox.IsChecked;

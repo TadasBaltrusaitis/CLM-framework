@@ -32,6 +32,7 @@
                 <MenuItem Name="RecordAUCheckBox" IsCheckable="True" Header="Record AUs" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordPoseCheckBox" IsCheckable="True" Header="Record pose" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordLandmarks2DCheckBox" IsCheckable="True" Header="Record 2D landmarks" Click="recordCheckBox_click"></MenuItem>
+                <MenuItem Name="RecordGazeCheckBox" IsCheckable="True" Header="Record gaze" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordLandmarks3DCheckBox" IsCheckable="True" Header="Record 3D landmarks" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordHOGCheckBox" IsCheckable="True" Header="Record HOG" Click="recordCheckBox_click"></MenuItem>
                 <MenuItem Name="RecordParamsCheckBox" IsCheckable="True" Header="Record model parameters" Click="recordCheckBox_click"></MenuItem>

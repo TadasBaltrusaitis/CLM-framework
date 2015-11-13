@@ -25,6 +25,8 @@ namespace CLM_framework_GUI
             InitializeComponent();
             OverlayLines = new List<Tuple<Point, Point>>();
             OverlayPoints = new List<Point>();
+            GazeLines = new List<Tuple<Point, Point>>();
+
             Progress = -1;
         }
 
@@ -53,6 +55,16 @@ namespace CLM_framework_GUI
                 dc.DrawLine(new Pen(new SolidColorBrush(Color.FromArgb(200, (byte)(100 + (155 * (1-Confidence))), (byte)(100 + (155 * Confidence)), 100)), 2), p1, p2);
             } 
             
+            foreach (var line in GazeLines)
+            {
+
+                var p1 = new Point(ActualWidth * line.Item1.X / width, ActualHeight * line.Item1.Y / height);
+                var p2 = new Point(ActualWidth * line.Item2.X / width, ActualHeight * line.Item2.Y / height);
+
+                dc.DrawLine(new Pen(new SolidColorBrush(Color.FromArgb(200, (byte)(240), (byte)(30), (byte)100)), 3), p1, p2);
+
+            }
+
             foreach (var p in OverlayPoints)
             {
 
@@ -92,6 +104,7 @@ namespace CLM_framework_GUI
         }
 
         public List<Tuple<Point, Point>> OverlayLines { get; set; }
+        public List<Tuple<Point, Point>> GazeLines { get; set; }
         public List<Point> OverlayPoints { get; set; }        
         public double Confidence { get; set; }
         public double FPS { get; set; }

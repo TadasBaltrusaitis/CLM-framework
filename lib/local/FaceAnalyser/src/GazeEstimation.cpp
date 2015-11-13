@@ -79,7 +79,7 @@ Point3f RaySphereIntersect(Point3f rayOrigin, Point3f rayDir, Point3f sphereOrig
 	return rayOrigin + rayDir * t;
 }
 
-Point3f GetPupilPosition(Mat_<double> eyeLdmks3d){
+Point3f FaceAnalysis::GetPupilPosition(Mat_<double> eyeLdmks3d){
 	
 	eyeLdmks3d = eyeLdmks3d.t();
 
