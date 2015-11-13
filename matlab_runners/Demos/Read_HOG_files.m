@@ -50,10 +50,10 @@ function [hog_data, valid_inds, vid_id] = Read_HOG_files(users, hog_data_dir)
 
                     num_rows_read = size(feature_vec,1);
 
-                    curr_data(curr_ind+1:curr_ind+num_rows_read,:) = feature_vec;
-
-                    curr_ind = curr_ind + size(feature_vec,1);
-
+                    if(~isempty(feature_vec))
+                        curr_data(curr_ind+1:curr_ind+num_rows_read,:) = feature_vec;
+                        curr_ind = curr_ind + size(feature_vec,1);
+                    end
                 end
 
             end
