@@ -23,6 +23,19 @@ intraface_wild_error = compute_error(labels_all, shapes_all);
 % removing faces that were not detected by intraface for fairness
 detected = intraface_wild_error < 1;
 
+load('results/results_wild_clnf.mat');
+labels = experiments.labels([1:60,62:64,66:end],:,detected);
+shapes = experiments.shapes([1:60,62:64,66:end],:,detected);
+labels = labels(18:end,:,:);
+% center the pixel
+shapes = shapes(18:end,:,:) + 0.5;
+
+clnf_error = compute_error( labels,  shapes);
+
+[error_x, error_y] = cummErrorCurve(clnf_error);
+
+plot(error_x, error_y, 'r','DisplayName', 'OpenFace', 'LineWidth',line_width);
+hold on;
 load('results/intraface_wild_resize.mat');
 labels_all = labels_all(18:end,:,detected);
 % center the pixel
@@ -35,18 +48,18 @@ intraface_wild_error = compute_error(labels_all, shapes_all);
 plot(error_x, error_y, '.-g','DisplayName', 'SDM (CVPR 13)', 'LineWidth',line_width);
 hold on;
 
-load('results/results_wild_clnf.mat');
-labels = experiments.labels([1:60,62:64,66:end],:,detected);
-shapes = experiments.shapes([1:60,62:64,66:end],:,detected);
-labels = labels(18:end,:,:);
+load('results/GNDPM_300W.mat');
 % center the pixel
-shapes = shapes(18:end,:,:) + 0.5;
+shapes_all = shapes_all(:,:,detected) + 1;
+labels_all = labels_all(:,:,detected);
 
-clnf_error = compute_error( labels,  shapes);
+gndpm_wild_error = compute_error(labels_all, shapes_all);
 
-[error_x, error_y] = cummErrorCurve(clnf_error);
+[error_x, error_y] = cummErrorCurve(gndpm_wild_error);
 
-plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, '-.','DisplayName', 'GNDPM (CVPR 14)', 'LineWidth',line_width);
+hold on;
+
 
 load('results/zhu_wild.mat');
 labels_all = labels_all(18:end,:,detected);
@@ -88,7 +101,8 @@ ylabel('Proportion of images','FontName','Helvetica');
 grid on
 % title('Fitting in the wild without outline','FontSize',60,'FontName','Helvetica');
 
-legend('show', 'Location', 'SouthEast');
+leg = legend('show', 'Location', 'SouthEast');
+set(leg,'FontSize',30)
 
 print -dpdf results/in-the-wild-clnf-no-outline.pdf
 
@@ -116,7 +130,7 @@ clnf_error = compute_error( labels,  shapes);
 [error_x, error_y] = cummErrorCurve(clnf_error);
 hold on;
 
-plot(error_x, error_y, 'r','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, 'r','DisplayName', 'OpenFace', 'LineWidth',line_width);
 
 load('results/zhu_wild.mat');
 
@@ -124,7 +138,17 @@ zhu_wild_error = compute_error(labels_all(:,:,:), shapes_all(:,:,:));
 
 [error_x, error_y] = cummErrorCurve(zhu_wild_error);
 
-plot(error_x, error_y, '.-c','DisplayName', 'Tree based (CVPR 12)', 'LineWidth',line_width);
+plot(error_x, error_y, '.-c','DisplayName', 'Zhu et al.', 'LineWidth',line_width);
+
+load('results/yu_wild.mat');
+
+yu_wild_error = compute_error(lmark_dets_all(:,:,:)-1, shapes_all(:,:,:));
+yu_wild_error(isnan(yu_wild_error)) = 1;
+yu_wild_error(isinf(yu_wild_error)) = 1;
+
+[error_x, error_y] = cummErrorCurve(yu_wild_error);
+
+plot(error_x, error_y, 'xg','DisplayName', 'Yu et al.', 'LineWidth',line_width);
 
 load('results/results_wild_clm.mat');
 experiments(1).labels = experiments(1).labels([1:60,62:64,66:end],:,:);
@@ -143,14 +167,14 @@ drmf_error = compute_error(labels_all, shapes_all);
 
 [error_x, error_y] = cummErrorCurve(drmf_error);
 
-plot(error_x, error_y, '-.k','DisplayName', 'DRMF (CVPR 13)', 'LineWidth',line_width);
+plot(error_x, error_y, '-.k','DisplayName', 'DRMF', 'LineWidth',line_width);
 
 set(gca,'xtick',[0:0.05:0.15])
 xlim([0,0.15]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on
-title('Fitting in the wild with outline','FontSize',60,'FontName','Helvetica');
+%title('Fitting in the wild','FontSize',60,'FontName','Helvetica');
 
 legend('show', 'Location', 'SouthEast');
 
