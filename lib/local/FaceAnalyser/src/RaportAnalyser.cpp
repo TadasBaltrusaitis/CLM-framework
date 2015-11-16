@@ -62,6 +62,8 @@ RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history()
 {
 	// start with average rapport first
 	current_rapport = 4;
+	current_valence = 4;
+	current_attention = 4;
 
 	prev_time_step = 0;
 
@@ -213,14 +215,28 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	// Two options accomulating model or a direct mapping
 
 	double cummulator = 0;
+	double cummulator_valence = 0;
+	double cummulator_attention = 0;
+
 	double add_size = 0.02;
 	if (head_gaze_away > 15)
 	{
 		cummulator = cummulator - add_size / 1.5;
+		cummulator_attention = cummulator_attention - add_size / 1.5;
 	}
+	else
+	{
+		cummulator_attention = cummulator_attention + add_size / 3.0;
+	}
+
 	if (eye_gaze_away > 7)
 	{
 		cummulator = cummulator - add_size / 1.5;
+		cummulator_attention = cummulator_attention - add_size / 1.5;
+	}
+	else
+	{
+		cummulator_attention = cummulator_attention + add_size / 3.0;
 	}
 
 	//if (AU12 > 1.5 && AU6 > 1.5)
@@ -228,8 +244,13 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	{
 		// Look at smiling behaviour (AU12 + AU6)
 		cummulator = cummulator + add_size * 2.0;
+		cummulator_valence = cummulator_valence + add_size * 3.0;
 	}
-	
+	else if (current_valence > 5)
+	{
+		cummulator_valence = cummulator_valence - add_size * 1.5;
+	}
+
 	// If brows are being raised (poss showing interest)
 	//if (AU1 > 2.0 || AU2 > 2.0)
 	if (brow_flash > 2)
@@ -242,12 +263,14 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	{
 		// Look at frowning behaviour (AU4 + AU15 and AU17)
 		cummulator = cummulator - add_size;
+		cummulator_valence = cummulator_valence - add_size;
 	}
 
 	if (AU15 > 2 || AU17 > 2 || frown > 1.5)
 	{
 		// Look at frowning behaviour (AU4 + AU15 and AU17)
 		cummulator = cummulator - add_size * 2.0;
+		cummulator_valence = cummulator_valence - add_size * 3.0;
 	}
 
 	// Looks if lips are not moving (AU25)
@@ -262,6 +285,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	if (time_passed > 0)
 	{
 		cummulator = cummulator * time_passed / 75.0;
+		cummulator_attention = cummulator_attention * time_passed / 75.0;
+		cummulator_valence = cummulator_valence * time_passed / 75.0;
 	}
 
 	// Do not let a single frame change by more that 0.5
@@ -271,15 +296,31 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	if (cummulator < -0.5)
 		cummulator = -0.5;
 
+	// Some smoothing
 	double old_rapport = current_rapport;
+	double old_attention = current_attention;
+	double old_valence = current_valence;
 
-	current_rapport = 0.4 * current_rapport + 0.6 * (old_rapport + cummulator);
+	current_rapport = 0.3 * current_rapport + 0.7 * (old_rapport + cummulator);
+	current_attention = 0.3 * current_attention + 0.7 * (old_attention + cummulator_attention);
+	current_valence = 0.3 * current_valence + 0.7 * (old_valence + cummulator_valence);
 
 	if (current_rapport < 1)
 		current_rapport = 1;
 	if (current_rapport > 7)
 		current_rapport = 7;
-	//cout << (current_rapport - 1.0) / 6.0<< endl;
+
+	if (current_attention < 1)
+		current_attention = 1;
+	if (current_attention > 7)
+		current_attention = 7;
+
+	if (current_valence < 1)
+		current_valence = 1;
+	if (current_valence > 7)
+		current_valence = 7;
+
+	//cout << (current_rapport - 1.0) / 6.0 << " " << (current_valence - 1.0) / 6.0 << " " << (current_attention - 1.0) / 6.0 << endl;
 
 	// TODO smoothing and incorporation of time steps
 	// TODO lips parting has to look at the derivative or std?
@@ -287,6 +328,20 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	// for past 3 seconds
 
 	prev_time_step = time;
+
+}
+
+double RapportAnalyser::GetAttentionEstimate()
+{
+
+	return current_attention;
+
+}
+
+double RapportAnalyser::GetValenceEstimate()
+{
+
+	return current_valence;
 
 }
 

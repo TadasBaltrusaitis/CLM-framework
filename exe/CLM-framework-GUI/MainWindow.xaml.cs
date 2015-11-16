@@ -480,6 +480,8 @@ namespace CLM_framework_GUI
             {
 
                 rapportPlot.AssocColor(0, Colors.Blue);
+                valencePlot.AssocColor(0, Colors.Green);
+                attentionPlot.AssocColor(0, Colors.Red);
                 ResetButton.IsEnabled = true;
                 PauseButton.IsEnabled = true;
                 StopButton.IsEnabled = true;
@@ -835,6 +837,14 @@ namespace CLM_framework_GUI
                         Dictionary<int, double> rapportDict = new Dictionary<int, double>();
                         rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.0;
                         rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
+
+                        Dictionary<int, double> attentionDict = new Dictionary<int, double>();
+                        attentionDict[0] = (face_analyser.GetAttention() - 1.0) / 6.0;
+                        attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
+
+                        Dictionary<int, double> valenceDict = new Dictionary<int, double>();
+                        valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.0;
+                        valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
 
                     }
 

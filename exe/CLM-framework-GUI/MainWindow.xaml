@@ -13,15 +13,16 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="3*" MinHeight="220"/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="0.4*"/>
             <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>        
-            <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
+        </Grid.RowDefinitions>
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">
             <MenuItem Header="File">
                 <MenuItem Header="Open video(s)" Click="videoFileOpenClick">
                 </MenuItem>
                 <MenuItem Header="Open image(s)" Click="imageFileOpenClick">
-                </MenuItem>                
+                </MenuItem>
                 <MenuItem Header="Open image sequence" Click="imageSequenceFileOpenClick">
                 </MenuItem>
                 <MenuItem Header="Open webcam" Click="openWebcamClick">
@@ -137,47 +138,49 @@
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <CLM_framework_GUI:MultiBarGraph x:Name="nonRigidGraph" HorizontalAlignment="Center" MinHeight="100"/>
                     <Label HorizontalAlignment="Center">Non rigid parameters</Label>
-                </StackPanel>                
+                </StackPanel>
             </Grid>
         </GroupBox>
-        <StackPanel Grid.Row="1" Grid.Column="3">
-        <GroupBox Name="ActionUnitBorder"  BorderBrush="Black" BorderThickness="1" MinHeight="400">
+        <GroupBox Grid.Row="1" Grid.Column="3" Name="ActionUnitBorder"  BorderBrush="Black" BorderThickness="1" MinHeight="400">
             <GroupBox.Header>
                 Action Units
             </GroupBox.Header>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <GroupBox>
-                <GroupBox.Header>
-                    Classification
-                </GroupBox.Header>
+                <GroupBox>
+                    <GroupBox.Header>
+                        Classification
+                    </GroupBox.Header>
                     <CLM_framework_GUI:MultiBarGraphHorz x:Name="auClassGraph" HorizontalAlignment="Center" MinWidth="100"/>
                     <!--"<StackPanel Name="AU_classes_panel">
                     </StackPanel>-->
-            </GroupBox>
-            <GroupBox>
-                <GroupBox.Header>
-                    Regression
-                </GroupBox.Header>
-                <CLM_framework_GUI:MultiBarGraphHorz x:Name="auRegGraph" HorizontalAlignment="Center" MinWidth="100"/>
+                </GroupBox>
+                <GroupBox>
+                    <GroupBox.Header>
+                        Regression
+                    </GroupBox.Header>
+                    <CLM_framework_GUI:MultiBarGraphHorz x:Name="auRegGraph" HorizontalAlignment="Center" MinWidth="100"/>
                 </GroupBox>
             </StackPanel>
         </GroupBox>
-            <GroupBox Name="RapportBorder" MinHeight="180">
-                <GroupBox.Header>
-                    Rapport
-                </GroupBox.Header>
-                <CLM_framework_GUI:AxesBorder Padding="60 20 30 40" RangeLabel="Rapport" Orientation="Horizontal">
-                    <CLM_framework_GUI:TimeSeriesPlot x:Name="rapportPlot" Orientation="Horizontal"/>
-                </CLM_framework_GUI:AxesBorder>
-            </GroupBox>
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="2" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Rapport" Orientation="Horizontal">
+            <CLM_framework_GUI:TimeSeriesPlot x:Name="rapportPlot" Orientation="Horizontal"/>
+        </CLM_framework_GUI:AxesBorder>
+
+        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Padding="60 20 30 40" RangeLabel="Valence" Orientation="Horizontal">
+            <CLM_framework_GUI:TimeSeriesPlot x:Name="valencePlot" Orientation="Horizontal"/>
+        </CLM_framework_GUI:AxesBorder>
+
+        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="2" Grid.Column="3" Padding="60 20 30 40" RangeLabel="Attention" Orientation="Horizontal">
+            <CLM_framework_GUI:TimeSeriesPlot x:Name="attentionPlot" Orientation="Horizontal"/>
+        </CLM_framework_GUI:AxesBorder>
+        
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="164,382,162,61" Grid.RowSpan="2">
             <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>
             <Button VerticalAlignment="Top" IsEnabled="False" Click="StopButton_Click" Name="StopButton">Stop</Button>
             <Button VerticalAlignment="Top" IsEnabled="False" Click="ResetButton_Click" Name="ResetButton">Reset</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFrameButton"> >> 1</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFiveFramesButton"> >> 5</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFrameButton">>> 1</Button>
+            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFiveFramesButton">>> 5</Button>
         </StackPanel>
-        
+
     </Grid>
 </Window>

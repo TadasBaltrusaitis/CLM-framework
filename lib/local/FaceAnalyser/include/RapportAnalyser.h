@@ -20,10 +20,15 @@ public:
 	void AddObservation(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser, const Point3f& gaze_left, const Point3f& gaze_right, double fx, double fy, double cx, double cy);
 
 	double GetRapportEstimate();
+	double GetAttentionEstimate();
+	double GetValenceEstimate();
 
 private:
 
 	double current_rapport;
+	double current_attention;
+	double current_valence;
+
 	vector<double> rapport_history;
 
 	double prev_time_step;
