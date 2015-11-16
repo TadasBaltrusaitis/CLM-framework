@@ -79,7 +79,7 @@ public:
 
 	Mat GetLatestHOGDescriptorVisualisation();
 
-	double GetCurrentTimeSeconds();
+	double GetCurrentTimeSeconds() const;
 	
 	std::vector<std::pair<std::string, double>> GetCurrentAUsClass() const;
 	std::vector<std::pair<std::string, double>> GetCurrentAUsReg() const;

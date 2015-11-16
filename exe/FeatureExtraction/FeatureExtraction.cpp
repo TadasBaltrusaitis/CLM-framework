@@ -784,6 +784,7 @@ int main (int argc, char **argv)
 			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
 			{
+				// TODO the timing should actually be in milliseconds
 				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, webcam, !clm_parameters.quiet_mode);
 				face_analyser.GetLatestAlignedFace(sim_warped_img);
 

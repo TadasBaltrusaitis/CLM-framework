@@ -789,11 +789,12 @@ namespace CLM_framework_GUI
                 List<double> pose = new List<double>();
                 clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
-
+                
+                double time_stamp = (DateTime.Now - (DateTime)startTime).TotalMilliseconds;
                 // The face analysis step (only done if recording AUs, HOGs or video)
                 if (record_aus || record_HOG || record_aligned || show_aus || show_appearance || record_tracked_vid || record_gaze)
                 {
-                    face_analyser.AddNextFrame(frame, clm_model, fx, fy, cx, cy, using_webcam, show_appearance, record_tracked_vid);
+                    face_analyser.AddNextFrame(frame, clm_model, time_stamp, fx, fy, cx, cy, using_webcam, show_appearance, record_tracked_vid);
                 }
 
                 List<Tuple<Point, Point>> lines = null;

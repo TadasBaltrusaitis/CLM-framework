@@ -26,6 +26,18 @@ private:
 	double current_rapport;
 	vector<double> rapport_history;
 
+	double prev_time_step;
+
+	vector<double> AU1_history;
+	vector<double> AU2_history;
+	vector<double> AU4_history;
+	vector<double> AU6_history;
+	vector<double> AU12_history;
+	vector<double> AU15_history;
+	vector<double> AU17_history;
+	vector<double> AU25_history;
+	vector<double> time_step_history;
+
 };
 }
 #endif

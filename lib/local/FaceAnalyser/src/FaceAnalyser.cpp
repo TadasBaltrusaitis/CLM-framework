@@ -1013,6 +1013,6 @@ void FaceAnalyser::ReadRegressor(std::string fname, const vector<string>& au_nam
 	}
 }
 
-double FaceAnalyser::GetCurrentTimeSeconds() {
+double FaceAnalyser::GetCurrentTimeSeconds() const {
 	return current_time_seconds;
 }

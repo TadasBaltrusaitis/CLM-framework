@@ -58,15 +58,19 @@ using namespace FaceAnalysis;
 using namespace std;
 
 // Constructor from a model file (or a default one if not provided
-RapportAnalyser::RapportAnalyser() :rapport_history()
+RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history()
 {
 	// start with average rapport first
 	current_rapport = 4;
+
+	prev_time_step = 0;
+
 }
 
 void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser, const Point3f& gaze_left, const Point3f& gaze_right, double fx, double fy, double cx, double cy)
 {
-
+	double time = face_analyser.GetCurrentTimeSeconds();
+	
 	if (!clm_model.detection_success)
 		return;
 
@@ -109,6 +113,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 
 	auto aus_reg = face_analyser.GetCurrentAUsReg();
 
+	double AU1 = 0;
+	double AU2 = 0;
 	double AU4 = 0;
 	double AU6 = 0;
 	double AU12 = 0;
@@ -119,6 +125,14 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	// Find AUs of interest
 	for (auto au_reg : aus_reg)
 	{
+		if (au_reg.first.compare("AU01") == 0)
+		{
+			AU1 = au_reg.second;
+		}
+		if (au_reg.first.compare("AU02") == 0)
+		{
+			AU2 = au_reg.second;
+		}
 		if (au_reg.first.compare("AU04") == 0)
 		{
 			AU4 = au_reg.second;
@@ -144,46 +158,110 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 			AU25 = au_reg.second;
 		}
 	}
+	
+	AU1_history.push_back(AU1);
+	AU2_history.push_back(AU2);
+	AU4_history.push_back(AU4);
+	AU6_history.push_back(AU6);
+	AU12_history.push_back(AU12);
+	AU15_history.push_back(AU15);
+	AU17_history.push_back(AU17);
+	AU25_history.push_back(AU25);
+	time_step_history.push_back(time);
 
-	//cout << (int)(AU4 * 10) << " " << (int)(AU6 * 10) << " " << (int)(AU12 * 10) << " " << (int)(AU15 * 10) << " " << (int)(AU17 * 10) << " " << (int)(AU25 * 10) << endl;
+	if (time - *time_step_history.begin() > 500)
+	{
+		AU1_history.erase(AU1_history.begin());
+		AU2_history.erase(AU2_history.begin());
+		AU4_history.erase(AU4_history.begin());
+		AU6_history.erase(AU6_history.begin());
+		AU12_history.erase(AU12_history.begin());
+		AU15_history.erase(AU15_history.begin());
+		AU17_history.erase(AU17_history.begin());
+		AU25_history.erase(AU25_history.begin());
+		time_step_history.erase(time_step_history.begin());
+	}
 
-	// Look at smiling behaviour (AU12 + AU6)
-	// Look at frowning behaviour (AU4 + AU15 and AU17)
+	double min_au1, max_au1;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU1_history)), &min_au1, &max_au1);
+	double min_au2, max_au2;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU2_history)), &min_au2, &max_au2);
+	double brow_flash = 0.5 * ((max_au1 - min_au1) + (max_au2 - min_au2));
 
-	// Looks if lips are not moving (AU25)
+	double min_au4, max_au4;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU4_history)), &min_au4, &max_au4);
+	double brow_furrow = max_au4 - min_au4;
+
+	double min_au6, max_au6;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU6_history)), &min_au6, &max_au6);
+	double min_au12, max_au12;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU12_history)), &min_au12, &max_au12);
+	double smile = 0.5 * ((max_au6 - min_au6) + (max_au12 - min_au12));
+
+	double min_au15, max_au15;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU15_history)), &min_au15, &max_au15);
+	double min_au17, max_au17;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU17_history)), &min_au17, &max_au17);
+	double frown = ((max_au15 - min_au15) + (max_au17 - min_au17));
+
+	double min_au25, max_au25;
+	cv::minMaxLoc(cv::Mat(std::vector<double>(AU25_history)), &min_au25, &max_au25);
+	double talk = max_au25 - min_au25;
+
+	//cout << brow_flash << " " << brow_furrow << " " << smile << " " << frown << " " << talk << endl;
 
 	// Two options accomulating model or a direct mapping
 
 	double cummulator = 0;
-	double add_size = 0.1;
+	double add_size = 0.02;
 	if (head_gaze_away > 15)
 	{
-		cummulator = cummulator - add_size / 4.0;
+		cummulator = cummulator - add_size / 1.5;
 	}
 	if (eye_gaze_away > 7)
 	{
-		cummulator = cummulator - add_size / 4.0;
+		cummulator = cummulator - add_size / 1.5;
 	}
 
-	if (AU12 > 1.5 && AU6 > 1.5)
+	//if (AU12 > 1.5 && AU6 > 1.5)
+	if ((AU12 > 1.5 && AU6 > 0.5) || smile > 1.5)
 	{
+		// Look at smiling behaviour (AU12 + AU6)
 		cummulator = cummulator + add_size * 2.0;
 	}
-
-	if (AU4 > 2.5)
+	
+	// If brows are being raised (poss showing interest)
+	//if (AU1 > 2.0 || AU2 > 2.0)
+	if (brow_flash > 2)
 	{
+		// Look at smiling behaviour (AU1 + AU2)
+		cummulator = cummulator + add_size;
+	}
+
+	if (AU4 > 2.5 || brow_furrow > 2)
+	{
+		// Look at frowning behaviour (AU4 + AU15 and AU17)
 		cummulator = cummulator - add_size;
 	}
 
-	if (AU15 > 2 || AU17 > 2)
+	if (AU15 > 2 || AU17 > 2 || frown > 1.5)
 	{
+		// Look at frowning behaviour (AU4 + AU15 and AU17)
 		cummulator = cummulator - add_size * 2.0;
 	}
 
-	if (AU25 > 2.5)
+	// Looks if lips are not moving (AU25)
+	if (talk > 2)
 	{
 
 		cummulator = cummulator + add_size / 2.0;
+	}
+
+	double time_passed = time - prev_time_step;
+
+	if (time_passed > 0)
+	{
+		cummulator = cummulator * time_passed / 75.0;
 	}
 
 	// Do not let a single frame change by more that 0.5
@@ -193,13 +271,23 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	if (cummulator < -0.5)
 		cummulator = -0.5;
 
-	current_rapport += cummulator;
+	double old_rapport = current_rapport;
+
+	current_rapport = 0.4 * current_rapport + 0.6 * (old_rapport + cummulator);
 
 	if (current_rapport < 1)
 		current_rapport = 1;
 	if (current_rapport > 7)
 		current_rapport = 7;
 	//cout << (current_rapport - 1.0) / 6.0<< endl;
+
+	// TODO smoothing and incorporation of time steps
+	// TODO lips parting has to look at the derivative or std?
+	// Need a cummulator of each of the statistics?
+	// for past 3 seconds
+
+	prev_time_step = time;
+
 }
 
 double RapportAnalyser::GetRapportEstimate()

@@ -195,9 +195,9 @@ public:
 		tracked_vid_writer->write(*tracked_face);
 	}
 
-	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, double fx, double fy, double cx, double cy, bool online, bool vis_hog, bool vis_tracked) {
+	void AddNextFrame(RawImage^ frame, CLM_Interop::CLMTracker::CLM^ clm, double time_ms, double fx, double fy, double cx, double cy, bool online, bool vis_hog, bool vis_tracked) {
 			
-		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), 0, online, vis_hog);
+		face_analyser->AddNextFrame(frame->Mat, *clm->getCLM(), time_ms, online, vis_hog);
 
 		face_analyser->GetLatestHOG(*hog_features, *num_rows, *num_cols);
 		
