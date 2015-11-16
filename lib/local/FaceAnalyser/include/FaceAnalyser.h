@@ -81,10 +81,10 @@ public:
 
 	double GetCurrentTimeSeconds();
 	
-	std::vector<std::pair<std::string, double>> GetCurrentAUsClass();
-	std::vector<std::pair<std::string, double>> GetCurrentAUsReg();
+	std::vector<std::pair<std::string, double>> GetCurrentAUsClass() const;
+	std::vector<std::pair<std::string, double>> GetCurrentAUsReg() const;
 
-	std::vector<std::pair<std::string, double>> GetCurrentAUsCombined();
+	std::vector<std::pair<std::string, double>> GetCurrentAUsCombined() const;
 
 	void Reset();
 
@@ -102,7 +102,7 @@ public:
 
 	void ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& face_image_medians, vector<Vec3d>& orientations);
 
-	std::vector<std::string> GetAUClassNames()
+	std::vector<std::string> GetAUClassNames() const
 	{
 		std::vector<std::string> au_class_names_all;
 		std::vector<std::string> au_class_names_stat = AU_SVM_static_appearance_lin.GetAUNames();
@@ -120,7 +120,7 @@ public:
 		return au_class_names_all;
 	}
 
-	std::vector<std::string> GetAURegNames()
+	std::vector<std::string> GetAURegNames() const
 	{
 		std::vector<std::string> au_reg_names_all;
 		std::vector<std::string> au_reg_names_stat = AU_SVR_static_appearance_lin_regressors.GetAUNames();

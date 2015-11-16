@@ -829,17 +829,17 @@ Mat FaceAnalyser::GetLatestHOGDescriptorVisualisation()
 	return hog_descriptor_visualisation;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsClass()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsClass() const
 {
 	return AU_predictions_class;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsReg()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsReg() const
 {
 	return AU_predictions_reg;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsCombined()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsCombined() const
 {
 	return AU_predictions_combined;
 }

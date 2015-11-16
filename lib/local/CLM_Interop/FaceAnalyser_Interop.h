@@ -22,6 +22,7 @@
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
 #include <GazeEstimation.h>
+#include <RapportAnalyser.h>
 
 using namespace System;
 using namespace OpenCVWrappers;
@@ -37,6 +38,7 @@ public ref class FaceAnalyserManaged
 private:
 
 	FaceAnalysis::FaceAnalyser* face_analyser;
+	FaceAnalysis::RapportAnalyser* rapport_analyser;
 
 	// The actual descriptors (for visualisation and output)
 	cv::Mat_<double>* hog_features;
@@ -90,6 +92,7 @@ public:
 		}
 
 		face_analyser = new FaceAnalysis::FaceAnalyser(orientation_bins, scale, width, height, au_loc.string(), tri_loc.string());
+		rapport_analyser = new FaceAnalysis::RapportAnalyser();
 
 		hog_features = new cv::Mat_<double>();
 
@@ -251,8 +254,17 @@ public:
 		cv::Mat_<double> eyeLdmks3d_right = clm->getCLM()->hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
 		Point3f pupil_right_h = FaceAnalysis::GetPupilPosition(eyeLdmks3d_right);
 		pupil_right->x = pupil_right_h.x; pupil_right->y = pupil_right_h.y; pupil_right->z = pupil_right_h.z;
+
+		// Do the rapport prediction
+		rapport_analyser->AddObservation(*clm->getCLM(), *face_analyser, *gazeDirection0, *gazeDirection1, fx, fy, cx, cy);
+
 	}
 		
+	double GetRapport()
+	{
+		return rapport_analyser->GetRapportEstimate();
+	}
+
 	Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>^ GetGazeCamera()
 	{
 
@@ -396,6 +408,8 @@ public:
 		{
 			delete tracked_vid_writer;
 		}
+
+		delete rapport_analyser;
 	}
 
 	// Destructor. Called on explicit Dispose() only.

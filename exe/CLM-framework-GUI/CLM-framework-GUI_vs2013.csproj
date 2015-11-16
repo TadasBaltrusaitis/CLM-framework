@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AxesBorder.cs" />
     <Compile Include="BarGraph.xaml.cs">
       <DependentUpon>BarGraph.xaml</DependentUpon>
     </Compile>
@@ -61,6 +62,9 @@
     </Compile>
     <Compile Include="CameraSelection.xaml.cs">
       <DependentUpon>CameraSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSeriesPlot.xaml.cs">
+      <DependentUpon>TimeSeriesPlot.xaml</DependentUpon>
     </Compile>
     <Page Include="BarGraph.xaml">
       <SubType>Designer</SubType>
@@ -111,6 +115,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TimeSeriesPlot.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

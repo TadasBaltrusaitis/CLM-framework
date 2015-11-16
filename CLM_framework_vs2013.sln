@@ -33,6 +33,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CamCom", "lib\local\CamCom\CamCom_vs2013.vcxproj", "{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppInterop", "lib\local\CLM_Interop\CLM_Interop_vs2013.vcxproj", "{F9E266F2-EB80-45E9-BD1E-B4D7028745B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8} = {BDC1D107-DE17-4705-8E7B-CDDE8BFB2BF8}
+		{0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7} = {0E7FC556-0E80-45EA-A876-DDE4C2FEDCD7}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCVWrappers", "lib\local\OpenCVWrappers\OpenCVWrappers_vs2013.vcxproj", "{DC02D40E-2926-459E-88BE-33D032E85706}"
 EndProject
@@ -136,6 +140,7 @@ Global
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2542A0F9-7047-435C-9DE6-FFB4E725735E}.Release|Win32.Build.0 = Release|Any CPU
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -146,6 +151,7 @@ Global
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Win32.ActiveCfg = Release|Any CPU
+		{A3FCDD45-CFE7-40C7-828D-38FB154ECECF}.Release|Win32.Build.0 = Release|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -156,6 +162,7 @@ Global
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2029BC8D-4AEF-42F7-BE74-641686AB3016}.Release|Win32.Build.0 = Release|Any CPU
 		{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{DE6F7DFF-8AAE-4908-82F7-245D62CAB8C9}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -189,5 +196,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

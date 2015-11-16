@@ -478,6 +478,8 @@ namespace CLM_framework_GUI
 
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
             {
+
+                rapportPlot.AssocColor(0, Colors.Blue);
                 ResetButton.IsEnabled = true;
                 PauseButton.IsEnabled = true;
                 StopButton.IsEnabled = true;
@@ -811,6 +813,7 @@ namespace CLM_framework_GUI
                 {
                     if (show_aus)
                     {
+
                         var au_classes = face_analyser.GetCurrentAUsClass();
                         var au_regs = face_analyser.GetCurrentAUsReg();
 
@@ -827,6 +830,11 @@ namespace CLM_framework_GUI
                                 au_regs_scaled[au_reg.Key] = 1;
                         }
                         auRegGraph.Update(au_regs_scaled);
+
+                        Dictionary<int, double> rapportDict = new Dictionary<int, double>();
+                        rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.0;
+                        rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
+
                     }
 
                     if (show_geometry)
