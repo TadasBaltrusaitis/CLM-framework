@@ -28,28 +28,10 @@
                 <MenuItem Header="Open webcam" Click="openWebcamClick">
                 </MenuItem>
             </MenuItem>
-            <MenuItem Name="RecordingMenu"  Header="Recording settings">
-                <MenuItem Header="Set Location"></MenuItem>
-                <MenuItem Name="RecordAUCheckBox" IsCheckable="True" Header="Record AUs" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordPoseCheckBox" IsCheckable="True" Header="Record pose" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordLandmarks2DCheckBox" IsCheckable="True" Header="Record 2D landmarks" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordGazeCheckBox" IsCheckable="True" Header="Record gaze" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordLandmarks3DCheckBox" IsCheckable="True" Header="Record 3D landmarks" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordHOGCheckBox" IsCheckable="True" Header="Record HOG" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordParamsCheckBox" IsCheckable="True" Header="Record model parameters" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordAlignedCheckBox" IsCheckable="True" Header="Record aligned faces" Click="recordCheckBox_click"></MenuItem>
-                <MenuItem Name="RecordTrackedVidCheckBox" IsCheckable="True" Header="Record tracked video" Click="recordCheckBox_click"></MenuItem>
-            </MenuItem>
             <MenuItem Header="AU settings">
                 <MenuItem Name="UseDynamicModelsCheckBox" IsChecked="True" IsCheckable="True" Header="Use dynamic models" Click="UseDynamicModelsCheckBox_Click"></MenuItem>
                 <MenuItem Name="UseDynamicShiftingCheckBox" IsCheckable="True" Header="Use dynamic shifting" Click="UseDynamicModelsCheckBox_Click"></MenuItem>
                 <MenuItem Name="UseDynamicScalingCheckBox" IsCheckable="True" Header="Use dynamic scaling" Click="UseDynamicModelsCheckBox_Click"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Name="ShowVideoCheckBox" IsChecked="True" IsCheckable="True" Header="Show Video" Click="VisualisationCheckBox_Click"></MenuItem>
-                <MenuItem Name="ShowAppearanceFeaturesCheckBox" IsChecked="True" IsCheckable="True" Header="Show Appearance" Click="VisualisationCheckBox_Click"></MenuItem>
-                <MenuItem Name="ShowGeometryFeaturesCheckBox" IsChecked="True" IsCheckable="True" Header="Show Geometry" Click="VisualisationCheckBox_Click"></MenuItem>
-                <MenuItem Name="ShowAUsCheckBox" IsChecked="True" IsCheckable="True" Header="Show AUs" Click="VisualisationCheckBox_Click"></MenuItem>
             </MenuItem>
         </Menu>
 
@@ -57,111 +39,6 @@
             <CLM_framework_GUI:OverlayImage x:Name="video" />
         </Border>
 
-        <GroupBox Name="AppearanceBorder" Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1" MinHeight="100">
-            <GroupBox.Header>
-                Appearance features
-            </GroupBox.Header>
-            <Grid HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0">
-                    <CLM_framework_GUI:SimpleImage x:Name="AlignedFace" MaxHeight="150"/>
-                </Border>
-                <Border Grid.Row="1">
-                    <CLM_framework_GUI:SimpleImage x:Name="AlignedHOG" MaxHeight="150"/>
-                </Border>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Name="GeometryBorder" Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
-            <GroupBox.Header>
-                Geometry features
-            </GroupBox.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Vertical"  Grid.Row="0" >
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <StackPanel Width="120" >
-                            <Label Name="headOrientationLabel" FontSize="18"  HorizontalContentAlignment="Left">Orientation</Label>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Turn:</Label>
-                                <Label Name="YawLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0°</Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
-                                <Label Name="PitchLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Tilt:</Label>
-                                <Label Name="RollLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0°</Label>
-                            </StackPanel>
-                        </StackPanel>
-                        <Line X1="0" X2="0" Y1="20" Y2="90" Width="2" Stroke="Gray"></Line>
-                        <StackPanel>
-                            <Label Name="headPoseLabel" FontSize="18" HorizontalContentAlignment="Left">Pose</Label>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">X:</Label>
-                                <Label Name="XPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Y:</Label>
-                                <Label Name="YPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,0,0,0" FontSize="12" HorizontalContentAlignment="Left"  Width="20">Z:</Label>
-                                <Label Name="ZPoseLabel" FontSize="12" HorizontalContentAlignment="Right" Width="50">0 mm</Label>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel>
-                        <StackPanel Width="120" >
-                            <Label Name="gazePanelLabel" FontSize="18"  HorizontalContentAlignment="Left">Gaze</Label>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,-5,0,0" FontSize="12" Width="60" HorizontalContentAlignment="Left">Left-right:</Label>
-                                <Label Margin="0,-5,0,0" Name="GazeXLabel" FontSize="12" MinWidth="30" HorizontalContentAlignment="Right">0</Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Margin="5,-5,0,0" FontSize="12"  Width="60" HorizontalContentAlignment="Left">Up/down:</Label>
-                                <Label Margin="0,-5,0,0"  Name="GazeYLabel" FontSize="12" Width="30" HorizontalContentAlignment="Right">0</Label>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                    <CLM_framework_GUI:MultiBarGraph x:Name="nonRigidGraph" HorizontalAlignment="Center" MinHeight="100"/>
-                    <Label HorizontalAlignment="Center">Non rigid parameters</Label>
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-        <GroupBox Grid.Row="1" Grid.Column="3" Name="ActionUnitBorder"  BorderBrush="Black" BorderThickness="1" MinHeight="400">
-            <GroupBox.Header>
-                Action Units
-            </GroupBox.Header>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <GroupBox>
-                    <GroupBox.Header>
-                        Classification
-                    </GroupBox.Header>
-                    <CLM_framework_GUI:MultiBarGraphHorz x:Name="auClassGraph" HorizontalAlignment="Center" MinWidth="100"/>
-                    <!--"<StackPanel Name="AU_classes_panel">
-                    </StackPanel>-->
-                </GroupBox>
-                <GroupBox>
-                    <GroupBox.Header>
-                        Regression
-                    </GroupBox.Header>
-                    <CLM_framework_GUI:MultiBarGraphHorz x:Name="auRegGraph" HorizontalAlignment="Center" MinWidth="100"/>
-                </GroupBox>
-            </StackPanel>
-        </GroupBox>
         <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="2" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Rapport" Orientation="Horizontal">
             <CLM_framework_GUI:TimeSeriesPlot x:Name="rapportPlot" Orientation="Horizontal"/>
         </CLM_framework_GUI:AxesBorder>
@@ -174,13 +51,6 @@
             <CLM_framework_GUI:TimeSeriesPlot x:Name="attentionPlot" Orientation="Horizontal"/>
         </CLM_framework_GUI:AxesBorder>
         
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="164,382,162,61" Grid.RowSpan="2">
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="PauseButton_Click" Name="PauseButton">Pause</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="StopButton_Click" Name="StopButton">Stop</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="ResetButton_Click" Name="ResetButton">Reset</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFrameButton">>> 1</Button>
-            <Button VerticalAlignment="Top" IsEnabled="False" Click="SkipButton_Click" Name="NextFiveFramesButton">>> 5</Button>
-        </StackPanel>
 
     </Grid>
 </Window>
