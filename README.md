@@ -10,7 +10,7 @@ The code was written mainly by Tadas Baltrusaitis during his time at the Languag
 
 Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code, and Erroll Wood for the gaze estimation work.
 
-The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.5 and I recommend you download it.
+The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.6 and I recommend you download it.
 
 Some examples of the system in action:
 http://youtu.be/V7rV0uy7heQ
