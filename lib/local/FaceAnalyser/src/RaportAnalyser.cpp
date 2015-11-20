@@ -86,7 +86,7 @@ double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const F
 	geom_params.push_back(clm_model.params_local);
 	geom_params = geom_params.t();
 
-	AddDescriptor(geom_desc_track, geom_params, this->frames_tracking);
+	AddDescriptor(geom_desc_track, geom_params, this->frames_tracking, 300);
 	Mat_<double> sum_stats_geom;
 	ExtractSummaryStatistics(geom_desc_track, sum_stats_geom, false, true, false);
 
@@ -257,7 +257,10 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	cv::minMaxLoc(cv::Mat(std::vector<double>(AU25_history)), &min_au25, &max_au25);
 	double talk = max_au25 - min_au25;
 
-	speech = talk / 4.0;
+	// Have some smoothing
+	speech = 0.2 * speech +  0.8 * talk / 5.0;
+	if (speech < 0.3)
+		speech = 0;
 
 	//cout << brow_flash << " " << brow_furrow << " " << smile << " " << frown << " " << talk << endl;
 
@@ -300,6 +303,7 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 		cummulator_valence = cummulator_valence - add_size * 1.5;
 	}
 
+
 	// If brows are being raised (poss showing interest)
 	//if (AU1 > 2.0 || AU2 > 2.0)
 	if (brow_flash > 2)
@@ -320,6 +324,10 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 		// Look at frowning behaviour (AU4 + AU15 and AU17)
 		cummulator = cummulator - add_size * 2.0;
 		cummulator_valence = cummulator_valence - add_size * 3.0;
+	}
+	else if (current_valence < 3)
+	{
+		cummulator_valence = cummulator_valence + add_size * 1.5;
 	}
 
 	// Looks if lips are not moving (AU25)

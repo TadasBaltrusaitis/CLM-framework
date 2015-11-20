@@ -342,6 +342,10 @@ namespace CLM_framework_GUI
             latest_img = null;
         }
 
+        double smile_cumm = 0;
+        double frown_cumm = 0;
+        double brow_up_cumm = 0;
+        double brow_down_cumm = 0;
 
         // Capturing and processing the video frame by frame
         private void VideoLoop()
@@ -440,21 +444,26 @@ namespace CLM_framework_GUI
 
                     var au_regs = face_analyser.GetCurrentAUsReg();
 
-                    double smile = (au_regs["AU12"] + au_regs["AU06"]) / 10.0 + 0.05;
-                    double frown = (au_regs["AU15"] + au_regs["AU17"] + au_regs["AU04"]) / 7.5 + 0.05;
+                    double smile = (au_regs["AU12"] + au_regs["AU06"]) / 7.5 + 0.05;
+                    double frown = (au_regs["AU15"] + au_regs["AU17"] + au_regs["AU04"]) / 10.0 + 0.05;
 
                     double brow_up = (au_regs["AU01"] + au_regs["AU02"]) / 7.5 + 0.05;
                     double brow_down = au_regs["AU04"] / 5.0 + 0.05;
 
                     Dictionary<int, double> smileDict = new Dictionary<int, double>();
-                    smileDict[0] = smile;
-                    smileDict[1] = frown;
+                    smileDict[0] = 0.4 * smile_cumm + 0.6 * smile;
+                    smileDict[1] = 0.4* frown_cumm + 0.6 * frown;
                     smilePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = smileDict, Confidence = confidence });
 
                     Dictionary<int, double> browDict = new Dictionary<int, double>();
-                    browDict[0] = brow_up;
-                    browDict[1] = brow_down;
+                    browDict[0] = 0.4 * brow_up_cumm + 0.6 * brow_up;
+                    browDict[1] = 0.4 * brow_down_cumm + 0.6 * brow_down;
                     browPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = browDict, Confidence = confidence });
+
+                    smile_cumm = smile;
+                    frown_cumm = frown;
+                    brow_up_cumm = brow_up;
+                    brow_down_cumm = brow_down;
 
                     Dictionary<int, double> speechDict = new Dictionary<int, double>();
                     speechDict[0] = face_analyser.GetSpeech() + 0.05;
