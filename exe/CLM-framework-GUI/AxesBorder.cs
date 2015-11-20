@@ -16,8 +16,13 @@ namespace CLM_framework_GUI
         public double MinVal { get; set; }
         public double MaxVal { get; set; }
         public int NumVertGrid { get; set; }
-        
+
+        public bool ShowXLabel { get; set; }
+        public bool ShowYLabel { get; set; }
+
         public string RangeLabel { get; set; }
+
+        public bool XTicks { get; set; }
 
         public Orientation Orientation { get; set; }
 
@@ -26,6 +31,9 @@ namespace CLM_framework_GUI
             MinVal = -1;
             MaxVal = 1;
             NumVertGrid = 5;
+            ShowXLabel = true;
+            ShowYLabel = true;
+            XTicks = true;
         }
 
         protected override void OnRender(DrawingContext dc)
@@ -79,8 +87,11 @@ namespace CLM_framework_GUI
                     dc.DrawLine(q, new Point(x, ActualHeight - padBottom), new Point(x, padTop));
                 dc.DrawLine(p, new Point(x, ActualHeight - padBottom + 10), new Point(x, ActualHeight - padBottom));
 
-                var t = FT(i.ToString(), 10);
-                dc.DrawText(t, new Point(x - t.Width / 2, ActualHeight - padBottom + t.Height));
+                if(XTicks)
+                { 
+                    var t = FT(i.ToString(), 10);
+                    dc.DrawText(t, new Point(x - t.Width / 2, ActualHeight - padBottom + t.Height));
+                }
             }
 
             // Draw y axis
@@ -91,15 +102,19 @@ namespace CLM_framework_GUI
             //dc.DrawLine(p, new Point(padLeft, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5), new Point(ActualWidth - padRight, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5));
 
             // Draw x axis label
-
-            FormattedText ft = FT("History (seconds)", 20);
-            dc.DrawText(ft, new Point(padLeft + (ActualWidth - padLeft - padRight) / 2 - ft.Width / 2, ActualHeight - ft.Height));
+            if(ShowXLabel)
+            { 
+                FormattedText ft = FT("History (seconds)", 20);
+                dc.DrawText(ft, new Point(padLeft + (ActualWidth - padLeft - padRight) / 2 - ft.Width / 2, ActualHeight - ft.Height));
+            }
 
             // Draw y axis label
-
-            ft = FT(RangeLabel, 20);
-            dc.PushTransform(new RotateTransform(-90));
-            dc.DrawText(ft, new Point(-ft.Width - ActualHeight / 2 + ft.Width / 2, 0));
+            if(ShowYLabel)
+            {
+                FormattedText ft = FT(RangeLabel, 20);
+                dc.PushTransform(new RotateTransform(-90));
+                dc.DrawText(ft, new Point(-ft.Width - ActualHeight / 2 + ft.Width / 2, 0));
+            }
         }
 
         private void RenderVertical(DrawingContext dc)

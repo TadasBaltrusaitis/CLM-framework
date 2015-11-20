@@ -26,6 +26,8 @@ public:
 	double GetEyeAttention();
 	double GetHeadAttention();
 
+	double GetSpeech();
+
 private:
 
 	double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser);
@@ -33,6 +35,9 @@ private:
 	cv::Mat_<double> geom_desc_track;
 
 	int frames_tracking;
+
+	// Facial Actions
+	double speech;
 
 	double current_rapport;
 	double current_attention;

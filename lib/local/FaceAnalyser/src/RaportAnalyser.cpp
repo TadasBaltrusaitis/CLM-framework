@@ -71,6 +71,7 @@ RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history(), geom
 	head_attention = 0;	
 
 	frames_tracking = 0;
+	speech = 0;
 }
 
 double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser)
@@ -256,6 +257,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	cv::minMaxLoc(cv::Mat(std::vector<double>(AU25_history)), &min_au25, &max_au25);
 	double talk = max_au25 - min_au25;
 
+	speech = talk / 4.0;
+
 	//cout << brow_flash << " " << brow_furrow << " " << smile << " " << frown << " " << talk << endl;
 
 	// Two options accomulating model or a direct mapping
@@ -404,6 +407,11 @@ double RapportAnalyser::GetValenceEstimate()
 double RapportAnalyser::GetArousalEstimate()
 {
 	return current_arousal;
+}
+
+double RapportAnalyser::GetSpeech()
+{
+	return speech;
 }
 
 double RapportAnalyser::GetRapportEstimate()

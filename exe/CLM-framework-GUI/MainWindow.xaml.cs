@@ -128,18 +128,32 @@ namespace CLM_framework_GUI
             {
 
                 rapportPlot.AssocColor(0, Colors.Blue);
-                valencePlot.AssocColor(0, Colors.Green);
-                valencePlot.AssocColor(1, Colors.Red);
+                //valencePlot.AssocColor(0, Colors.Green);
+                //valencePlot.AssocColor(1, Colors.Red);
                 attentionPlot.AssocColor(0, Colors.Red);
-                attentionPlot.AssocColor(1, Colors.Brown);
-                attentionPlot.AssocColor(2, Colors.BlueViolet);
+                attentionPlot.AssocColor(1, Colors.Blue);
+                attentionPlot.AssocColor(2, Colors.Green);
 
                 attentionPlot.AssocThickness(0, 3);
                 attentionPlot.AssocName(0, "Attention");
                 attentionPlot.AssocName(1, "Head attention");
                 attentionPlot.AssocName(2, "Gaze attention");
-                attentionPlot.AssocThickness(1, 1);
-                attentionPlot.AssocThickness(2, 1);
+                attentionPlot.AssocThickness(1, 2);
+                attentionPlot.AssocThickness(2, 2);
+
+                smilePlot.AssocColor(0, Colors.Green);
+                smilePlot.AssocColor(1, Colors.Red);
+                smilePlot.AssocName(0, "Smile");
+                smilePlot.AssocName(1, "Frown");
+                smilePlot.AssocThickness(0, 2);
+                smilePlot.AssocThickness(1, 2);
+
+                browPlot.AssocColor(0, Colors.Green);
+                browPlot.AssocColor(1, Colors.Red);
+                browPlot.AssocName(0, "Raise");
+                browPlot.AssocName(1, "Furrow");
+                browPlot.AssocThickness(0, 2);
+                browPlot.AssocThickness(1, 2);
 
             }));
 
@@ -393,8 +407,6 @@ namespace CLM_framework_GUI
                 }
 
                 bool detectionSucceeding = ProcessFrame(clm_model, clm_params, frame, grayFrame, fx, fy, cx, cy);
-
-
                 
                 double confidence = (-clm_model.GetConfidence()) / 2.0 + 0.5;
 
@@ -420,12 +432,33 @@ namespace CLM_framework_GUI
                     landmarks = clm_model.CalculateLandmarks();
                     lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
                     gaze_lines = face_analyser.CalculateGazeLines((float)fx, (float)fy, (float)cx, (float)cy);
-
                 }
 
                 // Visualisation
                 Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
                 {
+
+                    var au_regs = face_analyser.GetCurrentAUsReg();
+
+                    double smile = (au_regs["AU12"] + au_regs["AU06"]) / 10.0 + 0.05;
+                    double frown = (au_regs["AU15"] + au_regs["AU17"] + au_regs["AU04"]) / 7.5 + 0.05;
+
+                    double brow_up = (au_regs["AU01"] + au_regs["AU02"]) / 7.5 + 0.05;
+                    double brow_down = au_regs["AU04"] / 5.0 + 0.05;
+
+                    Dictionary<int, double> smileDict = new Dictionary<int, double>();
+                    smileDict[0] = smile;
+                    smileDict[1] = frown;
+                    smilePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = smileDict, Confidence = confidence });
+
+                    Dictionary<int, double> browDict = new Dictionary<int, double>();
+                    browDict[0] = brow_up;
+                    browDict[1] = brow_down;
+                    browPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = browDict, Confidence = confidence });
+
+                    Dictionary<int, double> speechDict = new Dictionary<int, double>();
+                    speechDict[0] = face_analyser.GetSpeech() + 0.05;
+                    speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
 
                     Dictionary<int, double> rapportDict = new Dictionary<int, double>();
                     rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.5;
@@ -437,10 +470,15 @@ namespace CLM_framework_GUI
                     attentionDict[2] = face_analyser.GetEyeAttention();
                     attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
 
-                    Dictionary<int, double> valenceDict = new Dictionary<int, double>();
-                    valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
-                    valenceDict[1] = face_analyser.GetArousal();
-                    valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
+                    //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
+                    //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
+                    //valenceDict[1] = face_analyser.GetArousal();
+                    //valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
+
+                    Dictionary<int, double> avDict = new Dictionary<int, double>();
+                    avDict[0] = (face_analyser.GetArousal() - 0.5) * 2.0;
+                    avDict[1] = ((face_analyser.GetValence() - 1.0) / 6.5 - 0.5)*2;
+                    avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
 
                     if (latest_img == null)
                     {

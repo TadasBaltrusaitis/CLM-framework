@@ -265,6 +265,11 @@ public:
 		return rapport_analyser->GetRapportEstimate();
 	}
 
+	double GetSpeech()
+	{
+		return rapport_analyser->GetSpeech();
+	}
+
 	double GetAttention()
 	{
 		return rapport_analyser->GetAttentionEstimate();

@@ -42,14 +42,33 @@
             <CLM_framework_GUI:TimeSeriesPlot x:Name="rapportPlot" Orientation="Horizontal"/>
         </CLM_framework_GUI:AxesBorder>
 
-        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Padding="60 20 30 40" RangeLabel="Valence" Orientation="Horizontal">
+        <CLM_framework_GUI:AVPlot x:Name="avPlot" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Margin="30" />
+
+        <!--<CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="1" Padding="60 20 30 40" RangeLabel="Valence" Orientation="Horizontal">
             <CLM_framework_GUI:TimeSeriesPlot x:Name="valencePlot" Orientation="Horizontal"/>
-        </CLM_framework_GUI:AxesBorder>
+        </CLM_framework_GUI:AxesBorder>-->
 
         <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="1" Grid.Column="1" Padding="60 20 30 40" RangeLabel="Attention" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
             <CLM_framework_GUI:TimeSeriesPlot x:Name="attentionPlot" Orientation="Horizontal" ShowLegend="True"/>
         </CLM_framework_GUI:AxesBorder>
-        
+
+        <GroupBox Name="ActionUnitBorder" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
+            <GroupBox.Header>
+                Facial Actions
+            </GroupBox.Header>
+            <StackPanel Orientation="Vertical" >
+                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Lips" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+                    <CLM_framework_GUI:TimeSeriesPlot x:Name="smilePlot" Orientation="Horizontal" ShowLegend="True"/>
+                </CLM_framework_GUI:AxesBorder>
+                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Brows" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+                    <CLM_framework_GUI:TimeSeriesPlot x:Name="browPlot" Orientation="Horizontal" ShowLegend="True"/>
+                </CLM_framework_GUI:AxesBorder>
+                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Speech" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+                    <CLM_framework_GUI:TimeSeriesPlot x:Name="speechPlot" Orientation="Horizontal" ShowLegend="True"/>
+                </CLM_framework_GUI:AxesBorder>
+            </StackPanel>
+        </GroupBox>
+
 
     </Grid>
 </Window>
