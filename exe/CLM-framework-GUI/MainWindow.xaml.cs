@@ -54,8 +54,6 @@ namespace CLM_framework_GUI
         // Some members for displaying the results
         private Capture capture;
         private WriteableBitmap latest_img;
-        private WriteableBitmap latest_aligned_face;
-        private WriteableBitmap latest_HOG_descriptor;
 
         // Managing the running of the analysis system
         private volatile bool thread_running;
@@ -73,7 +71,6 @@ namespace CLM_framework_GUI
 
         // For selecting webcams
         CameraSelection cam_sec;
-        bool using_webcam;
                 
         // For AU prediction
         bool dynamic_AU_shift = true;
@@ -122,10 +119,6 @@ namespace CLM_framework_GUI
         // The main function call for processing images, video files or webcam feed
         private void ProcessingLoop(String[] filenames, int cam_id = -1, int width = -1, int height = -1, bool multi_face = false)
         {
-            if (filenames == null)
-                using_webcam = true;
-            else
-                using_webcam = false;
 
             thread_running = true;
 
@@ -136,7 +129,18 @@ namespace CLM_framework_GUI
 
                 rapportPlot.AssocColor(0, Colors.Blue);
                 valencePlot.AssocColor(0, Colors.Green);
+                valencePlot.AssocColor(1, Colors.Red);
                 attentionPlot.AssocColor(0, Colors.Red);
+                attentionPlot.AssocColor(1, Colors.Brown);
+                attentionPlot.AssocColor(2, Colors.BlueViolet);
+
+                attentionPlot.AssocThickness(0, 3);
+                attentionPlot.AssocName(0, "Attention");
+                attentionPlot.AssocName(1, "Head attention");
+                attentionPlot.AssocName(2, "Gaze attention");
+                attentionPlot.AssocThickness(1, 1);
+                attentionPlot.AssocThickness(2, 1);
+
             }));
 
             // Create the video capture and call the VideoLoop
@@ -429,10 +433,13 @@ namespace CLM_framework_GUI
 
                     Dictionary<int, double> attentionDict = new Dictionary<int, double>();
                     attentionDict[0] = (face_analyser.GetAttention() - 1.0) / 6.5;
+                    attentionDict[1] = face_analyser.GetHeadAttention();
+                    attentionDict[2] = face_analyser.GetEyeAttention();
                     attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
 
                     Dictionary<int, double> valenceDict = new Dictionary<int, double>();
                     valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
+                    valenceDict[1] = face_analyser.GetArousal();
                     valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
 
                     if (latest_img == null)

@@ -53,12 +53,19 @@ namespace CLM_framework_GUI
 
         public Orientation Orientation { get; set; }
 
+        public bool ShowLegend { get; set; }
+
         Queue<DataPoint> dataPoints = new Queue<DataPoint>();
         TimeSpan historyLength = TimeSpan.FromSeconds(10);
         Dictionary<int, Brush> brushes = new Dictionary<int, Brush>();
+        Dictionary<int, int> brush_thicknesses = new Dictionary<int, int>();
+        Dictionary<int, String> line_names = new Dictionary<int, String>();
+        Dictionary<int, Color> brush_colors = new Dictionary<int, Color>();
+
         public TimeSeriesPlot()
         {
             InitializeComponent();
+            ShowLegend = false;
             ClipToBounds = true;
             DispatcherTimer dt = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, Timer_Tick, Dispatcher);
         }
@@ -86,23 +93,42 @@ namespace CLM_framework_GUI
                 InvalidateVisual();
         }
 
+        private FormattedText FT(string text, int size)
+        {
+            return new FormattedText(text, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface("Verdana"), size, Brushes.Black);
+        }
+
         public void AssocColor(int seriesId, Color b)
         {
             Color bTransparent = b;
             bTransparent.A = 0;
             
-            GradientStopCollection gs = new GradientStopCollection();
+            GradientStopCollection gs = new GradientStopCollection();            
             gs.Add(new GradientStop(bTransparent, 0));
             gs.Add(new GradientStop(b, 0.2));
             LinearGradientBrush g = new LinearGradientBrush(gs, new Point(0, 0), Orientation == System.Windows.Controls.Orientation.Horizontal ? new Point(ActualWidth, 0) : new Point(0, ActualHeight));
             g.MappingMode = BrushMappingMode.Absolute;
             g.Freeze();
             brushes[seriesId] = g;
+
+            brush_colors[seriesId] = b;
+        }
+
+        public void AssocThickness(int seriesId, int thickness)
+        {
+            brush_thicknesses[seriesId] = thickness;
+        }
+
+        public void AssocName(int seriesId, String name)
+        {
+            line_names[seriesId] = name;
         }
 
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
+
+
 
             DataPoint[] localPoints;
             lock (dataPoints)
@@ -155,10 +181,40 @@ namespace CLM_framework_GUI
                 var pf = kvp.Value;
 
                 Brush b = brushes.ContainsKey(seriesId) ? brushes[seriesId] : Brushes.Black;
-                    
+
+                int thickness = brush_thicknesses.ContainsKey(seriesId) ? brush_thicknesses[seriesId] : 2;
+
                 PathGeometry pg = new PathGeometry(new PathFigure[] { pf });
-                dc.DrawGeometry(null, new Pen(b, 2), pg);
+                dc.DrawGeometry(null, new Pen(b, thickness), pg);
             }
+
+            if (ShowLegend && line_names.Count > 0)
+            {
+                int height_one = 18;
+                int height = height_one * line_names.Count;
+
+                Pen p = new Pen(Brushes.Black, 1);
+                Brush legend_b = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                dc.DrawRectangle(legend_b, p, new Rect(0, 1, 100, height));
+
+                int i = 0;
+                foreach (var key_name_pair in line_names)
+                {
+                    var line_name = key_name_pair.Value;
+                    FormattedText ft = FT(line_name, 11);
+
+                    // Draw the text
+                    dc.DrawText(ft, new Point(15, 1 + height_one * i));
+                    // Draw example lines
+
+                    Brush legend_c = new SolidColorBrush(brush_colors[key_name_pair.Key]);
+                    Pen p_line = new Pen(legend_c, brush_thicknesses[key_name_pair.Key]);
+                    dc.DrawLine(p_line, new Point(0, 1 + height_one * i + height_one / 2), new Point(14, 1 + height_one * i + height_one / 2));
+                    i++;
+                }
+            }
+
         }
 
 

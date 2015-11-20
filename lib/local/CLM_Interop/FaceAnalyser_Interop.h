@@ -270,9 +270,23 @@ public:
 		return rapport_analyser->GetAttentionEstimate();
 	}
 
+	double GetEyeAttention()
+	{
+		return rapport_analyser->GetEyeAttention();
+	}
+	double GetHeadAttention()
+	{
+		return rapport_analyser->GetHeadAttention();
+	}
+
 	double GetValence()
 	{
 		return rapport_analyser->GetValenceEstimate();
+	}
+
+	double GetArousal()
+	{
+		return rapport_analyser->GetArousalEstimate();
 	}
 
 	Tuple<Tuple<double, double, double>^, Tuple<double, double, double>^>^ GetGazeCamera()

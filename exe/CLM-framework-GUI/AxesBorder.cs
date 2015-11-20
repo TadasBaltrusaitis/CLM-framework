@@ -12,9 +12,21 @@ namespace CLM_framework_GUI
 {
     class AxesBorder : Border
     {
+
+        public double MinVal { get; set; }
+        public double MaxVal { get; set; }
+        public int NumVertGrid { get; set; }
+        
         public string RangeLabel { get; set; }
 
         public Orientation Orientation { get; set; }
+
+        public AxesBorder()
+        {
+            MinVal = -1;
+            MaxVal = 1;
+            NumVertGrid = 5;
+        }
 
         protected override void OnRender(DrawingContext dc)
         {
@@ -38,13 +50,23 @@ namespace CLM_framework_GUI
 
             // Draw horizontal gridlines
 
-            for (int i = 0; i < 5; i++)
+            double step_size = (MaxVal - MinVal)/(NumVertGrid - 1.0);
+
+            for (int i = 0; i < NumVertGrid; i++)
             {
-                double y = (int)(padTop + (4 - i) * ((ActualHeight - padBottom - padTop) / 4.0)) - 0.5;
-                if (i != 2)
+                double y = (int)(padTop + ((NumVertGrid - 1.0) - i) * ((ActualHeight - padBottom - padTop) / (NumVertGrid - 1.0))) - 0.5;
+
+                double y_val = MinVal + i * step_size;
+
+                if (y_val != 0)
                     dc.DrawLine(q, new Point(padLeft, y), new Point(ActualWidth - padRight, y));
+                else
+                    dc.DrawLine(p, new Point(padLeft, y), new Point(ActualWidth - padRight, y));
+
                 dc.DrawLine(p, new Point(padLeft - 10, y), new Point(padLeft, y));
-                var t = FT((i / 2.0 - 1).ToString("0.0"), 10);
+
+                //var t = FT((i / 2.0 - 1).ToString("0.0"), 10);
+                var t = FT((MinVal + i * step_size).ToString("0.0"), 10);
                 dc.DrawText(t, new Point(padLeft - t.Width - 12, y - t.Height / 2));
             }
 
@@ -66,7 +88,7 @@ namespace CLM_framework_GUI
             dc.DrawLine(p, new Point(((int)padLeft) - 0.5, padTop), new Point(((int)padLeft) - 0.5, ActualHeight - padBottom));
 
             // Draw x axis
-            dc.DrawLine(p, new Point(padLeft, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5), new Point(ActualWidth - padRight, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5));
+            //dc.DrawLine(p, new Point(padLeft, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5), new Point(ActualWidth - padRight, ((int)((ActualHeight - padBottom - padTop) / 2 + padTop)) - 0.5));
 
             // Draw x axis label
 

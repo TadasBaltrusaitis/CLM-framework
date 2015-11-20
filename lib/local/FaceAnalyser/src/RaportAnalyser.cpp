@@ -58,7 +58,7 @@ using namespace FaceAnalysis;
 using namespace std;
 
 // Constructor from a model file (or a default one if not provided
-RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history()
+RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history(), geom_desc_track()
 {
 	// start with average rapport first
 	current_rapport = 4;
@@ -67,6 +67,47 @@ RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history()
 
 	prev_time_step = 0;
 
+	eye_attention = 0;
+	head_attention = 0;	
+
+	frames_tracking = 0;
+}
+
+double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser)
+{
+	// Arousal prediction
+	// Adding the geometry descriptor 
+	Mat_<double> geom_params;
+
+	// This is for tracking median of geometry parameters to subtract from the other models
+	Vec3d g_params(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]);
+	geom_params.push_back(Mat(g_params));
+	geom_params.push_back(clm_model.params_local);
+	geom_params = geom_params.t();
+
+	AddDescriptor(geom_desc_track, geom_params, this->frames_tracking);
+	Mat_<double> sum_stats_geom;
+	ExtractSummaryStatistics(geom_desc_track, sum_stats_geom, false, true, false);
+
+	Mat_<double> scales = 0.25 * Mat_<double>::ones(3, 1);
+
+	cv::vconcat(scales.clone(), clm_model.pdm.eigen_values.t(), scales);
+
+	scales = scales.t();
+	
+	sum_stats_geom = sum_stats_geom / scales;
+
+	double arousal = cv::sum(sum_stats_geom)[0];
+
+	// Some clamping
+	//sum_stats_geom.setTo(Scalar(-5), sum_stats_geom < -5);
+	//sum_stats_geom.setTo(Scalar(5), sum_stats_geom > 5);
+
+	//vector<string> names;
+	//vector<double> prediction;
+	//arousal_predictor_lin_geom.Predict(prediction, names, sum_stats_geom);
+	//double arousal_tmp = prediction[0];
+	return (arousal- 0.5) / 3.5;
 }
 
 void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser, const Point3f& gaze_left, const Point3f& gaze_right, double fx, double fy, double cx, double cy)
@@ -75,6 +116,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	
 	if (!clm_model.detection_success)
 		return;
+
+	current_arousal = PredictArousal(clm_model, face_analyser);
 
 	// TODO what head gaze should be based on the target which should be just below the camera
 	// Although for mobile this might not be a huge issue
@@ -110,6 +153,9 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	// Look if eye gaze is towards the camera 
 	double eye_gaze_away = acos(eye_gaze.dot(eye_gaze_straight));
 	eye_gaze_away = eye_gaze_away * 180 / 3.14159265359;
+
+	head_attention = 1.0 - head_gaze_away / 40.0;
+	eye_attention = 1.0 - eye_gaze_away / 15.0;
 
 	//cout << head_gaze_away << " " << eye_gaze_away << " " << eye_gaze <<endl;
 
@@ -329,6 +375,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 
 	prev_time_step = time;
 
+	frames_tracking++;
+
 }
 
 double RapportAnalyser::GetAttentionEstimate()
@@ -338,11 +386,24 @@ double RapportAnalyser::GetAttentionEstimate()
 
 }
 
+double RapportAnalyser::GetEyeAttention()
+{
+	return eye_attention;
+}
+
+double RapportAnalyser::GetHeadAttention()
+{
+	return head_attention;
+}
+
 double RapportAnalyser::GetValenceEstimate()
 {
-
 	return current_valence;
+}
 
+double RapportAnalyser::GetArousalEstimate()
+{
+	return current_arousal;
 }
 
 double RapportAnalyser::GetRapportEstimate()

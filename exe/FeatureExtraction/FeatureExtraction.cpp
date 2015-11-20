@@ -69,6 +69,7 @@
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
 #include <GazeEstimation.h>
+#include <RapportAnalyser.h>
 
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
@@ -519,6 +520,9 @@ int main (int argc, char **argv)
 	// Creating a  face analyser that will be used for AU extraction
 	FaceAnalysis::FaceAnalyser face_analyser(vector<Vec3d>(), 0.7, 112, 112, au_loc, tri_loc);
 
+	FaceAnalysis::RapportAnalyser rapport_analyser;
+	bool predict_rapport = true;
+
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
 		
@@ -782,7 +786,7 @@ int main (int argc, char **argv)
 			Mat_<double> hog_descriptor;
 
 			// But only if needed in output
-			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
+			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty() || predict_rapport)
 			{
 				// TODO the timing should actually be in milliseconds
 				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, webcam, !clm_parameters.quiet_mode);
@@ -804,6 +808,11 @@ int main (int argc, char **argv)
 						cv::imshow("hog", hog_descriptor_vis);	
 					}
 				}
+			}
+
+			if (predict_rapport)
+			{
+				rapport_analyser.AddObservation(clm_model, face_analyser, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 			}
 
 			// Work out the pose of the head from the tracked model

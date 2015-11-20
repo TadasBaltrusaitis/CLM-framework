@@ -22,12 +22,25 @@ public:
 	double GetRapportEstimate();
 	double GetAttentionEstimate();
 	double GetValenceEstimate();
+	double GetArousalEstimate();
+	double GetEyeAttention();
+	double GetHeadAttention();
 
 private:
+
+	double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser);
+
+	cv::Mat_<double> geom_desc_track;
+
+	int frames_tracking;
 
 	double current_rapport;
 	double current_attention;
 	double current_valence;
+	double current_arousal;
+
+	double eye_attention;
+	double head_attention;
 
 	vector<double> rapport_history;
 
