@@ -66,6 +66,9 @@
     <Compile Include="CameraSelection.xaml.cs">
       <DependentUpon>CameraSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TextEntryWindow.xaml.cs">
+      <DependentUpon>TextEntryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TimeSeriesPlot.xaml.cs">
       <DependentUpon>TimeSeriesPlot.xaml</DependentUpon>
     </Compile>
@@ -118,6 +121,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="OverlayImage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TextEntryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

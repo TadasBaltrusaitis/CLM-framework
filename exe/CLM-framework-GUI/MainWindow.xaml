@@ -26,6 +26,8 @@
                 </MenuItem>
                 <MenuItem Header="Open webcam" Click="openWebcamClick">
                 </MenuItem>
+                <MenuItem Header="Open socket" Click="openSocketClick">
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="AU settings">
                 <MenuItem Name="UseDynamicModelsCheckBox" IsChecked="True" IsCheckable="True" Header="Use dynamic models" Click="UseDynamicModelsCheckBox_Click"></MenuItem>

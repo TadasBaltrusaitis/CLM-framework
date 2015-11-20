@@ -23,6 +23,9 @@ using FaceAnalyser_Interop;
 using Camera_Interop;
 using System.Windows.Threading;
 using System.IO;
+using System.Net.Sockets;
+using System.Net;
+using System.Xml;
 
 namespace CLM_framework_GUI
 {
@@ -78,6 +81,10 @@ namespace CLM_framework_GUI
         bool use_dynamic_models = true;
 
         private volatile bool mirror_image = false;
+
+        // Will be reading the info differently if stuff is being loaded from the socket
+        private bool is_socket = true;
+        Socket listener;
 
         public MainWindow()
         {
@@ -539,6 +546,277 @@ namespace CLM_framework_GUI
             latest_img = null;
         }
 
+        // Capturing and processing the video frame by frame
+        private void SocketLoop()
+        {
+            Thread.CurrentThread.IsBackground = true;
+
+            DateTime? startTime = CurrentTime;
+
+            var lastFrameTime = CurrentTime;
+
+            // TODO add an ability to change these through a calibration procedure or setting menu
+            double fx, fy, cx, cy;
+            fx = 500.0;
+            fy = 500.0;
+            cx = cy = -1;
+
+            int frame_id = 0;
+            Byte[] bytes = new Byte[2097152];
+            listener.ReceiveBufferSize = 2097152;
+            while (thread_running)
+            {
+
+                // TODO grab the latest frame somehow?
+
+                // Keep receiving the message
+                String data = "";
+
+                // Loop to receive all the data sent by the client.
+                int i = listener.Receive(bytes);
+
+                // Translate data bytes to a ASCII string.
+                data += System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+
+                if (i == 0)
+                {
+                    continue;
+                }
+
+                Console.WriteLine(i + " " + data.Length);
+
+                // Read the XML file here
+                XmlReader reader = XmlReader.Create(new StringReader(data));
+
+                List<Tuple<double, double>> landmarks = null;
+                
+                Dictionary<string,double> au_regs = face_analyser.GetCurrentAUsReg();
+
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            Console.WriteLine(reader.Name);
+                            if(String.Compare(reader.Name, "flm") == 0)
+                            {
+                                reader.Read();
+                                char[] delimiterChars = {','};
+                                string[] lmarks = reader.Value.Split(delimiterChars);
+
+                                int n_lmarks = (lmarks.Length - 2) / 2;
+
+                                landmarks = new List<Tuple<double, double>>(n_lmarks);
+
+                                for(int k=0; k < n_lmarks; ++k)
+                                {
+                                    landmarks.Add(new Tuple<double,double>(Double.Parse(lmarks[2+k]), Double.Parse(lmarks[2+k+n_lmarks])));
+                                }
+
+                            }
+                            if (String.Compare(reader.Name, "aus") == 0)
+                            {
+                                reader.Read();
+                                char[] delimiterChars = { ',' };
+                                string[] aus = reader.Value.Split(delimiterChars);
+
+                                au_regs["AU01"] = Double.Parse(aus[3]);
+                                au_regs["AU02"] = Double.Parse(aus[4]);
+                                au_regs["AU04"] = Double.Parse(aus[5]);
+                                au_regs["AU05"] = Double.Parse(aus[6]);
+                                au_regs["AU06"] = Double.Parse(aus[7]);
+                                au_regs["AU09"] = Double.Parse(aus[8]);
+                                au_regs["AU10"] = Double.Parse(aus[9]);
+                                au_regs["AU12"] = Double.Parse(aus[10]);
+                                au_regs["AU14"] = Double.Parse(aus[11]);
+                                au_regs["AU15"] = Double.Parse(aus[12]);
+                                au_regs["AU17"] = Double.Parse(aus[13]);
+                                au_regs["AU20"] = Double.Parse(aus[14]);
+                                au_regs["AU25"] = Double.Parse(aus[15]);
+                                au_regs["AU26"] = Double.Parse(aus[16]);
+
+                            }
+                            if (String.Compare(reader.Name, "image") == 0)
+                            {
+                                reader.Read();                                
+                                byte[] to_send = Convert.FromBase64String(reader.Value);
+
+                                MemoryStream stream = new MemoryStream(to_send);
+
+                                JpegBitmapDecoder decoder = new JpegBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+                                BitmapSource bitmapSource = decoder.Frames[0];
+                                latest_img = new WriteableBitmap(bitmapSource);
+                            }
+                            //Console.WriteLine(reader.Name);
+                            break;
+                        case XmlNodeType.Text:
+                            Console.WriteLine(reader.Value);
+                            break;
+                        case XmlNodeType.XmlDeclaration:
+                        case XmlNodeType.ProcessingInstruction:
+                            Console.WriteLine(reader.Name + " " + reader.Value);
+                            break;
+                        case XmlNodeType.Comment:
+                            Console.WriteLine(reader.Value);
+                            break;
+                    }
+                }
+            }
+
+            lastFrameTime = CurrentTime;
+            processing_fps.AddFrame();
+
+            //    var grayFrame = new RawImage(capture.GetCurrentFrameGray());
+
+            //    if (grayFrame == null)
+            //    {
+            //        Console.WriteLine("Gray is empty");
+            //        continue;
+            //    }
+
+            //    // This is more ore less guess work, but seems to work well enough
+            //    if (cx == -1)
+            //    {
+            //        fx = fx * (grayFrame.Width / 640.0);
+            //        fy = fy * (grayFrame.Height / 480.0);
+
+            //        fx = (fx + fy) / 2.0;
+            //        fy = fx;
+
+            //        cx = grayFrame.Width / 2f;
+            //        cy = grayFrame.Height / 2f;
+            //    }
+
+            //    bool detectionSucceeding = ProcessFrame(clm_model, clm_params, frame, grayFrame, fx, fy, cx, cy);
+
+            //    double confidence = (-clm_model.GetConfidence()) / 2.0 + 0.5;
+
+            //    if (confidence < 0)
+            //        confidence = 0;
+            //    else if (confidence > 1)
+            //        confidence = 1;
+
+            //    List<double> pose = new List<double>();
+            //    clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
+            //    List<double> non_rigid_params = clm_model.GetNonRigidParams();
+
+            //    double time_stamp = (DateTime.Now - (DateTime)startTime).TotalMilliseconds;
+            //    // The face analysis step (only done if recording AUs, HOGs or video)
+            //    face_analyser.AddNextFrame(frame, clm_model, time_stamp, fx, fy, cx, cy, true, false, false);
+
+            //    List<Tuple<Point, Point>> lines = null;
+            //    List<Tuple<double, double>> landmarks = null;
+            //    List<Tuple<Point, Point>> gaze_lines = null;
+
+            //    if (detectionSucceeding)
+            //    {
+            //        landmarks = clm_model.CalculateLandmarks();
+            //        lines = clm_model.CalculateBox((float)fx, (float)fy, (float)cx, (float)cy);
+            //        gaze_lines = face_analyser.CalculateGazeLines((float)fx, (float)fy, (float)cx, (float)cy);
+            //    }
+
+            //    // Visualisation
+            //    Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            //    {
+
+            //        var au_regs = face_analyser.GetCurrentAUsReg();
+
+            //        double smile = (au_regs["AU12"] + au_regs["AU06"]) / 7.5 + 0.05;
+            //        double frown = (au_regs["AU15"] + au_regs["AU17"] + au_regs["AU04"]) / 10.0 + 0.05;
+
+            //        double brow_up = (au_regs["AU01"] + au_regs["AU02"]) / 7.5 + 0.05;
+            //        double brow_down = au_regs["AU04"] / 5.0 + 0.05;
+
+            //        Dictionary<int, double> smileDict = new Dictionary<int, double>();
+            //        smileDict[0] = 0.4 * smile_cumm + 0.6 * smile;
+            //        smileDict[1] = 0.4 * frown_cumm + 0.6 * frown;
+            //        smilePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = smileDict, Confidence = confidence });
+
+            //        Dictionary<int, double> browDict = new Dictionary<int, double>();
+            //        browDict[0] = 0.4 * brow_up_cumm + 0.6 * brow_up;
+            //        browDict[1] = 0.4 * brow_down_cumm + 0.6 * brow_down;
+            //        browPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = browDict, Confidence = confidence });
+
+            //        smile_cumm = smile;
+            //        frown_cumm = frown;
+            //        brow_up_cumm = brow_up;
+            //        brow_down_cumm = brow_down;
+
+            //        Dictionary<int, double> speechDict = new Dictionary<int, double>();
+            //        speechDict[0] = face_analyser.GetSpeech() + 0.05;
+            //        speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
+
+            //        Dictionary<int, double> rapportDict = new Dictionary<int, double>();
+            //        rapportDict[0] = (face_analyser.GetRapport() - 1.0) / 6.5;
+            //        rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
+
+            //        Dictionary<int, double> attentionDict = new Dictionary<int, double>();
+            //        attentionDict[0] = (face_analyser.GetAttention() - 1.0) / 6.5;
+            //        attentionDict[1] = face_analyser.GetHeadAttention();
+            //        attentionDict[2] = face_analyser.GetEyeAttention();
+            //        attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
+
+            //        //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
+            //        //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
+            //        //valenceDict[1] = face_analyser.GetArousal();
+            //        //valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
+
+            //        Dictionary<int, double> avDict = new Dictionary<int, double>();
+            //        avDict[0] = (face_analyser.GetArousal() - 0.5) * 2.0;
+            //        avDict[1] = ((face_analyser.GetValence() - 1.0) / 6.5 - 0.5) * 2;
+            //        avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
+
+            //        if (latest_img == null)
+            //        {
+            //            latest_img = frame.CreateWriteableBitmap();
+            //        }
+
+            //        frame.UpdateWriteableBitmap(latest_img);
+
+            //        video.Source = latest_img;
+            //        video.Confidence = confidence;
+            //        video.FPS = processing_fps.GetFPS();
+            //        video.Progress = progress;
+
+            //        if (!detectionSucceeding)
+            //        {
+            //            video.OverlayLines.Clear();
+            //            video.OverlayPoints.Clear();
+            //            video.GazeLines.Clear();
+            //        }
+            //        else
+            //        {
+            //            video.OverlayLines = lines;
+
+            //            List<Point> landmark_points = new List<Point>();
+            //            foreach (var p in landmarks)
+            //            {
+            //                landmark_points.Add(new Point(p.Item1, p.Item2));
+            //            }
+
+            //            video.OverlayPoints = landmark_points;
+
+            //            video.GazeLines = gaze_lines;
+            //        }
+
+            //    }));
+
+            //    if (reset)
+            //    {
+            //        clm_model.Reset();
+            //        face_analyser.Reset();
+            //        reset = false;
+            //    }
+
+            //    frame_id++;
+
+
+            //}
+
+            //latest_img = null;
+        }
+
+
         private void StopTracking()
         {
             // First complete the running of the thread
@@ -721,6 +999,97 @@ namespace CLM_framework_GUI
                 face_analyser = new FaceAnalyserManaged(root, UseDynamicModelsCheckBox.IsChecked);                
             }
             use_dynamic_models = UseDynamicModelsCheckBox.IsChecked;
+        }
+
+        private void openSocketClick(object sender, RoutedEventArgs e)
+        {
+
+            new Thread(() => openSocket()).Start();
+        }
+
+        private void openSocket()
+        {
+            StopTracking();
+
+            is_socket = true;
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
+            {
+                TextEntryWindow connection_settings = new TextEntryWindow();
+                connection_settings.Icon = this.Icon;
+
+                connection_settings.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+                if (connection_settings.ShowDialog() == true)
+                {
+                    string IP = connection_settings.ResponseIPText;
+                    string port = connection_settings.ResponsePortText;
+
+                    // Create a connection and open one as well
+                    new Thread(() => CreateFakeConnection(IP, port)).Start();
+
+                    Thread.Sleep(100);
+                    int port_i = Int32.Parse(port);
+
+                    IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress,port_i);
+
+                    //IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(IP),port_i);
+
+                    listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    listener.Connect(remoteEP);
+
+                    thread_running = true;
+                    processing_thread = new Thread(() => SocketLoop());
+                    processing_thread.Start();
+                }
+                
+            }));
+        }
+
+        private void CreateFakeConnection(string IP, string port)
+        {
+            int port_i = Int32.Parse(port);
+            //IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+            
+            IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port_i);
+
+            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            server.Bind(localEndPoint);
+            //TcpListener server = new TcpListener(localAddr, port_i);
+            //server.Start();
+
+            string xmlString = System.IO.File.ReadAllText("SampleMultiSense.xml");
+
+            //Console.WriteLine(xmlString);
+            server.Listen(10);
+
+            while(true)
+            {
+                Console.Write("Waiting for a connection... ");
+                Socket handler = server.Accept();
+                //TcpClient client = server.AcceptTcpClient();
+                Console.WriteLine("Connected!");
+
+                // Get a stream object for reading and writing
+                //NetworkStream stream = client.GetStream();
+
+                // Keep resending the same message
+                while (true)
+                {
+                    byte[] to_send = System.Text.Encoding.ASCII.GetBytes(xmlString);
+
+                    int bytes_send = handler.Send(to_send);
+                    
+                    //stream.Write(to_send, 0, to_send.Length);
+                    //stream.Write(xmlString.to)
+                    Console.WriteLine("Data sent!" + bytes_send);
+                    Thread.Sleep(30000);
+                }
+           }
+
         }
 
     }

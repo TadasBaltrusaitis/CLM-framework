@@ -320,11 +320,11 @@ public:
 
 		vector<Point3d> points_left;
 		points_left.push_back(Point3d(*pupil_left));
-		points_left.push_back(Point3d(*pupil_left + *gazeDirection0*40.0));
+		points_left.push_back(Point3d(*pupil_left + *gazeDirection0*50.0));
 
 		vector<Point3d> points_right;
 		points_right.push_back(Point3d(*pupil_right));
-		points_right.push_back(Point3d(*pupil_right + *gazeDirection1*40.0));
+		points_right.push_back(Point3d(*pupil_right + *gazeDirection1*50.0));
 
 		vector<Point2d> imagePoints_left;
 		projectPoints(points_left, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_left);
