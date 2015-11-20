@@ -650,14 +650,14 @@ namespace CLM_framework_GUI
                             //Console.WriteLine(reader.Name);
                             break;
                         case XmlNodeType.Text:
-                            Console.WriteLine(reader.Value);
+                            //Console.WriteLine(reader.Value);
                             break;
                         case XmlNodeType.XmlDeclaration:
                         case XmlNodeType.ProcessingInstruction:
-                            Console.WriteLine(reader.Name + " " + reader.Value);
+                            //Console.WriteLine(reader.Name + " " + reader.Value);
                             break;
                         case XmlNodeType.Comment:
-                            Console.WriteLine(reader.Value);
+                            //Console.WriteLine(reader.Value);
                             break;
                     }
                 }
@@ -666,26 +666,18 @@ namespace CLM_framework_GUI
             lastFrameTime = CurrentTime;
             processing_fps.AddFrame();
 
-            //    var grayFrame = new RawImage(capture.GetCurrentFrameGray());
+            // This is more ore less guess work, but seems to work well enough
+            if (cx == -1)
+            {
+                fx = fx * (latest_img.Width / 640.0);
+                fy = fy * (latest_img.Height / 480.0);
 
-            //    if (grayFrame == null)
-            //    {
-            //        Console.WriteLine("Gray is empty");
-            //        continue;
-            //    }
+                fx = (fx + fy) / 2.0;
+                fy = fx;
 
-            //    // This is more ore less guess work, but seems to work well enough
-            //    if (cx == -1)
-            //    {
-            //        fx = fx * (grayFrame.Width / 640.0);
-            //        fy = fy * (grayFrame.Height / 480.0);
-
-            //        fx = (fx + fy) / 2.0;
-            //        fy = fx;
-
-            //        cx = grayFrame.Width / 2f;
-            //        cy = grayFrame.Height / 2f;
-            //    }
+                cx = latest_img.Width / 2f;
+                cy = latest_img.Height / 2f;
+            }
 
             //    bool detectionSucceeding = ProcessFrame(clm_model, clm_params, frame, grayFrame, fx, fy, cx, cy);
 
