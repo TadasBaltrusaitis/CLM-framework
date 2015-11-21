@@ -66,6 +66,9 @@
     <Compile Include="CameraSelection.xaml.cs">
       <DependentUpon>CameraSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PCMPlot.xaml.cs">
+      <DependentUpon>PCMPlot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TextEntryWindow.xaml.cs">
       <DependentUpon>TextEntryWindow.xaml</DependentUpon>
     </Compile>
@@ -95,6 +98,10 @@
     <Page Include="MultiBarGraphHorz.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PCMPlot.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SimpleImage.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,13 +1,9 @@
 ﻿<Window x:Class="CLM_framework_GUI.TextEntryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Connection information" Height="150" Width="300">
+        Title="Connection information" Height="100" Width="300">
     <Grid>
-        <StackPanel FocusManager.FocusedElement="{Binding ElementName=ResponseTextBox}">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"> 
-                <TextBlock HorizontalAlignment="Center" Text="IP" FontSize="20"/> 
-                <TextBox Margin="30,0,0,0" x:Name="ResponseIPTextBox" FontSize="20" Width="120" Text="127.0.0.1" />
-            </StackPanel>
+        <StackPanel FocusManager.FocusedElement="{Binding ElementName=ResponsePortTextBox}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock HorizontalAlignment="Center" Text="Port" FontSize="20"/>
                 <TextBox Margin="10,0,0,0" x:Name="ResponsePortTextBox" FontSize="20" Width="120" Text="1400" />

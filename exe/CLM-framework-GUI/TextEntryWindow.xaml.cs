@@ -28,12 +28,6 @@ namespace CLM_framework_GUI
             
         }
 
-        public string ResponseIPText
-        {
-            get { return ResponseIPTextBox.Text; }
-            set { ResponseIPTextBox.Text = value; }
-        }
-
         public string ResponsePortText
         {
             get { return ResponsePortTextBox.Text; }

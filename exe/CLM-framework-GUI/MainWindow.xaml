@@ -67,10 +67,12 @@
                 </CLM_framework_GUI:AxesBorder>
                 <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Speech" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
                     <CLM_framework_GUI:TimeSeriesPlot x:Name="speechPlot" Orientation="Horizontal" ShowLegend="True"/>
-                </CLM_framework_GUI:AxesBorder>
+                </CLM_framework_GUI:AxesBorder>                
             </StackPanel>
         </GroupBox>
-
+        <CLM_framework_GUI:AxesBorder  Grid.Column="2" Grid.Row="3" MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="PCM" Orientation="Horizontal" MinVal="-1" MaxVal="1" NumVertGrid="1">
+            <CLM_framework_GUI:PCMPlot x:Name="pcmPlot" Orientation="Horizontal" ShowLegend="True"/>
+        </CLM_framework_GUI:AxesBorder>
 
     </Grid>
 </Window>
