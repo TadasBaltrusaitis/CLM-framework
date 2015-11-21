@@ -429,4 +429,11 @@ double RapportAnalyser::GetRapportEstimate()
 
 }
 
+string RapportAnalyser::GetAllContent()
+{
+	stringstream all_content;
+	all_content << current_rapport << "," << current_arousal << "," << current_valence << "," << speech << "," << eye_attention << "," << head_attention << "," << GetAttentionEstimate();
+	return all_content.str();
+}
+
 

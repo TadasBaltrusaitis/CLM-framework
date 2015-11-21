@@ -641,6 +641,14 @@ namespace CLM_framework_GUI
                 bool detection_succeeding = false;
                 List<double> pcms = new List<double>();
 
+                double rapport = 0;
+                double arousal = 0;
+                double valence = 0;
+                double speech = 0;
+                double eye_gaze = 0;
+                double head_gaze = 0;
+                double attention = 0;
+
                 try { 
                     while (reader.Read())
                     {
@@ -688,6 +696,21 @@ namespace CLM_framework_GUI
                                     au_regs["AU25"] = Double.Parse(aus[15]);
                                     au_regs["AU26"] = Double.Parse(aus[16]);
 
+                                }
+                                if (String.Compare(reader.Name, "rapport") == 0)
+                                {
+                                    reader.Read();
+                                    char[] delimiterChars = { ',' };
+                                    string[] rapports = reader.Value.Split(delimiterChars);
+
+                                    rapport = Double.Parse(rapports[0]);
+                                    arousal = Double.Parse(rapports[1]);
+                                    valence = Double.Parse(rapports[2]);
+                                    speech = Double.Parse(rapports[3]);
+                                    eye_gaze = Double.Parse(rapports[4]);
+                                    head_gaze = Double.Parse(rapports[5]);
+                                    attention = Double.Parse(rapports[6]);
+                                    
                                 }
                                 if (String.Compare(reader.Name, "image") == 0)
                                 {
@@ -786,29 +809,29 @@ namespace CLM_framework_GUI
                     brow_up_cumm = brow_up;
                     brow_down_cumm = brow_down;
 
-                    //Dictionary<int, double> speechDict = new Dictionary<int, double>();
-                    //speechDict[0] = face_analyser.GetSpeech() + 0.05;
-                    //speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
+                    Dictionary<int, double> speechDict = new Dictionary<int, double>();
+                    speechDict[0] = speech + 0.05;
+                    speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
 
-                    //Dictionary<int, double> rapportDict = new Dictionary<int, double>();
-                    //rapportDict[0] = (face_analyser.GetRapport() - 1.0) / 6.5;
-                    //rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
+                    Dictionary<int, double> rapportDict = new Dictionary<int, double>();
+                    rapportDict[0] = (rapport - 1.0) / 6.5;
+                    rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
 
-                    //Dictionary<int, double> attentionDict = new Dictionary<int, double>();
-                    //attentionDict[0] = (face_analyser.GetAttention() - 1.0) / 6.5;
-                    //attentionDict[1] = face_analyser.GetHeadAttention();
-                    //attentionDict[2] = face_analyser.GetEyeAttention();
-                    //attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
+                    Dictionary<int, double> attentionDict = new Dictionary<int, double>();
+                    attentionDict[0] = (attention - 1.0) / 6.5;
+                    attentionDict[1] = head_gaze;
+                    attentionDict[2] = eye_gaze;
+                    attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
 
                     //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
                     //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
                     //valenceDict[1] = face_analyser.GetArousal();
                     //valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
 
-                    //Dictionary<int, double> avDict = new Dictionary<int, double>();
-                    //avDict[0] = (face_analyser.GetArousal() - 0.5) * 2.0;
-                    //avDict[1] = ((face_analyser.GetValence() - 1.0) / 6.5 - 0.5) * 2;
-                    //avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
+                    Dictionary<int, double> avDict = new Dictionary<int, double>();
+                    avDict[0] = (arousal - 0.5) * 2.0;
+                    avDict[1] = ((valence - 1.0) / 6.5 - 0.5) * 2;
+                    avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
 
                     pcmPlot.AddDataPoint(pcms);
 

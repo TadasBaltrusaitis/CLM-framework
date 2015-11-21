@@ -28,6 +28,8 @@ public:
 
 	double GetSpeech();
 
+	string RapportAnalyser::GetAllContent();
+
 private:
 
 	double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser);

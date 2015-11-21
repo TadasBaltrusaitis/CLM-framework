@@ -813,8 +813,9 @@ int main (int argc, char **argv)
 			if (predict_rapport)
 			{
 				rapport_analyser.AddObservation(clm_model, face_analyser, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				cout << rapport_analyser.GetAllContent() << endl;
 			}
-
+			
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -1043,6 +1044,8 @@ int main (int argc, char **argv)
 			// quit the application
 			else if(character_press=='q')
 			{
+				int a;
+				cin >> a;
 				return(0);
 			}
 
