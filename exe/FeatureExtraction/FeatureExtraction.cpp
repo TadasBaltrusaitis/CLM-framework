@@ -816,6 +816,8 @@ int main (int argc, char **argv)
 				cout << rapport_analyser.GetAllContent() << endl;
 			}
 			
+			
+
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
 			if(use_camera_plane_pose)
@@ -827,7 +829,26 @@ int main (int argc, char **argv)
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
 			}
 
+			vector<pair<cv::Point, cv::Point>> box = CLMTracker::CalculateBox(pose_estimate_CLM, fx, fy, cx, cy);
 
+			// Grab the stream
+			stringstream ss_box;
+			for (int k = 0; k < box.size(); ++k)
+			{
+				auto line = box[k];
+				if (k == 0)
+				{
+					ss_box << line.first.x << "," << line.first.y << "," << line.second.x << "," << line.second.y;
+				}
+				else
+				{
+					ss_box << "," << line.first.x << "," << line.first.y << "," << line.second.x << "," << line.second.y;
+				}
+			}
+
+			cout << ss_box.str() << endl;
+
+			
 
 			if(hog_output_file.is_open())
 			{
@@ -972,6 +993,7 @@ int main (int argc, char **argv)
 					<< ", " << gazeDirection1_head.x << ", " << gazeDirection1_head.y << ", " << gazeDirection1_head.z << endl;
 			}
 
+			cout << FaceAnalysis::CalculateGazeLines(clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy) << endl;
 
 			if(!output_au_files.empty())
 			{

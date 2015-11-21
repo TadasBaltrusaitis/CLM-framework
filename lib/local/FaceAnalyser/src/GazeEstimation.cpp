@@ -180,3 +180,50 @@ void FaceAnalysis::DrawGaze(Mat img, const CLMTracker::CLM& clm_model, Point3f g
 	projectPoints(points_right, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_right);
 	line(img, imagePoints_right[0], imagePoints_right[1], Scalar(110, 220, 0), 2, 8);
 }
+
+string FaceAnalysis::CalculateGazeLines(const CLMTracker::CLM& clm_model, Point3d gazeDirection0, Point3d gazeDirection1, float fx, float fy, float cx, float cy)
+{
+
+	cv::Mat_<double> cameraMat = (cv::Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);
+
+	// Grab pupil locations
+	int part_left = -1;
+	int part_right = -1;
+	for (size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	{
+		if (clm_model.hierarchical_model_names[i].compare("left_eye_28") == 0)
+		{
+			part_left = i;
+		}
+		if (clm_model.hierarchical_model_names[i].compare("right_eye_28") == 0)
+		{
+			part_right = i;
+		}
+	}
+
+	cv::Mat_<double> eyeLdmks3d_left = clm_model.hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
+	Point3f pupil_left = FaceAnalysis::GetPupilPosition(eyeLdmks3d_left);
+
+	cv::Mat_<double> eyeLdmks3d_right = clm_model.hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
+	Point3f pupil_right = FaceAnalysis::GetPupilPosition(eyeLdmks3d_right);
+
+	vector<Point3d> points_left;
+	points_left.push_back(Point3d(pupil_left));
+	points_left.push_back(Point3d(pupil_left) + gazeDirection0*50.0);
+
+	vector<Point3d> points_right;
+	points_right.push_back(Point3d(pupil_right));
+	points_right.push_back(Point3d(pupil_right) + gazeDirection1*50.0);
+
+	vector<Point2d> imagePoints_left;
+	projectPoints(points_left, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_left);
+
+	vector<Point2d> imagePoints_right;
+	projectPoints(points_right, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_right);
+
+	stringstream lines;
+	lines << imagePoints_left[0].x << "," << imagePoints_left[0].y << "," << imagePoints_left[1].x << "," << imagePoints_left[1].y << "," <<
+		imagePoints_right[0].x << "," << imagePoints_right[0].y << "," << imagePoints_right[1].x << "," << imagePoints_right[1].y;
+	
+	return lines.str();
+}

@@ -57,6 +57,7 @@ namespace FaceAnalysis
 
 	// Some utilities
 	Point3f GetPupilPosition(Mat_<double> eyeLdmks3d);
+	string CalculateGazeLines(const CLMTracker::CLM& clm_model, Point3d gazeDirection0, Point3d gazeDirection1, float fx, float fy, float cx, float cy);
 
 }
 #endif

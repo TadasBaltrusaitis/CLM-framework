@@ -599,8 +599,6 @@ namespace CLM_framework_GUI
             while (thread_running)
             {
 
-                // TODO grab the latest frame somehow?
-
                 // Keep receiving the message
                 String data = "";
 
@@ -648,6 +646,9 @@ namespace CLM_framework_GUI
                 double eye_gaze = 0;
                 double head_gaze = 0;
                 double attention = 0;
+                
+                List<Tuple<Point, Point>> lines = null;
+                List<Tuple<Point, Point>> gaze_lines = null;
 
                 try { 
                     while (reader.Read())
@@ -655,6 +656,38 @@ namespace CLM_framework_GUI
                         switch (reader.NodeType)
                         {
                             case XmlNodeType.Element:
+                                if (String.Compare(reader.Name, "gaze_lines") == 0)
+                                {
+                                    reader.Read();
+                                    char[] delimiterChars = { ',' };
+                                    string[] lines_s = reader.Value.Split(delimiterChars);
+
+                                    gaze_lines = new List<Tuple<Point, Point>>();
+
+                                    for (int k = 0; k < lines_s.Length; k += 4)
+                                    {
+                                        Point p1 = new Point(Double.Parse(lines_s[k]), Double.Parse(lines_s[k + 1]));
+                                        Point p2 = new Point(Double.Parse(lines_s[k + 2]), Double.Parse(lines_s[k + 3]));
+                                        lines.Add(new Tuple<Point, Point>(p1, p2));
+                                    }
+
+                                }
+                                if (String.Compare(reader.Name, "box") == 0)
+                                {
+                                    reader.Read();
+                                    char[] delimiterChars = { ',' };
+                                    string[] lines_s = reader.Value.Split(delimiterChars);
+
+                                    lines = new List<Tuple<Point, Point>>();
+
+                                    for (int k = 0; k < lines_s.Length; k+=4)
+                                    {
+                                        Point p1 = new Point(Double.Parse(lines_s[k]), Double.Parse(lines_s[k + 1]));
+                                        Point p2 = new Point(Double.Parse(lines_s[k+2]), Double.Parse(lines_s[k + 3]));
+                                        lines.Add(new Tuple<Point, Point>(p1, p2));
+                                    }
+
+                                }
                                 if(String.Compare(reader.Name, "flm") == 0)
                                 {
                                     reader.Read();
@@ -778,10 +811,7 @@ namespace CLM_framework_GUI
                     confidence = 0;
                 else if (confidence > 1)
                     confidence = 1;
-
-            //    List<Tuple<Point, Point>> lines = null;
-            //    List<Tuple<Point, Point>> gaze_lines = null;
-
+                
                 latest_img.Freeze();
                 
                 // Visualisation
@@ -847,7 +877,7 @@ namespace CLM_framework_GUI
                     }
                     else
                     {
-                        //video.OverlayLines = lines;
+                        video.OverlayLines = lines;
 
                         List<Point> landmark_points = new List<Point>();
                         foreach (var p in landmarks)
@@ -857,7 +887,7 @@ namespace CLM_framework_GUI
 
                         video.OverlayPoints = landmark_points;
 
-                        //video.GazeLines = gaze_lines;
+                        video.GazeLines = gaze_lines;
                     }
 
                 }));
