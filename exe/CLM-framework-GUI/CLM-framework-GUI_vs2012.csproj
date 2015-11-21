@@ -53,6 +53,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AVPlot.xaml.cs">
+      <DependentUpon>AVPlot.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AxesBorder.cs" />
     <Compile Include="BarGraph.xaml.cs">
       <DependentUpon>BarGraph.xaml</DependentUpon>
     </Compile>
@@ -62,6 +66,16 @@
     <Compile Include="CameraSelection.xaml.cs">
       <DependentUpon>CameraSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TextEntryWindow.xaml.cs">
+      <DependentUpon>TextEntryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSeriesPlot.xaml.cs">
+      <DependentUpon>TimeSeriesPlot.xaml</DependentUpon>
+    </Compile>
+    <Page Include="AVPlot.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="BarGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,6 +96,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PCMPlot.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SimpleImage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +118,9 @@
     <Compile Include="MultiBarGraphHorz.xaml.cs">
       <DependentUpon>MultiBarGraphHorz.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PCMPlot.xaml.cs">
+      <DependentUpon>PCMPlot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimpleImage.xaml.cs" />
     <Compile Include="FpsTracker.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -110,7 +131,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="TextEntryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TimeSeriesPlot.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
