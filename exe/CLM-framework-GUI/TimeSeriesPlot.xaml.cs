@@ -102,7 +102,7 @@ namespace CLM_framework_GUI
         {
             Color bTransparent = b;
             bTransparent.A = 0;
-            
+
             GradientStopCollection gs = new GradientStopCollection();            
             gs.Add(new GradientStop(bTransparent, 0));
             gs.Add(new GradientStop(b, 0.2));
@@ -185,7 +185,16 @@ namespace CLM_framework_GUI
                 int thickness = brush_thicknesses.ContainsKey(seriesId) ? brush_thicknesses[seriesId] : 2;
 
                 PathGeometry pg = new PathGeometry(new PathFigure[] { pf });
-                dc.DrawGeometry(null, new Pen(b, thickness), pg);
+
+
+                Pen p = new Pen(b, thickness);
+
+                if(line_names.ContainsKey(seriesId) && line_names[seriesId].CompareTo("State rapport") == 0)
+                {
+                    double[] dashValues = { 5.0, 5.0, 5.0 };
+                    p.DashStyle = new System.Windows.Media.DashStyle(dashValues, 0);
+                }
+                dc.DrawGeometry(null, p, pg);
             }
 
             if (ShowLegend && line_names.Count > 0)

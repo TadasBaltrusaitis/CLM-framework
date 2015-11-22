@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
-        Title="Rapport Analyser" Height="700" Width="1300" MinWidth="700" MinHeight="450" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
-    <Grid Name="MainGrid">
+        Title="Rapport Analyser" Height="700" Width="1300" MinWidth="700" MinHeight="450" Closing="Window_Closing" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
+    <Grid Name="MainGrid" Margin="-1,1,1.333,-1.333">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2.1*"/>
             <ColumnDefinition Width="1.8*"/>
@@ -40,9 +40,9 @@
             <CLM_framework_GUI:OverlayImage x:Name="video" />
         </Border>
 
-        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="3" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Rapport" Orientation="Horizontal">
-            <CLM_framework_GUI:TimeSeriesPlot x:Name="rapportPlot" Orientation="Horizontal"/>
-        </CLM_framework_GUI:AxesBorder>
+        <CLM_framework_GUI:AxesBorder NumVertGrid="7" MinVal="1" MaxVal="7" MinHeight="180" Grid.Row="3" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Rapport" Orientation="Horizontal">
+            <CLM_framework_GUI:TimeSeriesPlot ShowLegend="True" x:Name="rapportPlot" Orientation="Horizontal"/>
+        </CLM_framework_GUI:AxesBorder> 
 
         <CLM_framework_GUI:AVPlot x:Name="avPlot" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Margin="30" />
 

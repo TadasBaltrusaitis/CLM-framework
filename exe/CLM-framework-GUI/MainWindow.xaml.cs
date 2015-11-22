@@ -82,6 +82,8 @@ namespace CLM_framework_GUI
 
         private volatile bool mirror_image = false;
 
+        volatile int rapport_fixed = 4;
+
         // Will be reading the info differently if stuff is being loaded from the socket
         Socket listener;
 
@@ -134,8 +136,12 @@ namespace CLM_framework_GUI
             {
 
                 rapportPlot.AssocColor(0, Colors.Blue);
-                //valencePlot.AssocColor(0, Colors.Green);
-                //valencePlot.AssocColor(1, Colors.Red);
+                rapportPlot.AssocColor(1, Colors.Gray);
+                rapportPlot.AssocName(0, "Trait rapport");
+                rapportPlot.AssocName(1, "State rapport");
+                rapportPlot.AssocThickness(0, 2);
+                rapportPlot.AssocThickness(1, 1);
+
                 attentionPlot.AssocColor(0, Colors.Red);
                 attentionPlot.AssocColor(1, Colors.Blue);
                 attentionPlot.AssocColor(2, Colors.Green);
@@ -477,6 +483,7 @@ namespace CLM_framework_GUI
 
                     Dictionary<int, double> rapportDict = new Dictionary<int, double>();
                     rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.5;
+                    rapportDict[1] = (rapport_fixed)/ 7.0;
                     rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
 
                     Dictionary<int, double> attentionDict = new Dictionary<int, double>();
@@ -552,6 +559,12 @@ namespace CLM_framework_GUI
             {
 
                 rapportPlot.AssocColor(0, Colors.Blue);
+                rapportPlot.AssocColor(1, Colors.Gray);
+                rapportPlot.AssocName(0, "Trait rapport");
+                rapportPlot.AssocName(1, "State rapport");
+                rapportPlot.AssocThickness(0, 2);
+                rapportPlot.AssocThickness(1, 1);
+
                 //valencePlot.AssocColor(0, Colors.Green);
                 //valencePlot.AssocColor(1, Colors.Red);
                 attentionPlot.AssocColor(0, Colors.Red);
@@ -710,9 +723,9 @@ namespace CLM_framework_GUI
                                     char[] delimiterChars = { ',' };
                                     string[] aus = reader.Value.Split(delimiterChars);
 
-                                    detection_succeeding = Int32.Parse(aus[1]) == 1;
+                                    detection_succeeding = Int32.Parse(aus[2]) == 1;
 
-                                    confidence = Double.Parse(aus[2]);
+                                    confidence = Double.Parse(aus[1]);
 
                                     au_regs["AU01"] = Double.Parse(aus[3]);
                                     au_regs["AU02"] = Double.Parse(aus[4]);
@@ -764,9 +777,9 @@ namespace CLM_framework_GUI
 
                                     int n_samples = pcms_s.Length;
 
-                                    int max_pcm = 350;
+                                    //int max_pcm = 350;
 
-                                    for (int k = 0; k < max_pcm; ++k)
+                                    for (int k = 0; k < n_samples; ++k)
                                     {
                                         pcms.Add(((Double.Parse(pcms_s[k])) + 1.0)/2.0);
                                         //landmarks.Add(new Tuple<double, double>(Double.Parse(lmarks[2 + k]), Double.Parse(lmarks[2 + k + n_lmarks])));
@@ -844,7 +857,8 @@ namespace CLM_framework_GUI
                     speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
 
                     Dictionary<int, double> rapportDict = new Dictionary<int, double>();
-                    rapportDict[0] = (rapport - 1.0) / 6.5;
+                    rapportDict[0] = (rapport - 1.0) / 6.0;
+                    rapportDict[1] = rapport_fixed / 7.0;
                     rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
 
                     Dictionary<int, double> attentionDict = new Dictionary<int, double>();
@@ -877,7 +891,7 @@ namespace CLM_framework_GUI
                     }
                     else
                     {
-                        video.OverlayLines = lines;
+                        //video.OverlayLines = lines;
 
                         List<Point> landmark_points = new List<Point>();
                         foreach (var p in landmarks)
@@ -887,7 +901,7 @@ namespace CLM_framework_GUI
 
                         video.OverlayPoints = landmark_points;
 
-                        video.GazeLines = gaze_lines;
+                        //video.GazeLines = gaze_lines;
                     }
 
                 }));
@@ -1108,7 +1122,7 @@ namespace CLM_framework_GUI
                     thread_running = true;
 
                     // Create a connection and open one as well
-                    new Thread(() => CreateFakeConnection(port)).Start();
+                    //new Thread(() => CreateFakeConnection(port)).Start();
 
                     Thread.Sleep(100);
                     int port_i = Int32.Parse(port);
@@ -1129,50 +1143,69 @@ namespace CLM_framework_GUI
             }));
         }
 
-        private void CreateFakeConnection(string port)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            int port_i = Int32.Parse(port);
-            
-            IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port_i);
 
-            Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            server.Bind(localEndPoint);
-            //TcpListener server = new TcpListener(localAddr, port_i);
-            //server.Start();
-
-            string xmlString = System.IO.File.ReadAllText("SampleMultiSense.xml");
-
-            //Console.WriteLine(xmlString);
-            server.Listen(10);
-
-            while(thread_running)
+            if (e.Key == Key.Up)
             {
-                Console.Write("Waiting for a connection... ");
-                Socket handler = server.Accept();
-                
-                //TcpClient client = server.AcceptTcpClient();
-                Console.WriteLine("Connected!");
+                rapport_fixed = rapport_fixed + 1;
+            }
+            if (e.Key == Key.Down)
+            {
+                rapport_fixed = rapport_fixed - 1;
+            }
 
-                // Get a stream object for reading and writing
-                //NetworkStream stream = client.GetStream();
-
-                // Keep resending the same message
-                while (thread_running)
-                {
-                    byte[] to_send = System.Text.Encoding.ASCII.GetBytes(xmlString);
-
-                    int bytes_send = handler.Send(to_send);
-                    
-                    //stream.Write(to_send, 0, to_send.Length);
-                    //stream.Write(xmlString.to)
-                    //Console.WriteLine("Data sent!" + bytes_send);
-                    Thread.Sleep(33);
-                }
-           }
+            if (rapport_fixed > 7)
+                rapport_fixed = 7;
+            if (rapport_fixed < 1)
+                rapport_fixed = 1;
 
         }
+
+        //private void CreateFakeConnection(string port)
+        //{
+        //    int port_i = Int32.Parse(port);
+        //    
+        //    IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+        //    IPAddress ipAddress = ipHostInfo.AddressList[0];
+        //    IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port_i);
+        //
+        //    Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    server.Bind(localEndPoint);
+        //    //TcpListener server = new TcpListener(localAddr, port_i);
+        //    //server.Start();
+        //
+        //    string xmlString = System.IO.File.ReadAllText("SampleMultiSense.xml");
+        //
+        //    //Console.WriteLine(xmlString);
+        //    server.Listen(10);
+        //
+        //    while(thread_running)
+        //    {
+        //        Console.Write("Waiting for a connection... ");
+        //        Socket handler = server.Accept();
+        //        
+        //        //TcpClient client = server.AcceptTcpClient();
+        //        Console.WriteLine("Connected!");
+        //
+        //        // Get a stream object for reading and writing
+        //        //NetworkStream stream = client.GetStream();
+        //
+        //        // Keep resending the same message
+        //        while (thread_running)
+        //        {
+        //            byte[] to_send = System.Text.Encoding.ASCII.GetBytes(xmlString);
+        //
+        //            int bytes_send = handler.Send(to_send);
+        //            
+        //            //stream.Write(to_send, 0, to_send.Length);
+        //            //stream.Write(xmlString.to)
+        //            //Console.WriteLine("Data sent!" + bytes_send);
+        //            Thread.Sleep(33);
+        //        }
+        //   }
+        //
+        //}
 
     }
 }
