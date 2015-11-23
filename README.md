@@ -22,3 +22,8 @@ http://youtu.be/LDBu0BLKVDw
 For Windows systems open and compile CLM_framework_vs2013.sln (requires VisualStudio 2012) or CLM_framework_vs2013.sln (requires VisualStudio 2013). All the required libraries are included with the code.
 
 For Unix based systems follow readme-ubuntu.txt
+
+## Binaries
+
+For Windows systems you can find the compiled binaries here:
+http://www.cl.cam.ac.uk/~tb346/software/Cambridge_Face_Tracker_1.3.6.zip
