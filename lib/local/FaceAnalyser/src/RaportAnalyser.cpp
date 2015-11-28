@@ -58,7 +58,7 @@ using namespace FaceAnalysis;
 using namespace std;
 
 // Constructor from a model file (or a default one if not provided
-RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history(), geom_desc_track()
+RapportAnalyser::RapportAnalyser(std::string config_location) :rapport_history(), time_step_history(), geom_desc_track()
 {
 	// start with average rapport first
 	current_rapport = 4;
@@ -72,6 +72,178 @@ RapportAnalyser::RapportAnalyser() :rapport_history(), time_step_history(), geom
 
 	frames_tracking = 0;
 	speech = 0;
+
+	arousal_scaling = 0.25;
+	head_attention_scaling = 40.0;
+	gaze_attention_scaling = 15.0;
+	rapport_rate_of_change = 0.02;
+
+	head_gaze_threshold = 15.0;
+	eye_gaze_threshold = 7.0;
+
+	head_gaze_change_rate_neg = 0.66;
+	eye_gaze_change_rate_neg = 0.66;
+
+	head_gaze_change_rate_pos = 0.33;
+	eye_gaze_change_rate_pos = 0.33;
+
+	smile_rate_of_change_valence = 3.0;
+	smile_rate_of_change_rapport = 2.0;
+
+	frown_rate_of_change_valence = 3.0;
+	frown_rate_of_change_rapport = 2.0;
+
+	valence_return_to_neutral_rate = 1.5;
+
+	brow_flash_rapport_change = 1.0;
+
+	speech_threshold = 0.3;
+	speech_rapport_threshold = 2.0;
+	speech_rapport_rate = 0.66;
+
+	max_rate_of_change = 0.5;
+
+	smoothing_factor = 0.3;
+
+	min_rapport = 1.0;
+	max_rapport = 7.0;
+
+	brow_furrow_rapport_change = -2.0;
+	brow_furrow_valence_change = -3.0;
+
+	arousal_rapport_affect_pos = 0.25;
+	arousal_rapport_affect_neg = 0.1; 
+
+	// Now read in the rapport config file possibly overwriting the default parameters
+	ifstream config_file(config_location);
+	if(config_file.is_open())
+	{
+		string line;
+		while(std::getline(config_file, line))
+		{
+			stringstream ss(line);
+			string variable;
+			double value;
+			ss >> variable;
+			ss >> value;
+
+			if(variable.compare("arousal_scaling")==0)
+			{
+				arousal_scaling = value;
+			}
+			else if(variable.compare("head_attention_scaling")==0)
+			{
+				head_attention_scaling = value;
+			}
+			else if(variable.compare("gaze_attention_scaling")==0)
+			{
+				gaze_attention_scaling = value;
+			}
+			else if(variable.compare("rapport_rate_of_change")==0)
+			{
+				rapport_rate_of_change = value;
+			}
+			else if(variable.compare("head_gaze_threshold")==0)
+			{
+				head_gaze_threshold = value;
+			}
+			else if(variable.compare("eye_gaze_threshold")==0)
+			{
+				eye_gaze_threshold = value;
+			}
+			else if(variable.compare("head_gaze_change_rate_neg")==0)
+			{
+				head_gaze_change_rate_neg = value;
+			}
+			else if(variable.compare("head_gaze_change_rate_pos")==0)
+			{
+				head_gaze_change_rate_pos = value;
+			}
+			else if(variable.compare("eye_gaze_change_rate_neg")==0)
+			{
+				eye_gaze_change_rate_neg = value;
+			}
+			else if(variable.compare("eye_gaze_change_rate_pos")==0)
+			{
+				eye_gaze_change_rate_pos = value;
+			}
+			else if(variable.compare("smile_rate_of_change_valence")==0)
+			{
+				smile_rate_of_change_valence = value;
+			}
+			else if(variable.compare("smile_rate_of_change_rapport")==0)
+			{
+				smile_rate_of_change_rapport = value;
+			}
+			else if(variable.compare("frown_rate_of_change_valence")==0)
+			{
+				frown_rate_of_change_valence = value;
+			}
+			else if(variable.compare("frown_rate_of_change_rapport")==0)
+			{
+				frown_rate_of_change_rapport = value;
+			}
+			else if(variable.compare("brow_furrow_rapport_change")==0)
+			{
+				brow_furrow_rapport_change = value;
+			}
+			else if(variable.compare("brow_furrow_valence_change")==0)
+			{
+				brow_furrow_valence_change = value;
+			}
+			else if(variable.compare("valence_return_to_neutral_rate")==0)
+			{
+				valence_return_to_neutral_rate = value;
+			}
+			else if(variable.compare("arousal_rapport_affect_pos")==0)
+			{
+				arousal_rapport_affect_pos = value;
+			}
+			else if(variable.compare("arousal_rapport_affect_neg")==0)
+			{
+				arousal_rapport_affect_neg = value;
+			}
+			else if(variable.compare("brow_flash_rapport_change")==0)
+			{
+				brow_flash_rapport_change = value;
+			}
+			else if(variable.compare("speech_threshold")==0)
+			{
+				speech_threshold = value;
+			}
+			else if(variable.compare("speech_rapport_threshold")==0)
+			{
+				speech_rapport_threshold = value;
+			}
+			else if(variable.compare("speech_rapport_rate")==0)
+			{
+				speech_rapport_rate = value;
+			}
+			else if(variable.compare("max_rate_of_change")==0)
+			{
+				max_rate_of_change = value;
+			}
+			else if(variable.compare("smoothing_factor")==0)
+			{
+				smoothing_factor = value;
+			}
+			else if(variable.compare("min_rapport")==0)
+			{
+				min_rapport = value;
+			}
+			else if(variable.compare("max_rapport")==0)
+			{
+				max_rapport = value;
+			}
+
+		}
+	}
+	else
+	{
+		cout << "ERROR - Can't open rapport config file, file not found" << endl;
+	}
+
+
 }
 
 double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser)
@@ -90,7 +262,7 @@ double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const F
 	Mat_<double> sum_stats_geom;
 	ExtractSummaryStatistics(geom_desc_track, sum_stats_geom, false, true, false);
 
-	Mat_<double> scales = 0.25 * Mat_<double>::ones(3, 1);
+	Mat_<double> scales = arousal_scaling * Mat_<double>::ones(3, 1);
 
 	cv::vconcat(scales.clone(), clm_model.pdm.eigen_values.t(), scales);
 
@@ -100,14 +272,6 @@ double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const F
 
 	double arousal = cv::sum(sum_stats_geom)[0];
 
-	// Some clamping
-	//sum_stats_geom.setTo(Scalar(-5), sum_stats_geom < -5);
-	//sum_stats_geom.setTo(Scalar(5), sum_stats_geom > 5);
-
-	//vector<string> names;
-	//vector<double> prediction;
-	//arousal_predictor_lin_geom.Predict(prediction, names, sum_stats_geom);
-	//double arousal_tmp = prediction[0];
 	return (arousal- 0.5) / 3.5;
 }
 
@@ -119,9 +283,6 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 		return;
 
 	current_arousal = PredictArousal(clm_model, face_analyser);
-
-	// TODO what head gaze should be based on the target which should be just below the camera
-	// Although for mobile this might not be a huge issue
 
 	// First extract head gaze
 	Vec6d pose = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
@@ -155,10 +316,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	double eye_gaze_away = acos(eye_gaze.dot(eye_gaze_straight));
 	eye_gaze_away = eye_gaze_away * 180 / 3.14159265359;
 
-	head_attention = 1.0 - head_gaze_away / 40.0;
-	eye_attention = 1.0 - eye_gaze_away / 15.0;
-
-	//cout << head_gaze_away << " " << eye_gaze_away << " " << eye_gaze <<endl;
+	head_attention = 1.0 - head_gaze_away / head_attention_scaling;
+	eye_attention = 1.0 - eye_gaze_away / gaze_attention_scaling;
 
 	auto aus_reg = face_analyser.GetCurrentAUsReg();
 
@@ -259,10 +418,9 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 
 	// Have some smoothing
 	speech = 0.2 * speech +  0.8 * talk / 5.0;
-	if (speech < 0.3)
-		speech = 0;
 
-	//cout << brow_flash << " " << brow_furrow << " " << smile << " " << frown << " " << talk << endl;
+	if (speech < speech_threshold)
+		speech = 0;
 
 	// Two options accomulating model or a direct mapping
 
@@ -270,71 +428,78 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	double cummulator_valence = 0;
 	double cummulator_attention = 0;
 
-	double add_size = 0.02;
-	if (head_gaze_away > 15)
+	if (head_gaze_away > head_gaze_threshold)
 	{
-		cummulator = cummulator - add_size / 1.5;
-		cummulator_attention = cummulator_attention - add_size / 1.5;
+		cummulator = cummulator - rapport_rate_of_change * head_gaze_change_rate_neg;
+		cummulator_attention = cummulator_attention - rapport_rate_of_change * head_gaze_change_rate_neg;
 	}
 	else
 	{
-		cummulator_attention = cummulator_attention + add_size / 3.0;
+		cummulator_attention = cummulator_attention + rapport_rate_of_change / head_gaze_change_rate_neg;
 	}
 
-	if (eye_gaze_away > 7)
+	if (eye_gaze_away > eye_gaze_threshold)
 	{
-		cummulator = cummulator - add_size / 1.5;
-		cummulator_attention = cummulator_attention - add_size / 1.5;
+		cummulator = cummulator - rapport_rate_of_change * eye_gaze_change_rate_neg;
+		cummulator_attention = cummulator_attention - rapport_rate_of_change * eye_gaze_change_rate_neg;
 	}
 	else
 	{
-		cummulator_attention = cummulator_attention + add_size / 3.0;
+		cummulator_attention = cummulator_attention + rapport_rate_of_change / eye_gaze_change_rate_pos;
 	}
 
-	//if (AU12 > 1.5 && AU6 > 1.5)
 	if ((AU12 > 1.5 && AU6 > 0.5) || smile > 1.5)
 	{
+		double smile_int = (AU12 + AU25 + AU6) / 15.0;
 		// Look at smiling behaviour (AU12 + AU6)
-		cummulator = cummulator + add_size * 2.0;
-		cummulator_valence = cummulator_valence + add_size * 3.0;
+		cummulator = cummulator + rapport_rate_of_change * smile_rate_of_change_rapport * smile_int;
+		cummulator_valence = cummulator_valence + rapport_rate_of_change * smile_rate_of_change_valence * smile_int;
 	}
-	else if (current_valence > 5)
+	else if (current_valence > 4.5)
 	{
-		cummulator_valence = cummulator_valence - add_size * 1.5;
+		cummulator_valence = cummulator_valence - rapport_rate_of_change * valence_return_to_neutral_rate;
 	}
-
 
 	// If brows are being raised (poss showing interest)
 	//if (AU1 > 2.0 || AU2 > 2.0)
 	if (brow_flash > 2)
 	{
 		// Look at smiling behaviour (AU1 + AU2)
-		cummulator = cummulator + add_size;
+		cummulator = cummulator + rapport_rate_of_change * brow_flash_rapport_change;
 	}
 
 	if (AU4 > 2.5 || brow_furrow > 2)
 	{
 		// Look at frowning behaviour (AU4 + AU15 and AU17)
-		cummulator = cummulator - add_size;
-		cummulator_valence = cummulator_valence - add_size;
+		cummulator = cummulator + rapport_rate_of_change * brow_furrow_rapport_change;
+		cummulator_valence = cummulator_valence + rapport_rate_of_change * brow_furrow_valence_change;
 	}
 
 	if (AU15 > 2 || AU17 > 2 || frown > 1.5)
 	{
 		// Look at frowning behaviour (AU4 + AU15 and AU17)
-		cummulator = cummulator - add_size * 2.0;
-		cummulator_valence = cummulator_valence - add_size * 3.0;
+		cummulator = cummulator - rapport_rate_of_change * frown_rate_of_change_rapport;
+		cummulator_valence = cummulator_valence - rapport_rate_of_change * frown_rate_of_change_valence;
 	}
-	else if (current_valence < 3)
+	else if (current_valence < 3.5)
 	{
-		cummulator_valence = cummulator_valence + add_size * 1.5;
+		cummulator_valence = cummulator_valence + rapport_rate_of_change * valence_return_to_neutral_rate;
+	}
+
+	// Add the arousal observation
+	if(current_arousal > 0.5)
+	{
+		cummulator = (current_arousal - 0.5) * arousal_rapport_affect_pos;
+	}
+	else
+	{
+		cummulator = - (0.5 - current_arousal) * arousal_rapport_affect_neg;
 	}
 
 	// Looks if lips are not moving (AU25)
-	if (talk > 2)
+	if (talk > speech_rapport_threshold)
 	{
-
-		cummulator = cummulator + add_size / 2.0;
+		cummulator = cummulator + rapport_rate_of_change * speech_rapport_rate;
 	}
 
 	double time_passed = time - prev_time_step;
@@ -347,25 +512,27 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	}
 
 	// Do not let a single frame change by more that 0.5
-	if (cummulator > 0.5)
-		cummulator = 0.5;
+	if (cummulator > max_rate_of_change)
+		cummulator = max_rate_of_change;
 
-	if (cummulator < -0.5)
-		cummulator = -0.5;
+	if (cummulator < -max_rate_of_change)
+		cummulator = -max_rate_of_change;
 
 	// Some smoothing
 	double old_rapport = current_rapport;
 	double old_attention = current_attention;
 	double old_valence = current_valence;
 
-	current_rapport = 0.3 * current_rapport + 0.7 * (old_rapport + cummulator);
-	current_attention = 0.3 * current_attention + 0.7 * (old_attention + cummulator_attention);
-	current_valence = 0.3 * current_valence + 0.7 * (old_valence + cummulator_valence);
 
-	if (current_rapport < 1)
-		current_rapport = 1;
-	if (current_rapport > 7)
-		current_rapport = 7;
+	current_rapport = smoothing_factor * current_rapport + (1.0-smoothing_factor) * (old_rapport + cummulator);
+	current_attention = smoothing_factor * current_attention + (1.0-smoothing_factor) * (old_attention + cummulator_attention);
+	current_valence = smoothing_factor * current_valence + (1.0-smoothing_factor) * (old_valence + cummulator_valence);
+
+
+	if (current_rapport < min_rapport)
+		current_rapport = min_rapport;
+	if (current_rapport > max_rapport)
+		current_rapport = max_rapport;
 
 	if (current_attention < 1)
 		current_attention = 1;
@@ -376,13 +543,6 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 		current_valence = 1;
 	if (current_valence > 7)
 		current_valence = 7;
-
-	//cout << (current_rapport - 1.0) / 6.0 << " " << (current_valence - 1.0) / 6.0 << " " << (current_attention - 1.0) / 6.0 << endl;
-
-	// TODO smoothing and incorporation of time steps
-	// TODO lips parting has to look at the derivative or std?
-	// Need a cummulator of each of the statistics?
-	// for past 3 seconds
 
 	prev_time_step = time;
 

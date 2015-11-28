@@ -64,7 +64,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreLinkEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\FaceAnalyser\rapport_config" "$(OutDir)rapport_config"</Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>
@@ -87,8 +88,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PreLinkEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\local\FaceAnalyser\rapport_config" "$(OutDir)rapport_config"</Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\FaceAnalyser\AU_predictors" "$(OutDir)AU_predictors"</Command>

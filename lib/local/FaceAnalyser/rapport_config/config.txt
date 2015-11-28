@@ -1,0 +1,27 @@
+arousal_scaling 0.25 # The rate of change of arousal based on facial motion, higher values lead to more extreme changes in arousal
+head_attention_scaling 40.0 # For visualising head attention, higher values - less deviation from best attention
+gaze_attention_scaling 15.0 # For visualising gaze attention, higher values - less deviation from best attention
+rapport_rate_of_change 0.02 # how quickly rapport changes based on various non-verbal behaviour observations
+head_gaze_threshold 15.0 # How far should the head be for attention to drop
+eye_gaze_threshold 7.0 # how far the eyes should be for attention to drop
+head_gaze_change_rate_neg 0.66 # how much the attention and rapport drop based on looking away with head
+head_gaze_change_rate_pos 0.33 # how quick the attention and rapport climb for looking straight (climb slower drop faster is the default)
+eye_gaze_change_rate_neg 0.66 # how much the attention and rapport drop based on looking away with eyes
+eye_gaze_change_rate_pos 0.33 # how quick the attention and rapport climb for looking straight (climb slower drop faster is the default)
+smile_rate_of_change_valence 3.0 # how quickly does presense (and intensity) of a smile drive valence up
+smile_rate_of_change_rapport 2.0 # how quickly does presense (and intensity) of a smile drive rapport up
+frown_rate_of_change_valence 3.0 # how quickly does presense (and intensity) of a frown drive valence down
+frown_rate_of_change_rapport 2.0 # how quickly does presense (and intensity) of a frown drive rapport down
+valence_return_to_neutral_rate 1.5 # How quickly valence return to middle if no events affecting it are detected
+brow_flash_rapport_change 1.0 # how a brow flash affects rapport (now it drives it a bit up)
+brow_furrow_rapport_change -2.0 # how a brow furrow affects rapport (now it drives it down)
+brow_furrow_valence_change -3.0 # how a brow flash affects valence (now it drives it down)
+speech_threshold 0.3 # how much lip motion ends up being considered speech (the higher the value the less sensitive the detector)
+speech_rapport_threshold 2 # Above what threshold does lip motion contribute to rapport
+speech_rapport_rate 0.66 # how much does the speech signal affect rapport
+max_rate_of_change 0.5 # How much rapport can change in single frame
+smoothing_factor 0.3 # value between 0 and 1 controling smoothing, the higher it is the more smoothed the rapport/valence/arousal estimates
+min_rapport 1 # Clamping of rapport by the visual analyser
+max_rapport 7 # Clamping of rapport by the visual analyser
+arousal_rapport_affect_pos 0.25 # How much positive arousal affects rapport
+arousal_rapport_affect_neg 0.1 # How much negative arousal affects rapport
