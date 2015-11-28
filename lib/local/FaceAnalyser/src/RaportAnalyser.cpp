@@ -258,7 +258,7 @@ double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const F
 	geom_params.push_back(clm_model.params_local);
 	geom_params = geom_params.t();
 
-	AddDescriptor(geom_desc_track, geom_params, this->frames_tracking, 300);
+	AddDescriptor(geom_desc_track, geom_params, this->frames_tracking, 200);
 	Mat_<double> sum_stats_geom;
 	ExtractSummaryStatistics(geom_desc_track, sum_stats_geom, false, true, false);
 
@@ -272,9 +272,17 @@ double RapportAnalyser::PredictArousal(const CLMTracker::CLM& clm_model, const F
 
 	double arousal = cv::sum(sum_stats_geom)[0];
 
-	return (arousal- 0.5) / 3.5;
+	if(this->frames_tracking < 100)
+	{
+		// Damp predictions before enough evidence is seen
+		double a_tmp = (arousal - 0.5) / 3.5 - 0.5;
+		return 0.5 + a_tmp * 0.2;
+	}
+	else
+	{
+		return (arousal- 0.5) / 3.5;
+	}
 }
-
 void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const FaceAnalyser& face_analyser, const Point3f& gaze_left, const Point3f& gaze_right, double fx, double fy, double cx, double cy)
 {
 	double time = face_analyser.GetCurrentTimeSeconds();
@@ -486,8 +494,8 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 		cummulator_valence = cummulator_valence + rapport_rate_of_change * valence_return_to_neutral_rate;
 	}
 
-	// Add the arousal observation
-	if(current_arousal > 0.5)
+	// Add the arousal observation (only with positive valence though)
+	if(current_arousal > 0.5 && current_valence > 3.5)
 	{
 		cummulator = cummulator + (current_arousal - 0.5) * arousal_rapport_affect_pos;
 	}

@@ -23,5 +23,5 @@ max_rate_of_change 0.5 # How much rapport can change in single frame
 smoothing_factor 0.3 # value between 0 and 1 controling smoothing, the higher it is the more smoothed the rapport/valence/arousal estimates
 min_rapport 2.5 # Clamping of rapport by the visual analyser
 max_rapport 6.5 # Clamping of rapport by the visual analyser
-arousal_rapport_affect_pos 0.25 # How much positive arousal affects rapport
-arousal_rapport_affect_neg 0.1 # How much negative arousal affects rapport
+arousal_rapport_affect_pos 0.05 # How much positive arousal affects rapport
+arousal_rapport_affect_neg 0.025 # How much negative arousal affects rapport

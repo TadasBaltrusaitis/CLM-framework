@@ -483,7 +483,8 @@ namespace CLM_framework_GUI
 
                     Dictionary<int, double> rapportDict = new Dictionary<int, double>();
                     rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.5;
-                    rapportDict[1] = (rapport_fixed)/ 7.0;
+                    rapportDict[1] = (rapport_fixed - 1.0)/ 6.0;
+                    Console.WriteLine(rapportDict[1]);
                     rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
 
                     Dictionary<int, double> attentionDict = new Dictionary<int, double>();
