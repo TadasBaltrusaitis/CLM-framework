@@ -489,11 +489,11 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	// Add the arousal observation
 	if(current_arousal > 0.5)
 	{
-		cummulator = (current_arousal - 0.5) * arousal_rapport_affect_pos;
+		cummulator = cummulator + (current_arousal - 0.5) * arousal_rapport_affect_pos;
 	}
 	else
 	{
-		cummulator = - (0.5 - current_arousal) * arousal_rapport_affect_neg;
+		cummulator = cummulator - (0.5 - current_arousal) * arousal_rapport_affect_neg;
 	}
 
 	// Looks if lips are not moving (AU25)
@@ -523,11 +523,9 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	double old_attention = current_attention;
 	double old_valence = current_valence;
 
-
 	current_rapport = smoothing_factor * current_rapport + (1.0-smoothing_factor) * (old_rapport + cummulator);
 	current_attention = smoothing_factor * current_attention + (1.0-smoothing_factor) * (old_attention + cummulator_attention);
 	current_valence = smoothing_factor * current_valence + (1.0-smoothing_factor) * (old_valence + cummulator_valence);
-
 
 	if (current_rapport < min_rapport)
 		current_rapport = min_rapport;
