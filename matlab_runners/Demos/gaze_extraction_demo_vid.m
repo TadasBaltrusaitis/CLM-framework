@@ -41,10 +41,10 @@ filename = [output name];
 gaze  = dlmread([filename, '_gaze.txt'], ',', 1, 0);
 
 % This indicates which frames were succesfully tracked
-valid_frames = gaze(:,3);
+valid_frames = gaze(:,4);
 
 % only picking left, right and up down views for visualisation
-gaze = gaze(:,[4,5,6,7,8,9]);
+gaze = gaze(:,[5,6,7,8,9,10]);
 gaze = (gaze(:,[1,2,3]) + gaze(:,[4,5,6]))/2;
 gaze(:,1) = smooth(gaze(:,1));
 gaze(:,2) = smooth(gaze(:,2));

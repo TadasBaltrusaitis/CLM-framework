@@ -385,6 +385,69 @@ void output_HOG_frame(std::ofstream* hog_file, bool good_frame, const Mat_<doubl
 	}
 }
 
+// Some globals for tracking timing information for visualisation
+double fps_tracker = -1.0;
+int64 t0 = 0;
+
+// Visualising the results
+void visualise_tracking(Mat& captured_image, const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
+{
+
+	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
+	double detection_certainty = clm_model.detection_certainty;
+	bool detection_success = clm_model.detection_success;
+
+	double visualisation_boundary = 0.2;
+
+	// Only draw if the reliability is reasonable, the value is slightly ad-hoc
+	if (detection_certainty < visualisation_boundary)
+	{
+		CLMTracker::Draw(captured_image, clm_model);
+
+		double vis_certainty = detection_certainty;
+		if (vis_certainty > 1)
+			vis_certainty = 1;
+		if (vis_certainty < -1)
+			vis_certainty = -1;
+
+		vis_certainty = (vis_certainty + 1) / (visualisation_boundary + 1);
+
+		// A rough heuristic for box around the face width
+		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
+
+		Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
+
+		// Draw it in reddish if uncertain, blueish if certain
+		CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
+
+		if (clm_parameters.track_gaze && detection_success)
+		{
+			FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+		}
+	}
+
+	// Work out the framerate
+	if (frame_count % 10 == 0)
+	{
+		double t1 = cv::getTickCount();
+		fps_tracker = 10.0 / (double(t1 - t0) / cv::getTickFrequency());
+		t0 = t1;
+	}
+
+	// Write out the framerate on the image before displaying it
+	char fpsC[255];
+	std::sprintf(fpsC, "%d", (int)fps_tracker);
+	string fpsSt("FPS:");
+	fpsSt += fpsC;
+	cv::putText(captured_image, fpsSt, cv::Point(10, 20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255, 0, 0));
+
+	if (!clm_parameters.quiet_mode)
+	{
+		namedWindow("tracking_result", 1);
+		imshow("tracking_result", captured_image);
+	}
+}
+
 int main (int argc, char **argv)
 {
 
@@ -530,6 +593,8 @@ int main (int argc, char **argv)
 		int total_frames = -1;
 		int reported_completion = 0;
 
+		double fps_vid_in = -1.0;
+
 		if(video_input)
 		{
 			// We might specify multiple video files as arguments
@@ -549,6 +614,7 @@ int main (int argc, char **argv)
 				INFO_STREAM( "Attempting to read from file: " << current_file );
 				video_capture = VideoCapture( current_file );
 				total_frames = (int)video_capture.get(CV_CAP_PROP_FRAME_COUNT);
+				fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
 			}
 			else
 			{
@@ -595,7 +661,7 @@ int main (int argc, char **argv)
 		{
 			gaze_output_file.open(gaze_output_files[f_n], ios_base::out);
 
-			gaze_output_file << "frame, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1";
+			gaze_output_file << "frame, timestamp, confidence, success, x_0, y_0, z_0, x_1, y_1, z_1, x_h0, y_h0, z_h0, x_h1, y_h1, z_h1";
 			gaze_output_file << endl;
 		}
 
@@ -604,7 +670,7 @@ int main (int argc, char **argv)
 		{
 			pose_output_file.open (pose_output_files[f_n], ios_base::out);
 
-			pose_output_file << "frame, confidence, success, Tx, Ty, Tz, Rx, Ry, Rz";
+			pose_output_file << "frame, timestamp, confidence, success, Tx, Ty, Tz, Rx, Ry, Rz";
 			pose_output_file << endl;
 		}
 	
@@ -613,7 +679,7 @@ int main (int argc, char **argv)
 		{
 			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
 
-			landmarks_output_file << "frame, success";
+			landmarks_output_file << "frame, timestamp, confidence, success";
 			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
 			{
 
@@ -632,7 +698,7 @@ int main (int argc, char **argv)
 		{
 			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 
-			landmarks_3D_output_file << "frame, success";
+			landmarks_3D_output_file << "frame, timestamp, confidence, success";
 			for(int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
 			{
 
@@ -657,7 +723,7 @@ int main (int argc, char **argv)
 		{
 			params_output_file.open(params_output_files[f_n], ios_base::out);
 
-			params_output_file << "frame, success, scale, rx, ry, rz, tx, ty";
+			params_output_file << "frame, timestamp, confidence, success, scale, rx, ry, rz, tx, ty";
 			for(int i = 0; i < clm_model.pdm.NumberOfModes(); ++i)
 			{
 
@@ -675,7 +741,7 @@ int main (int argc, char **argv)
 			vector<string> au_names_class = face_analyser.GetAUClassNames();
 			vector<string> au_names_reg = face_analyser.GetAURegNames();
 
-			au_output_file << "frame, success, confidence";
+			au_output_file << "frame, timestamp, confidence, success";
 			for(string reg_name : au_names_reg)
 			{
 				au_output_file << ", " << reg_name << "_r";
@@ -695,17 +761,9 @@ int main (int argc, char **argv)
 		{
 			if(video_output)
 			{
-				if(video_input)
-				{
-					double fps = video_capture.get(CV_CAP_PROP_FPS);
-					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), fps, Size(sim_size, sim_size), true);
-				}
-				else
-				{
-					// Use 30 fps if input is sequence
-					output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H','F','Y','U'), 30, Size(sim_size, sim_size), true);
-				}
-			}			
+				double fps = webcam ? 30 : fps_vid_in;
+				output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H', 'F', 'Y', 'U'), fps, Size(sim_size, sim_size), true);
+			}
 		}
 		
 		// Saving the HOG features
@@ -719,7 +777,8 @@ int main (int argc, char **argv)
 		VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
 		{
-			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D','I','V','X'), 30, captured_image.size(), true);		
+			double fps = webcam ? 30 : fps_vid_in;
+			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
 		}
 
 		int frame_count = 0;
@@ -729,15 +788,33 @@ int main (int argc, char **argv)
 		vector<bool> successes_video;
 		vector<Mat_<double>> params_local_video;
 		vector<Mat_<double>> detected_landmarks_video;
+				
+		// Use for timestamping if using a webcam
+		int64 t_initial = cv::getTickCount();
 
-		// For measuring the timings
-		int64 t1,t0 = cv::getTickCount();
-		double fps = 10;		
 		bool visualise_hog = verbose;
+
+		// Timestamp in milliseconds of current processing
+		double time_stamp = 0;
 
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
 		{		
+
+			// Grab the timestamp first
+			if (webcam)
+			{
+				int64 curr_time = cv::getTickCount();
+				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency()) * 1000;
+			}
+			else if (video_input)
+			{
+				time_stamp = (1000.0 / fps_vid_in) * frame_count;
+			}
+			else
+			{
+				time_stamp = 0.0;
+			}
 
 			// Reading the images
 			Mat_<uchar> grayscale_image;
@@ -762,7 +839,7 @@ int main (int argc, char **argv)
 			{
 				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
-
+			
 			// Gaze tracking, absolute gaze direction
 			Point3f gazeDirection0;
 			Point3f gazeDirection1;
@@ -784,7 +861,7 @@ int main (int argc, char **argv)
 			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
 			{
-				face_analyser.AddNextFrame(captured_image, clm_model, frame_count * 30, webcam, !clm_parameters.quiet_mode);
+				face_analyser.AddNextFrame(captured_image, clm_model, time_stamp, webcam, !clm_parameters.quiet_mode);
 				face_analyser.GetLatestAlignedFace(sim_warped_img);
 
 				//FaceAnalysis::AlignFaceMask(sim_warped_img, captured_image, clm_model, triangulation, rigid, sim_scale, sim_size, sim_size);			
@@ -815,8 +892,6 @@ int main (int argc, char **argv)
 			{
 				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
 			}
-
-
 
 			if(hog_output_file.is_open())
 			{
@@ -849,65 +924,15 @@ int main (int argc, char **argv)
 					imwrite(out_file, sim_warped_img);
 				}
 			}
-			// Visualising the results
-			// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
-			double detection_certainty = clm_model.detection_certainty;
 
-			double visualisation_boundary = 0.2;
-			
-			// Only draw if the reliability is reasonable, the value is slightly ad-hoc
-			if(detection_certainty < visualisation_boundary)
-			{
-				CLMTracker::Draw(captured_image, clm_model);
-				//CLMTracker::Draw(captured_image, clm_model);
-
-				double vis_certainty = detection_certainty;
-				if (vis_certainty > 1)
-					vis_certainty = 1;
-				if (vis_certainty < -1)
-					vis_certainty = -1;
-
-				vis_certainty = (vis_certainty + 1) / (visualisation_boundary + 1);
-
-				// A rough heuristic for box around the face width
-				int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
-				
-				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
-
-				// Draw it in reddish if uncertain, blueish if certain
-				CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
-
-				if (clm_parameters.track_gaze && detection_success)
-				{
-					FaceAnalysis::DrawGaze(captured_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
-				}
-			}
-			
-			// Work out the framerate
-			if(frame_count % 10 == 0)
-			{      
-				t1 = cv::getTickCount();
-				fps = 10.0 / (double(t1-t0)/cv::getTickFrequency()); 
-				t0 = t1;
-			}
-			
-			// Write out the framerate on the image before displaying it
-			char fpsC[255];
-			std::sprintf(fpsC, "%d", (int)fps);
-			string fpsSt("FPS:");
-			fpsSt += fpsC;
-			cv::putText(captured_image, fpsSt, cv::Point(10,20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
-			
-			if(!clm_parameters.quiet_mode)
-			{
-				namedWindow("tracking_result",1);		
-				imshow("tracking_result", captured_image);
-			}
+			// Visualising the tracker
+			visualise_tracking(captured_image, clm_model, clm_parameters, gazeDirection0, gazeDirection1, frame_count, fx, fy, cx, cy);
 
 			// Output the detected facial landmarks
 			if(!landmark_output_files.empty())
 			{
-				landmarks_output_file << frame_count + 1 << ", " << detection_success;
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				landmarks_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++i)
 				{
 					landmarks_output_file << ", " << clm_model.detected_landmarks.at<double>(i);
@@ -918,7 +943,8 @@ int main (int argc, char **argv)
 			// Output the detected facial landmarks
 			if(!landmark_3D_output_files.empty())
 			{
-				landmarks_3D_output_file << frame_count + 1 << ", " << detection_success;
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				landmarks_3D_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
 				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
 				{
@@ -929,7 +955,8 @@ int main (int argc, char **argv)
 
 			if(!params_output_files.empty())
 			{
-				params_output_file << frame_count + 1 << ", " << detection_success;
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				params_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 				for (int i = 0; i < 6; ++i)
 				{
 					params_output_file << ", " << clm_model.params_global[i]; 
@@ -944,8 +971,8 @@ int main (int argc, char **argv)
 			// Output the estimated head pose
 			if(!pose_output_files.empty())
 			{
-				double confidence = 0.5 * (1 - detection_certainty);
-				pose_output_file << frame_count + 1 << ", " << confidence << ", " << detection_success
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				pose_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success
 					<< ", " << pose_estimate_CLM[0] << ", " << pose_estimate_CLM[1] << ", " << pose_estimate_CLM[2]
 				    << ", " << pose_estimate_CLM[3] << ", " << pose_estimate_CLM[4] << ", " << pose_estimate_CLM[5] << endl;
 			}				
@@ -953,8 +980,8 @@ int main (int argc, char **argv)
 			// Output the estimated head pose
 			if (!gaze_output_files.empty())
 			{
-				double confidence = 0.5 * (1 - detection_certainty);
-				gaze_output_file << frame_count + 1 << ", " << confidence << ", " << detection_success
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				gaze_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success
 					<< ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
 					<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z 
 					<< ", " << gazeDirection0_head.x << ", " << gazeDirection0_head.y << ", " << gazeDirection0_head.z
@@ -964,9 +991,9 @@ int main (int argc, char **argv)
 
 			if(!output_au_files.empty())
 			{
-				double confidence = 0.5 * (1 - detection_certainty);
+				double confidence = 0.5 * (1 - clm_model.detection_certainty);
 
-				au_output_file << frame_count + 1 << ", " << detection_success << ", " << confidence;
+				au_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 				auto aus_reg = face_analyser.GetCurrentAUsReg();
 				
 				for(auto au_reg : aus_reg)
@@ -1067,11 +1094,12 @@ int main (int argc, char **argv)
 
 		vector<double> certainties;
 		vector<bool> successes;
+		vector<double> timestamps;
 		vector<std::pair<std::string, vector<double>>> predictions_reg;
 		vector<std::pair<std::string, vector<double>>> predictions_class;
 
-		face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes);
-		face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes);
+		face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes, timestamps);
+		face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes, timestamps);
 
 		// Output all of the AU stuff with offline correction and cleanup
 		if(!output_au_files.empty())
@@ -1081,7 +1109,7 @@ int main (int argc, char **argv)
 
 			au_output_file.open (output_au_files[f_n], ios_base::out);
 
-			au_output_file << "frame, success, confidence";
+			au_output_file << "frame, timestamp, confidence, success";
 			for(auto reg_name : predictions_reg)
 			{
 				au_output_file << ", " << reg_name.first << "_r";
@@ -1100,7 +1128,7 @@ int main (int argc, char **argv)
 
 				double confidence = 0.5 * (1 - detection_certainty);
 
-				au_output_file << frame_count + 1 << ", " << detection_success << ", " << confidence;
+				au_output_file << frame_count + 1 << ", " << timestamps[frame] << ", " << confidence << ", " << detection_success;
 				auto aus_reg = face_analyser.GetCurrentAUsReg();
 				
 				for(auto au_reg : predictions_reg)

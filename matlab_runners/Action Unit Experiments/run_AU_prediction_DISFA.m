@@ -70,7 +70,7 @@ preds_all = zeros(size(labels_all,1), numel(rel_preds));
 for i=1:numel(preds_files)
    
     preds = dlmread([prediction_dir, preds_files(i).name], ',', 1, 0);
-    preds = preds(:,4:4+numel(aus_pred_int)-1);
+    preds = preds(:,5:5+numel(aus_pred_int)-1);
 
     user_id = str2num(preds_files(i).name(end - 14:end-12));
     rel_ids = label_ids == user_id;

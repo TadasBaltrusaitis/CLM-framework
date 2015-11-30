@@ -138,8 +138,8 @@ public:
 		return au_reg_names_all;
 	}
 
-	void ExtractAllPredictionsOfflineReg(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes);
-	void ExtractAllPredictionsOfflineClass(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes);
+	void ExtractAllPredictionsOfflineReg(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);
+	void ExtractAllPredictionsOfflineClass(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);
 
 private:
 
@@ -149,6 +149,8 @@ private:
 
 	std::vector<std::pair<std::string, double>> AU_predictions_combined;
 
+	// Keeping track of AU predictions over time (useful for post-processing)
+	vector<double> timestamps;
 	std::map<std::string, vector<double>> AU_predictions_reg_all_hist;
 	std::map<std::string, vector<double>> AU_predictions_class_all_hist;
 	std::vector<double> confidences;

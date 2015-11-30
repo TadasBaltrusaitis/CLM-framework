@@ -248,7 +248,7 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 
 //=============================================================================
 // Getting the closest view center based on orientation
-int Patch_experts::GetViewIdx(const Vec6d& params_global, int scale)
+int Patch_experts::GetViewIdx(const Vec6d& params_global, int scale) const
 {	
 	int idx = 0;
 	

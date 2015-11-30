@@ -15,7 +15,7 @@ for i=1:numel(seqNames)
         
     posesGround =  load ([gtDir '/' seqNames{i} '/groundTruthPose.txt']);
    
-    [frame rels sc tx ty tz rx ry rz] = textread([resDir '/' seqNames{i} '.txt'], '%f %f %f %f %f %f %f %f %f');
+    [frame t, rels, sc tx ty tz rx ry rz] = textread([resDir '/' seqNames{i} '.txt'], '%f, %f, %f, %f, %f, %f, %f, %f, %f, %f', 'headerlines', 1);
    
     % the reliabilities of head pose
     rels_all = cat(1, rels_all, rels);    
