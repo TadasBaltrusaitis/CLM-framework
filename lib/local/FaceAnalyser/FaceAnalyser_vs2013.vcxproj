@@ -95,14 +95,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rdParty\dlib\dlib.vcxproj">
-      <Project>{b47a5f12-2567-44e9-ae49-35763ec82149}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\CLM\CLM_vs2013.vcxproj">
-      <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\GazeEstimation.cpp" />
     <ClCompile Include="src\SVM_dynamic_lin.cpp" />
     <ClCompile Include="src\SVM_static_lin.cpp" />
@@ -119,6 +111,14 @@
     <ClInclude Include="include\SVM_static_lin.h" />
     <ClInclude Include="include\SVR_dynamic_lin_regressors.h" />
     <ClInclude Include="include\SVR_static_lin_regressors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdParty\dlib\dlib_vs2013.vcxproj">
+      <Project>{b47a5f12-2567-44e9-ae49-35763ec82149}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CLM\CLM_vs2013.vcxproj">
+      <Project>{bdc1d107-de17-4705-8e7b-cdde8bfb2bf8}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
