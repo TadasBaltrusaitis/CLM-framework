@@ -16,7 +16,7 @@ function [meanError, all_rot_preds, all_rot_gts, meanErrors, all_errors, rels_al
     for i = 1:numel(sequences)
 
         [~, name,~] = fileparts(sequences(i).name);
-        [frame rels sc tx ty tz rx ry rz] = textread([resDir '/' sequences(i).name], '%f %f %f %f %f %f %f %f %f');
+        [frame t, rels, sc tx ty tz rx ry rz] = textread([resDir '/' sequences(i).name], '%f, %f, %f, %f, %f, %f, %f, %f, %f, %f', 'headerlines', 1);
         [txg tyg tzg rxg ryg rzg] =  textread([gtDir name '/'  polhemus], '%f,%f,%f,%f,%f,%f');
 
         % the reliabilities of head pose

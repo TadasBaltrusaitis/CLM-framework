@@ -70,8 +70,8 @@ preds_all_clm = [];
 gts_all = [];
 for i = 1:numel(files_yt)
     [~, name, ~] = fileparts(files_yt(i).name);
-    pred_landmarks = dlmread([d_loc, files_yt(i).name], ' ');
-    pred_landmarks = pred_landmarks(:,3:end);
+    pred_landmarks = dlmread([d_loc, files_yt(i).name], ',', 1, 0);
+    pred_landmarks = pred_landmarks(:,5:end);
     
     xs = pred_landmarks(:, 1:end/2);
     ys = pred_landmarks(:, end/2+1:end);
@@ -79,8 +79,8 @@ for i = 1:numel(files_yt)
     pred_landmarks(:,1,:) = xs';
     pred_landmarks(:,2,:) = ys';
     
-    pred_landmarks_clm = dlmread([d_loc_clm, files_yt(i).name], ' ');
-    pred_landmarks_clm = pred_landmarks_clm(:,3:end);
+    pred_landmarks_clm = dlmread([d_loc_clm, files_yt(i).name], ',', 1, 0);
+    pred_landmarks_clm = pred_landmarks_clm(:,5:end);
     
     xs = pred_landmarks_clm(:, 1:end/2);
     ys = pred_landmarks_clm(:, end/2+1:end);

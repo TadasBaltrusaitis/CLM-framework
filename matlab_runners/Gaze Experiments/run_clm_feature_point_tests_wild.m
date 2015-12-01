@@ -70,7 +70,7 @@ for p=1:numel(p_dirs)
              filenames(i,1), filenames(i,2), filenames(i,3), filenames(i,4),...
              filenames(i,5), filenames(i,6), filenames(i,7));
         try            
-            A = dlmread(fname, ',', 'D2..I2');
+            A = dlmread(fname, ',', 'E2..J2');
         catch
             A = zeros(1,6);
             A(1,3) = -1;
@@ -78,7 +78,6 @@ for p=1:numel(p_dirs)
         end
 
         head_rot = headpose(i,1:3);
-        rot = Euler2Rot(head_rot);
 
         predictions_r(curr,:) = A(1:3);
         predictions_l(curr,:) = A(4:6);        

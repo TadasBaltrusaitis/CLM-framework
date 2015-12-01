@@ -111,9 +111,9 @@ namespace CLMTracker
 	vector<Point2d> CalculateLandmarks(CLM& clm_model);
 	void DrawLandmarks(cv::Mat img, vector<Point> landmarks);
 
-	void Draw(cv::Mat img, const Mat_<double>& shape2D, Mat_<int>& visibilities);
+	void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilities);
 	void Draw(cv::Mat img, const Mat_<double>& shape2D);
-	void Draw(cv::Mat img, CLM& clm_model);
+	void Draw(cv::Mat img, const CLM& clm_model);
 
 
 	//===========================================================================

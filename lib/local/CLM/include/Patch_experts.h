@@ -127,10 +127,10 @@ public:
 							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale);
 
 	// Getting the best view associated with the current orientation
-	int GetViewIdx(const Vec6d& params_global, int scale);
+	int GetViewIdx(const Vec6d& params_global, int scale) const;
 
 	// The number of views at a particular scale
-    inline int nViews(int scale=0){return centers[scale].size();};
+	inline int nViews(int scale = 0) const { return centers[scale].size(); };
 
 	// Reading in all of the patch experts
 	void Read(vector<string> intensity_svr_expert_locations, vector<string> depth_svr_expert_locations, vector<string> intensity_ccnf_expert_locations);
