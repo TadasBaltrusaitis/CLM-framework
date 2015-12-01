@@ -459,9 +459,7 @@ int main (int argc, char **argv)
 	// By default try webcam 0
 	int device = 0;
 
-	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
-    float fx = 500, fy = 500, cx = 0, cy = 0;
-			
+
 	CLMTracker::CLMParameters clm_parameters(arguments);
 	// TODO a command line argument
 	clm_parameters.track_gaze = true;
@@ -493,9 +491,24 @@ int main (int argc, char **argv)
 		}
 
 	}
+
+	// Grab camera parameters, if they are not defined (approximate values will be used)
+	float fx = 0, fy = 0, cx = 0, cy = 0;
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
+	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
+	bool cx_undefined = false;
+	bool fx_undefined = false;
+	if (cx == 0 || cy == 0)
+	{
+		cx_undefined = true;
+	}
+	if (fx == 0 || fy == 0)
+	{
+		fx_undefined = true;
+	}
+
 	// The modules that are being used for tracking
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
 
@@ -552,12 +565,7 @@ int main (int argc, char **argv)
 	int f_n = -1;
 	int curr_img = -1;
 
-	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
-	bool cx_undefined = false;
-	if(cx == 0 || cy == 0)
-	{
-		cx_undefined = true;
-	}		
+
 
 	string au_loc;
 	if(boost::filesystem::exists(path("AU_predictors/AU_all_best.txt")))
@@ -581,7 +589,7 @@ int main (int argc, char **argv)
 
 	// Creating a  face analyser that will be used for AU extraction
 	FaceAnalysis::FaceAnalyser face_analyser(vector<Vec3d>(), 0.7, 112, 112, au_loc, tri_loc);
-
+		
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
 		
@@ -653,6 +661,15 @@ int main (int argc, char **argv)
 		{
 			cx = captured_image.cols / 2.0f;
 			cy = captured_image.rows / 2.0f;
+		}
+		// Use a rough guess-timate of focal length
+		if (fx_undefined)
+		{
+			fx = 500 * (captured_image.cols / 640.0);
+			fy = 500 * (captured_image.rows / 480.0);
+
+			fx = (fx + fy) / 2.0;
+			fy = fx;
 		}
 	
 		// Creating output files
@@ -794,7 +811,7 @@ int main (int argc, char **argv)
 
 		bool visualise_hog = verbose;
 
-		// Timestamp in milliseconds of current processing
+		// Timestamp in seconds of current processing
 		double time_stamp = 0;
 
 		INFO_STREAM( "Starting tracking");
@@ -805,11 +822,11 @@ int main (int argc, char **argv)
 			if (webcam)
 			{
 				int64 curr_time = cv::getTickCount();
-				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency()) * 1000;
+				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency());
 			}
 			else if (video_input)
 			{
-				time_stamp = (1000.0 / fps_vid_in) * frame_count;
+				time_stamp = (double)frame_count * (1.0 / fps_vid_in);				
 			}
 			else
 			{

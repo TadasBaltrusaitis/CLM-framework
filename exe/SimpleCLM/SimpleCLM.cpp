@@ -166,9 +166,8 @@ int main (int argc, char **argv)
 	// By default try webcam 0
 	int device = 0;
 
-	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
-    float fx = 500, fy = 500, cx = 0, cy = 0;
-			
+
+
 	CLMTracker::CLMParameters clm_parameters(arguments);
 
 	// Get the input output file parameters
@@ -176,22 +175,30 @@ int main (int argc, char **argv)
 	// Indicates that rotation should be with respect to camera plane or with respect to camera
 	bool use_camera_plane_pose;
 	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
-	// Get camera parameters
-	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
 	// The modules that are being used for tracking
 	CLMTracker::CLM clm_model(clm_parameters.model_location);	
-	
-	// If multiple video files are tracked, use this to indicate if we are done
-	bool done = false;	
-	int f_n = -1;
+
+	// Grab camera parameters, if they are not defined (approximate values will be used)
+	float fx = 0, fy = 0, cx = 0, cy = 0;
+	// Get camera parameters
+	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);
 
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
-	if(cx == 0 || cy == 0)
+	bool fx_undefined = false;
+	if (cx == 0 || cy == 0)
 	{
 		cx_undefined = true;
-	}		
+	}
+	if (fx == 0 || fy == 0)
+	{
+		fx_undefined = true;
+	}
+
+	// If multiple video files are tracked, use this to indicate if we are done
+	bool done = false;	
+	int f_n = -1;
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -237,14 +244,23 @@ int main (int argc, char **argv)
 
 		Mat captured_image;
 		video_capture >> captured_image;		
-		
+
 		// If optical centers are not defined just use center of image
-		if(cx_undefined)
+		if (cx_undefined)
 		{
 			cx = captured_image.cols / 2.0f;
 			cy = captured_image.rows / 2.0f;
 		}
-	
+		// Use a rough guess-timate of focal length
+		if (fx_undefined)
+		{
+			fx = 500 * (captured_image.cols / 640.0);
+			fy = 500 * (captured_image.rows / 480.0);
+
+			fx = (fx + fy) / 2.0;
+			fy = fx;
+		}
+
 		// Creating output files
 		std::ofstream pose_output_file;
 		if(!pose_output_files.empty())
@@ -295,13 +311,13 @@ int main (int argc, char **argv)
 			double fps = fps_vid_in == -1 ? 30 : fps_vid_in;
 			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
 		}
-		
+
 		// Use for timestamping if using a webcam
 		int64 t_initial = cv::getTickCount();
 
-		// Timestamp in milliseconds of current processing
+		// Timestamp in seconds of current processing
 		double time_stamp = 0;
-
+		
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
 		{		
@@ -310,11 +326,11 @@ int main (int argc, char **argv)
 			if (fps_vid_in == -1)
 			{
 				int64 curr_time = cv::getTickCount();
-				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency()) * 1000;
+				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency());
 			}
 			else 
 			{
-				time_stamp = (1000.0 / fps_vid_in) * frame_count;
+				time_stamp = (double)frame_count * (1.0 / fps_vid_in);
 			}
 
 			// Reading the images
