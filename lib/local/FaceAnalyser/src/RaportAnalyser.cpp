@@ -443,7 +443,7 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	}
 	else
 	{
-		cummulator_attention = cummulator_attention + rapport_rate_of_change / head_gaze_change_rate_neg;
+		cummulator_attention = cummulator_attention + rapport_rate_of_change * head_gaze_change_rate_pos;
 	}
 
 	if (eye_gaze_away > eye_gaze_threshold)
@@ -453,7 +453,7 @@ void RapportAnalyser::AddObservation(const CLMTracker::CLM& clm_model, const Fac
 	}
 	else
 	{
-		cummulator_attention = cummulator_attention + rapport_rate_of_change / eye_gaze_change_rate_pos;
+		cummulator_attention = cummulator_attention + rapport_rate_of_change * eye_gaze_change_rate_pos;
 	}
 
 	if ((AU12 > 1.5 && AU6 > 0.5) || smile > 1.5)
