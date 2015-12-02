@@ -56,7 +56,7 @@ for Action Unit extraction
 	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -oaus "output_features/default_au.txt"
 
 for Gaze extraction	
-	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -ogaze "output_features/gaze.txt"
+	./bin/FeatureExtraction -rigid  -verbose -f "./videos/2015-10-15-15-14.avi" -ogaze "output_features/gaze.txt"
 	
 8. (optional)
 	You might experience a problem with "cannon connect to X server" when trying to execute the tracker, a solution can be found here http://askubuntu.com/questions/64820/wkhtmltopdf-wkhtmltoimage-cannot-connect-to-x-server
