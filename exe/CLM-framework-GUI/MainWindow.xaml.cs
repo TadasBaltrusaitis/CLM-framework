@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using NAudio;
 
 using OpenCVWrappers;
 using CLM_Interop;
@@ -87,6 +88,9 @@ namespace CLM_framework_GUI
         // Will be reading the info differently if stuff is being loaded from the socket
         Socket listener;
 
+        // For audio recording
+        NAudio.Wave.WaveIn waveIn;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -108,6 +112,51 @@ namespace CLM_framework_GUI
             clm_model = new CLM(clm_params);
             face_analyser = new FaceAnalyserManaged(root, use_dynamic_models);
 
+            int waveInDevices = NAudio.Wave.WaveIn.DeviceCount;
+            for (int waveInDevice = 0; waveInDevice < waveInDevices; waveInDevice++)
+            {
+                NAudio.Wave.WaveInCapabilities deviceInfo = NAudio.Wave.WaveIn.GetCapabilities(waveInDevice);
+                Console.WriteLine("Device {0}: {1}, {2} channels",
+                    waveInDevice, deviceInfo.ProductName, deviceInfo.Channels);
+            }
+
+            waveIn = new NAudio.Wave.WaveIn();
+
+            new Thread(() => startAudioStreaming()).Start();
+        }
+
+        void startAudioStreaming()
+        {
+            Thread.CurrentThread.IsBackground = true;
+            waveIn.DeviceNumber = 0;
+            waveIn.DataAvailable += waveIn_DataAvailable;
+            int sampleRate = 8000; // 8 kHz
+            int channels = 1; // mono
+            waveIn.WaveFormat = new NAudio.Wave.WaveFormat(sampleRate, channels);
+            waveIn.StartRecording();
+            Console.WriteLine("Starting recording");
+        }
+
+        void waveIn_DataAvailable(object sender, NAudio.Wave.WaveInEventArgs e)
+        {
+            Thread.CurrentThread.IsBackground = true;
+            List<double> pcms = new List<double>();
+            for (int index = 0; index < e.BytesRecorded; index += 2)
+            {
+                short sample = (short)((e.Buffer[index + 1] << 8) |
+                                        e.Buffer[index + 0]);
+                float sample32 = sample / 32768f;
+                pcms.Add(sample32 + 0.5);
+                //Console.WriteLine(sample32);
+                //ProcessSample(sample32);
+            }
+
+            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
+            {
+                pcmPlot.AddDataPoint(pcms);
+            }));
+
+            Thread.Sleep(25);
         }
 
         private bool ProcessFrame(CLM clm_model, CLMParameters clm_params, RawImage frame, RawImage grayscale_frame, double fx, double fy, double cx, double cy)
@@ -362,6 +411,7 @@ namespace CLM_framework_GUI
         // Capturing and processing the video frame by frame
         private void VideoLoop()
         {
+            
             Thread.CurrentThread.IsBackground = true;
 
             DateTime? startTime = CurrentTime;
@@ -484,7 +534,6 @@ namespace CLM_framework_GUI
                     Dictionary<int, double> rapportDict = new Dictionary<int, double>();
                     rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.5;
                     rapportDict[1] = (rapport_fixed - 1.0)/ 6.0;
-                    Console.WriteLine(rapportDict[1]);
                     rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
 
                     Dictionary<int, double> attentionDict = new Dictionary<int, double>();
@@ -561,8 +610,8 @@ namespace CLM_framework_GUI
 
                 rapportPlot.AssocColor(0, Colors.Blue);
                 rapportPlot.AssocColor(1, Colors.Gray);
-                rapportPlot.AssocName(0, "Trait rapport");
-                rapportPlot.AssocName(1, "State rapport");
+                rapportPlot.AssocName(1, "Trait rapport");
+                rapportPlot.AssocName(0, "State rapport");
                 rapportPlot.AssocThickness(0, 2);
                 rapportPlot.AssocThickness(1, 1);
 
@@ -633,7 +682,7 @@ namespace CLM_framework_GUI
                 string end_tag = "</multisense_vis>";
                 int begin = data.IndexOf(begin_tag);
                 int end = data.IndexOf(end_tag);
-                if(begin < 0 || end < 0)
+                if(begin < 0 || end < 0 || begin > end)
                 {
                     Console.WriteLine("Message does not contain full XML");
                     continue;
@@ -680,9 +729,16 @@ namespace CLM_framework_GUI
 
                                     for (int k = 0; k < lines_s.Length; k += 4)
                                     {
-                                        Point p1 = new Point(Double.Parse(lines_s[k]), Double.Parse(lines_s[k + 1]));
-                                        Point p2 = new Point(Double.Parse(lines_s[k + 2]), Double.Parse(lines_s[k + 3]));
-                                        lines.Add(new Tuple<Point, Point>(p1, p2));
+
+                                        double px1 = 0, py1 = 0, px2 = 0, py2 = 0;
+                                        Double.TryParse(lines_s[k], out px1);
+                                        Double.TryParse(lines_s[k + 1], out py1);
+                                        Double.TryParse(lines_s[k + 2], out px2);
+                                        Double.TryParse(lines_s[k + 3], out py2);
+
+                                        Point p1 = new Point(px1, py1);
+                                        Point p2 = new Point(px2, py2);
+                                        gaze_lines.Add(new Tuple<Point, Point>(p1, p2));
                                     }
 
                                 }

@@ -182,6 +182,9 @@
       <Name>OpenCVWrappers</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /I /E /Y /D /C "$(ProjectDir)logo1.png" "$(SolutionDir)/$(Configuration)"
