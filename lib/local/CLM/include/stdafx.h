@@ -26,7 +26,7 @@
 #include <map>
 
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 
 // dlib stuff
 // Used for face detection

@@ -623,7 +623,9 @@ int main (int argc, char **argv)
 				video_capture = VideoCapture( current_file );
 				total_frames = (int)video_capture.get(CV_CAP_PROP_FRAME_COUNT);
 				fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
-				if (std::isnan(fps_vid_in) || std::isinf(fps_vid_in) || fps_vid_in <= 0)
+
+				// Check if fps is nan or less than 0
+				if (fps_vid_in != fps_vid_in || fps_vid_in <= 0)
 				{
 					INFO_STREAM("FPS of the video file cannot be determined, assuming 30");
 					fps_vid_in = 30;
