@@ -228,7 +228,7 @@ int main (int argc, char **argv)
 			INFO_STREAM( "Attempting to read from file: " << current_file );
 			video_capture = VideoCapture( current_file );
 			fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
-			if (isnan(fps_vid_in) || isinf(fps_vid_in) || fps_vid_in <= 0)
+			if (std::isnan(fps_vid_in) || std::isinf(fps_vid_in) || fps_vid_in <= 0)
 			{
 				INFO_STREAM("FPS of the video file cannot be determined, assuming 30");
 				fps_vid_in = 30;
