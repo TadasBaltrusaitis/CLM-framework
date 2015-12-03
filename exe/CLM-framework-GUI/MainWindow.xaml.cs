@@ -90,6 +90,7 @@ namespace CLM_framework_GUI
 
         // For audio recording
         NAudio.Wave.WaveIn waveIn;
+        int audio_device_number = 0;
 
         public MainWindow()
         {
@@ -112,6 +113,7 @@ namespace CLM_framework_GUI
             clm_model = new CLM(clm_params);
             face_analyser = new FaceAnalyserManaged(root, use_dynamic_models);
 
+            // TODO ability to choose the audio device
             int waveInDevices = NAudio.Wave.WaveIn.DeviceCount;
             for (int waveInDevice = 0; waveInDevice < waveInDevices; waveInDevice++)
             {
@@ -120,15 +122,17 @@ namespace CLM_framework_GUI
                     waveInDevice, deviceInfo.ProductName, deviceInfo.Channels);
             }
 
-            waveIn = new NAudio.Wave.WaveIn();
-
-            new Thread(() => startAudioStreaming()).Start();
+            if (waveInDevices > 0)
+            {
+                waveIn = new NAudio.Wave.WaveIn();
+                new Thread(() => startAudioStreaming()).Start();
+            }
         }
 
         void startAudioStreaming()
         {
             Thread.CurrentThread.IsBackground = true;
-            waveIn.DeviceNumber = 0;
+            waveIn.DeviceNumber = audio_device_number;
             waveIn.DataAvailable += waveIn_DataAvailable;
             int sampleRate = 8000; // 8 kHz
             int channels = 1; // mono
@@ -186,8 +190,8 @@ namespace CLM_framework_GUI
 
                 rapportPlot.AssocColor(0, Colors.Blue);
                 rapportPlot.AssocColor(1, Colors.Gray);
-                rapportPlot.AssocName(0, "Trait rapport");
-                rapportPlot.AssocName(1, "State rapport");
+                rapportPlot.AssocName(1, "Trait rapport");
+                rapportPlot.AssocName(0, "State rapport");
                 rapportPlot.AssocThickness(0, 2);
                 rapportPlot.AssocThickness(1, 1);
 
