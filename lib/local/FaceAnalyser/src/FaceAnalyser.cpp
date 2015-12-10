@@ -591,6 +591,15 @@ void FaceAnalyser::Reset()
 
 	dyn_scaling = vector<vector<double>>(dyn_scaling.size(), vector<double>(dyn_scaling[0].size(), 5.0));	
 
+	AU_predictions_reg.clear();
+	AU_predictions_class.clear();
+	AU_predictions_combined.clear();
+	timestamps.clear();
+	AU_predictions_reg_all_hist.clear();
+	AU_predictions_class_all_hist.clear();
+	confidences.clear();
+	valid_preds.clear();
+
 }
 
 void FaceAnalyser::UpdateRunningMedian(cv::Mat_<unsigned int>& histogram, int& hist_count, cv::Mat_<double>& median, const cv::Mat_<double>& descriptor, bool update, int num_bins, double min_val, double max_val)

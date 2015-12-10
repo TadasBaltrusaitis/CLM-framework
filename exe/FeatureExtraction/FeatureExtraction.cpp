@@ -872,7 +872,7 @@ int main (int argc, char **argv)
 			Point3f gazeDirection0_head;
 			Point3f gazeDirection1_head;
 
-			if (clm_parameters.track_gaze)
+			if (clm_parameters.track_gaze && detection_success)
 			{
 				FaceAnalysis::EstimateGaze(clm_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
 				FaceAnalysis::EstimateGaze(clm_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
@@ -1152,7 +1152,7 @@ int main (int argc, char **argv)
 
 				double confidence = 0.5 * (1 - detection_certainty);
 
-				au_output_file << frame_count + 1 << ", " << timestamps[frame] << ", " << confidence << ", " << detection_success;
+				au_output_file << frame + 1 << ", " << timestamps[frame] << ", " << confidence << ", " << detection_success;
 				auto aus_reg = face_analyser.GetCurrentAUsReg();
 				
 				for(auto au_reg : predictions_reg)
@@ -1184,6 +1184,7 @@ int main (int argc, char **argv)
 				}
 				au_output_file << endl;
 			}
+			face_analyser.Reset();
 		}
 		// break out of the loop if done with all the files (or using a webcam)
 		if(f_n == files.size() -1 || files.empty())
