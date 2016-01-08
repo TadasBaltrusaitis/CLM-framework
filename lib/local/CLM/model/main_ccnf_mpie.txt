@@ -1,3 +1,0 @@
-CLM clm_ccnf_mpie.txt
-FaceDetConversion haarAlign.txt
-DetectionValidator detection_validation/validator_general_68.txt

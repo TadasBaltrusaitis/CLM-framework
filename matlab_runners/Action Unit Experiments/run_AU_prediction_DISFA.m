@@ -9,6 +9,7 @@ if(~exist(output, 'file'))
     mkdir(output);
 end
 
+%%
 % Do it in parrallel for speed (replace the parfor with for if no parallel
 % toolbox is available)
 parfor v = 1:numel(videos)
@@ -79,7 +80,9 @@ for i=1:numel(preds_files)
 end
 
 %% now do the actual evaluation that the collection has been done
+f = fopen('DISFA_valid_res.txt', 'w');
 for au = 1:numel(rel_preds)
    [ accuracies, F1s, corrs, ccc, rms, classes ] = evaluate_au_prediction_results( preds_all(:,au), labels_all(:,au));
-   fprintf('AU%d results - corr %.3f, ccc - %.3f\n', rel_preds(au), corrs, ccc);
+   fprintf(f, 'AU%d results - corr %.3f, ccc - %.3f\n', rel_preds(au), corrs, ccc);
 end
+fclose(f);

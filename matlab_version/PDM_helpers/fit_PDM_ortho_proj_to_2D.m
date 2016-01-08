@@ -2,30 +2,28 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
 %FITPDMTO2DSHAPE Summary of this function goes here
 %   Detailed explanation goes here
 
-
-
     params = zeros(size(E));
-    
+
     hidden = false;
-        
+
     % if some of the points are unavailable modify M, V, and shape2D (can
     % later infer the actual shape from this)
     if(sum(shape2D(:)==0) > 0)        
-    
+
         hidden = true;
         % which indices to remove
         inds_to_rem = shape2D(:,1) == 0 | shape2D(:,2) == 0;
-        
+
         shape2D = shape2D(~inds_to_rem,:);
-        
+
         inds_to_rem = repmat(inds_to_rem, 3, 1);
-        
+
         M_old = M;
         V_old = V;
-        
+
         M = M(~inds_to_rem);
         V = V(~inds_to_rem,:);
-        
+
     end
     
     num_points = numel(M) / 3;
@@ -59,6 +57,8 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
     regularisations = [reg_rigid; regFactor ./ E]; % the above version, however, does not perform as well
     regularisations = diag(regularisations)*diag(regularisations);
     
+    red_in_a_row = 0;
+    
     for i=1:1000
                       
         shape3D = M + V * params;
@@ -79,10 +79,7 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
         
         % RLMS style update
         p_delta = (J'*J + regularisations) \ (J'*error_res(:) - regularisations*[p_global;params]);
-        
-        % not to overshoot
-        p_delta = 0.5 * p_delta;
-        
+                                
         [params, p_global] = CalcReferenceUpdate(p_delta, params, p_global);
         
         a = p_global(1);
@@ -97,7 +94,10 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D(
         error = getRMSerror(currShape, shape2D);
         
         if(0.999 * currError < error)
-            break;
+            red_in_a_row = red_in_a_row + 1;
+            if(red_in_a_row == 5)
+                break;
+            end
         end
         
         currError = error;

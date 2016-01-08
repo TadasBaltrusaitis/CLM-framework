@@ -57,6 +57,8 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D_
     regularisations = [reg_rigid; regFactor ./ E]; % the above version, however, does not perform as well
     regularisations = diag(regularisations)*diag(regularisations);
     
+    red_in_a_row = 0;        
+    
     for i=1:1000
                       
         shape3D = M + V * params;
@@ -95,7 +97,10 @@ function [ a, R, T, T3D, params, error, shapeOrtho ] = fit_PDM_ortho_proj_to_2D_
         error = getRMSerror(currShape, shape2D);
         
         if(0.999 * currError < error)
-            break;
+            red_in_a_row = red_in_a_row + 1;
+            if(red_in_a_row == 5)
+                break;
+            end
         end
         
         currError = error;

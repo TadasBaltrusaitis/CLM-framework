@@ -14,8 +14,7 @@ if(~exist(output_loc, 'dir'))
 end
 
 %% Perform actual gaze predictions
-
-command = sprintf('%s -fx 1000 -fy 1200 ', '"../../Release/FeatureExtraction.exe"');
+command = sprintf('%s -fx 1400 -fy 1400 -cx 640 -cy 360 ', '"../../Release/FeatureExtraction.exe"');
 p_dirs = dir([database_root, 'p*']);
 
 parfor p=1:numel(p_dirs)
@@ -71,6 +70,7 @@ for p=1:numel(p_dirs)
              filenames(i,5), filenames(i,6), filenames(i,7));
         try            
             A = dlmread(fname, ',', 'E2..J2');
+            valid = dlmread(fname, ',', 'D2..D2');
         catch
             A = zeros(1,6);
             A(1,3) = -1;
@@ -78,10 +78,15 @@ for p=1:numel(p_dirs)
         end
 
         head_rot = headpose(i,1:3);
-
+     
         predictions_r(curr,:) = A(1:3);
-        predictions_l(curr,:) = A(4:6);        
-
+        predictions_l(curr,:) = A(4:6);  
+        
+        if(~valid)
+            predictions_r(curr,:) = [0,0,-1];
+            predictions_l(curr,:) = [0,0,-1];
+        end
+                
         gt_r(curr,:) = data.right.gaze(i,:)';
         gt_r(curr,:) = gt_r(curr,:) / norm(gt_r(curr,:));
         gt_l(curr,:) = data.left.gaze(i,:)';
@@ -94,3 +99,12 @@ for p=1:numel(p_dirs)
     end
 
 end
+all_errors = cat(1, angle_err_l, angle_err_r);
+mean_error = mean(all_errors);
+median_error = median(all_errors);
+save('mpii_1500_errs.mat', 'all_errors', 'mean_error', 'median_error');
+
+f = fopen('mpii_1500_errs.txt', 'w');
+fprintf(f, 'Mean error, median error\n');
+fprintf(f, '%.3f, %.3f\n', mean_error, median_error);
+fclose(f);

@@ -32,7 +32,7 @@ if(~exist(out_clnf, 'file'))
 end
 
 [err_clnf, err_no_out_clnf] = Run_CLM_fitting_on_images(out_clnf, database_root, 'use_afw', 'use_lfpw', 'use_ibug', 'use_helen', 'verbose', 'model', 'model/main_ccnf_general.txt', 'multi_view', 1);
-                      
+
 %% Run using SVR model
 out_svr = [curr_dir '/out_wild_svr/'];
 if(~exist(out_svr, 'file'))

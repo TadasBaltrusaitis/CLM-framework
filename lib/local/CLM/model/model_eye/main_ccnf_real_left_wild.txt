@@ -1,1 +1,0 @@
-CLM clm_ccnf_left_real_wild.txt
