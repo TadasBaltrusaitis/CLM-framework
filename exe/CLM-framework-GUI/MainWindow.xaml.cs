@@ -188,23 +188,25 @@ namespace CLM_framework_GUI
             Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0,0,0,0,200), (Action)(() =>
             {
 
-                rapportPlot.AssocColor(0, Colors.Blue);
-                rapportPlot.AssocColor(1, Colors.Gray);
-                rapportPlot.AssocName(1, "Trait rapport");
-                rapportPlot.AssocName(0, "State rapport");
-                rapportPlot.AssocThickness(0, 2);
-                rapportPlot.AssocThickness(1, 1);
+                headPosePlot.AssocColor(0, Colors.Blue);
+                headPosePlot.AssocColor(1, Colors.Red);
+                headPosePlot.AssocColor(2, Colors.Green);
 
-                attentionPlot.AssocColor(0, Colors.Red);
-                attentionPlot.AssocColor(1, Colors.Blue);
-                attentionPlot.AssocColor(2, Colors.Green);
+                headPosePlot.AssocName(1, "Turn");
+                headPosePlot.AssocName(2, "Tilt");
+                headPosePlot.AssocName(0, "Up/Down");
 
-                attentionPlot.AssocThickness(0, 3);
-                attentionPlot.AssocName(0, "Attention");
-                attentionPlot.AssocName(1, "Head attention");
-                attentionPlot.AssocName(2, "Gaze attention");
-                attentionPlot.AssocThickness(1, 2);
-                attentionPlot.AssocThickness(2, 2);
+                headPosePlot.AssocThickness(0, 2);
+                headPosePlot.AssocThickness(1, 2);
+                headPosePlot.AssocThickness(2, 2);
+
+                gazePlot.AssocColor(0, Colors.Red);
+                gazePlot.AssocColor(1, Colors.Blue);
+
+                gazePlot.AssocName(0, "Left-right");
+                gazePlot.AssocName(1, "Up-down");
+                gazePlot.AssocThickness(0, 2);
+                gazePlot.AssocThickness(1, 2);
 
                 smilePlot.AssocColor(0, Colors.Green);
                 smilePlot.AssocColor(1, Colors.Red);
@@ -219,6 +221,15 @@ namespace CLM_framework_GUI
                 browPlot.AssocName(1, "Furrow");
                 browPlot.AssocThickness(0, 2);
                 browPlot.AssocThickness(1, 2);
+
+                eyePlot.AssocColor(0, Colors.Green);
+                eyePlot.AssocColor(1, Colors.Red);
+                eyePlot.AssocName(0, "Eye widen");
+                eyePlot.AssocName(1, "Nose wrinkle");
+                eyePlot.AssocThickness(0, 2);
+                eyePlot.AssocThickness(1, 2);
+
+
 
             }));
 
@@ -407,10 +418,6 @@ namespace CLM_framework_GUI
             latest_img = null;
         }
 
-        double smile_cumm = 0;
-        double frown_cumm = 0;
-        double brow_up_cumm = 0;
-        double brow_down_cumm = 0;
 
         // Capturing and processing the video frame by frame
         private void VideoLoop()
@@ -432,6 +439,16 @@ namespace CLM_framework_GUI
             cx = cy = -1;
             
             int frame_id = 0;
+            
+            double old_gaze_x = 0;
+            double old_gaze_y = 0;
+
+            double smile_cumm = 0;
+            double frown_cumm = 0;
+            double brow_up_cumm = 0;
+            double brow_down_cumm = 0;
+            double widen_cumm = 0;
+            double wrinkle_cumm = 0;
 
             while (thread_running)
             {
@@ -486,7 +503,7 @@ namespace CLM_framework_GUI
                     confidence = 1;
 
                 List<double> pose = new List<double>();
-                clm_model.GetCorrectedPoseCameraPlane(pose, fx, fy, cx, cy);
+                clm_model.GetCorrectedPoseCamera(pose, fx, fy, cx, cy);
                 List<double> non_rigid_params = clm_model.GetNonRigidParams();
                 
                 double time_stamp = (DateTime.Now - (DateTime)startTime).TotalMilliseconds;
@@ -496,6 +513,9 @@ namespace CLM_framework_GUI
                 List<Tuple<Point, Point>> lines = null;
                 List<Tuple<double, double>> landmarks = null;
                 List<Tuple<Point, Point>> gaze_lines = null;
+                var gaze = face_analyser.GetGazeCamera();
+                double x_gaze = (gaze.Item1.Item1 + gaze.Item2.Item1) / 2.0;
+                double y_gaze = (gaze.Item1.Item2 + gaze.Item2.Item2) / 2.0;
 
                 if (detectionSucceeding)
                 {
@@ -516,45 +536,58 @@ namespace CLM_framework_GUI
                     double brow_up = (au_regs["AU01"] + au_regs["AU02"]) / 7.5 + 0.05;
                     double brow_down = au_regs["AU04"] / 5.0 + 0.05;
 
+                    double eye_widen = au_regs["AU05"] / 2.5 + 0.05;
+                    double nose_wrinkle = au_regs["AU09"] / 4.0 + 0.05;
+
                     Dictionary<int, double> smileDict = new Dictionary<int, double>();
-                    smileDict[0] = 0.4 * smile_cumm + 0.6 * smile;
-                    smileDict[1] = 0.4* frown_cumm + 0.6 * frown;
+                    smileDict[0] = 0.5 * smile_cumm + 0.5 * smile;
+                    smileDict[1] = 0.5* frown_cumm + 0.5 * frown;
                     smilePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = smileDict, Confidence = confidence });
 
                     Dictionary<int, double> browDict = new Dictionary<int, double>();
-                    browDict[0] = 0.4 * brow_up_cumm + 0.6 * brow_up;
-                    browDict[1] = 0.4 * brow_down_cumm + 0.6 * brow_down;
+                    browDict[0] = 0.5 * brow_up_cumm + 0.5 * brow_up;
+                    browDict[1] = 0.5 * brow_down_cumm + 0.5 * brow_down;
                     browPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = browDict, Confidence = confidence });
 
-                    smile_cumm = smile;
-                    frown_cumm = frown;
-                    brow_up_cumm = brow_up;
-                    brow_down_cumm = brow_down;
+                    Dictionary<int, double> eyeDict = new Dictionary<int, double>();
+                    eyeDict[0] = 0.5 * widen_cumm + 0.5 * eye_widen;
+                    eyeDict[1] = 0.5 * wrinkle_cumm + 0.5 * nose_wrinkle;
+                    eyePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = eyeDict, Confidence = confidence });
 
-                    Dictionary<int, double> speechDict = new Dictionary<int, double>();
-                    speechDict[0] = face_analyser.GetSpeech() + 0.05;
-                    speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
+                    smile_cumm = smileDict[0];
+                    frown_cumm = smileDict[1];
+                    brow_up_cumm = browDict[0];
+                    brow_down_cumm = browDict[1];
+                    widen_cumm = eyeDict[0];
+                    wrinkle_cumm = eyeDict[1];
 
-                    Dictionary<int, double> rapportDict = new Dictionary<int, double>();
-                    rapportDict[0] = (face_analyser.GetRapport() - 1.0)/ 6.5;
-                    rapportDict[1] = (rapport_fixed - 1.0)/ 6.0;
-                    rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
+                    Dictionary<int, double> poseDict = new Dictionary<int, double>();
+                    poseDict[0] = -pose[3] / 2.0 + 0.5;// (face_analyser.GetRapport() - 1.0) / 6.5;
+                    poseDict[1] = pose[4] / 2.0 + 0.5;// (rapport_fixed - 1.0) / 6.0;
+                    poseDict[2] = pose[5] / 2.0 + 0.5;
+                    headPosePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = poseDict, Confidence = confidence });
 
-                    Dictionary<int, double> attentionDict = new Dictionary<int, double>();
-                    attentionDict[0] = (face_analyser.GetAttention() - 1.0) / 6.5;
-                    attentionDict[1] = face_analyser.GetHeadAttention();
-                    attentionDict[2] = face_analyser.GetEyeAttention();
-                    attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
+                    Dictionary<int, double> gazeDict = new Dictionary<int, double>();
+                    gazeDict[0] = x_gaze * 2.5 + 0.5;
+                    gazeDict[0] = 0.5 * old_gaze_x + 0.5 * gazeDict[0];
+                    gazeDict[1] = -y_gaze * 2.0 + 0.5;
+                    gazeDict[1] = 0.5 * old_gaze_y + 0.5 * gazeDict[1];
+                    //gazeDict[2] = face_analyser.GetEyeAttention();
+                    //Console.WriteLine("{0}, {1}", x_gaze, y_gaze);
+                    gazePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = gazeDict, Confidence = confidence });
+
+                    old_gaze_x = x_gaze;
+                    old_gaze_y = y_gaze;
 
                     //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
                     //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
                     //valenceDict[1] = face_analyser.GetArousal();
                     //valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
 
-                    Dictionary<int, double> avDict = new Dictionary<int, double>();
-                    avDict[0] = (face_analyser.GetArousal() - 0.5) * 2.0;
-                    avDict[1] = ((face_analyser.GetValence() - 1.0) / 6.5 - 0.5)*2;
-                    avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
+                    //Dictionary<int, double> avDict = new Dictionary<int, double>();
+                    //avDict[0] = (face_analyser.GetArousal() - 0.5) * 2.0;
+                    //avDict[1] = ((face_analyser.GetValence() - 1.0) / 6.5 - 0.5)*2;
+                    //avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
 
                     if (latest_img == null)
                     {
@@ -605,374 +638,6 @@ namespace CLM_framework_GUI
 
             latest_img = null;
         }
-
-        // Capturing and processing the video frame by frame
-        private void SocketLoop()
-        {
-            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
-            {
-
-                rapportPlot.AssocColor(0, Colors.Blue);
-                rapportPlot.AssocColor(1, Colors.Gray);
-                rapportPlot.AssocName(1, "Trait rapport");
-                rapportPlot.AssocName(0, "State rapport");
-                rapportPlot.AssocThickness(0, 2);
-                rapportPlot.AssocThickness(1, 1);
-
-                //valencePlot.AssocColor(0, Colors.Green);
-                //valencePlot.AssocColor(1, Colors.Red);
-                attentionPlot.AssocColor(0, Colors.Red);
-                attentionPlot.AssocColor(1, Colors.Blue);
-                attentionPlot.AssocColor(2, Colors.Green);
-
-                attentionPlot.AssocThickness(0, 3);
-                attentionPlot.AssocName(0, "Attention");
-                attentionPlot.AssocName(1, "Head attention");
-                attentionPlot.AssocName(2, "Gaze attention");
-                attentionPlot.AssocThickness(1, 2);
-                attentionPlot.AssocThickness(2, 2);
-
-                smilePlot.AssocColor(0, Colors.Green);
-                smilePlot.AssocColor(1, Colors.Red);
-                smilePlot.AssocName(0, "Smile");
-                smilePlot.AssocName(1, "Frown");
-                smilePlot.AssocThickness(0, 2);
-                smilePlot.AssocThickness(1, 2);
-
-                browPlot.AssocColor(0, Colors.Green);
-                browPlot.AssocColor(1, Colors.Red);
-                browPlot.AssocName(0, "Raise");
-                browPlot.AssocName(1, "Furrow");
-                browPlot.AssocThickness(0, 2);
-                browPlot.AssocThickness(1, 2);
-
-            }));
-
-            Thread.CurrentThread.IsBackground = true;
-
-            DateTime? startTime = CurrentTime;
-
-            var lastFrameTime = CurrentTime;
-
-            // TODO add an ability to change these through a calibration procedure or setting menu
-            double fx, fy, cx, cy;
-            fx = 500.0;
-            fy = 500.0;
-            cx = cy = -1;
-
-            int frame_id = 0;
-            Byte[] bytes = new Byte[2097152];
-            listener.ReceiveBufferSize = 2097152;
-            while (thread_running)
-            {
-
-                // Keep receiving the message
-                String data = "";
-
-                // Loop to receive all the data sent by the client.
-                int i = listener.Receive(bytes);
-
-                // Translate data bytes to a ASCII string.
-                data += System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-
-                if (i == 0)
-                {
-                    Console.WriteLine("No message received");
-                    continue;
-                }
-
-                // Just parse the string from and do multisense_vis bits, to make sure it's a valid message
-                string begin_tag = "<multisense_vis>";
-                string end_tag = "</multisense_vis>";
-                int begin = data.IndexOf(begin_tag);
-                int end = data.IndexOf(end_tag);
-                if(begin < 0 || end < 0 || begin > end)
-                {
-                    Console.WriteLine("Message does not contain full XML");
-                    continue;
-                }
-
-                data.Substring(begin, end + end_tag.Length);
-
-                Console.WriteLine(i + " " + data.Length);
-
-                // Read the XML file here
-                XmlReader reader = XmlReader.Create(new StringReader(data));
-                
-                List<Tuple<double, double>> landmarks = null;
-                
-                Dictionary<string,double> au_regs = face_analyser.GetCurrentAUsReg();
-                double confidence = 0;
-                bool detection_succeeding = false;
-                List<double> pcms = new List<double>();
-
-                double rapport = 0;
-                double arousal = 0;
-                double valence = 0;
-                double speech = 0;
-                double eye_gaze = 0;
-                double head_gaze = 0;
-                double attention = 0;
-                
-                List<Tuple<Point, Point>> lines = null;
-                List<Tuple<Point, Point>> gaze_lines = null;
-
-                try { 
-                    while (reader.Read())
-                    {
-                        switch (reader.NodeType)
-                        {
-                            case XmlNodeType.Element:
-                                if (String.Compare(reader.Name, "gaze_lines") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = { ',' };
-                                    string[] lines_s = reader.Value.Split(delimiterChars);
-
-                                    gaze_lines = new List<Tuple<Point, Point>>();
-
-                                    for (int k = 0; k < lines_s.Length; k += 4)
-                                    {
-
-                                        double px1 = 0, py1 = 0, px2 = 0, py2 = 0;
-                                        Double.TryParse(lines_s[k], out px1);
-                                        Double.TryParse(lines_s[k + 1], out py1);
-                                        Double.TryParse(lines_s[k + 2], out px2);
-                                        Double.TryParse(lines_s[k + 3], out py2);
-
-                                        Point p1 = new Point(px1, py1);
-                                        Point p2 = new Point(px2, py2);
-                                        gaze_lines.Add(new Tuple<Point, Point>(p1, p2));
-                                    }
-
-                                }
-                                if (String.Compare(reader.Name, "box") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = { ',' };
-                                    string[] lines_s = reader.Value.Split(delimiterChars);
-
-                                    lines = new List<Tuple<Point, Point>>();
-
-                                    for (int k = 0; k < lines_s.Length; k+=4)
-                                    {
-                                        Point p1 = new Point(Double.Parse(lines_s[k]), Double.Parse(lines_s[k + 1]));
-                                        Point p2 = new Point(Double.Parse(lines_s[k+2]), Double.Parse(lines_s[k + 3]));
-                                        lines.Add(new Tuple<Point, Point>(p1, p2));
-                                    }
-
-                                }
-                                if(String.Compare(reader.Name, "flm") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = {','};
-                                    string[] lmarks = reader.Value.Split(delimiterChars);
-
-                                    int n_lmarks = (lmarks.Length - 2) / 2;
-
-                                    landmarks = new List<Tuple<double, double>>(n_lmarks);
-
-                                    for(int k=0; k < n_lmarks; ++k)
-                                    {
-                                        landmarks.Add(new Tuple<double,double>(Double.Parse(lmarks[2+k]), Double.Parse(lmarks[2+k+n_lmarks])));
-                                    }
-
-                                }
-                                if (String.Compare(reader.Name, "aus") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = { ',' };
-                                    string[] aus = reader.Value.Split(delimiterChars);
-
-                                    detection_succeeding = Int32.Parse(aus[2]) == 1;
-
-                                    confidence = Double.Parse(aus[1]);
-
-                                    au_regs["AU01"] = Double.Parse(aus[3]);
-                                    au_regs["AU02"] = Double.Parse(aus[4]);
-                                    au_regs["AU04"] = Double.Parse(aus[5]);
-                                    au_regs["AU05"] = Double.Parse(aus[6]);
-                                    au_regs["AU06"] = Double.Parse(aus[7]);
-                                    au_regs["AU09"] = Double.Parse(aus[8]);
-                                    au_regs["AU10"] = Double.Parse(aus[9]);
-                                    au_regs["AU12"] = Double.Parse(aus[10]);
-                                    au_regs["AU14"] = Double.Parse(aus[11]);
-                                    au_regs["AU15"] = Double.Parse(aus[12]);
-                                    au_regs["AU17"] = Double.Parse(aus[13]);
-                                    au_regs["AU20"] = Double.Parse(aus[14]);
-                                    au_regs["AU25"] = Double.Parse(aus[15]);
-                                    au_regs["AU26"] = Double.Parse(aus[16]);
-
-                                }
-                                if (String.Compare(reader.Name, "rapport") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = { ',' };
-                                    string[] rapports = reader.Value.Split(delimiterChars);
-
-                                    rapport = Double.Parse(rapports[0]);
-                                    arousal = Double.Parse(rapports[1]);
-                                    valence = Double.Parse(rapports[2]);
-                                    speech = Double.Parse(rapports[3]);
-                                    eye_gaze = Double.Parse(rapports[4]);
-                                    head_gaze = Double.Parse(rapports[5]);
-                                    attention = Double.Parse(rapports[6]);
-                                    
-                                }
-                                if (String.Compare(reader.Name, "image") == 0)
-                                {
-                                    reader.Read();                                
-                                    byte[] to_send = Convert.FromBase64String(reader.Value);
-
-                                    MemoryStream stream = new MemoryStream(to_send);
-
-                                    JpegBitmapDecoder decoder = new JpegBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                                    BitmapSource bitmapSource = decoder.Frames[0];
-                                    latest_img = new WriteableBitmap(bitmapSource);
-                                }
-                                if (String.Compare(reader.Name, "audio") == 0)
-                                {
-                                    reader.Read();
-                                    char[] delimiterChars = { ',' };
-                                    string[] pcms_s = reader.Value.Split(delimiterChars);
-
-                                    int n_samples = pcms_s.Length;
-
-                                    //int max_pcm = 350;
-
-                                    for (int k = 0; k < n_samples; ++k)
-                                    {
-                                        pcms.Add(((Double.Parse(pcms_s[k])) + 1.0)/2.0);
-                                        //landmarks.Add(new Tuple<double, double>(Double.Parse(lmarks[2 + k]), Double.Parse(lmarks[2 + k + n_lmarks])));
-                                    }
-
-                                }
-                                //Console.WriteLine(reader.Name);
-                                break;
-                            case XmlNodeType.Text:
-                                //Console.WriteLine(reader.Value);
-                                break;
-                            case XmlNodeType.XmlDeclaration:
-                            case XmlNodeType.ProcessingInstruction:
-                                //Console.WriteLine(reader.Name + " " + reader.Value);
-                                break;
-                            case XmlNodeType.Comment:
-                                //Console.WriteLine(reader.Value);
-                                break;
-                        }
-                    }
-                } catch (XmlException e){
-                    continue;
-                }
-
-                lastFrameTime = CurrentTime;
-                processing_fps.AddFrame();
-
-                // This is more ore less guess work, but seems to work well enough
-                if (cx == -1)
-                {
-                    fx = fx * (latest_img.Width / 640.0);
-                    fy = fy * (latest_img.Height / 480.0);
-
-                    fx = (fx + fy) / 2.0;
-                    fy = fx;
-
-                    cx = latest_img.Width / 2f;
-                    cy = latest_img.Height / 2f;
-                }
-
-                if (confidence < 0)
-                    confidence = 0;
-                else if (confidence > 1)
-                    confidence = 1;
-                
-                latest_img.Freeze();
-                
-                // Visualisation
-                Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 0, 200), (Action)(() =>
-                {
-
-                    double smile = (au_regs["AU12"] + au_regs["AU06"]) / 7.5 + 0.05;
-                    double frown = (au_regs["AU15"] + au_regs["AU17"] + au_regs["AU04"]) / 10.0 + 0.05;
-
-                    double brow_up = (au_regs["AU01"] + au_regs["AU02"]) / 7.5 + 0.05;
-                    double brow_down = au_regs["AU04"] / 5.0 + 0.05;
-
-                    Dictionary<int, double> smileDict = new Dictionary<int, double>();
-                    smileDict[0] = 0.4 * smile_cumm + 0.6 * smile;
-                    smileDict[1] = 0.4 * frown_cumm + 0.6 * frown;
-                    smilePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = smileDict, Confidence = confidence });
-
-                    Dictionary<int, double> browDict = new Dictionary<int, double>();
-                    browDict[0] = 0.4 * brow_up_cumm + 0.6 * brow_up;
-                    browDict[1] = 0.4 * brow_down_cumm + 0.6 * brow_down;
-                    browPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = browDict, Confidence = confidence });
-
-                    smile_cumm = smile;
-                    frown_cumm = frown;
-                    brow_up_cumm = brow_up;
-                    brow_down_cumm = brow_down;
-
-                    Dictionary<int, double> speechDict = new Dictionary<int, double>();
-                    speechDict[0] = speech + 0.05;
-                    speechPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = speechDict, Confidence = confidence });
-
-                    Dictionary<int, double> rapportDict = new Dictionary<int, double>();
-                    rapportDict[0] = (rapport - 1.0) / 6.0;
-                    rapportDict[1] = rapport_fixed / 7.0;
-                    rapportPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = rapportDict, Confidence = confidence });
-
-                    Dictionary<int, double> attentionDict = new Dictionary<int, double>();
-                    attentionDict[0] = (attention - 1.0) / 6.5;
-                    attentionDict[1] = head_gaze;
-                    attentionDict[2] = eye_gaze;
-                    attentionPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = attentionDict, Confidence = confidence });
-
-                    //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
-                    //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;
-                    //valenceDict[1] = face_analyser.GetArousal();
-                    //valencePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = valenceDict, Confidence = confidence });
-
-                    Dictionary<int, double> avDict = new Dictionary<int, double>();
-                    avDict[0] = (arousal - 0.5) * 2.0;
-                    avDict[1] = ((valence - 1.0) / 6.5 - 0.5) * 2;
-                    avPlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = avDict, Confidence = confidence });
-
-                    pcmPlot.AddDataPoint(pcms);
-
-                    video.Source = latest_img;
-                    video.Confidence = confidence;
-                    video.FPS = processing_fps.GetFPS();
-
-                    if (!detection_succeeding)
-                    {
-                        video.OverlayLines.Clear();
-                        video.OverlayPoints.Clear();
-                        video.GazeLines.Clear();
-                    }
-                    else
-                    {
-                        //video.OverlayLines = lines;
-
-                        List<Point> landmark_points = new List<Point>();
-                        foreach (var p in landmarks)
-                        {
-                            landmark_points.Add(new Point(p.Item1, p.Item2));
-                        }
-
-                        video.OverlayPoints = landmark_points;
-
-                        //video.GazeLines = gaze_lines;
-                    }
-
-                }));
-
-                frame_id++;
-                
-            //latest_img = null;
-            }
-        }
-
 
         private void StopTracking()
         {
@@ -1159,50 +824,6 @@ namespace CLM_framework_GUI
             use_dynamic_models = UseDynamicModelsCheckBox.IsChecked;
         }
 
-        private void openSocketClick(object sender, RoutedEventArgs e)
-        {
-
-            new Thread(() => openSocket()).Start();
-        }
-
-        private void openSocket()
-        {
-            StopTracking();
-
-            Dispatcher.Invoke(DispatcherPriority.Render, new TimeSpan(0, 0, 0, 2, 0), (Action)(() =>
-            {
-                TextEntryWindow connection_settings = new TextEntryWindow();
-                connection_settings.Icon = this.Icon;
-
-                connection_settings.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                if (connection_settings.ShowDialog() == true)
-                {
-                    string port = connection_settings.ResponsePortText;
-
-                    thread_running = true;
-
-                    // Create a connection and open one as well
-                    //new Thread(() => CreateFakeConnection(port)).Start();
-
-                    Thread.Sleep(100);
-                    int port_i = Int32.Parse(port);
-
-                    IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress,port_i);
-
-                    //IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(IP),port_i);
-
-                    listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    listener.Connect(remoteEP);
-
-                    processing_thread = new Thread(() => SocketLoop());
-                    processing_thread.Start();
-                }
-                
-            }));
-        }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {

@@ -120,7 +120,7 @@ void FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, Point3f& gaze_
 
 	Mat faceLdmks3d = clm_model.GetShape(fx, fy, cx, cy);
 	faceLdmks3d = faceLdmks3d.t();
-	Mat offset = (Mat_<double>(3, 1) << 0, -2, 0);
+	Mat offset = (Mat_<double>(3, 1) << 0, -2.5, 0);
 	int eyeIdx = 1;
 	if (left_eye)
 	{

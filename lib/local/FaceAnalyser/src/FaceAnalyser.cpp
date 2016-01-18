@@ -275,19 +275,6 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	// That is don't update it when the face is expressive (just retrieve it)
 	bool update_median = true;
 
-	// TODO test if this would be useful or not
-	//if(!this->AU_predictions.empty())
-	//{
-	//	for(size_t i = 0; i < this->AU_predictions.size(); ++i)
-	//	{
-	//		if(this->AU_predictions[i].second > 1)
-	//		{
-	//			update_median = false;				
-	//			break;
-	//		}
-	//	}
-	//}
-
 	update_median = update_median & clm_model.detection_success;
 
 	// A small speedup
@@ -331,10 +318,24 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 	// Perform AU prediction	
 	AU_predictions_reg = PredictCurrentAUs(orientation_to_use);
 
+	bool update_track = true;
+	// TODO test if this would be useful or not
+	if (!this->AU_predictions_reg.empty())
+	{
+		for (size_t i = 0; i < this->AU_predictions_reg.size(); ++i)
+		{
+			if (this->AU_predictions_reg[i].second > 2)
+			{
+				update_track = false;
+				break;
+			}
+		}
+	}
+
 	std::vector<std::pair<std::string, double>> AU_predictions_reg_corrected;
 	if(online)
 	{
-		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clm_model.detection_success);
+		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, update_track & clm_model.detection_success);
 	}
 
 	// Keep only closer to in-plane faces
