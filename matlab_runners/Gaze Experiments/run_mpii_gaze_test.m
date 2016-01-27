@@ -14,7 +14,7 @@ if(~exist(output_loc, 'dir'))
 end
 
 %% Perform actual gaze predictions
-command = sprintf('%s -fx 1400 -fy 1400 -cx 640 -cy 360 ', '"../../Release/FeatureExtraction.exe"');
+command = sprintf('"../../Release/FeatureExtraction.exe" -fx 1028 -fy 1028 ');
 p_dirs = dir([database_root, 'p*']);
 
 parfor p=1:numel(p_dirs)
