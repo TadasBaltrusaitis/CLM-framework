@@ -1,4 +1,4 @@
 Dataset and model,        pitch,  yaw,  roll,  mean,  median
-biwi error ccnf general:  7.962,   5.608, 4.449,  6.006,  2.624
+biwi error ccnf general:  7.976,   5.625, 4.452,  6.018,  2.624
 bu error ccnf general:    2.758,   3.329, 2.250,  2.779,  1.963
 ict error ccnf general:   3.620,   3.609, 3.625,  3.618,  2.028

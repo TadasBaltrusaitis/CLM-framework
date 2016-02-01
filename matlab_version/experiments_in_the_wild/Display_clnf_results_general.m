@@ -25,7 +25,7 @@ clnf_error = compute_error( labels,  shapes);
 [error_x, error_y] = cummErrorCurve(clnf_error);
 hold on;
 
-plot(error_x, error_y, 'b','DisplayName', 'CLNF', 'LineWidth',line_width);
+plot(error_x, error_y, 'g','DisplayName', 'CLNF', 'LineWidth',line_width);
 
 load('results/results_wild_clm_general.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -37,7 +37,7 @@ clm_error = compute_error( labels,  shapes);
 
 [error_x, error_y] = cummErrorCurve(clm_error);
 
-plot(error_x, error_y, '--b','DisplayName', 'CLM+', 'LineWidth',line_width);
+% plot(error_x, error_y, '--b','DisplayName', 'CLM+', 'LineWidth',line_width);
 
 load('results/results_wild_clnf_general_final_inner.mat');
 labels = experiments.labels([1:60,62:64,66:end],:,:);
@@ -49,15 +49,15 @@ clnf_hierarch_error = compute_error( labels,  shapes);
 
 [error_x, error_y] = cummErrorCurve(clnf_hierarch_error);
 
-plot(error_x, error_y, 'r','DisplayName', 'CLNF hierarch', 'LineWidth',line_width);
+plot(error_x, error_y, 'r','DisplayName', 'OpenFace', 'LineWidth',line_width);
 
 
-set(gca,'xtick',[0:0.02:0.08])
+set(gca,'xtick',[0:0.02:0.06])
 xlim([0,0.08]);
 xlabel('Size normalised shape RMS error','FontName','Helvetica');
 ylabel('Proportion of images','FontName','Helvetica');
 grid on
-title('Fitting in the wild without outline','FontSize',60,'FontName','Helvetica');
+% title('Fitting in the wild without outline','FontSize',60,'FontName','Helvetica');
 
 legend('show', 'Location', 'SouthEast');
 
@@ -70,7 +70,7 @@ pos = get(figure1,'Position');
 set(figure1,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
 
 % Create axes
-axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Helvetica');
+axes1 = axes('Parent',figure1,'FontSize',40,'FontName','Times New Roman');
 
 line_width = 6;
 hold on;
@@ -108,9 +108,9 @@ plot(error_x, error_y, 'r','DisplayName', 'CLNF hierarch', 'LineWidth',line_widt
 
 set(gca,'xtick',[0:0.02:0.08])
 xlim([0,0.08]);
-xlabel('Size normalised shape RMS error','FontName','Helvetica');
-ylabel('Proportion of images','FontName','Helvetica');
+xlabel('Size normalised shape RMS error','FontName','Times New Roman');
+ylabel('Proportion of images','FontName','Times New Roman');
 grid on
-title('Fitting in the wild with outline','FontSize',60,'FontName','Helvetica');
+title('Fitting in the wild with outline','FontSize',60,'FontName','Times New Roman');
 
 legend('show', 'Location', 'SouthEast');

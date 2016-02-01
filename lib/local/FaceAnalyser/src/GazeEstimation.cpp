@@ -76,6 +76,10 @@ Point3f RaySphereIntersect(Point3f rayOrigin, Point3f rayDir, Point3f sphereOrig
 
 	float t = (-b - sqrt(b*b - 4*a*c))/2*a;
 
+	// This implies that the lines did not intersect, point straight ahead
+	if (b*b - 4 * a*c < 0)
+		return Point3f(0, 0, -1);
+
 	return rayOrigin + rayDir * t;
 }
 

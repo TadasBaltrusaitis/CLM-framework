@@ -595,6 +595,8 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
     
 	Mat_<float> WeightMatrix = Mat_<float>::eye(n*2, n*2);
 
+	int not_improved_in = 0;
+
     for (size_t i = 0; i < 1000; ++i)
 	{
 		// get the 3D shape of the object
@@ -661,10 +663,14 @@ void PDM::CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_lo
         
         if(0.999 * currError < error)
 		{
-            break;
+			not_improved_in++;
+			if (not_improved_in == 5)
+			{
+	            break;
+			}
 		}
-        
-        currError = error;
+
+		currError = error;
         
 	}
 

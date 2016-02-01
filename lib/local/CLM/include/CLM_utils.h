@@ -74,7 +74,7 @@ namespace CLMTracker
 
 	void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, vector<string> &arguments);
 
-	void get_image_input_output_params(vector<string> &input_image_files, vector<string> &input_depth_files, vector<string> &output_feature_files, vector<string> &output_image_files,
+	void get_image_input_output_params(vector<string> &input_image_files, vector<string> &input_depth_files, vector<string> &output_feature_files, vector<string> &output_pose_files, vector<string> &output_image_files,
 		vector<Rect_<double>> &input_bounding_boxes, vector<string> &arguments);
 
 	//===========================================================================

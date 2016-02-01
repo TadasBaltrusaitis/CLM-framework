@@ -209,6 +209,13 @@ struct CLMParameters
 				valid[i+1] = false;
 				i++;
 			}
+			else if (arguments[i].compare("-gaze") == 0)
+			{
+				track_gaze = true;
+
+				valid[i] = false;
+				i++;
+			}
 			else if (arguments[i].compare("-q") == 0) 
 			{                    
 

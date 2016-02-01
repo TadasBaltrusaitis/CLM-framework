@@ -81,3 +81,5 @@ exe/FeatureExtraction/output_features/
 exe/Recording/recording/
 videos/aligned/
 matlab_runners/Gaze Experiments/gaze_estimates_MPII/
+matlab_runners/Gaze Experiments/mpii_out/
+matlab_runners/Gaze Experiments/columbia_out/

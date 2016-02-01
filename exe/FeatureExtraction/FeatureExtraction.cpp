@@ -461,7 +461,7 @@ int main (int argc, char **argv)
 
 
 	CLMTracker::CLMParameters clm_parameters(arguments);
-	// TODO a command line argument
+	// Always track gaze in feature extraction
 	clm_parameters.track_gaze = true;
 
 	// Get the input output file parameters
@@ -865,12 +865,12 @@ int main (int argc, char **argv)
 			}
 			
 			// Gaze tracking, absolute gaze direction
-			Point3f gazeDirection0;
-			Point3f gazeDirection1;
+			Point3f gazeDirection0(0, 0, -1);
+			Point3f gazeDirection1(0, 0, -1);
 
 			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-			Point3f gazeDirection0_head;
-			Point3f gazeDirection1_head;
+			Point3f gazeDirection0_head(0, 0, -1);
+			Point3f gazeDirection1_head(0, 0, -1);
 
 			if (clm_parameters.track_gaze && detection_success)
 			{

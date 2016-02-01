@@ -252,12 +252,12 @@ void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, 
 	}
 }
 
-void get_image_input_output_params(vector<string> &input_image_files, vector<string> &input_depth_files, vector<string> &output_feature_files, vector<string> &output_image_files,
+void get_image_input_output_params(vector<string> &input_image_files, vector<string> &input_depth_files, vector<string> &output_feature_files, vector<string> &output_pose_files, vector<string> &output_image_files,
 		vector<Rect_<double>> &input_bounding_boxes, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 	
-	string out_pts_dir, out_img_dir;
+	string out_pts_dir, out_pose_dir, out_img_dir;
 
 	for(size_t i = 0; i < arguments.size(); ++i)
 	{
@@ -343,12 +343,27 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			valid[i+1] = false;
 			i++;
 		}
-		else if (arguments[i].compare("-oidir") == 0) 
+		else if (arguments[i].compare("-opdir") == 0)
+		{
+			out_pose_dir = arguments[i + 1];
+			create_directories(out_pose_dir);
+			valid[i] = false;
+			valid[i + 1] = false;
+			i++;
+		}
+		else if (arguments[i].compare("-oidir") == 0)
 		{
 			out_img_dir = arguments[i + 1];
 			create_directories(out_img_dir);
 			valid[i] = false;
 			valid[i+1] = false;
+			i++;
+		}
+		else if (arguments[i].compare("-op") == 0)
+		{
+			output_pose_files.push_back(arguments[i + 1]);
+			valid[i] = false;
+			valid[i + 1] = false;
 			i++;
 		}
 		else if (arguments[i].compare("-of") == 0)
@@ -400,6 +415,19 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			output_feature_files.push_back(out_pts_dir + "/" + fname.string());			
 		}
 		create_directory_from_file(output_feature_files[0]);
+	}
+
+	if (!out_pose_dir.empty())
+	{
+		for (size_t i = 0; i < input_image_files.size(); ++i)
+		{
+			path image_loc(input_image_files[i]);
+
+			path fname = image_loc.filename();
+			fname = fname.replace_extension("pose");
+			output_pose_files.push_back(out_pose_dir + "/" + fname.string());
+		}
+		create_directory_from_file(output_pose_files[0]);
 	}
 
 	// Make sure the same number of images and bounding boxes is present, if any bounding boxes are defined

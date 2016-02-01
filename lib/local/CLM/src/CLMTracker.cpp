@@ -473,10 +473,22 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	Mat_<double> best_landmark_likelihoods;
 	bool best_success;
 
+	// The hierarchical model parameters
+	vector<double> best_likelihood_h(clm_model.hierarchical_models.size());
+	vector<Vec6d> best_global_parameters_h(clm_model.hierarchical_models.size());
+	vector<Mat_<double>> best_local_parameters_h(clm_model.hierarchical_models.size());
+	vector<Mat_<double>> best_detected_landmarks_h(clm_model.hierarchical_models.size());
+	vector<Mat_<double>> best_landmark_likelihoods_h(clm_model.hierarchical_models.size());
+
 	for(size_t hypothesis = 0; hypothesis < rotation_hypotheses.size(); ++hypothesis)
 	{
 		// Reset the potentially set clm_model parameters
 		clm_model.params_local.setTo(0.0);
+
+		for (size_t part = 0; part < clm_model.hierarchical_models.size(); ++part)
+		{
+			clm_model.hierarchical_models[part].params_local.setTo(0.0);
+		}
 
 		// calculate the local and global parameters from the generated 2D shape (mapping from the 2D to 3D because camera params are unknown)
 		clm_model.pdm.CalcParams(clm_model.params_global, bounding_box, clm_model.params_local, rotation_hypotheses[hypothesis]);
@@ -491,7 +503,18 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 			best_detected_landmarks = clm_model.detected_landmarks.clone();
 			best_landmark_likelihoods = clm_model.landmark_likelihoods.clone();
 			best_success = success;
+		}
 
+		for (size_t part = 0; part < clm_model.hierarchical_models.size(); ++part)
+		{
+			if (hypothesis == 0 || best_likelihood < clm_model.hierarchical_models[part].model_likelihood)
+			{
+				best_likelihood_h[part] = clm_model.hierarchical_models[part].model_likelihood;
+				best_global_parameters_h[part] = clm_model.hierarchical_models[part].params_global;
+				best_local_parameters_h[part] = clm_model.hierarchical_models[part].params_local.clone();
+				best_detected_landmarks_h[part] = clm_model.hierarchical_models[part].detected_landmarks.clone();
+				best_landmark_likelihoods_h[part] = clm_model.hierarchical_models[part].landmark_likelihoods.clone();
+			}
 		}
 
 	}
@@ -503,6 +526,15 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	clm_model.detected_landmarks = best_detected_landmarks.clone();
 	clm_model.detection_success = best_success;
 	clm_model.landmark_likelihoods = best_landmark_likelihoods.clone();
+
+	for (size_t part = 0; part < clm_model.hierarchical_models.size(); ++part)
+	{
+		clm_model.hierarchical_models[part].params_global = best_global_parameters_h[part];
+		clm_model.hierarchical_models[part].params_local = best_local_parameters_h[part].clone();
+		clm_model.hierarchical_models[part].detected_landmarks = best_detected_landmarks_h[part].clone();
+		clm_model.hierarchical_models[part].landmark_likelihoods = best_landmark_likelihoods_h[part].clone();
+	}
+
 	return best_success;
 }
 
