@@ -85,7 +85,6 @@ std::cout << "Error: " << stream << std::endl
 static void printErrorAndAbort( const std::string & error )
 {
     std::cout << error << std::endl;
-    abort();
 }
 
 #define FATAL_STREAM( stream ) \
@@ -642,8 +641,15 @@ int main (int argc, char **argv)
 				video_capture >> captured_image;
 			}
 
-			if( !video_capture.isOpened() ) FATAL_STREAM( "Failed to open video source" );
-			else INFO_STREAM( "Device or file opened");
+			if (!video_capture.isOpened())
+			{
+				FATAL_STREAM("Failed to open video source, exiting");
+				return 1;
+			}
+			else
+			{
+				INFO_STREAM("Device or file opened");
+			}
 
 			video_capture >> captured_image;	
 		}
@@ -658,7 +664,8 @@ int main (int argc, char **argv)
 			}
 			else
 			{
-				FATAL_STREAM( "No .jpg or .png images in a specified drectory" );
+				FATAL_STREAM( "No .jpg or .png images in a specified drectory, exiting" );
+				return 1;
 			}
 
 		}	
@@ -925,6 +932,12 @@ int main (int argc, char **argv)
 			// Write the similarity normalised output
 			if(!output_similarity_align.empty())
 			{
+
+				if (sim_warped_img.channels() == 3 && grayscale)
+				{
+					cvtColor(sim_warped_img, sim_warped_img, CV_BGR2GRAY);
+				}
+
 				if(video_output)
 				{
 					if(output_similarity_aligned_video.isOpened())
