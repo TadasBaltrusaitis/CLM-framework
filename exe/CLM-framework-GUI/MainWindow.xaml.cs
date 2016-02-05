@@ -568,16 +568,16 @@ namespace CLM_framework_GUI
                     headPosePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = poseDict, Confidence = confidence });
 
                     Dictionary<int, double> gazeDict = new Dictionary<int, double>();
-                    gazeDict[0] = x_gaze * 2.5 + 0.5;
-                    gazeDict[0] = 0.5 * old_gaze_x + 0.5 * gazeDict[0];
-                    gazeDict[1] = -y_gaze * 2.0 + 0.5;
-                    gazeDict[1] = 0.5 * old_gaze_y + 0.5 * gazeDict[1];
+                    gazeDict[0] = x_gaze * 2.5;
+                    gazeDict[0] = 0.5 * old_gaze_x + 0.5 * gazeDict[0] + 0.5;
+                    gazeDict[1] = -y_gaze * 2.0;
+                    gazeDict[1] = 0.5* old_gaze_y + 0.5 * gazeDict[1] + 0.5;
                     //gazeDict[2] = face_analyser.GetEyeAttention();
                     //Console.WriteLine("{0}, {1}", x_gaze, y_gaze);
                     gazePlot.AddDataPoint(new DataPoint() { Time = CurrentTime, values = gazeDict, Confidence = confidence });
 
-                    old_gaze_x = x_gaze;
-                    old_gaze_y = y_gaze;
+                    old_gaze_x = gazeDict[0] - 0.5;
+                    old_gaze_y = gazeDict[1] - 0.5;
 
                     //Dictionary<int, double> valenceDict = new Dictionary<int, double>();
                     //valenceDict[0] = (face_analyser.GetValence() - 1.0) / 6.5;

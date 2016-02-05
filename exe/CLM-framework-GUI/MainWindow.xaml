@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:CLM_framework_GUI="clr-namespace:CLM_framework_GUI"
-        Title="MultiSense Analyser" Height="700" Width="1300" MinWidth="700" MinHeight="450" Closing="Window_Closing" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
+        Title="MultiSense Analyser" Height="800" Width="1300" MinWidth="700" MinHeight="450" Closing="Window_Closing" WindowStartupLocation="CenterScreen" KeyDown="Window_KeyDown">
     <Grid Name="MainGrid" Margin="-1,1,1.333,-1.333">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.8*"/>
@@ -11,8 +11,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="1.5*" MinHeight="220"/>
-            <RowDefinition Height="1.5*" MinHeight="220"/>
+            <RowDefinition Height="1.5*" MinHeight="100"/>
+            <RowDefinition Height="1.5*" MinHeight="100"/>
+            <RowDefinition Height="1.5*" MinHeight="100"/>
             <RowDefinition Height="1.6*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -34,11 +35,11 @@
             </MenuItem>
         </Menu>
 
-        <Border Name="VideoBorder" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" Background="LightGray" Margin="5,5,0,0">
+        <Border Name="VideoBorder" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="1" Background="LightGray" Margin="5,5,0,0">
             <CLM_framework_GUI:OverlayImage x:Name="video" />
         </Border>
 
-        <CLM_framework_GUI:AxesBorder NumVertGrid="7" MinVal="-1" MaxVal="1" MinHeight="180" Grid.Row="3" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Head pose" Orientation="Horizontal">
+        <CLM_framework_GUI:AxesBorder NumVertGrid="7" MinVal="-1" MaxVal="1" MinHeight="180" Grid.Row="4" Grid.Column="0" Padding="60 20 30 40" RangeLabel="Head pose" Orientation="Horizontal">
             <CLM_framework_GUI:TimeSeriesPlot ShowLegend="True" x:Name="headPosePlot" Orientation="Horizontal"/>
         </CLM_framework_GUI:AxesBorder>
 
@@ -48,27 +49,21 @@
             <CLM_framework_GUI:TimeSeriesPlot x:Name="valencePlot" Orientation="Horizontal"/>
         </CLM_framework_GUI:AxesBorder>-->
 
-        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="3" Grid.Column="1" Padding="60 20 30 40" RangeLabel="Eye gaze" Orientation="Horizontal" MinVal="-1" MaxVal="1" NumVertGrid="5">
+        <CLM_framework_GUI:AxesBorder MinHeight="180" Grid.Row="4" Grid.Column="1" Padding="60 20 30 40" RangeLabel="Eye gaze" Orientation="Horizontal" MinVal="-1" MaxVal="1" NumVertGrid="5">
             <CLM_framework_GUI:TimeSeriesPlot x:Name="gazePlot" Orientation="Horizontal" ShowLegend="True"/>
         </CLM_framework_GUI:AxesBorder>
 
-        <GroupBox Name="ActionUnitBorder" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" MinHeight="100">
-            <GroupBox.Header>
-                Facial Actions
-            </GroupBox.Header>
-            <StackPanel Orientation="Vertical" >
-                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Lips" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+
+                <CLM_framework_GUI:AxesBorder Grid.Column="2" Grid.Row="1" MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Lips" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
                     <CLM_framework_GUI:TimeSeriesPlot x:Name="smilePlot" Orientation="Horizontal" ShowLegend="True"/>
                 </CLM_framework_GUI:AxesBorder>
-                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Brows" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+        <CLM_framework_GUI:AxesBorder Grid.Column="2" Grid.Row="2" MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Brows" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
                     <CLM_framework_GUI:TimeSeriesPlot x:Name="browPlot" Orientation="Horizontal" ShowLegend="True"/>
                 </CLM_framework_GUI:AxesBorder>
-                <CLM_framework_GUI:AxesBorder MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Other" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
+        <CLM_framework_GUI:AxesBorder Grid.Column="2" Grid.Row="3"  MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Other" Orientation="Horizontal" MinVal="0" MaxVal="1" NumVertGrid="5">
                     <CLM_framework_GUI:TimeSeriesPlot x:Name="eyePlot" Orientation="Horizontal" ShowLegend="True"/>
-                </CLM_framework_GUI:AxesBorder>                
-            </StackPanel>
-        </GroupBox>
-        <CLM_framework_GUI:AxesBorder  Grid.Column="2" Grid.Row="3" MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Audio" Orientation="Horizontal" MinVal="-1" MaxVal="1" NumVertGrid="1">
+        </CLM_framework_GUI:AxesBorder>    
+        <CLM_framework_GUI:AxesBorder  Grid.Column="2" Grid.Row="4" MinHeight="130" ShowXLabel="False" Padding="60 20 30 10" XTicks="False" RangeLabel="Audio" Orientation="Horizontal" MinVal="-1" MaxVal="1" NumVertGrid="1">
             <CLM_framework_GUI:PCMPlot x:Name="pcmPlot" Orientation="Horizontal" ShowLegend="True"/>
         </CLM_framework_GUI:AxesBorder>
 
