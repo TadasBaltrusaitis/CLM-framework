@@ -98,10 +98,10 @@ namespace HeadPose_file
 
             DateTime now = DateTime.Now;
 
-            if (now > new DateTime(2016, 1, 1, 0, 0, 0, 0))
+            if (now > new DateTime(2016, 6, 1, 0, 0, 0, 0))
             {
                 string messageBoxText = "The version of the software has expired. Please contact Tadas Baltrušaitis (Tadas.Baltrusaitis@cl.cam.ac.uk) for an updated version.";
-                string caption = "Version expired! (after 2016-January-01)";
+                string caption = "Version expired! (after 2016-June-01)";
                 MessageBoxButton button = MessageBoxButton.OK;
                 MessageBoxImage icon = MessageBoxImage.Error;
                 MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon); 
@@ -167,7 +167,7 @@ namespace HeadPose_file
             file_select.ShowDialog();
 
             // Check if file is selected if not - close the application
-            if (file_select.files_chosen.Count() != 0)
+            if (file_select.files_chosen != null && file_select.files_chosen.Count() != 0)
             {
                 files_chosen = file_select.files_chosen;
 
