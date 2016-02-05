@@ -69,21 +69,24 @@ After landmark detection is done clm_model stores the landmark locations and loc
 
 Head Pose:
 
-	// Head pose is stored in the following format (X, Y, Z, rot_x, roty_y, rot_z), translation is in millimeters with respect to camera and rotation is in radians around X,Y,Z axes with the convention R = Rx * Ry * Rz, left-handed positive sign, the rotation can be either with respect to camera or the camera plane (for visualisation we want rotation with respect to camera plane)
+	// Head pose is stored in the following format (X, Y, Z, rot_x, roty_y, rot_z)
+	// translation is in millimeters with respect to camera centre
+	// Rotation is in radians around X,Y,Z axes with the convention R = Rx * Ry * Rz, left-handed positive sign
+	// The rotation can be either with respect to camera or world coordinates (for visualisation we want rotation with respect to world coordinates)
 
 	There are four methods in total that can return the head pose
 	
 	//Getting the head pose w.r.t. camera assuming orthographic projection
 	Vec6d GetPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 	
-	//Getting the head pose w.r.t. camera plane assuming orthographic projection
-	Vec6d GetPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	//Getting the head pose w.r.t. world coordinates assuming orthographic projection
+	Vec6d GetPoseWorld(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 	
 	//Getting the head pose w.r.t. camera with a perspective camera correction
 	Vec6d GetCorrectedPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 
-	//Getting the head pose w.r.t. camera plane with a perspective camera correction
-	Vec6d GetCorrectedPoseCameraPlane(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	//Getting the head pose w.r.t. world coordinates with a perspective camera correction
+	Vec6d GetCorrectedPoseWorld(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 
 	// fx,fy,cx,cy are camera callibration parameters needed to infer the 3D position of the head with respect to camera, a good assumption for webcams providing 640x480 images is 500, 500, img_width/2, img_height/2	
 	
@@ -114,7 +117,7 @@ Parameters for output
 	-of3D <location of output 3D landmark points file>, the file format is as follows: frame_number, timestamp(seconds), confidence, detection_success, X_1, X_2 ... X_n, Y_1, Y_2, ... Y_n, Z_1, Z_2, ... Z_n
 	-ov <location of tracked video>
 
-    -cp <1/0, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
+    -world_coord <1/0, should rotation be measured with respect to the world coordinates or camera, see Head pose section for more details>
 
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
@@ -169,7 +172,7 @@ Parameters for output
 	-simalignvid <output video file of aligned faces>, outputs similarity aligned faces to a video (need HFYU video codec to read it)
 	-simaligndir <output directory for aligned face image>, same as above but instead of video the aligned faces are put in a directory
 
-	-cp <1/0>, should rotation be measured with respect to the camera plane or camera, see Head pose section for more details>
+	-world_coord <1/0>, should rotation be measured with respect to the camera or world coordinates, see Head pose section for more details>
 
 	Additional parameters for output
 	

@@ -142,8 +142,8 @@ int main (int argc, char **argv)
 	clm_parameters.push_back(clm_params);	
 
 	// Get the input output file parameters
-	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
+	bool use_world_coords;
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coords, arguments);
 	// Get camera parameters
 	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
@@ -397,7 +397,7 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_models[model], fx, fy, cx, cy);
+					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseWorld(clm_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
 					CLMTracker::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);

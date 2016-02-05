@@ -98,7 +98,7 @@ void create_directories(string output_path)
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
-	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& camera_plane_pose, vector<string> &arguments)
+	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& world_coordinates, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 
@@ -107,8 +107,8 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		valid[i] = true;
 	}
 
-	// By default use rotation with respect to camera (not camera plane)
-	camera_plane_pose = false;
+	// By default use rotation with respect to camera (not world coordinates)
+	world_coordinates = false;
 
 	string root = "";
 	// First check if there is a root argument (so that videos and outputs could be defined more easilly)
@@ -170,9 +170,9 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 			valid[i+1] = false;
 			i++;
 		}		
-		else if (arguments[i].compare("-cp") == 0)
+		else if (arguments[i].compare("-world_coord") == 0)
 		{
-			camera_plane_pose = true;
+			world_coordinates = true;
 		}
 		else if (arguments[i].compare("-help") == 0)
 		{

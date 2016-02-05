@@ -310,7 +310,7 @@ int main (int argc, char **argv)
 
 		// Loading image
 		Mat read_image = imread(file, -1);
-		
+
 		// Loading depth file if exists (optional)
 		Mat_<float> depth_image;
 
@@ -342,6 +342,7 @@ int main (int argc, char **argv)
 			fy = fx;
 		}
 
+
 		// if no pose defined we just use a face detector
 		if(bounding_boxes.empty())
 		{
@@ -368,7 +369,7 @@ int main (int argc, char **argv)
 				bool success = CLMTracker::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
 
 				// Estimate head pose and eye gaze				
-				Vec6d headPose = CLMTracker::GetPoseCamera(clm_model, fx, fy, cx, cy);
+				Vec6d headPose = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 				// Gaze tracking, absolute gaze direction
 				Point3f gazeDirection0(0, 0, -1);
@@ -425,7 +426,7 @@ int main (int argc, char **argv)
 
 				if (clm_parameters.track_gaze)
 				{
-					Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
+					Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 					// Draw it in reddish if uncertain, blueish if certain
 					CLMTracker::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
@@ -480,7 +481,7 @@ int main (int argc, char **argv)
 			CLMTracker::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clm_model, clm_parameters);
 
 			// Estimate head pose and eye gaze				
-			Vec6d headPose = CLMTracker::GetPoseCamera(clm_model, fx, fy, cx, cy);
+			Vec6d headPose = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 			// Gaze tracking, absolute gaze direction
 			Point3f gazeDirection0(0, 0, -1);
@@ -515,7 +516,7 @@ int main (int argc, char **argv)
 
 			if (clm_parameters.track_gaze)
 			{
-				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
+				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 				// Draw it in reddish if uncertain, blueish if certain
 				CLMTracker::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);

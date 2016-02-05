@@ -414,7 +414,7 @@ void visualise_tracking(Mat& captured_image, const CLMTracker::CLM& clm_model, c
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
+		Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
 		CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
@@ -465,9 +465,9 @@ int main (int argc, char **argv)
 
 	// Get the input output file parameters
 	
-	// Indicates that rotation should be with respect to camera plane or with respect to camera
-	bool use_camera_plane_pose;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_camera_plane_pose, arguments);
+	// Indicates that rotation should be with respect to camera or world coordinates
+	bool use_world_coordinates;
+	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
 
 	bool video_input = true;
 	bool verbose = true;
@@ -915,9 +915,9 @@ int main (int argc, char **argv)
 
 			// Work out the pose of the head from the tracked model
 			Vec6d pose_estimate_CLM;
-			if(use_camera_plane_pose)
+			if(use_world_coordinates)
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCameraPlane(clm_model, fx, fy, cx, cy);
+				pose_estimate_CLM = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 			}
 			else
 			{

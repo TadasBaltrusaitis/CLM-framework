@@ -81,8 +81,10 @@ end
 
 %% now do the actual evaluation that the collection has been done
 f = fopen('DISFA_valid_res.txt', 'w');
+au_res = zeros(1, numel(rel_preds));
 for au = 1:numel(rel_preds)
    [ accuracies, F1s, corrs, ccc, rms, classes ] = evaluate_au_prediction_results( preds_all(:,au), labels_all(:,au));
    fprintf(f, 'AU%d results - corr %.3f, ccc - %.3f\n', rel_preds(au), corrs, ccc);
+   au_res(au) = ccc;
 end
 fclose(f);

@@ -53,7 +53,7 @@
 using namespace CLMTracker;
 using namespace cv;
 
-// Getting a head pose estimate from the currently detected landmarks (rotation with respect to camera)
+// Getting a head pose estimate from the currently detected landmarks (rotation with respect to point camera)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
@@ -72,11 +72,11 @@ Vec6d CLMTracker::GetPoseCamera(const CLM& clm_model, double fx, double fy, doub
 	}
 }
 
-// Getting a head pose estimate from the currently detected landmarks (rotation with respect to camera plane)
+// Getting a head pose estimate from the currently detected landmarks (rotation in world coordinates)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d CLMTracker::GetPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
 		double Z = fx / clm_model.params_global[0];
 	
@@ -107,11 +107,11 @@ Vec6d CLMTracker::GetPoseCameraPlane(const CLM& clm_model, double fx, double fy,
 
 // Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to orthographic camera issue
 // This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
-// This method returns a corrected pose estimate with respect to the camera plane (Experimental)
+// This method returns a corrected pose estimate with respect to world coordinates (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetCorrectedPoseCameraPlane(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d CLMTracker::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
-	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0 && clm_model.tracking_initialised)
+	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
 		// This is used as an initial estimate for the iterative PnP algorithm
 		double Z = fx / clm_model.params_global[0];
@@ -152,9 +152,8 @@ Vec6d CLMTracker::GetCorrectedPoseCameraPlane(const CLM& clm_model, double fx, d
 	}
 }
 
-// Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to orthographic camera issue
-// This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
-// This method returns a corrected pose estimate with respect to a point camera (NOTE not the camera plane) (Experimental)
+// Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to perspective projection
+// This method returns a corrected pose estimate with respect to a point camera (NOTE not the world coordinates) (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
 Vec6d CLMTracker::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
