@@ -2,9 +2,11 @@
 include_directories(${CLM_SOURCE_DIR}/include)
 	
 include_directories(../../lib/local/CLM/include)
+include_directories(../../lib/local/FaceAnalyser/include)
 			
 add_executable(SimpleCLMImg SimpleCLMImg.cpp)
 target_link_libraries(SimpleCLMImg CLM)
+target_link_libraries(SimpleCLMImg FaceAnalyser)
 target_link_libraries(SimpleCLMImg dlib)
 
 if(WIN32)
