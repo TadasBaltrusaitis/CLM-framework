@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks. Threading Building Blocks is free software;
     you can redistribute it and/or modify it under the terms of the GNU General Public License
@@ -74,7 +74,7 @@ static inline int64_t __TBB_machine_cmpswp8_OsX(volatile void *ptr, int64_t valu
 #if __TBB_UnknownArchitecture
 
 #ifndef __TBB_WORDSIZE
-#define __TBB_WORDSIZE 4
+#define __TBB_WORDSIZE __SIZEOF_POINTER__
 #endif
 
 #ifdef __TBB_ENDIANNESS

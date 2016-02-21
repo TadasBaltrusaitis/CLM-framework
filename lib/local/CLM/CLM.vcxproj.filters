@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\CCNF_patch_expert.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CLM.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CLM_utils.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CLMTracker.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DetectionValidator.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Patch_experts.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PAW.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PDM.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVR_patch_expert.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CCNF_patch_expert.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLM.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLM_utils.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLM_core.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLMParameters.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLMTracker.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DetectionValidator.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Patch_experts.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PAW.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PDM.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stdafx.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SVR_patch_expert.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{75157eb9-2d21-482a-a1e2-e3e4100fffd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{f50f893d-a6b2-4e45-8f94-529042834e49}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

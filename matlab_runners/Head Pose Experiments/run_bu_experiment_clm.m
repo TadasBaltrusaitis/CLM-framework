@@ -1,6 +1,6 @@
 function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargin)
    
-    clm_exe = '"../../Release/SimpleCLM.exe"';
+    clm_exe = '"../../x64/Release/SimpleCLM.exe"';
 
     output = 'CLM';
     

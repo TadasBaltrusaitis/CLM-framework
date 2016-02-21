@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks. Threading Building Blocks is free software;
     you can redistribute it and/or modify it under the terms of the GNU General Public License
@@ -32,8 +32,8 @@ namespace internal {
     // Output of the indexer_node is a tbb::flow::tagged_msg, and will be of
     // the form  tagged_msg<tag, result>
     // where the value of tag will indicate which result was put to the
-    // successor.  
-    
+    // successor.
+
     template<typename IndexerNodeBaseType, typename T, size_t K>
     task* do_try_put(const T &v, void *p) {
         typename IndexerNodeBaseType::output_type o(K, v);
@@ -157,6 +157,9 @@ namespace internal {
         typedef OutputType output_type;
         typedef InputTuple input_type;
 
+        // Some versions of Intel C++ compiler fail to generate an implicit constructor for the class which has std::tuple as a member.
+        indexer_node_FE() : my_inputs() {}
+
         input_type &input_ports() { return my_inputs; }
     protected:
         input_type my_inputs;
@@ -204,7 +207,7 @@ namespace internal {
             };
             indexer_node_base_operation(const output_type* e, op_type t) :
                 type(char(t)), my_arg(e) {}
-            indexer_node_base_operation(const successor_type &s, op_type t) : type(char(t)), 
+            indexer_node_base_operation(const successor_type &s, op_type t) : type(char(t)),
                 my_succ(const_cast<successor_type *>(&s)) {}
             indexer_node_base_operation(op_type t) : type(char(t)) {}
         };
@@ -311,7 +314,7 @@ namespace internal {
             indexer_node_base_operation op_data(blt_succ_cpy);
             op_data.succv = &v;
             my_aggregator.execute(&op_data);
-        } 
+        }
         void extract() {
             my_successors.built_successors().sender_extract(*this);
             indexer_helper<StructTypes,N>::extract(this->my_inputs);
@@ -352,7 +355,7 @@ namespace internal {
         typedef typename tuple_element<2, InputTuple>::type third_type;
         typedef typename internal::tagged_msg<size_t, first_type, second_type, third_type> type;
     };
-    
+
     template<typename InputTuple>
     struct input_types<4, InputTuple> {
         typedef typename tuple_element<0, InputTuple>::type first_type;
@@ -362,7 +365,7 @@ namespace internal {
         typedef typename internal::tagged_msg<size_t, first_type, second_type, third_type,
                                                       fourth_type> type;
     };
-    
+
     template<typename InputTuple>
     struct input_types<5, InputTuple> {
         typedef typename tuple_element<0, InputTuple>::type first_type;
@@ -373,7 +376,7 @@ namespace internal {
         typedef typename internal::tagged_msg<size_t, first_type, second_type, third_type,
                                                       fourth_type, fifth_type> type;
     };
-    
+
     template<typename InputTuple>
     struct input_types<6, InputTuple> {
         typedef typename tuple_element<0, InputTuple>::type first_type;
@@ -385,7 +388,7 @@ namespace internal {
         typedef typename internal::tagged_msg<size_t, first_type, second_type, third_type,
                                                       fourth_type, fifth_type, sixth_type> type;
     };
-    
+
     template<typename InputTuple>
     struct input_types<7, InputTuple> {
         typedef typename tuple_element<0, InputTuple>::type first_type;
@@ -416,7 +419,7 @@ namespace internal {
                                                       seventh_type, eighth_type> type;
     };
 
- 
+
     template<typename InputTuple>
     struct input_types<9, InputTuple> {
         typedef typename tuple_element<0, InputTuple>::type first_type;

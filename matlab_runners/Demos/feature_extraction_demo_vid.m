@@ -6,7 +6,7 @@ if(~exist(output, 'file'))
     mkdir(output)
 end
     
-in_files = dir('../../videos/1815_01_008_tony_blair.avi');
+in_files = dir('../../videos/*.avi');
 % some parameters
 verbose = true;
 

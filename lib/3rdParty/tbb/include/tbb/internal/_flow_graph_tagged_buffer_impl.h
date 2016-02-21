@@ -1,5 +1,5 @@
 /*
-    Copyright 2005-2015 Intel Corporation.  All Rights Reserved.
+    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
 
     This file is part of Threading Building Blocks. Threading Building Blocks is free software;
     you can redistribute it and/or modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@
 #error Do not #include this internal file directly; use public TBB headers instead.
 #endif
 
-// included in namespace tbb::flow::interface8::internal
+// included in namespace tbb::flow::interfaceX::internal
 
 // elements in the table are a simple list; we need pointer to next element to
 // traverse the chain

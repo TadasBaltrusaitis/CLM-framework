@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\3rdParty\OpenCV3.1\include\opencv;$(SolutionDir)lib\3rdParty\OpenCV3.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\OpenCV3.1\$(PlatformTarget)\$(PlatformToolset)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world310.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\$(PlatformTarget)\$(PlatformToolset)\bin\opencv_world310.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\bin\" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

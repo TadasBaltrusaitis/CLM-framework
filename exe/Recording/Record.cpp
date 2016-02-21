@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// Copyright (C) 2015, University of Cambridge,
 // all rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,

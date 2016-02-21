@@ -83,3 +83,16 @@ videos/aligned/
 matlab_runners/Gaze Experiments/gaze_estimates_MPII/
 matlab_runners/Gaze Experiments/mpii_out/
 matlab_runners/Gaze Experiments/columbia_out/
+x64/Debug/
+lib/local/CLM/x64/
+lib/local/FaceAnalyser/x64/Debug/
+lib/local/FaceAnalyser/x64/Release/
+matlab_runners/Head Pose Experiments/FACS/
+x64/Release/
+lib/3rdParty/dlib/x64/Release/
+lib/3rdParty/dlib/x64/Debug/
+exe/SimpleCLM/x64/
+exe/Recording/x64/
+exe/FeatureExtraction/x64/
+exe/MultiTrackCLM/x64/
+exe/SimpleCLMImg/x64/

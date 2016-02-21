@@ -8,8 +8,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)lib\3rdParty\boost;$(SolutionDir)lib\3rdParty\boost\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\boost\x86\$(PlatformToolset)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_filesystem-vc$(PlatformToolsetVersion)-mt-1_59.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\3rdParty\boost\$(PlatformTarget)\$(PlatformToolset)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_filesystem-vc$(PlatformToolsetVersion)-mt-1_60.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

@@ -12,7 +12,7 @@
       <AdditionalDependencies>tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\tbb\bin\ia32\$(PlatformToolset)\tbb.dll" "$(OutDir)"</Command>
+      <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\tbb\bin\$(PlatformShortName)\$(PlatformToolset)\tbb.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />
