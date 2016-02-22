@@ -1,4 +1,4 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "CLM_framework_vs2012.sln" using Visual Studio 2012 (or "CLM_framework.sln" using Visual Studio 2010, however 2012 version is more thoroughly tested) and compile the code. The project was built and tested on Visual Studio 2010 and 2012 (can't guarantee compatibility with other versions). Code was tested on Windows Vista, Windows 7 and Windows 8, Windows Server 2008 can't guarantee compatibility with other Windows versions. NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio), this can be done by using CTRL + F5 instead of F5, this can mean the difference between running at 5fps and 30fps on 320x240px videos.
+For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "OpenFace.sln" using Visual Studio 2015 and compile the code. The project was built and tested on Visual Studio 2015 (can't guarantee compatibility with other versions). Code was tested on Windows Vista, Windows 7 and Windows 8, Windows Server 2008 can't guarantee compatibility with other Windows versions (but in theory it should work). NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio). To run without debugger attach use CTRL + F5 instead of F5. To change from Debug mode to Release mode select Release from drop down menu in the toolbar. This can mean the difference between running at 5fps and 30fps on 320x240px videos. I also found that the x64 version seems to run faster on most machines.
 
 For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support. For running the code on Ubuntu please see readme-ubuntu.txt.
 
@@ -13,25 +13,27 @@ Copyright can be found in the Copyright.txt
 ./lib
 	local - the actual meat of the code where the relevant computer vision algorithms reside
 		CLM - The CLM, CLNF and CLM-Z algorithms
-		FaceAnalyser - some useful code for extracting features for facial analysis
+		FaceAnalyser - Facial Action Unit detection and some useful code for extracting features for facial analysis
 	3rdParty - place for 3rd party libraries
 		boost - prepackaged relevant parts of the boost library
-		OpenCV3.0 - prepackaged OpenCV 3.0 beta library that is used extensively internally to provide support for basic computer vision functionallity
+		OpenCV3.1 - prepackaged OpenCV 3.1 library that is used extensively internally to provide support for basic computer vision functionallity
 		dlib - a header only dlib library (includes the face detector used for in-the-wild images)
 		tbb - prepackaged tbb code, library files and dll's
 ./exe - the runner and executables that show how to use the libraries for facial expression and head pose tracking, these best demonstrate how to use the libraries
-	SimpleCLM/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
-	SimpleCLMImg/ - running clm or clm-z on a images, individual or in a folder
-	MultiTrackCLM/ - tracking multiple faces using the CLM libraries
-	FeatureExtraction/ - a utility executable for extracting similarity normalised faces and HOG features for further facial expression analysis (experimental)	
+	FaceTrackingVid/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
+	FaceLandmarkImg/ - running clm or clm-z on a images, individual or in a folder
+	FaceTrackingVidMulti/ - tracking multiple faces using the CLM libraries
+	FeatureExtraction/ - a utility executable for extracting all supported features from faces (landmarks, AUs, head pose, gaze, similarity normalised faces and HOG features) for further facial expression analysis	
 ./matlab_runners
-	helper scripts for running the experiments and demos
+	helper scripts for running the experiments and demos, see ./matlab_runners/readme.txt for more info
 ./matlab_version
-	A Matlab version of CLM-framework together with some training code, more details in ./matlab_version/readme.txt
+	A Matlab version of parts of OpenFace together with some training code, more details in ./matlab_version/readme.txt
 ./Release
-	The created directory after compilation containing the desired executables
+	The created directory after compilation containing the desired executables for x86 architectures
+./x64/Release
+	The created directory after compilation containing the desired executables for x64 architectures
 	
---------------- Useful API calls ---------------------------------
+--------------- Useful API calls for landmarks ---------------------------------
 
 CLM class is the main class you will interact with, it performs the main landmark detection algorithms and stores the results. The interaction with the class is declared mainly in the CLMTracker.h, and will require an initialised CLM object. 
 
@@ -72,7 +74,7 @@ Head Pose:
 	// Head pose is stored in the following format (X, Y, Z, rot_x, roty_y, rot_z)
 	// translation is in millimeters with respect to camera centre
 	// Rotation is in radians around X,Y,Z axes with the convention R = Rx * Ry * Rz, left-handed positive sign
-	// The rotation can be either with respect to camera or world coordinates (for visualisation we want rotation with respect to world coordinates)
+	// The rotation can be either in world or camera coordinates (for visualisation we want rotation with respect to world coordinates)
 
 	There are four methods in total that can return the head pose
 	
@@ -96,7 +98,7 @@ These are provided for recreation of some of the experiments described in the pa
 
 To run them you will need to change the dataset locations to those on your disc
 	
--------- Command line parameters for video (SimpleCLM) --------------------------
+-------- Command line parameters for video (FaceTrackingVid) --------------------------
 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
 
@@ -197,7 +199,7 @@ All of the models (except CLM-Z) use a 68 point convention for tracking (see htt
 	
 For more examples of how to run the code, please refer to the Matlab runner code which calls the compiled executables with the command line parameters.
 	
------------- Command line parameters for images (SimpleCLMImg) ----------------
+------------ Command line parameters for images (FaceLandmarkImg) ----------------
 
 Parameters for input
 
@@ -232,17 +234,17 @@ Model parameters (apply to images and videos)
 
 Can run these after compiling the code in Release mode.
 
-Just running SimpleCLM.exe or MultiTrackCLM.exe will track either a single face or multiple (in the case of the latter executable) from the webcam connected to the computer.
+Just running FaceTrackingVid.exe or FaceTrackingVidMulti.exe will track either a single face or multiple (in the case of the latter executable) from the webcam connected to the computer.
 
-Basic landmark detection in images. From Matlab run "matlab_runners/run_demo_images.m", alternatively go to Release folder and from command line execute:
+Basic landmark detection in images. From Matlab run "matlab_runners/Demos/run_demo_images.m", alternatively go to Release folder and from command line execute:
 
-SimpleCLMImg.exe -clmwild -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+FaceLandmarkImg.exe -clmwild -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
 
 or
 
-SimpleCLMImg.exe -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+FaceLandmarkImg.exe -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
 
-Basic landmark tracking in videos. From Matlab run "matlab_runners/run_demo_video.m", alternatively go to Release folder and from command line execute: SimpleCLM.exe -f "../videos/changeLighting.wmv" -f "../videos/0188_03_021_al_pacino.avi" -f "../videos/0217_03_006_alanis_morissette.avi" -f "../videos/0244_03_004_anderson_cooper.avi" -f "../videos/0294_02_004_angelina_jolie.avi" -f "../videos/0417_02_003_bill_clinton.avi" -f "../videos/0490_03_007_bill_gates.avi" -f "../videos/0686_02_003_gloria_estefan.avi" -f "../videos/1034_03_006_jet_li.avi" -f "../videos/1192_01_006_julia_roberts.avi" -f "../videos/1461_01_021_noam_chomsky.avi" -f "../videos/1804_03_006_sylvester_stallone.avi" -f "../videos/1815_01_008_tony_blair.avi" -f "../videos/1869_03_009_victoria_beckham.avi" -f "../videos/1878_01_002_vladimir_putin.avi"
+Basic landmark tracking in videos. From Matlab run "matlab_runners/Demos/run_demo_video.m", alternatively go to Release folder and from command line execute: FaceTrackingVid.exe -f "../videos/changeLighting.wmv" -f "../videos/0188_03_021_al_pacino.avi" -f "../videos/0217_03_006_alanis_morissette.avi" -f "../videos/0244_03_004_anderson_cooper.avi" -f "../videos/0294_02_004_angelina_jolie.avi" -f "../videos/0417_02_003_bill_clinton.avi" -f "../videos/0490_03_007_bill_gates.avi" -f "../videos/0686_02_003_gloria_estefan.avi" -f "../videos/1034_03_006_jet_li.avi" -f "../videos/1192_01_006_julia_roberts.avi" -f "../videos/1461_01_021_noam_chomsky.avi" -f "../videos/1804_03_006_sylvester_stallone.avi" -f "../videos/1815_01_008_tony_blair.avi" -f "../videos/1869_03_009_victoria_beckham.avi" -f "../videos/1878_01_002_vladimir_putin.avi"
 
 More examples of how to use the command line and more demos can be found in the ./matlab_runners folder and in the Readme.txt there
 		

@@ -167,8 +167,6 @@ int main (int argc, char **argv)
 	// By default try webcam 0
 	int device = 0;
 
-
-
 	CLMTracker::CLMParameters clm_parameters(arguments);
 
 	// Get the input output file parameters
@@ -226,6 +224,13 @@ int main (int argc, char **argv)
 		VideoCapture video_capture;
 		if( current_file.size() > 0 )
 		{
+			if (!boost::filesystem::exists(current_file))
+			{
+				FATAL_STREAM("File does not exist");
+			}
+
+			current_file = boost::filesystem::path(current_file).generic_string();
+
 			INFO_STREAM( "Attempting to read from file: " << current_file );
 			video_capture = VideoCapture( current_file );
 			fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
@@ -236,6 +241,7 @@ int main (int argc, char **argv)
 				INFO_STREAM("FPS of the video file cannot be determined, assuming 30");
 				fps_vid_in = 30;
 			}
+
 		}
 		else
 		{

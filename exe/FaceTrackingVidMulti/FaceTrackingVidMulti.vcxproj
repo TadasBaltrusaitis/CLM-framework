@@ -152,7 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MultiTrackFace.cpp" />
+    <ClCompile Include="FaceTrackingVidMulti.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\lib\local\CLM\CLM.vcxproj">

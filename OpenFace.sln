@@ -15,13 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Executables", "Executables", "{9961DDAC-BE6E-4A6E-8EEF-FFC7D67BD631}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiTrackCLM", "exe\MultiTrackCLM\MultiTrackCLM.vcxproj", "{C3FAF36F-44BC-4454-87C2-C5106575FE50}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceTrackingVidMulti", "exe\FaceTrackingVidMulti\FaceTrackingVidMulti.vcxproj", "{C3FAF36F-44BC-4454-87C2-C5106575FE50}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recording", "exe\Recording\Recording.vcxproj", "{2D80FA0B-2DE8-4475-BA5A-C08A9E1EDAAC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLM", "exe\SimpleCLM\SimpleCLM.vcxproj", "{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceTrackingVid", "exe\FaceTrackingVid\FaceTrackingVid.vcxproj", "{34032CF2-1B99-4A25-9050-E9C13DD4CD0A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleCLMImg", "exe\SimpleCLMImg\SimpleCLMImg.vcxproj", "{DDC3535E-526C-44EC-9DF4-739E2D3A323B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceLandmarkImg", "exe\FaceLandmarkImg\FaceLandmarkImg.vcxproj", "{DDC3535E-526C-44EC-9DF4-739E2D3A323B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

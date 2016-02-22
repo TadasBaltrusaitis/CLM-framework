@@ -1,8 +1,8 @@
-function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargin)
+function [fps, resDir] = run_bu_experiment(bu_dir, verbose, version, varargin)
    
-    clm_exe = '"../../x64/Release/SimpleCLM.exe"';
+    executable = '"../../x64/Release/FaceTrackingVid.exe"';
 
-    output = 'CLM';
+    output = 'Tracker_';
     
     % listing the output based on the current revision
     output = [output 'r' num2str(version)];
@@ -20,7 +20,7 @@ function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargi
     tic;
     for i=1:numTogether:numel(buFiles)
         
-        command = clm_exe;
+        command = executable;
         command = cat(2, command, [' -root ' '"' bu_dir '/"']);
         
         % BU dataset orientation is in terms of camera plane, instruct the
@@ -69,8 +69,8 @@ function [fps, resDir] = run_bu_experiment_clm(bu_dir, verbose, version, varargi
         dos(command);
     end
     
-    timeTakenGAVAM = toc;
-    fps = 9000 / timeTakenGAVAM;
+    timeTaken = toc;
+    fps = 9000 / timeTaken;
     
     % tell the caller where the output was written
     resDir = [bu_dir output];

@@ -173,7 +173,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FaceTrackingImg.cpp" />
+    <ClCompile Include="FaceLandmarkImg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\lib\local\CLM\CLM.vcxproj">

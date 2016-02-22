@@ -1,12 +1,12 @@
---------------------------------------- CLM Matlab runners -----------------------------------------------------------------------------	
+--------------------------------------- OpenFace Matlab runners -----------------------------------------------------------------------------	
 
 These are provided for recreation of some of the experiments described in the publications and to demonstrate the command line interface by calling the C++ executables from matlab. This is intended to test the Windows version of the code.
 
 ======================== Demos ==================================
 
-run_demo_images.m - running the SimpleCLMImg landmark detection on the demo images packaged with the code
-run_demo_videos.m - running the SimpleCLM landmark detection and tracking on prepackaged demo videos
-run_demo_video_multi.m - running the MultiTrackCLM landmark detection and tracking on prepackaged demo videos (the difference from above is that it can deal with multiple faces)
+run_demo_images.m - running the FaceLandmarkImg landmark detection on the demo images packaged with the code
+run_demo_videos.m - running the FaceTrackingVid landmark detection and tracking on prepackaged demo videos
+run_demo_video_multi.m - running the FaceTrackingVidMulti landmark detection and tracking on prepackaged demo videos (the difference from above is that it can deal with multiple faces)
 
 For extracting head pose, facial landmarks, HOG features and Facial Action Units look at the following demos:
 	feature_extraction_demo_img_seq.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a sequence of images in a folder and how to read those features into Matlab.	

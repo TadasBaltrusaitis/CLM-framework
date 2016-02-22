@@ -96,3 +96,14 @@ exe/Recording/x64/
 exe/FeatureExtraction/x64/
 exe/MultiTrackCLM/x64/
 exe/SimpleCLMImg/x64/
+exe/FaceTrackingVid/x64/
+exe/FaceTrackingVidMulti/Debug/
+exe/FaceTrackingVid/output_features/
+exe/FaceTrackingVid/Release/
+exe/FaceTrackingVidMulti/Release/
+exe/FaceTrackingVid/Debug/
+exe/FaceLandmarkImg/x64/
+exe/FaceTrackingVidMulti/x64/
+exe/FaceLandmarkImg/Release/
+exe/FaceLandmarkImg/Debug/
+exe/FaceTrackingVid/output_vids/

@@ -13,7 +13,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\$(PlatformTarget)\$(PlatformToolset)\bin\opencv_world310.dll" "$(OutDir)"
-xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\bin\" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\bin\opencv_ffmpeg310.dll" "$(OutDir)"
+xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\bin\opencv_ffmpeg310_64.dll" "$(OutDir)"
 xcopy /I /E /Y /D /C "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

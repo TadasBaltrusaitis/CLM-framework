@@ -1,9 +1,9 @@
-function [fps, resDir] = run_biwi_experiment_clm(rootDir, biwiDir, outputDir, verbose, depth, version, varargin)
+function [fps, resDir] = run_biwi_experiment(rootDir, biwiDir, outputDir, verbose, depth, version, varargin)
 % Biwi dataset experiment
 
-clm_exe = '"../../Release/SimpleCLM.exe"';
+clm_exe = '"../../x64/Release/FaceTrackingVid.exe"';
 
-output = 'CLM';
+output = 'Tracker_';
 
 dbSeqDir = dir([rootDir biwiDir]);
 
@@ -36,7 +36,7 @@ for i=3 + offset:numTogether:numel(dbSeqDir)
        
     command = clm_exe;
            
-    command = cat(2, command, [' -root ' '"' rootDir '/"']);
+    command = cat(2, command, [' -root ' '"' rootDir '"']);
      
     % deal with edge cases
     if(numTogether + i > numel(dbSeqDir))

@@ -1,10 +1,10 @@
-function [fps, resDir] = run_ict_experiment_clm(rootDir, ictDir, outputRoot, verbose, depth, version, varargin)
+function [fps, resDir] = run_ict_experiment(rootDir, ictDir, outputRoot, verbose, depth, version, varargin)
 %EVALUATEICTDATABASE Summary of this function goes here
 %   Detailed explanation goes here
 
-gavamExe = '"../../Release/SimpleCLM.exe"';
+executable = '"../../x64/Release/FaceTrackingVid.exe"';
 
-output = 'CLM';
+output = 'Tracker_';
 
 dbSeqDir = dir([rootDir ictDir]);
 
@@ -27,7 +27,7 @@ numTogether = 10;
 
 for i=3:numTogether:numel(dbSeqDir)
         
-    command = [gavamExe  ' -fx 535 -fy 536 -cx 327 -cy 241'];
+    command = [executable  ' -fx 535 -fy 536 -cx 327 -cy 241'];
 
     command = cat(2, command, [' -root ' '"' rootDir '/"']);
 
