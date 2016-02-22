@@ -52,7 +52,7 @@ else
     end
 end
       
-command = '"../../Release/SimpleCLMImg.exe" ';
+command = '"../../x64/Release/FaceTrackingImg.exe" ';
 
 if(any(strcmp(varargin, 'model')))
     model = varargin{find(strcmp(varargin, 'model')) + 1};

@@ -5,9 +5,9 @@ clear;
 %%
 % Run the BU test with ccnf
 if(exist([getenv('USERPROFILE') '/Dropbox/AAM/test data/'], 'file'))
-    database_root = [getenv('USERPROFILE') '/Dropbox/AAM/test data'];    
+    database_root = [getenv('USERPROFILE') '/Dropbox/AAM/test data/'];    
 else
-    database_root = 'F:/Dropbox/Dropbox/AAM/test data';
+    database_root = 'F:/Dropbox/Dropbox/AAM/test data/';
 end
 
 buDir = [database_root, '/bu/uniform-light/'];
