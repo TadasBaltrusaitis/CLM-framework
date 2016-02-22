@@ -1,4 +1,4 @@
-clm_exe = '"../../Release/FeatureExtraction.exe"';
+clm_exe = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = './output_features_seq/';
 

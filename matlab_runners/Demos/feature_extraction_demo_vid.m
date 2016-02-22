@@ -1,4 +1,4 @@
-clm_exe = '"../../Release/FeatureExtraction.exe"';
+clm_exe = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = './output_features_vid/';
 
@@ -6,7 +6,7 @@ if(~exist(output, 'file'))
     mkdir(output)
 end
     
-in_files = dir('../../videos/*.avi');
+in_files = dir('../../videos/1815_01_008_tony_blair.avi');
 % some parameters
 verbose = true;
 

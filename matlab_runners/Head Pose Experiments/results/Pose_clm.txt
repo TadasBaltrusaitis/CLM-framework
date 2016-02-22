@@ -1,0 +1,6 @@
+Dataset and model,        pitch,  yaw,  roll,  mean,  median
+biwi error clm:           8.181,   8.214, 6.539,  7.645,  3.336
+biwi error clm-z:         7.693,   6.455, 6.267,  6.805,  3.138
+bu error clm general:     2.992,   4.298, 2.579,  3.290,  2.151
+ict error clm:            4.830,   4.192, 4.457,  4.493,  2.511
+ict error clm-z:          5.089,   3.935, 4.670,  4.565,  2.493

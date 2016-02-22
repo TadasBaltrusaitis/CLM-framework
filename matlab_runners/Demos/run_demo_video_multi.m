@@ -1,4 +1,4 @@
-clm_exe = '"../../Release/MultiTrackCLM.exe"';
+clm_exe = '"../../x64/Release/FaceTrackingVidMulti.exe"';
 
 output = './demo_vid/';
 

@@ -16,7 +16,7 @@ end
 output = './mpii_out/';
 
 %% Perform actual gaze predictions
-command = sprintf('"../../Release/SimpleCLMImg.exe" -fx 1028 -fy 1028 -gaze ');
+command = sprintf('"../../x64/Release/FaceTrackingImg.exe" -fx 1028 -fy 1028 -gaze ');
 p_dirs = dir([database_root, 'p*']);
 
 parfor p=1:numel(p_dirs)

@@ -1,6 +1,6 @@
 clear
 
-clm_exe = '"../../Release/SimpleCLM.exe"';
+clm_exe = '"../../x64/Release/FaceTrackingVid.exe"';
 
 output = 'yt_features/';
 
@@ -104,7 +104,7 @@ save(filename);
 % Also save them in a reasonable .txt format for easy comparison
 f = fopen('results/fps_yt.txt', 'w');
 fprintf(f, 'Model, mean,  median\n');
-fprintf(f, 'CLNF:  %.4f,   %.4f\n', mean(clnf_error), median(clnf_error));
+fprintf(f, 'OpenFace (CLNF):  %.4f,   %.4f\n', mean(clnf_error), median(clnf_error));
 fprintf(f, 'CLM:   %.4f,   %.4f\n', mean(clm_error), median(clm_error));
 
 fclose(f);

@@ -1,0 +1,4 @@
+Dataset and model,        pitch,  yaw,  roll,  mean,  median
+biwi error:  8.021,   5.610, 4.520,  6.050,  2.624
+bu error:    2.762,   4.103, 2.568,  3.145,  2.118
+ict error:   3.619,   3.606, 3.625,  3.617,  2.027

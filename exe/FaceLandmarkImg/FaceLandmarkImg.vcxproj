@@ -22,7 +22,7 @@
     <ProjectGuid>{DDC3535E-526C-44EC-9DF4-739E2D3A323B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleCLMImg</RootNamespace>
-    <ProjectName>FaceTrackingImg</ProjectName>
+    <ProjectName>FaceLandmarkImg</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -86,21 +86,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>FaceTrackingImg</TargetName>
+    <TargetName>FaceLandmarkImg</TargetName>
     <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>FaceTrackingImg</TargetName>
+    <TargetName>FaceLandmarkImg</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>FaceTrackingImg</TargetName>
+    <TargetName>FaceLandmarkImg</TargetName>
     <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>FaceTrackingImg</TargetName>
+    <TargetName>FaceLandmarkImg</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

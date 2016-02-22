@@ -1,6 +1,6 @@
 clear
 
-clm_exe = '"../../Release/SimpleCLMImg.exe"';
+clm_exe = '"../../x64/Release/FaceLandmarkImg.exe"';
     
 in_dir  = '../../videos/';
 out_dir = './demo_img/';

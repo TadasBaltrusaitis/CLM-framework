@@ -1,4 +1,4 @@
-exe = '"../../Release/FeatureExtraction.exe"';
+exe = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = './output_features_vid/';
 

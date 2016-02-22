@@ -13,7 +13,7 @@ buDir = [database_root, '/bu/uniform-light/'];
 % The fast and accurate single light models
 %%
 v = 1;
-[fps_bu_general, resFolderBUCLM_general] = run_bu_experiment_clm(buDir, false, v, 'model', 'model/main_svr_general.txt');
+[fps_bu_general, resFolderBUCLM_general] = run_bu_experiment(buDir, false, v, 'model', 'model/main_svr_general.txt');
 [bu_error_clm_svr_general, ~, ~, all_errors_bu_svr_general] = calcBUerror(resFolderBUCLM_general, buDir);
 
 %%
@@ -23,13 +23,13 @@ biwi_results_root = '/biwi pose results/';
 
 % Intensity
 v = 1;
-[fps_biwi_clm, res_folder_clm_biwi] = run_biwi_experiment_clm(database_root, biwi_dir, biwi_results_root, false, false, v, 'model', 'model/main_clm-z.txt');
+[fps_biwi_clm, res_folder_clm_biwi] = run_biwi_experiment(database_root, biwi_dir, biwi_results_root, false, false, v, 'model', 'model/main_clm-z.txt');
 % Calculate the resulting errors
 [biwi_error_clm, ~, ~, ~, all_errors_biwi_clm] = calcBiwiError([database_root res_folder_clm_biwi], [database_root biwi_dir]);
 
 % Intensity with depth
 v = 2;
-[fps_biwi_clmz, res_folder_clmz_biwi] = run_biwi_experiment_clm(database_root, biwi_dir, biwi_results_root, false, true, v, 'model', 'model/main_clm-z.txt');
+[fps_biwi_clmz, res_folder_clmz_biwi] = run_biwi_experiment(database_root, biwi_dir, biwi_results_root, false, true, v, 'model', 'model/main_clm-z.txt');
 % Calculate the resulting errors
 [biwi_error_clmz, ~, ~, ~, all_errors_biwi_clm_z] = calcBiwiError([database_root res_folder_clmz_biwi], [database_root biwi_dir]);
 
@@ -39,12 +39,12 @@ ict_results_root = ['ict results/'];
 
 v = 1;
 % Intensity
-[fps_ict_clm, res_folder_ict_clm] = run_ict_experiment_clm(database_root, ict_dir, ict_results_root, false, false, v, 'model', 'model/main_clm-z.txt');
+[fps_ict_clm, res_folder_ict_clm] = run_ict_experiment(database_root, ict_dir, ict_results_root, false, false, v, 'model', 'model/main_clm-z.txt');
 [ict_error_clm, ~, ~, ~, all_errors_ict_clm] = calcIctError([database_root res_folder_ict_clm], [database_root ict_dir]);
 
 v = 2;
 % Intensity and depth
-[fps_ict_clmz, res_folder_ict_clmz] = run_ict_experiment_clm(database_root, ict_dir, ict_results_root, false, true, v, 'model', 'model/main_clm-z.txt');
+[fps_ict_clmz, res_folder_ict_clmz] = run_ict_experiment(database_root, ict_dir, ict_results_root, false, true, v, 'model', 'model/main_clm-z.txt');
 [ict_error_clmz, ~, ~, ~, all_errors_ict_clm_z] = calcIctError([database_root res_folder_ict_clmz], [database_root ict_dir]);
 
 %% Save the results
