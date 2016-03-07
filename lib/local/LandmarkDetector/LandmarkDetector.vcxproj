@@ -106,7 +106,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\LandmarkDetector\model" "$(OutDir)model"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -129,7 +129,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)c
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\LandmarkDetector\model" "$(OutDir)model"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -153,7 +153,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)c
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\LandmarkDetector\model" "$(OutDir)model"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -177,7 +177,7 @@ xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)c
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\CLM\model" "$(OutDir)model"
+      <Command>xcopy /I /E /Y /D "$(SolutionDir)lib\local\LandmarkDetector\model" "$(OutDir)model"
 xcopy /I /E /Y /D "$(SolutionDir)lib\3rdParty\OpenCV3.1\classifiers" "$(OutDir)classifiers"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

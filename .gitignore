@@ -108,3 +108,12 @@ exe/FaceLandmarkImg/Release/
 exe/FaceLandmarkImg/Debug/
 exe/FaceTrackingVid/output_vids/
 OpenFace.VC.opendb
+lib/local/LandmarkDetector/x64/
+lib/local/LandmarkDetector/Release/
+exe/FaceLandmarkVidMulti/x64/
+lib/local/LandmarkDetector/Debug/
+exe/FaceLandmarkVidMulti/Release/
+exe/FaceLandmarkVid/x64/
+exe/FaceLandmarkVid/Release/
+exe/FaceLandmarkVid/output_features/
+exe/FaceLandmarkVid/output_vids/
