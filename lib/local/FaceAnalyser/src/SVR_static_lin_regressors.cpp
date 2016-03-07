@@ -45,7 +45,7 @@
 
 #include "SVR_static_lin_regressors.h"
 
-#include "CLM_core.h"
+#include "LandmarkCoreIncludes.h"
 
 using namespace FaceAnalysis;
 
@@ -54,12 +54,12 @@ void SVR_static_lin_regressors::Read(std::ifstream& stream, const std::vector<st
 
 	if(this->means.empty())
 	{
-		CLMTracker::ReadMatBin(stream, this->means);
+		LandmarkDetector::ReadMatBin(stream, this->means);
 	}
 	else
 	{
 		Mat_<double> m_tmp;
-		CLMTracker::ReadMatBin(stream, m_tmp);
+		LandmarkDetector::ReadMatBin(stream, m_tmp);
 		if(cv::norm(m_tmp - this->means > 0.00001))
 		{
 			cout << "Something went wrong with the SVR dynamic regressors" << endl;
@@ -67,7 +67,7 @@ void SVR_static_lin_regressors::Read(std::ifstream& stream, const std::vector<st
 	}
 
 	Mat_<double> support_vectors_curr;
-	CLMTracker::ReadMatBin(stream, support_vectors_curr);
+	LandmarkDetector::ReadMatBin(stream, support_vectors_curr);
 
 	double bias;
 	stream.read((char *)&bias, 8);

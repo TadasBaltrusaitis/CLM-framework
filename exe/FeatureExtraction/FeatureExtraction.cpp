@@ -58,20 +58,21 @@
 
 
 // FeatureExtraction.cpp : Defines the entry point for the feature extraction console application.
-#include "CLM_core.h"
-
 #include <fstream>
 #include <sstream>
 
 #include <opencv2/videoio/videoio.hpp>  // Video write
 #include <opencv2/videoio/videoio_c.h>  // Video write
 
+#include <filesystem.hpp>
+#include <filesystem/fstream.hpp>
+
+#include "LandmarkCoreIncludes.h"
+
 #include <Face_utils.h>
 #include <FaceAnalyser.h>
 #include <GazeEstimation.h>
 
-#include <filesystem.hpp>
-#include <filesystem/fstream.hpp>
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -389,7 +390,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLM& clm_model, const LandmarkDetector::FaceModelParameters& clm_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -401,7 +402,7 @@ void visualise_tracking(Mat& captured_image, const CLMTracker::CLM& clm_model, c
 	// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 	if (detection_certainty < visualisation_boundary)
 	{
-		CLMTracker::Draw(captured_image, clm_model);
+		LandmarkDetector::Draw(captured_image, clm_model);
 
 		double vis_certainty = detection_certainty;
 		if (vis_certainty > 1)
@@ -414,10 +415,10 @@ void visualise_tracking(Mat& captured_image, const CLMTracker::CLM& clm_model, c
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+		Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
-		CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
+		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
 		if (clm_parameters.track_gaze && detection_success)
 		{
@@ -459,7 +460,7 @@ int main (int argc, char **argv)
 	int device = 0;
 
 
-	CLMTracker::CLMParameters clm_parameters(arguments);
+	LandmarkDetector::FaceModelParameters clm_parameters(arguments);
 	// Always track gaze in feature extraction
 	clm_parameters.track_gaze = true;
 
@@ -467,7 +468,7 @@ int main (int argc, char **argv)
 	
 	// Indicates that rotation should be with respect to camera or world coordinates
 	bool use_world_coordinates;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
 
 	bool video_input = true;
 	bool verbose = true;
@@ -494,7 +495,7 @@ int main (int argc, char **argv)
 	// Grab camera parameters, if they are not defined (approximate values will be used)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
 	// Get camera parameters
-	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
+	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);    
 	
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
@@ -509,7 +510,7 @@ int main (int argc, char **argv)
 	}
 
 	// The modules that are being used for tracking
-	CLMTracker::CLM clm_model(clm_parameters.model_location);	
+	LandmarkDetector::CLM clm_model(clm_parameters.model_location);	
 
 	vector<string> output_similarity_align;
 	vector<string> output_au_files;
@@ -534,7 +535,7 @@ int main (int argc, char **argv)
 	if(boost::filesystem::exists(path("model/tris_68_full.txt")))
 	{
 		std::ifstream triangulation_file("model/tris_68_full.txt");
-		CLMTracker::ReadMat(triangulation_file, triangulation);
+		LandmarkDetector::ReadMat(triangulation_file, triangulation);
 		tri_loc = "model/tris_68_full.txt";
 	}
 	else
@@ -545,7 +546,7 @@ int main (int argc, char **argv)
 		if(exists(loc))
 		{
 			std::ifstream triangulation_file(loc.string());
-			CLMTracker::ReadMat(triangulation_file, triangulation);
+			LandmarkDetector::ReadMat(triangulation_file, triangulation);
 		}
 		else
 		{
@@ -864,11 +865,11 @@ int main (int argc, char **argv)
 			
 			if(video_input || images_as_video)
 			{
-				detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
+				detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
 			}
 			else
 			{
-				detection_success = CLMTracker::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
+				detection_success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, clm_model, clm_parameters);
 			}
 			
 			// Gaze tracking, absolute gaze direction
@@ -917,11 +918,11 @@ int main (int argc, char **argv)
 			Vec6d pose_estimate_CLM;
 			if(use_world_coordinates)
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 			}
 			else
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
+				pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
 			}
 
 			if(hog_output_file.is_open())

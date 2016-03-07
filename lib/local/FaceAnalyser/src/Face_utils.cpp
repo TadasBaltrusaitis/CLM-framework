@@ -120,7 +120,7 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const CLMTracker::CLM& clm_model, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLM& clm_model, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
 		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -137,7 +137,7 @@ namespace FaceAnalysis
 			extract_rigid_points(source_landmarks, destination_landmarks);
 		}
 
-		Matx22d scale_rot_matrix = CLMTracker::AlignShapesWithScale(source_landmarks, destination_landmarks);
+		Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
 		Matx23d warp_matrix;
 
 		warp_matrix(0,0) = scale_rot_matrix(0,0);
@@ -159,7 +159,7 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const CLMTracker::CLM& clm_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLM& clm_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
 		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -176,7 +176,7 @@ namespace FaceAnalysis
 			extract_rigid_points(source_landmarks, destination_landmarks);
 		}
 
-		Matx22d scale_rot_matrix = CLMTracker::AlignShapesWithScale(source_landmarks, destination_landmarks);
+		Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
 		Matx23d warp_matrix;
 
 		warp_matrix(0,0) = scale_rot_matrix(0,0);
@@ -221,7 +221,7 @@ namespace FaceAnalysis
 
 		destination_landmarks = Mat(destination_landmarks.t()).reshape(1, 1).t();		
 
-		CLMTracker::PAW paw(destination_landmarks, triangulation, 0, 0, aligned_face.cols-1, aligned_face.rows-1);
+		LandmarkDetector::PAW paw(destination_landmarks, triangulation, 0, 0, aligned_face.cols-1, aligned_face.rows-1);
 		
 		vector<Mat> aligned_face_channels(aligned_face.channels());
 		

@@ -49,9 +49,9 @@
 #include "stdafx.h"
 
 #include <PDM.h>
-#include <CLM_utils.h>
+#include <LandmarkDetectorUtils.h>
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 //===========================================================================
 
 //=============================================================================
@@ -77,7 +77,7 @@ void Orthonormalise(cv::Matx33d &R)
 
 //===========================================================================
 // Clamping the parameter values to be within 3 standard deviations
-void PDM::Clamp(cv::Mat_<float>& local_params, Vec6d& params_global, const CLMParameters& parameters)
+void PDM::Clamp(cv::Mat_<float>& local_params, Vec6d& params_global, const FaceModelParameters& parameters)
 {
 	double n_sigmas = 3;
 	cv::MatConstIterator_<double> e_it  = this->eigen_values.begin();
@@ -688,19 +688,19 @@ void PDM::Read(string location)
   	
 	ifstream pdmLoc(location, ios_base::in);
 
-	CLMTracker::SkipComments(pdmLoc);
+	LandmarkDetector::SkipComments(pdmLoc);
 
 	// Reading mean values
-	CLMTracker::ReadMat(pdmLoc,mean_shape);
+	LandmarkDetector::ReadMat(pdmLoc,mean_shape);
 	
-	CLMTracker::SkipComments(pdmLoc);
+	LandmarkDetector::SkipComments(pdmLoc);
 
 	// Reading principal components
-	CLMTracker::ReadMat(pdmLoc,princ_comp);
+	LandmarkDetector::ReadMat(pdmLoc,princ_comp);
 	
-	CLMTracker::SkipComments(pdmLoc);
+	LandmarkDetector::SkipComments(pdmLoc);
 	
 	// Reading eigenvalues	
-	CLMTracker::ReadMat(pdmLoc,eigen_values);
+	LandmarkDetector::ReadMat(pdmLoc,eigen_values);
 
 }

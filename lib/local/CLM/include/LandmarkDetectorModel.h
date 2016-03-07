@@ -46,18 +46,18 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef __CLM_h_
-#define __CLM_h_
+#ifndef __LANDMARK_DETECTOR_MODEL_h_
+#define __LANDMARK_DETECTOR_MODEL_h_
 
 #include "PDM.h"
 #include "Patch_experts.h"
-#include "DetectionValidator.h"
-#include "CLMParameters.h"
+#include "LandmarkDetectionValidator.h"
+#include "LandmarkDetectorParameters.h"
 
 using namespace std;
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 
 class CLM{
@@ -84,7 +84,7 @@ public:
 	vector<CLM>						hierarchical_models;
 	vector<string>					hierarchical_model_names;
 	vector<vector<pair<int,int>>>	hierarchical_mapping;
-	vector<CLMParameters>			hierarchical_params;
+	vector<FaceModelParameters>			hierarchical_params;
 
 	//==================== Helpers for face detection and landmark detection validation =========================================
 
@@ -153,7 +153,7 @@ public:
 	CLM & operator= (const CLM&& other);
 
 	// Does the actual work - landmark detection
-	bool DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CLMParameters& params);
+	bool DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params);
 	
 	// Gets the shape of the current detected landmarks in camera space (given camera calibration)
 	// Can only be called after a call to DetectLandmarksInVideo or DetectLandmarksInImage
@@ -180,20 +180,20 @@ private:
 	map<int, Mat_<float> >		kde_resp_precalc; 
 
 	// The model fitting: patch response computation and optimisation steps
-    bool Fit(const Mat_<uchar>& intensity_image, const Mat_<float>& depth_image, const std::vector<int>& window_sizes, const CLMParameters& parameters);
+    bool Fit(const Mat_<uchar>& intensity_image, const Mat_<float>& depth_image, const std::vector<int>& window_sizes, const FaceModelParameters& parameters);
 
 	// Mean shift computation that uses precalculated kernel density estimators (the one actually used)
 	void NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& mean_shifts);
 
 	// The actual model optimisation (update step), returns the model likelihood
     double NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
-		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_idx, bool rigid, int scale, Mat_<double>& landmark_lhoods, const CLMParameters& parameters);
+		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_idx, bool rigid, int scale, Mat_<double>& landmark_lhoods, const FaceModelParameters& parameters);
 
 	// Removing background image from the depth
 	bool RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& depth_image);
 
 	// Generating the weight matrix for the Weighted least squares
-	void GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters);
+	void GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters);
 
 	//=======================================================
 	// Legacy functions that are not used at the moment

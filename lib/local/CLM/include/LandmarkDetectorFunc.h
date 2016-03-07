@@ -50,43 +50,41 @@
 //  Header for all external CLM/CLNF/CLM-Z methods of interest to the user
 //
 //
-//  Tadas Baltrusaitis
-//  01/05/2012
-#ifndef __CLM_TRACKER_h_
-#define __CLM_TRACKER_h_
+#ifndef __LANDMARK_DETECTOR_FUNC_h_
+#define __LANDMARK_DETECTOR_FUNC_h_
 
-#include <CLMParameters.h>
-#include <CLM_utils.h>
-#include <CLM.h>
+#include <LandmarkDetectorParameters.h>
+#include <LandmarkDetectorUtils.h>
+#include <LandmarkDetectorModel.h>
 
 using namespace std;
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 
 	//================================================================================================================
 	// Landmark detection in videos, need to provide an image and model parameters (default values work well)
 	// Optionally can provide a bounding box from which to start tracking
 	//================================================================================================================
-	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, CLMParameters& params);
-	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, CLMParameters& params);
+	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params);
+	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, FaceModelParameters& params);
 
-	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params);
-	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params);
+	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params);
+	bool DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params);
 
 	//================================================================================================================
 	// Landmark detection in image, need to provide an image and optionally CLM model together with parameters (default values work well)
 	// Optionally can provide a bounding box in which detection is performed (this is useful if multiple faces are to be detected in images)
 	//================================================================================================================
-	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLM& clm_model, CLMParameters& params);
+	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params);
 	// Providing a bounding box
-	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params);
+	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params);
 
 	//================================================
 	// CLM-Z versions
-	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLM& clm_model, CLMParameters& params);
-	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params);
+	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLM& clm_model, FaceModelParameters& params);
+	bool DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params);
 
 	//================================================================
 	// Helper function for getting head pose from CLM parameters

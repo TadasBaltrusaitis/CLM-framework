@@ -49,11 +49,11 @@
 #include "stdafx.h"
 
 #include "Patch_experts.h"
-#include "CLM_utils.h"
+#include "LandmarkDetectorUtils.h"
 
 using namespace cv;
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 
 // Returns the patch expert responses given a grayscale and an optional depth image.
@@ -375,11 +375,11 @@ void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<c
 
 	if(patchesFile.is_open())
 	{
-		CLMTracker::SkipComments(patchesFile);
+		LandmarkDetector::SkipComments(patchesFile);
 
 		patchesFile >> scale;
 
-		CLMTracker::SkipComments(patchesFile);
+		LandmarkDetector::SkipComments(patchesFile);
 
 		int numberViews;		
 
@@ -391,28 +391,28 @@ void Patch_experts::Read_SVR_patch_experts(string expert_location, std::vector<c
   
 		patches.resize(numberViews);
 
-		CLMTracker::SkipComments(patchesFile);
+		LandmarkDetector::SkipComments(patchesFile);
 
 		// centers of each view (which view corresponds to which orientation)
 		for(size_t i = 0; i < centers.size(); i++)
 		{
 			cv::Mat center;
-			CLMTracker::ReadMat(patchesFile, center);	
+			LandmarkDetector::ReadMat(patchesFile, center);	
 			center.copyTo(centers[i]);
 			centers[i] = centers[i] * M_PI / 180.0;
 		}
 
-		CLMTracker::SkipComments(patchesFile);
+		LandmarkDetector::SkipComments(patchesFile);
 
 		// the visibility of points for each of the views (which verts are visible at a specific view
 		for(size_t i = 0; i < visibility.size(); i++)
 		{
-			CLMTracker::ReadMat(patchesFile, visibility[i]);				
+			LandmarkDetector::ReadMat(patchesFile, visibility[i]);				
 		}
 
 		int numberOfPoints = visibility[0].rows;
 
-		CLMTracker::SkipComments(patchesFile);
+		LandmarkDetector::SkipComments(patchesFile);
 
 		// read the patches themselves
 		for(size_t i = 0; i < patches.size(); i++)
@@ -457,7 +457,7 @@ void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vec
 		for(size_t i = 0; i < centers.size(); i++)
 		{
 			cv::Mat center;
-			CLMTracker::ReadMatBin(patchesFile, center);	
+			LandmarkDetector::ReadMatBin(patchesFile, center);	
 			center.copyTo(centers[i]);
 			centers[i] = centers[i] * M_PI / 180.0;
 		}
@@ -465,7 +465,7 @@ void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vec
 		// the visibility of points for each of the views (which verts are visible at a specific view
 		for(size_t i = 0; i < visibility.size(); i++)
 		{
-			CLMTracker::ReadMatBin(patchesFile, visibility[i]);				
+			LandmarkDetector::ReadMatBin(patchesFile, visibility[i]);				
 		}
 		int numberOfPoints = visibility[0].rows;
 
@@ -490,7 +490,7 @@ void Patch_experts::Read_CCNF_patch_experts(string patchesFileLocation, std::vec
 
 			for(int s=0; s < num_sigma_comp; ++s)
 			{
-				CLMTracker::ReadMatBin(patchesFile, sigma_components[w][s]);
+				LandmarkDetector::ReadMatBin(patchesFile, sigma_components[w][s]);
 			}
 		}
 		

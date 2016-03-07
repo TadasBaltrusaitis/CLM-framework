@@ -48,14 +48,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 
-#include <CLMTracker.h>
+#include <LandmarkDetectorFunc.h>
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 using namespace cv;
 
 // Getting a head pose estimate from the currently detected landmarks (rotation with respect to point camera)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -74,7 +74,7 @@ Vec6d CLMTracker::GetPoseCamera(const CLM& clm_model, double fx, double fy, doub
 
 // Getting a head pose estimate from the currently detected landmarks (rotation in world coordinates)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -90,12 +90,12 @@ Vec6d CLMTracker::GetPoseWorld(const CLM& clm_model, double fx, double fy, doubl
 		double z_y = cv::sqrt(Y * Y + Z * Z);
 		double eul_y = -atan2(X, z_y);
 
-		Matx33d camera_rotation = CLMTracker::Euler2RotationMatrix(Vec3d(eul_x, eul_y, 0));		
-		Matx33d head_rotation = CLMTracker::AxisAngle2RotationMatrix(Vec3d(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]));
+		Matx33d camera_rotation = LandmarkDetector::Euler2RotationMatrix(Vec3d(eul_x, eul_y, 0));		
+		Matx33d head_rotation = LandmarkDetector::AxisAngle2RotationMatrix(Vec3d(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]));
 
 		Matx33d corrected_rotation = camera_rotation.t() * head_rotation;
 
-		Vec3d euler_corrected = CLMTracker::RotationMatrix2Euler(corrected_rotation);
+		Vec3d euler_corrected = LandmarkDetector::RotationMatrix2Euler(corrected_rotation);
 
 		return Vec6d(X, Y, Z, euler_corrected[0], euler_corrected[1], euler_corrected[2]);
 	}
@@ -109,7 +109,7 @@ Vec6d CLMTracker::GetPoseWorld(const CLM& clm_model, double fx, double fy, doubl
 // This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
 // This method returns a corrected pose estimate with respect to world coordinates (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -142,7 +142,7 @@ Vec6d CLMTracker::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double 
 		
 		cv::solvePnP(landmarks_3D, landmarks_2D, camera_matrix, Mat(), vec_rot, vec_trans, true);
 
-		Vec3d euler = CLMTracker::AxisAngle2Euler(vec_rot);
+		Vec3d euler = LandmarkDetector::AxisAngle2Euler(vec_rot);
 		
 		return Vec6d(vec_trans[0], vec_trans[1], vec_trans[2], vec_rot[0], vec_rot[1], vec_rot[2]);
 	}
@@ -155,7 +155,7 @@ Vec6d CLMTracker::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double 
 // Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to perspective projection
 // This method returns a corrected pose estimate with respect to a point camera (NOTE not the world coordinates) (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d CLMTracker::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -195,12 +195,12 @@ Vec6d CLMTracker::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double
 		double z_y = cv::sqrt(vec_trans[1] * vec_trans[1] + vec_trans[2] * vec_trans[2]);
 		double eul_y = -atan2(vec_trans[0], z_y);
 
-		Matx33d camera_rotation = CLMTracker::Euler2RotationMatrix(Vec3d(eul_x, eul_y, 0));		
-		Matx33d head_rotation = CLMTracker::AxisAngle2RotationMatrix(vec_rot);
+		Matx33d camera_rotation = LandmarkDetector::Euler2RotationMatrix(Vec3d(eul_x, eul_y, 0));		
+		Matx33d head_rotation = LandmarkDetector::AxisAngle2RotationMatrix(vec_rot);
 
 		Matx33d corrected_rotation = camera_rotation * head_rotation;
 
-		Vec3d euler_corrected = CLMTracker::RotationMatrix2Euler(corrected_rotation);
+		Vec3d euler_corrected = LandmarkDetector::RotationMatrix2Euler(corrected_rotation);
 		
 		return Vec6d(vec_trans[0], vec_trans[1], vec_trans[2], euler_corrected[0], euler_corrected[1], euler_corrected[2]);
 	}
@@ -222,7 +222,7 @@ void UpdateTemplate(const Mat_<uchar> &grayscale_image, CLM& clm_model)
 }
 
 // This method uses basic template matching in order to allow for better tracking of fast moving faces
-void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, const CLMParameters& params)
+void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, const FaceModelParameters& params)
 {
 	Rect init_box;
 	clm_model.pdm.CalcBoundingBox(init_box, clm_model.params_global, clm_model.params_local);
@@ -266,7 +266,7 @@ void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_m
 	
 }
 
-bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, FaceModelParameters& params)
 {
 	// First need to decide if the landmarks should be "detected" or "tracked"
 	// Detected means running face detection and a larger search area, tracked means initialising from previous step
@@ -333,14 +333,14 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 		}
 
 		bool face_detection_success;
-		if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+		if(params.curr_face_detector == FaceModelParameters::HOG_SVM_DETECTOR)
 		{
 			double confidence;
-			face_detection_success = CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence, preference_det);
+			face_detection_success = LandmarkDetector::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence, preference_det);
 		}
-		else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+		else if(params.curr_face_detector == FaceModelParameters::HAAR_DETECTOR)
 		{
-			face_detection_success = CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR, preference_det);
+			face_detection_success = LandmarkDetector::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR, preference_det);
 		}
 
 		// Attempt to detect landmarks using the detected face (if unseccessful the detection will be ignored)
@@ -407,7 +407,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 	
 }
 
-bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
 {
 	if(bounding_box.width > 0)
 	{
@@ -423,12 +423,12 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 
 }
 
-bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInVideo(grayscale_image, Mat_<float>(), clm_model, params);
 }
 
-bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInVideo(grayscale_image, Mat_<float>(), clm_model, params);
 }
@@ -439,7 +439,7 @@ bool CLMTracker::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, cons
 //================================================================================================================
 
 // This is the one where the actual work gets done, other DetectLandmarksInImage calls lead to this one
-bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
 {
 
 	// Can have multiple hypotheses
@@ -537,7 +537,7 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	return best_success;
 }
 
-bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLM& clm_model, FaceModelParameters& params)
 {
 
 	Rect_<double> bounding_box;
@@ -550,14 +550,14 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 	}
 		
 	// Detect the face first
-	if(params.curr_face_detector == CLMParameters::HOG_SVM_DETECTOR)
+	if(params.curr_face_detector == FaceModelParameters::HOG_SVM_DETECTOR)
 	{
 		double confidence;
-		CLMTracker::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
+		LandmarkDetector::DetectSingleFaceHOG(bounding_box, grayscale_image, clm_model.face_detector_HOG, confidence);
 	}
-	else if(params.curr_face_detector == CLMParameters::HAAR_DETECTOR)
+	else if(params.curr_face_detector == FaceModelParameters::HAAR_DETECTOR)
 	{
-		CLMTracker::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
+		LandmarkDetector::DetectSingleFace(bounding_box, grayscale_image, clm_model.face_detector_HAAR);
 	}
 
 	if(bounding_box.width == 0)
@@ -571,12 +571,12 @@ bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, cons
 }
 
 // Versions not using depth images
-bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInImage(grayscale_image, Mat_<float>(), bounding_box, clm_model, params);
 }
 
-bool CLMTracker::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLM& clm_model, CLMParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInImage(grayscale_image, Mat_<float>(), clm_model, params);
 }

@@ -46,7 +46,7 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "CLM_core.h"
+#include "LandmarkCoreIncludes.h"
 
 #include <fstream>
 
@@ -174,7 +174,7 @@ void write_out_pose_landmarks(const string& outfeatures, const Mat_<double>& sha
 	}
 }
 
-void write_out_landmarks(const string& outfeatures, const CLMTracker::CLM& clm_model)
+void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLM& clm_model)
 {
 	create_directory_from_file(outfeatures);
 	std::ofstream featuresFile;
@@ -197,7 +197,7 @@ void write_out_landmarks(const string& outfeatures, const CLMTracker::CLM& clm_m
 	}
 }
 
-void create_display_image(const Mat& orig, Mat& display_image, CLMTracker::CLM& clm_model)
+void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLM& clm_model)
 {
 	
 	// Draw head pose if present and draw eye gaze as well
@@ -255,7 +255,7 @@ void create_display_image(const Mat& orig, Mat& display_image, CLMTracker::CLM& 
 
 	}
 
-	CLMTracker::Draw(display_image, clm_model);
+	LandmarkDetector::Draw(display_image, clm_model);
 						
 }
 
@@ -271,15 +271,15 @@ int main (int argc, char **argv)
 	// Bounding boxes for a face in each image (optional)
 	vector<Rect_<double> > bounding_boxes;
 	
-	CLMTracker::get_image_input_output_params(files, depth_files, output_landmark_locations, output_pose_locations, output_images, bounding_boxes, arguments);
-	CLMTracker::CLMParameters clm_parameters(arguments);	
+	LandmarkDetector::get_image_input_output_params(files, depth_files, output_landmark_locations, output_pose_locations, output_images, bounding_boxes, arguments);
+	LandmarkDetector::FaceModelParameters clm_parameters(arguments);	
 	// No need to validate detections, as we're not doing tracking
 	clm_parameters.validate_detections = false;
 
 	// Grab camera parameters if provided (only used for pose and eye gaze and are quite important for accurate estimates)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
 	int device = -1;
-	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);
+	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
@@ -295,7 +295,7 @@ int main (int argc, char **argv)
 
 	// The modules that are being used for tracking
 	cout << "Loading the model" << endl;
-	CLMTracker::CLM clm_model(clm_parameters.model_location);
+	LandmarkDetector::CLM clm_model(clm_parameters.model_location);
 	cout << "Model loaded" << endl;
 	
 	CascadeClassifier classifier(clm_parameters.face_detector_location);	
@@ -350,14 +350,14 @@ int main (int argc, char **argv)
 			// Detect faces in an image
 			vector<Rect_<double> > face_detections;
 
-			if(clm_parameters.curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+			if(clm_parameters.curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
 			{
 				vector<double> confidences;
-				CLMTracker::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog, confidences);
+				LandmarkDetector::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog, confidences);
 			}
 			else
 			{
-				CLMTracker::DetectFaces(face_detections, grayscale_image, classifier);
+				LandmarkDetector::DetectFaces(face_detections, grayscale_image, classifier);
 			}
 
 			// Detect landmarks around detected faces
@@ -366,10 +366,10 @@ int main (int argc, char **argv)
 			for(size_t face=0; face < face_detections.size(); ++face)
 			{
 				// if there are multiple detections go through them
-				bool success = CLMTracker::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
+				bool success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
 
 				// Estimate head pose and eye gaze				
-				Vec6d headPose = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 				// Gaze tracking, absolute gaze direction
 				Point3f gazeDirection0(0, 0, -1);
@@ -426,10 +426,10 @@ int main (int argc, char **argv)
 
 				if (clm_parameters.track_gaze)
 				{
-					Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+					Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 					// Draw it in reddish if uncertain, blueish if certain
-					CLMTracker::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
+					LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
 					FaceAnalysis::DrawGaze(read_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 				}
 
@@ -478,10 +478,10 @@ int main (int argc, char **argv)
 		else
 		{
 			// Have provided bounding boxes
-			CLMTracker::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clm_model, clm_parameters);
+			LandmarkDetector::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clm_model, clm_parameters);
 
 			// Estimate head pose and eye gaze				
-			Vec6d headPose = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+			Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 			// Gaze tracking, absolute gaze direction
 			Point3f gazeDirection0(0, 0, -1);
@@ -516,10 +516,10 @@ int main (int argc, char **argv)
 
 			if (clm_parameters.track_gaze)
 			{
-				Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 
 				// Draw it in reddish if uncertain, blueish if certain
-				CLMTracker::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
+				LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
 				FaceAnalysis::DrawGaze(read_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 			}
 

@@ -46,15 +46,15 @@
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef __DValid_h_
-#define __DValid_h_
+#ifndef __LANDMARK_DETECTION_VALIDATOR_h_
+#define __LANDMARK_DETECTION_VALIDATOR_h_
 
 #include "PAW.h"
 
 using namespace std;
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 //===========================================================================
 //

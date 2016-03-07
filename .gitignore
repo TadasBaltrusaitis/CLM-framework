@@ -107,3 +107,4 @@ exe/FaceTrackingVidMulti/x64/
 exe/FaceLandmarkImg/Release/
 exe/FaceLandmarkImg/Debug/
 exe/FaceTrackingVid/output_vids/
+OpenFace.VC.opendb

@@ -48,10 +48,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 
-#include "DetectionValidator.h"
-#include "CLM_utils.h"
+#include "LandmarkDetectionValidator.h"
+#include "LandmarkDetectorUtils.h"
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 //===========================================================================
 // Read in the landmark detection validation module
@@ -75,7 +75,7 @@ void DetectionValidator::Read(string location)
 		for(int i = 0; i < n; i++)
 		{
 			Mat_<double> orientation_tmp;
-			CLMTracker::ReadMatBin(detection_validator_stream, orientation_tmp);		
+			LandmarkDetector::ReadMatBin(detection_validator_stream, orientation_tmp);		
 		
 			orientations[i] = Vec3d(orientation_tmp.at<double>(0), orientation_tmp.at<double>(1), orientation_tmp.at<double>(2));
 
@@ -120,10 +120,10 @@ void DetectionValidator::Read(string location)
 		{
 
 			// Read in the mean images
-			CLMTracker::ReadMatBin(detection_validator_stream, mean_images[i]);
+			LandmarkDetector::ReadMatBin(detection_validator_stream, mean_images[i]);
 			mean_images[i] = mean_images[i].t();
 	
-			CLMTracker::ReadMatBin(detection_validator_stream, standard_deviations[i]);
+			LandmarkDetector::ReadMatBin(detection_validator_stream, standard_deviations[i]);
 			standard_deviations[i] = standard_deviations[i].t();
 
 			// Model specifics
@@ -131,7 +131,7 @@ void DetectionValidator::Read(string location)
 			{
 				// Reading in the biases and weights
 				detection_validator_stream.read ((char*)&bs[i], 8);
-				CLMTracker::ReadMatBin(detection_validator_stream, ws[i]);
+				LandmarkDetector::ReadMatBin(detection_validator_stream, ws[i]);
 	
 			}
 			else if(validator_type == 1)
@@ -148,7 +148,7 @@ void DetectionValidator::Read(string location)
 				ws_nn[i].resize(num_depth_layers);
 				for(int layer = 0; layer < num_depth_layers; layer++)
 				{
-					CLMTracker::ReadMatBin(detection_validator_stream, ws_nn[i][layer]);
+					LandmarkDetector::ReadMatBin(detection_validator_stream, ws_nn[i][layer]);
 
 					// Transpose for efficiency during multiplication
 					ws_nn[i][layer] = ws_nn[i][layer].t();
@@ -421,7 +421,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					{
 						std::map<int, Mat_<double> > precomputed_dft;
 						
-						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel, precomputed_dft, output, CV_TM_CCORR);
+						LandmarkDetector::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel, precomputed_dft, output, CV_TM_CCORR);
 						
 						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first = precomputed_dft.begin()->first;
 						cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second = precomputed_dft.begin()->second;
@@ -430,7 +430,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					{
 						std::map<int, Mat_<double> > precomputed_dft;
 						precomputed_dft[cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first] = cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second;
-						CLMTracker::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);						
+						LandmarkDetector::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);						
 					}
 
 					// Combining the maps

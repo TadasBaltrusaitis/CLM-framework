@@ -52,15 +52,15 @@
 //
 //  Tadas Baltrusaitis
 //  28/03/2014
-#ifndef __CLM_UTILS_h_
-#define __CLM_UTILS_h_
+#ifndef __LANDMARK_DETECTOR_UTILS_h_
+#define __LANDMARK_DETECTOR_UTILS_h_
 
-#include "CLM.h"
+#include "LandmarkDetectorModel.h"
 
 using namespace std;
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 	//===========================================================================	
 	// Defining a set of useful utility functions to be used within CLM

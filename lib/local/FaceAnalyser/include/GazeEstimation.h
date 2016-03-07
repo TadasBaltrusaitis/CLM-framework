@@ -46,15 +46,15 @@
 #define __GAZEESTIMATION_h_
 
 #include "opencv2/core/core.hpp"
-#include "CLM_core.h"
+#include "LandmarkCoreIncludes.h"
 
 using namespace cv;
 
 namespace FaceAnalysis
 {
 
-	void EstimateGaze(const CLMTracker::CLM& clm_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye);
-	void DrawGaze(Mat img, const CLMTracker::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
+	void EstimateGaze(const LandmarkDetector::CLM& clm_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye);
+	void DrawGaze(Mat img, const LandmarkDetector::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
 
 }
 #endif

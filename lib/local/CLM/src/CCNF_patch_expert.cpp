@@ -45,10 +45,9 @@
 #include "stdafx.h"
 
 #include "CCNF_patch_expert.h"
+#include "LandmarkDetectorUtils.h"
 
-#include "CLM_utils.h"
-
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 // Compute sigmas for all landmarks for a particular view and window size
 void CCNF_patch_expert::ComputeSigmas(std::vector<Mat_<float> > sigma_components, int window_size)
@@ -103,7 +102,7 @@ void CCNF_neuron::Read(ifstream &stream)
 	stream.read ((char*)&bias, 8);
 	stream.read ((char*)&alpha, 8);
 	
-	CLMTracker::ReadMatBin(stream, weights); 
+	LandmarkDetector::ReadMatBin(stream, weights); 
 
 }
 

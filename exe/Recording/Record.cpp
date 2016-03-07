@@ -183,7 +183,7 @@ int main (int argc, char **argv)
 
 	double freq = cv::getTickFrequency();
 
-	double init_time = cv::getTickCount();
+	double init_time = (double)cv::getTickCount();
 
 	int frameProc = 0;
 	while(!img.empty())

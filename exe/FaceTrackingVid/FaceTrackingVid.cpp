@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2015, University of Cambridge,
+// Copyright (C) 2016, University of Cambridge, Carnegie Mellon University
 // all rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -37,18 +37,17 @@
 //       not limited to academic journal and conference publications, technical
 //       reports and manuals, must cite one of the following works:
 //
-//       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 3D
-//       Constrained Local Model for Rigid and Non-Rigid Facial Tracking.
-//       IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2012.    
-//
 //       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 
-//       Constrained Local Neural Fields for robust facial landmark detection in the wild.
-//       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
+//       OpenFace: an open source facial behavior analysis toolkit.
+//       IEEE Winter Conference on Applications of Computer Vision (WACV), 2016.    
+//  
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-// SimpleCLM.cpp : Defines the entry point for the console application.
-#include "CLM_core.h"
+// FaceTrackingVid.cpp : Defines the entry point for the console application.
+
+// Libraries for landmark detection (includes CLNF and CLM modules)
+#include "LandmarkCoreIncludes.h"
 
 #include <fstream>
 #include <sstream>
@@ -95,19 +94,19 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const CLMTracker::CLM& clm_model, const CLMTracker::CLMParameters& clm_parameters, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLM& face_model, const LandmarkDetector::FaceModelParameters& clm_parameters, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
-	double detection_certainty = clm_model.detection_certainty;
-	bool detection_success = clm_model.detection_success;
+	double detection_certainty = face_model.detection_certainty;
+	bool detection_success = face_model.detection_success;
 
 	double visualisation_boundary = 0.2;
 
 	// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 	if (detection_certainty < visualisation_boundary)
 	{
-		CLMTracker::Draw(captured_image, clm_model);
+		LandmarkDetector::Draw(captured_image, face_model);
 
 		double vis_certainty = detection_certainty;
 		if (vis_certainty > 1)
@@ -120,10 +119,10 @@ void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const CLM
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		Vec6d pose_estimate_to_draw = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+		Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(face_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
-		CLMTracker::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
+		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
 	}
 
@@ -167,21 +166,21 @@ int main (int argc, char **argv)
 	// By default try webcam 0
 	int device = 0;
 
-	CLMTracker::CLMParameters clm_parameters(arguments);
+	LandmarkDetector::FaceModelParameters clm_parameters(arguments);
 
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to world or camera coordinates
 	bool use_world_coordinates;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
 	
 	// The modules that are being used for tracking
-	CLMTracker::CLM clm_model(clm_parameters.model_location);	
+	LandmarkDetector::CLM clm_model(clm_parameters.model_location);	
 
 	// Grab camera parameters, if they are not defined (approximate values will be used)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
 	// Get camera parameters
-	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);
+	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
@@ -383,17 +382,17 @@ int main (int argc, char **argv)
 			}
 			
 			// The actual facial landmark detection / tracking
-			bool detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);
+			bool detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);
 
 			// Work out the pose of the head from the tracked model
-			Vec6d pose_estimate_CLM;
+			Vec6d head_pose_estimate;
 			if(use_world_coordinates)
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				head_pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
 			}
 			else
 			{
-				pose_estimate_CLM = CLMTracker::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
+				head_pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
 			}
 
 			// Visualising the results
@@ -432,8 +431,8 @@ int main (int argc, char **argv)
 			{
 				double confidence = 0.5 * (1 - clm_model.detection_certainty);
 				pose_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success
-					<< ", " << pose_estimate_CLM[0] << ", " << pose_estimate_CLM[1] << ", " << pose_estimate_CLM[2]
-					<< ", " << pose_estimate_CLM[3] << ", " << pose_estimate_CLM[4] << ", " << pose_estimate_CLM[5] << endl;
+					<< ", " << head_pose_estimate[0] << ", " << head_pose_estimate[1] << ", " << head_pose_estimate[2]
+					<< ", " << head_pose_estimate[3] << ", " << head_pose_estimate[4] << ", " << head_pose_estimate[5] << endl;
 			}
 
 			// output the tracked video

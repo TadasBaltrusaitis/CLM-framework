@@ -93,11 +93,11 @@ Point3f GetPupilPosition(Mat_<double> eyeLdmks3d){
 	return p;
 }
 
-void FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
+void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLM& clm_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
 {
-	Vec6d headPose = CLMTracker::GetPoseCamera(clm_model, fx, fy, cx, cy);
+	Vec6d headPose = LandmarkDetector::GetPoseCamera(clm_model, fx, fy, cx, cy);
 	Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
-	Matx33d rotMat = CLMTracker::Euler2RotationMatrix(eulerAngles);
+	Matx33d rotMat = LandmarkDetector::Euler2RotationMatrix(eulerAngles);
 
 	int part = -1;
 	for (size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
@@ -143,7 +143,7 @@ void FaceAnalysis::EstimateGaze(const CLMTracker::CLM& clm_model, Point3f& gaze_
 }
 
 
-void FaceAnalysis::DrawGaze(Mat img, const CLMTracker::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
+void FaceAnalysis::DrawGaze(Mat img, const LandmarkDetector::CLM& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
 {
 
 	Mat cameraMat = (Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);

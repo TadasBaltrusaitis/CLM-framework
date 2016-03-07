@@ -48,14 +48,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 
-#include <CLM_utils.h>
+#include <LandmarkDetectorUtils.h>
 
 using namespace boost::filesystem;
 
 using namespace cv;
 using namespace std;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 
 // Useful utility for creating directories for storing the output files
@@ -563,7 +563,7 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 		Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
 		result.create(corrSize);
 	}
-    CLMTracker::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
+    LandmarkDetector::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
 
     if( method == CV_TM_CCORR )
         return;
@@ -841,7 +841,7 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 	// The size of the head is roughly 200mm x 200mm x 200mm
 	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
 
-	Matx33d rot = CLMTracker::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
+	Matx33d rot = LandmarkDetector::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
 	Mat_<double> rotBox;
 	
 	// Rotate the box
@@ -908,7 +908,7 @@ vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, floa
 	// The size of the head is roughly 200mm x 200mm x 200mm
 	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
 
-	Matx33d rot = CLMTracker::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
+	Matx33d rot = LandmarkDetector::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
 	Mat_<double> rotBox;
 	
 	// Rotate the box
@@ -1221,7 +1221,7 @@ Vec3d RotationMatrix2Euler(const Matx33d& rotation_matrix)
 
 Vec3d Euler2AxisAngle(const Vec3d& euler)
 {
-	Matx33d rotMatrix = CLMTracker::Euler2RotationMatrix(euler);
+	Matx33d rotMatrix = LandmarkDetector::Euler2RotationMatrix(euler);
 	Vec3d axis_angle;
 	cv::Rodrigues(rotMatrix, axis_angle);
 	return axis_angle;
@@ -1303,7 +1303,7 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	// The tracker can return multiple faces
 	vector<Rect_<double> > face_detections;
 				
-	bool detect_success = CLMTracker::DetectFaces(face_detections, intensity_image, classifier);
+	bool detect_success = LandmarkDetector::DetectFaces(face_detections, intensity_image, classifier);
 					
 	if(detect_success)
 	{
@@ -1411,7 +1411,7 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 	vector<Rect_<double> > face_detections;
 	vector<double> confidences;
 
-	bool detect_success = CLMTracker::DetectFacesHOG(face_detections, intensity_img, detector, confidences);
+	bool detect_success = LandmarkDetector::DetectFacesHOG(face_detections, intensity_img, detector, confidences);
 					
 	if(detect_success)
 	{

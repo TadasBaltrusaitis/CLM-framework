@@ -47,7 +47,7 @@
 
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 
 //===========================================================================

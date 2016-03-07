@@ -48,10 +48,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 
-#include <CLM.h>
-#include <CLM_utils.h>
+#include <LandmarkDetectorModel.h>
+#include <LandmarkDetectorUtils.h>
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 //=============================================================================
 //=============================================================================
@@ -60,7 +60,7 @@ using namespace CLMTracker;
 // A default constructor
 CLM::CLM()
 {
-	CLMParameters parameters;
+	FaceModelParameters parameters;
 	this->Read(parameters.model_location);
 }
 
@@ -270,7 +270,7 @@ void CLM::Read_CLM(string clm_location)
 			cout << "Reading the Triangulations module from: " << location << "....";
 			ifstream triangulationFile(location.c_str(), ios_base::in);
 
-			CLMTracker::SkipComments(triangulationFile);
+			LandmarkDetector::SkipComments(triangulationFile);
 
 			int numViews;
 			triangulationFile >> numViews;
@@ -280,8 +280,8 @@ void CLM::Read_CLM(string clm_location)
 
 			for(int i = 0; i < numViews; ++i)
 			{
-				CLMTracker::SkipComments(triangulationFile);
-				CLMTracker::ReadMat(triangulationFile, triangulations[i]);
+				LandmarkDetector::SkipComments(triangulationFile);
+				LandmarkDetector::ReadMat(triangulationFile, triangulations[i]);
 			}
 			cout << "Done" << endl;
 		}
@@ -378,7 +378,7 @@ void CLM::Read(string main_location)
 
 			this->hierarchical_model_names.push_back(part_name);
 
-			CLMParameters params;
+			FaceModelParameters params;
 			params.validate_detections = false;
 			params.refine_hierarchical = false;
 			params.refine_parameters = false;
@@ -538,7 +538,7 @@ void CLM::Reset(double x, double y)
 }
 
 // The main internal landmark detection call (should not be used externally?)
-bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CLMParameters& params)
+bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params)
 {
 
 	// Fits from the current estimate of local and global parameters in clm_model
@@ -636,7 +636,7 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, CL
 }
 
 //=============================================================================
-bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vector<int>& window_sizes, const CLMParameters& clm_parameters)
+bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vector<int>& window_sizes, const FaceModelParameters& clm_parameters)
 {
 	// Making sure it is a single channel image
 	assert(im.channels() == 1);	
@@ -669,7 +669,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
-	CLMParameters tmp_parameters = clm_parameters;
+	FaceModelParameters tmp_parameters = clm_parameters;
 
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
 	for(int scale = 0; scale < num_scales; scale++)
@@ -840,7 +840,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const
 
 }
 
-void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const CLMParameters& parameters)
+void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters)
 {
 	int n = pdm.NumberOfPoints();  
 
@@ -885,7 +885,7 @@ void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, con
 //=============================================================================
 double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
-				  const CLMParameters& parameters)
+				  const FaceModelParameters& parameters)
 {		
 
 	int n = pdm.NumberOfPoints();  
@@ -1175,7 +1175,7 @@ Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy) const
 	// Need to rotate the shape to get the actual 3D representation
 	
 	// get the rotation matrix from the euler angles
-	Matx33d R = CLMTracker::Euler2RotationMatrix(Vec3d(params_global[1], params_global[2], params_global[3]));
+	Matx33d R = LandmarkDetector::Euler2RotationMatrix(Vec3d(params_global[1], params_global[2], params_global[3]));
 
 	shape3d = shape3d.reshape(1, 3);
 

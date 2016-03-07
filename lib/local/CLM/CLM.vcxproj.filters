@@ -4,18 +4,6 @@
     <ClCompile Include="src\CCNF_patch_expert.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="src\CLM.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CLM_utils.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CLMTracker.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DetectionValidator.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Patch_experts.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -31,27 +19,21 @@
     <ClCompile Include="src\SVR_patch_expert.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="src\LandmarkDetectorModel.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LandmarkDetectorUtils.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LandmarkDetectionValidator.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LandmarkDetectorFunc.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CCNF_patch_expert.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CLM.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CLM_utils.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CLM_core.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CLMParameters.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CLMTracker.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DetectionValidator.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Patch_experts.h">
@@ -67,6 +49,24 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="include\SVR_patch_expert.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkDetectorParameters.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkDetectorUtils.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkDetectorModel.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkDetectionValidator.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkCoreIncludes.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LandmarkDetectorFunc.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

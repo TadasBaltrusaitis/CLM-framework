@@ -51,16 +51,16 @@
 //
 //  Tadas Baltrusaitis
 //  01/05/2012
-#ifndef __CLM_PARAM_H
-#define __CLM_PARAM_H
+#ifndef __LANDMARK_DETECTOR_PARAM_H
+#define __LANDMARK_DETECTOR_PARAM_H
 
 using namespace cv;
 using namespace std;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 
-struct CLMParameters
+struct FaceModelParameters
 {
 
 	// A number of RLMS or NU-RLMS iterations
@@ -122,14 +122,14 @@ struct CLMParameters
 	// Using the brand new and experimental gaze tracker
 	bool track_gaze;
 
-	CLMParameters()
+	FaceModelParameters()
 	{
 		// initialise the default values
 		init();
 	}
 
 	// possible parameters are -clm 'file' which specifies the default location of main clm root
-	CLMParameters(vector<string> &arguments)
+	FaceModelParameters(vector<string> &arguments)
 	{
 		// initialise the default values
 	    init(); 

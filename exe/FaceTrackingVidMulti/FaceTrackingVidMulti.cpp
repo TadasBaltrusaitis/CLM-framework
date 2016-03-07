@@ -48,8 +48,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-// MultiTrackCLM.cpp : Defines the entry point for the multiple face tracking console application.
-#include "CLM_core.h"
+// FaceTrackingVidMulti.cpp : Defines the entry point for the multiple face tracking console application.
+#include "LandmarkCoreIncludes.h"
 
 #include <fstream>
 #include <sstream>
@@ -93,7 +93,7 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-void NonOverlapingDetections(const vector<CLMTracker::CLM>& clm_models, vector<Rect_<double> >& face_detections)
+void NonOverlapingDetections(const vector<LandmarkDetector::CLM>& clm_models, vector<Rect_<double> >& face_detections)
 {
 
 	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
@@ -131,29 +131,29 @@ int main (int argc, char **argv)
 	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
     float fx = 600, fy = 600, cx = 0, cy = 0;
 			
-	CLMTracker::CLMParameters clm_params(arguments);
+	LandmarkDetector::FaceModelParameters clm_params(arguments);
 	clm_params.use_face_template = true;	
 	// This is so that the model would not try re-initialising itself
 	clm_params.reinit_video_every = -1;
 
-	clm_params.curr_face_detector = CLMTracker::CLMParameters::HOG_SVM_DETECTOR;
+	clm_params.curr_face_detector = LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR;
 
-	vector<CLMTracker::CLMParameters> clm_parameters;
+	vector<LandmarkDetector::FaceModelParameters> clm_parameters;
 	clm_parameters.push_back(clm_params);	
 
 	// Get the input output file parameters
 	bool use_world_coords;
-	CLMTracker::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coords, arguments);
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coords, arguments);
 	// Get camera parameters
-	CLMTracker::get_camera_params(device, fx, fy, cx, cy, arguments);    
+	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 	
 	// The modules that are being used for tracking
-	vector<CLMTracker::CLM> clm_models;
+	vector<LandmarkDetector::CLM> clm_models;
 	vector<bool> active_models;
 
 	int num_faces_max = 4;
 
-	CLMTracker::CLM clm_model(clm_parameters[0].model_location);
+	LandmarkDetector::CLM clm_model(clm_parameters[0].model_location);
 	clm_model.face_detector_HAAR.load(clm_parameters[0].face_detector_location);
 	clm_model.face_detector_location = clm_parameters[0].face_detector_location;
 	
@@ -307,14 +307,14 @@ int main (int argc, char **argv)
 			// Get the detections (every 8th frame and when there are free models available for tracking)
 			if(frame_count % 8 == 0 && !all_models_active)
 			{				
-				if(clm_parameters[0].curr_face_detector == CLMTracker::CLMParameters::HOG_SVM_DETECTOR)
+				if(clm_parameters[0].curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
 				{
 					vector<double> confidences;
-					CLMTracker::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);				
+					LandmarkDetector::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);
 				}
 				else
 				{
-					CLMTracker::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
+					LandmarkDetector::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
 				}
 
 			}
@@ -354,7 +354,7 @@ int main (int argc, char **argv)
 
 							// This ensures that a wider window is used for the initial landmark localisation
 							clm_models[model].detection_success = false;
-							detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clm_models[model], clm_parameters[model]);
+							detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clm_models[model], clm_parameters[model]);
 													
 							// This activates the model
 							active_models[model] = true;
@@ -368,7 +368,7 @@ int main (int argc, char **argv)
 				else
 				{
 					// The actual facial landmark detection / tracking
-					detection_success = CLMTracker::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
+					detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
 				}
 			});
 								
@@ -384,7 +384,7 @@ int main (int argc, char **argv)
 				// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 				if(detection_certainty < visualisation_boundary)
 				{
-					CLMTracker::Draw(disp_image, clm_models[model]);
+					LandmarkDetector::Draw(disp_image, clm_models[model]);
 
 					if(detection_certainty > 1)
 						detection_certainty = 1;
@@ -397,10 +397,10 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = CLMTracker::GetCorrectedPoseWorld(clm_models[model], fx, fy, cx, cy);
+					Vec6d pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseWorld(clm_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
-					CLMTracker::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
+					LandmarkDetector::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 				}
 			}
 

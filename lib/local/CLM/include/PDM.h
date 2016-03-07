@@ -49,11 +49,11 @@
 #ifndef __PDM_h_
 #define __PDM_h_
 
-#include "CLMParameters.h"
+#include "LandmarkDetectorParameters.h"
 
 using namespace cv;
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 //===========================================================================
 // A linear 3D Point Distribution Model (constructed using Non-Rigid structure from motion or PCA)
@@ -91,7 +91,7 @@ class PDM{
 		// Listing the number of modes of variation
 		inline int NumberOfModes() const {return princ_comp.cols;}
 
-		void Clamp(Mat_<float>& params_local, Vec6d& params_global, const CLMParameters& params);
+		void Clamp(Mat_<float>& params_local, Vec6d& params_global, const FaceModelParameters& params);
 
 		// Compute shape in object space (3D)
 		void CalcShape3D(Mat_<double>& out_shape, const Mat_<double>& params_local) const;

@@ -49,9 +49,9 @@
 #include "stdafx.h"
 
 #include "SVR_patch_expert.h"
-#include "CLM_utils.h"
+#include "LandmarkDetectorUtils.h"
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 //===========================================================================
 // Computing the image gradient
@@ -117,7 +117,7 @@ void SVR_patch_expert::Read(ifstream &stream)
 	assert(read_type == 2);
   
 	stream >> type >> confidence >> scaling >> bias;
-	CLMTracker::ReadMat(stream, weights); 
+	LandmarkDetector::ReadMat(stream, weights); 
 	
 	// OpenCV and Matlab matrix cardinality is different, hence the transpose
 	weights = weights.t();

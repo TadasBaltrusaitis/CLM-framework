@@ -53,7 +53,7 @@
 #include "CCNF_patch_expert.h"
 #include "PDM.h"
 
-namespace CLMTracker
+namespace LandmarkDetector
 {
 //===========================================================================
 /** 

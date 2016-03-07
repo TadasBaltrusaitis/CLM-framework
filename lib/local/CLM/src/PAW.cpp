@@ -49,9 +49,9 @@
 #include "stdafx.h"
 
 #include "PAW.h"
-#include "CLM_utils.h"
+#include "LandmarkDetectorUtils.h"
 
-using namespace CLMTracker;
+using namespace LandmarkDetector;
 
 using namespace cv;
 
@@ -279,19 +279,19 @@ void PAW::Read(std::ifstream& stream)
 	stream.read ((char*)&min_x, 8);
 	stream.read ((char*)&min_y, 8);
 
-	CLMTracker::ReadMatBin(stream, destination_landmarks);
+	LandmarkDetector::ReadMatBin(stream, destination_landmarks);
 
-	CLMTracker::ReadMatBin(stream, triangulation);
+	LandmarkDetector::ReadMatBin(stream, triangulation);
 
-	CLMTracker::ReadMatBin(stream, triangle_id);
+	LandmarkDetector::ReadMatBin(stream, triangle_id);
 	
 	cv::Mat tmpMask;	
-	CLMTracker::ReadMatBin(stream, tmpMask);	
+	LandmarkDetector::ReadMatBin(stream, tmpMask);	
 	tmpMask.convertTo(pixel_mask, CV_8U);	
 	
-	CLMTracker::ReadMatBin(stream, alpha);
+	LandmarkDetector::ReadMatBin(stream, alpha);
 
-	CLMTracker::ReadMatBin(stream, beta);
+	LandmarkDetector::ReadMatBin(stream, beta);
 
 	map_x.create(pixel_mask.rows,pixel_mask.cols);
 	map_y.create(pixel_mask.rows,pixel_mask.cols);
