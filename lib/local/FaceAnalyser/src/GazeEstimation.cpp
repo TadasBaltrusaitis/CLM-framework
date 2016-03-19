@@ -93,20 +93,20 @@ Point3f GetPupilPosition(Mat_<double> eyeLdmks3d){
 	return p;
 }
 
-void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clm_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
+void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
 {
-	Vec6d headPose = LandmarkDetector::GetPoseCamera(clm_model, fx, fy, cx, cy);
+	Vec6d headPose = LandmarkDetector::GetPoseCamera(clnf_model, fx, fy, cx, cy);
 	Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
 	Matx33d rotMat = LandmarkDetector::Euler2RotationMatrix(eulerAngles);
 
 	int part = -1;
-	for (size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	for (size_t i = 0; i < clnf_model.hierarchical_models.size(); ++i)
 	{
-		if (left_eye && clm_model.hierarchical_model_names[i].compare("left_eye_28") == 0)
+		if (left_eye && clnf_model.hierarchical_model_names[i].compare("left_eye_28") == 0)
 		{
 			part = i;
 		}
-		if (!left_eye && clm_model.hierarchical_model_names[i].compare("right_eye_28") == 0)
+		if (!left_eye && clnf_model.hierarchical_model_names[i].compare("right_eye_28") == 0)
 		{
 			part = i;
 		}
@@ -117,12 +117,12 @@ void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clm_model, Point3f
 		std::cout << "Couldn't find the eye model, something wrong" << std::endl;
 	}
 
-	Mat eyeLdmks3d = clm_model.hierarchical_models[part].GetShape(fx, fy, cx, cy);
+	Mat eyeLdmks3d = clnf_model.hierarchical_models[part].GetShape(fx, fy, cx, cy);
 
 	Point3f pupil = GetPupilPosition(eyeLdmks3d);
 	Point3f rayDir = pupil / norm(pupil);
 
-	Mat faceLdmks3d = clm_model.GetShape(fx, fy, cx, cy);
+	Mat faceLdmks3d = clnf_model.GetShape(fx, fy, cx, cy);
 	faceLdmks3d = faceLdmks3d.t();
 	Mat offset = (Mat_<double>(3, 1) << 0, -3.50, 0);
 	int eyeIdx = 1;
@@ -143,29 +143,29 @@ void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clm_model, Point3f
 }
 
 
-void FaceAnalysis::DrawGaze(Mat img, const LandmarkDetector::CLNF& clm_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
+void FaceAnalysis::DrawGaze(Mat img, const LandmarkDetector::CLNF& clnf_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
 {
 
 	Mat cameraMat = (Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);
 
 	int part_left = -1;
 	int part_right = -1;
-	for (size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	for (size_t i = 0; i < clnf_model.hierarchical_models.size(); ++i)
 	{
-		if (clm_model.hierarchical_model_names[i].compare("left_eye_28") == 0)
+		if (clnf_model.hierarchical_model_names[i].compare("left_eye_28") == 0)
 		{
 			part_left = i;
 		}
-		if (clm_model.hierarchical_model_names[i].compare("right_eye_28") == 0)
+		if (clnf_model.hierarchical_model_names[i].compare("right_eye_28") == 0)
 		{
 			part_right = i;
 		}
 	}
 
-	Mat eyeLdmks3d_left = clm_model.hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
+	Mat eyeLdmks3d_left = clnf_model.hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
 	Point3f pupil_left = GetPupilPosition(eyeLdmks3d_left);
 
-	Mat eyeLdmks3d_right = clm_model.hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
+	Mat eyeLdmks3d_right = clnf_model.hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
 	Point3f pupil_right = GetPupilPosition(eyeLdmks3d_right);
 
 	vector<Point3d> points_left;

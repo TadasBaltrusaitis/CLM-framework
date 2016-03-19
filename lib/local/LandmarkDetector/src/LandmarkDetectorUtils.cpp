@@ -1016,13 +1016,13 @@ vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<cv::Point2d> CalculateLandmarks(CLNF& clm_model)
+vector<cv::Point2d> CalculateLandmarks(CLNF& clnf_model)
 {
 
-	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
+	int idx = clnf_model.patch_experts.GetViewIdx(clnf_model.params_global, 0);
 
 	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
-	return CalculateLandmarks(clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
+	return CalculateLandmarks(clnf_model.detected_landmarks, clnf_model.patch_experts.visibilities[0][idx]);
 
 }
 
@@ -1140,20 +1140,20 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D)
 }
 
 // Drawing detected landmarks on a face image
-void Draw(cv::Mat img, const CLNF& clm_model)
+void Draw(cv::Mat img, const CLNF& clnf_model)
 {
 
-	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
+	int idx = clnf_model.patch_experts.GetViewIdx(clnf_model.params_global, 0);
 
 	// Because we only draw visible points, need to find which points patch experts consider visible at a certain orientation
-	Draw(img, clm_model.detected_landmarks, clm_model.patch_experts.visibilities[0][idx]);
+	Draw(img, clnf_model.detected_landmarks, clnf_model.patch_experts.visibilities[0][idx]);
 
 	// If the model has hierarchical updates draw those too
-	for(size_t i = 0; i < clm_model.hierarchical_models.size(); ++i)
+	for(size_t i = 0; i < clnf_model.hierarchical_models.size(); ++i)
 	{
-		if(clm_model.hierarchical_models[i].pdm.NumberOfPoints() != clm_model.hierarchical_mapping[i].size())
+		if(clnf_model.hierarchical_models[i].pdm.NumberOfPoints() != clnf_model.hierarchical_mapping[i].size())
 		{
-			Draw(img, clm_model.hierarchical_models[i]);
+			Draw(img, clnf_model.hierarchical_models[i]);
 		}
 	}
 }
@@ -1280,7 +1280,7 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 	for( size_t face = 0; face < o_regions.size(); ++face)
 	{
 		// OpenCV is overgenerous with face size and y location is off
-		// CLM expect the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
+		// CLNF detector expects the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
 
 		// The scalings were learned using the Face Detections on LFPW, Helen, AFW and iBUG datasets, using ground truth and detections from openCV
 
@@ -1385,7 +1385,7 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 
 	for( size_t face = 0; face < o_regions.size(); ++face)
 	{
-		// CLM expect the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
+		// CLNF expects the bounding box to encompass from eyebrow to chin in y, and from cheeck outline to cheeck outline in x, so we need to compensate
 
 		// The scalings were learned using the Face Detections on LFPW and Helen using ground truth and detections from the HOG detector
 

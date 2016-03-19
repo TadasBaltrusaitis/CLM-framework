@@ -47,7 +47,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//  Header for all external CLM methods of interest to the user
+//  Header for all external CLNF/CLM-Z/CLM methods of interest to the user
 //
 //
 //  Tadas Baltrusaitis
@@ -63,7 +63,7 @@ using namespace cv;
 namespace LandmarkDetector
 {
 	//===========================================================================	
-	// Defining a set of useful utility functions to be used within CLM
+	// Defining a set of useful utility functions to be used within CLNF
 
 
 	//=============================================================================================
@@ -107,13 +107,12 @@ namespace LandmarkDetector
 	void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thickness);
 
 	vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities);
-	vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D);
-	vector<Point2d> CalculateLandmarks(CLNF& clm_model);
+	vector<Point2d> CalculateLandmarks(CLNF& clnf_model);
 	void DrawLandmarks(cv::Mat img, vector<Point> landmarks);
 
 	void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilities);
 	void Draw(cv::Mat img, const Mat_<double>& shape2D);
-	void Draw(cv::Mat img, const CLNF& clm_model);
+	void Draw(cv::Mat img, const CLNF& clnf_model);
 
 
 	//===========================================================================

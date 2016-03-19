@@ -326,7 +326,7 @@ int main (int argc, char **argv)
 
 			// Go through every model and update the tracking TODO pull out as a separate parallel/non-parallel method
 			tbb::parallel_for(0, (int)clnf_models.size(), [&](int model){
-			//for(unsigned int model = 0; model < clm_models.size(); ++model)
+			//for(unsigned int model = 0; model < clnf_models.size(); ++model)
 			//{
 
 				bool detection_success = false;
@@ -397,10 +397,10 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseWorld(clnf_models[model], fx, fy, cx, cy);
+					Vec6d pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
-					LandmarkDetector::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
+					LandmarkDetector::DrawBox(disp_image, pose_estimate, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 				}
 			}
 

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2014, University of Southern California and University of Cambridge,
+// Copyright (C) 2016, Carnegie Mellon University and University of Cambridge,
 // all rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
@@ -128,7 +128,6 @@ struct FaceModelParameters
 		init();
 	}
 
-	// possible parameters are -clm 'file' which specifies the default location of main clm root
 	FaceModelParameters(vector<string> &arguments)
 	{
 		// initialise the default values
@@ -242,7 +241,7 @@ struct FaceModelParameters
 			}
 			else if (arguments[i].compare("-help") == 0)
 			{
-				cout << "CLM parameters are defined as follows: -mloc <location of model file> -pdm_loc <override pdm location> -w_reg <weight term for patch rel.> -reg <prior regularisation> -clm_sigma <float sigma term> -fcheck <should face checking be done 0/1> -n_iter <num EM iterations> -clwild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
+				cout << "CLNF parameters are defined as follows: -mloc <location of model file> -pdm_loc <override pdm location> -w_reg <weight term for patch rel.> -reg <prior regularisation> -clm_sigma <float sigma term> -fcheck <should face checking be done 0/1> -n_iter <num EM iterations> -clwild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
 			}
 		}
 
@@ -270,7 +269,7 @@ struct FaceModelParameters
 		void init()
 		{
 
-			// number of iterations that will be performed at each clm scale
+			// number of iterations that will be performed at each scale
 			num_optimisation_iteration = 5;
 			
 			// using an external face checker based on SVM
@@ -336,4 +335,4 @@ struct FaceModelParameters
 
 }
 
-#endif // __CLM_PARAM_H
+#endif // __LANDMARK_DETECTOR_PARAM_H

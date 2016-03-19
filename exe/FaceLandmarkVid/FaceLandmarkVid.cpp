@@ -94,7 +94,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& clm_parameters, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -141,7 +141,7 @@ void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const Lan
 	fpsSt += fpsC;
 	cv::putText(captured_image, fpsSt, cv::Point(10, 20), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255, 0, 0));
 
-	if (!clm_parameters.quiet_mode)
+	if (!det_parameters.quiet_mode)
 	{
 		namedWindow("tracking_result", 1);
 		imshow("tracking_result", captured_image);
@@ -166,7 +166,7 @@ int main (int argc, char **argv)
 	// By default try webcam 0
 	int device = 0;
 
-	LandmarkDetector::FaceModelParameters clm_parameters(arguments);
+	LandmarkDetector::FaceModelParameters det_parameters(arguments);
 
 	// Get the input output file parameters
 	
@@ -175,7 +175,7 @@ int main (int argc, char **argv)
 	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
 	
 	// The modules that are being used for tracking
-	LandmarkDetector::CLNF clm_model(clm_parameters.model_location);	
+	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	
 
 	// Grab camera parameters, if they are not defined (approximate values will be used)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
@@ -288,10 +288,10 @@ int main (int argc, char **argv)
 		{
 			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
 			landmarks_output_file << "frame, timestamp, confidence, success";
-			for (int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
 				landmarks_output_file << ", x" << i;
 
-			for (int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
 				landmarks_output_file << ", y" << i;
 
 			landmarks_output_file << endl;
@@ -303,13 +303,13 @@ int main (int argc, char **argv)
 			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
 
 			landmarks_3D_output_file << "frame, timestamp, confidence, success";
-			for (int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
 				landmarks_3D_output_file << ", X" << i;
 
-			for (int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
 				landmarks_3D_output_file << ", Y" << i;
 
-			for (int i = 0; i < clm_model.pdm.NumberOfPoints(); ++i)
+			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
 				landmarks_3D_output_file << ", Z" << i;
 
 			landmarks_3D_output_file << endl;
@@ -382,33 +382,33 @@ int main (int argc, char **argv)
 			}
 			
 			// The actual facial landmark detection / tracking
-			bool detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clm_model, clm_parameters);
+			bool detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clnf_model, det_parameters);
 
 			// Work out the pose of the head from the tracked model
 			Vec6d head_pose_estimate;
 			if(use_world_coordinates)
 			{
-				head_pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				head_pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 			}
 			else
 			{
-				head_pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(clm_model, fx, fy, cx, cy);
+				head_pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(clnf_model, fx, fy, cx, cy);
 			}
 
 			// Visualising the results
 			// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
-			double detection_certainty = clm_model.detection_certainty;
+			double detection_certainty = clnf_model.detection_certainty;
 
-			visualise_tracking(captured_image, depth_image, clm_model, clm_parameters, frame_count, fx, fy, cx, cy);
+			visualise_tracking(captured_image, depth_image, clnf_model, det_parameters, frame_count, fx, fy, cx, cy);
 
 			// Output the detected facial landmarks
 			if(!landmark_output_files.empty())
 			{
-				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
 				landmarks_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 2; ++ i)
+				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 2; ++ i)
 				{
-					landmarks_output_file << ", " << clm_model.detected_landmarks.at<double>(i);
+					landmarks_output_file << ", " << clnf_model.detected_landmarks.at<double>(i);
 				}
 				landmarks_output_file << endl;
 			}
@@ -416,10 +416,10 @@ int main (int argc, char **argv)
 			// Output the detected facial landmarks
 			if(!landmark_3D_output_files.empty())
 			{
-				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
 				landmarks_3D_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				Mat_<double> shape_3D = clm_model.GetShape(fx, fy, cx, cy);
-				for (int i = 0; i < clm_model.pdm.NumberOfPoints() * 3; ++i)
+				Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
+				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 3; ++i)
 				{
 					landmarks_3D_output_file << ", " << shape_3D.at<double>(i);
 				}
@@ -429,7 +429,7 @@ int main (int argc, char **argv)
 			// Output the estimated head pose
 			if(!pose_output_files.empty())
 			{
-				double confidence = 0.5 * (1 - clm_model.detection_certainty);
+				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
 				pose_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success
 					<< ", " << head_pose_estimate[0] << ", " << head_pose_estimate[1] << ", " << head_pose_estimate[2]
 					<< ", " << head_pose_estimate[3] << ", " << head_pose_estimate[4] << ", " << head_pose_estimate[5] << endl;
@@ -449,7 +449,7 @@ int main (int argc, char **argv)
 			// restart the tracker
 			if(character_press == 'r')
 			{
-				clm_model.Reset();
+				clnf_model.Reset();
 			}
 			// quit the application
 			else if(character_press=='q')
@@ -465,7 +465,7 @@ int main (int argc, char **argv)
 		frame_count = 0;
 
 		// Reset the model, for the next video
-		clm_model.Reset();
+		clnf_model.Reset();
 
 		pose_output_file.close();
 		landmarks_output_file.close();

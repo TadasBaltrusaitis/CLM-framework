@@ -174,7 +174,7 @@ void write_out_pose_landmarks(const string& outfeatures, const Mat_<double>& sha
 	}
 }
 
-void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF& clm_model)
+void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF& clnf_model)
 {
 	create_directory_from_file(outfeatures);
 	std::ofstream featuresFile;
@@ -182,7 +182,7 @@ void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF
 
 	if(featuresFile.is_open())
 	{	
-		int n = clm_model.patch_experts.visibilities[0][0].rows;
+		int n = clnf_model.patch_experts.visibilities[0][0].rows;
 		featuresFile << "version: 1" << endl;
 		featuresFile << "npoints: " << n << endl;
 		featuresFile << "{" << endl;
@@ -190,14 +190,14 @@ void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF
 		for (int i = 0; i < n; ++ i)
 		{
 			// Use matlab format, so + 1
-			featuresFile << clm_model.detected_landmarks.at<double>(i) + 1 << " " << clm_model.detected_landmarks.at<double>(i+n) + 1 << endl;
+			featuresFile << clnf_model.detected_landmarks.at<double>(i) + 1 << " " << clnf_model.detected_landmarks.at<double>(i+n) + 1 << endl;
 		}
 		featuresFile << "}" << endl;		
 
 	}
 }
 
-void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLNF& clm_model)
+void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLNF& clnf_model)
 {
 	
 	// Draw head pose if present and draw eye gaze as well
@@ -206,8 +206,8 @@ void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector:
 	display_image = orig.clone();		
 
 	// Creating a display image			
-	Mat xs = clm_model.detected_landmarks(Rect(0, 0, 1, clm_model.detected_landmarks.rows/2));
-	Mat ys = clm_model.detected_landmarks(Rect(0, clm_model.detected_landmarks.rows/2, 1, clm_model.detected_landmarks.rows/2));
+	Mat xs = clnf_model.detected_landmarks(Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2));
+	Mat ys = clnf_model.detected_landmarks(Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2));
 	double min_x, max_x, min_y, max_y;
 
 	cv::minMaxLoc(xs, &min_x, &max_x);
@@ -234,28 +234,28 @@ void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector:
 	xs = (xs - minCropX)*scaling;
 	ys = (ys - minCropY)*scaling;
 
-	Mat shape = clm_model.detected_landmarks.clone();
+	Mat shape = clnf_model.detected_landmarks.clone();
 
-	xs.copyTo(shape(Rect(0, 0, 1, clm_model.detected_landmarks.rows/2)));
-	ys.copyTo(shape(Rect(0, clm_model.detected_landmarks.rows/2, 1, clm_model.detected_landmarks.rows/2)));
+	xs.copyTo(shape(Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2)));
+	ys.copyTo(shape(Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2)));
 
 	// Do the shifting for the hierarchical models as well
-	for (size_t part = 0; part < clm_model.hierarchical_models.size(); ++part)
+	for (size_t part = 0; part < clnf_model.hierarchical_models.size(); ++part)
 	{
-		Mat xs = clm_model.hierarchical_models[part].detected_landmarks(Rect(0, 0, 1, clm_model.hierarchical_models[part].detected_landmarks.rows / 2));
-		Mat ys = clm_model.hierarchical_models[part].detected_landmarks(Rect(0, clm_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clm_model.hierarchical_models[part].detected_landmarks.rows / 2));
+		Mat xs = clnf_model.hierarchical_models[part].detected_landmarks(Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
+		Mat ys = clnf_model.hierarchical_models[part].detected_landmarks(Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
 
 		xs = (xs - minCropX)*scaling;
 		ys = (ys - minCropY)*scaling;
 
-		Mat shape = clm_model.hierarchical_models[part].detected_landmarks.clone();
+		Mat shape = clnf_model.hierarchical_models[part].detected_landmarks.clone();
 
-		xs.copyTo(shape(Rect(0, 0, 1, clm_model.hierarchical_models[part].detected_landmarks.rows / 2)));
-		ys.copyTo(shape(Rect(0, clm_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clm_model.hierarchical_models[part].detected_landmarks.rows / 2)));
+		xs.copyTo(shape(Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
+		ys.copyTo(shape(Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
 
 	}
 
-	LandmarkDetector::Draw(display_image, clm_model);
+	LandmarkDetector::Draw(display_image, clnf_model);
 						
 }
 
@@ -272,9 +272,9 @@ int main (int argc, char **argv)
 	vector<Rect_<double> > bounding_boxes;
 	
 	LandmarkDetector::get_image_input_output_params(files, depth_files, output_landmark_locations, output_pose_locations, output_images, bounding_boxes, arguments);
-	LandmarkDetector::FaceModelParameters clm_parameters(arguments);	
+	LandmarkDetector::FaceModelParameters det_parameters(arguments);	
 	// No need to validate detections, as we're not doing tracking
-	clm_parameters.validate_detections = false;
+	det_parameters.validate_detections = false;
 
 	// Grab camera parameters if provided (only used for pose and eye gaze and are quite important for accurate estimates)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
@@ -295,13 +295,13 @@ int main (int argc, char **argv)
 
 	// The modules that are being used for tracking
 	cout << "Loading the model" << endl;
-	LandmarkDetector::CLNF clm_model(clm_parameters.model_location);
+	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);
 	cout << "Model loaded" << endl;
 	
-	CascadeClassifier classifier(clm_parameters.face_detector_location);	
+	CascadeClassifier classifier(det_parameters.face_detector_location);	
 	dlib::frontal_face_detector face_detector_hog = dlib::get_frontal_face_detector();
 
-	bool visualise = !clm_parameters.quiet_mode;
+	bool visualise = !det_parameters.quiet_mode;
 
 	// Do some image loading
 	for(size_t i = 0; i < files.size(); i++)
@@ -350,7 +350,7 @@ int main (int argc, char **argv)
 			// Detect faces in an image
 			vector<Rect_<double> > face_detections;
 
-			if(clm_parameters.curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
+			if(det_parameters.curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
 			{
 				vector<double> confidences;
 				LandmarkDetector::DetectFacesHOG(face_detections, grayscale_image, face_detector_hog, confidences);
@@ -366,10 +366,10 @@ int main (int argc, char **argv)
 			for(size_t face=0; face < face_detections.size(); ++face)
 			{
 				// if there are multiple detections go through them
-				bool success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clm_model, clm_parameters);
+				bool success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clnf_model, det_parameters);
 
 				// Estimate head pose and eye gaze				
-				Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 				// Gaze tracking, absolute gaze direction
 				Point3f gazeDirection0(0, 0, -1);
@@ -379,10 +379,10 @@ int main (int argc, char **argv)
 				Point3f gazeDirection0_head(0, 0, -1);
 				Point3f gazeDirection1_head(0, 0, -1);
 
-				if (success && clm_parameters.track_gaze)
+				if (success && det_parameters.track_gaze)
 				{
-					FaceAnalysis::EstimateGaze(clm_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-					FaceAnalysis::EstimateGaze(clm_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
 
 				}
 
@@ -402,7 +402,7 @@ int main (int argc, char **argv)
 					boost::filesystem::path fname = out_feat_path.filename().replace_extension("");
 					boost::filesystem::path ext = out_feat_path.extension();
 					string outfeatures = dir.string() + preferredSlash + fname.string() + string(name) + ext.string();
-					write_out_landmarks(outfeatures, clm_model);
+					write_out_landmarks(outfeatures, clnf_model);
 				}
 
 				if (!output_pose_locations.empty())
@@ -420,22 +420,22 @@ int main (int argc, char **argv)
 					boost::filesystem::path fname = out_pose_path.filename().replace_extension("");
 					boost::filesystem::path ext = out_pose_path.extension();
 					string outfeatures = dir.string() + preferredSlash + fname.string() + string(name) + ext.string();
-					write_out_pose_landmarks(outfeatures, clm_model.GetShape(fx, fy, cx, cy), headPose, gazeDirection0, gazeDirection1);
+					write_out_pose_landmarks(outfeatures, clnf_model.GetShape(fx, fy, cx, cy), headPose, gazeDirection0, gazeDirection1);
 
 				}
 
-				if (clm_parameters.track_gaze)
+				if (det_parameters.track_gaze)
 				{
-					Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+					Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 					// Draw it in reddish if uncertain, blueish if certain
 					LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
-					FaceAnalysis::DrawGaze(read_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+					FaceAnalysis::DrawGaze(read_image, clnf_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 				}
 
 				// displaying detected landmarks
 				Mat display_image;
-				create_display_image(read_image, display_image, clm_model);
+				create_display_image(read_image, display_image, clnf_model);
 
 				if(visualise && success)
 				{
@@ -478,10 +478,10 @@ int main (int argc, char **argv)
 		else
 		{
 			// Have provided bounding boxes
-			LandmarkDetector::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clm_model, clm_parameters);
+			LandmarkDetector::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clnf_model, det_parameters);
 
 			// Estimate head pose and eye gaze				
-			Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+			Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 			// Gaze tracking, absolute gaze direction
 			Point3f gazeDirection0(0, 0, -1);
@@ -491,39 +491,39 @@ int main (int argc, char **argv)
 			Point3f gazeDirection0_head(0,0, -1);
 			Point3f gazeDirection1_head(0, 0, -1);
 
-			if (clm_parameters.track_gaze)
+			if (det_parameters.track_gaze)
 			{
-				FaceAnalysis::EstimateGaze(clm_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-				FaceAnalysis::EstimateGaze(clm_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
 			}
 
 			// Writing out the detected landmarks
 			if(!output_landmark_locations.empty())
 			{
 				string outfeatures = output_landmark_locations.at(i);
-				write_out_landmarks(outfeatures, clm_model);
+				write_out_landmarks(outfeatures, clnf_model);
 			}
 
 			// Writing out the detected landmarks
 			if (!output_pose_locations.empty())
 			{
 				string outfeatures = output_pose_locations.at(i);
-				write_out_pose_landmarks(outfeatures, clm_model.GetShape(fx, fy, cx, cy), headPose, gazeDirection0, gazeDirection1);
+				write_out_pose_landmarks(outfeatures, clnf_model.GetShape(fx, fy, cx, cy), headPose, gazeDirection0, gazeDirection1);
 			}
 
 			// displaying detected stuff
 			Mat display_image;
 
-			if (clm_parameters.track_gaze)
+			if (det_parameters.track_gaze)
 			{
-				Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clm_model, fx, fy, cx, cy);
+				Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 				// Draw it in reddish if uncertain, blueish if certain
 				LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
-				FaceAnalysis::DrawGaze(read_image, clm_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+				FaceAnalysis::DrawGaze(read_image, clnf_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 			}
 
-			create_display_image(read_image, display_image, clm_model);
+			create_display_image(read_image, display_image, clnf_model);
 
 			if(visualise)
 			{

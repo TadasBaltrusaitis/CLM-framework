@@ -120,15 +120,15 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
-		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
+		Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
 	
 		// Discard the z component
 		similarity_normalised_shape = similarity_normalised_shape(Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
-		Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
+		Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
 		Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
 		// Aligning only the more rigid points
@@ -145,8 +145,8 @@ namespace FaceAnalysis
 		warp_matrix(1,0) = scale_rot_matrix(1,0);
 		warp_matrix(1,1) = scale_rot_matrix(1,1);
 
-		double tx = clm_model.params_global[4];
-		double ty = clm_model.params_global[5];
+		double tx = clnf_model.params_global[4];
+		double ty = clnf_model.params_global[5];
 
 		Vec2d T(tx, ty);
 		T = scale_rot_matrix * T;
@@ -159,15 +159,15 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
-		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
+		Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
 	
 		// Discard the z component
 		similarity_normalised_shape = similarity_normalised_shape(Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
-		Mat_<double> source_landmarks = clm_model.detected_landmarks.reshape(1, 2).t();
+		Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
 		Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
 		// Aligning only the more rigid points
@@ -184,8 +184,8 @@ namespace FaceAnalysis
 		warp_matrix(1,0) = scale_rot_matrix(1,0);
 		warp_matrix(1,1) = scale_rot_matrix(1,1);
 
-		double tx = clm_model.params_global[4];
-		double ty = clm_model.params_global[5];
+		double tx = clnf_model.params_global[4];
+		double ty = clnf_model.params_global[5];
 
 		Vec2d T(tx, ty);
 		T = scale_rot_matrix * T;
@@ -199,7 +199,7 @@ namespace FaceAnalysis
 		// Move the destination landmarks there as well
 		Matx22d warp_matrix_2d(warp_matrix(0,0), warp_matrix(0,1), warp_matrix(1,0), warp_matrix(1,1));
 		
-		destination_landmarks = Mat(clm_model.detected_landmarks.reshape(1, 2).t()) * Mat(warp_matrix_2d).t();
+		destination_landmarks = Mat(clnf_model.detected_landmarks.reshape(1, 2).t()) * Mat(warp_matrix_2d).t();
 
 		destination_landmarks.col(0) = destination_landmarks.col(0) + warp_matrix(0,2);
 		destination_landmarks.col(1) = destination_landmarks.col(1) + warp_matrix(1,2);

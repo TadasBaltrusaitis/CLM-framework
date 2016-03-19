@@ -152,11 +152,6 @@ void FaceAnalyser::GetLatestNeutralHOG(Mat_<double>& hog_descriptor, int& num_ro
 	}
 }
 
-void FaceAnalyser::GetLatestNeutralFace(Mat& image)
-{
-
-}
-
 // Getting the closest view center based on orientation
 int GetViewId(const vector<Vec3d> orientations_all, const cv::Vec3d& orientation)
 {
@@ -215,36 +210,15 @@ void FaceAnalyser::ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& 
 	}
 }
 
-void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, double timestamp_seconds, bool online, bool visualise)
+void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, double timestamp_seconds, bool online, bool visualise)
 {
-	// Check if a reset is needed first (TODO same person no reset)
-	//if(face_bounding_box.area() > 0)
-	//{
-	//	Rect_<double> new_bounding_box = clm.GetBoundingBox();
-
-	//	// If the box overlaps do not need a reset
-	//	double intersection_area = (face_bounding_box & new_bounding_box).area();
-	//	double union_area = face_bounding_box.area() + new_bounding_box.area() - 2 * intersection_area;
-
-	//	// If the model is already tracking what we're detecting ignore the detection, this is determined by amount of overlap
-	//	if( intersection_area/union_area < 0.5)
-	//	{
-	//		this->Reset();
-	//	}
-
-	//	face_bounding_box = new_bounding_box;
-	//}
-	//if(!clm.detection_success)
-	//{
-	//	this->Reset();
-	//}
 
 	frames_tracking++;
 
 	// First align the face if tracking was successfull
-	if(clm_model.detection_success)
+	if(clnf_model.detection_success)
 	{
-		AlignFaceMask(aligned_face, frame, clm_model, triangulation, true, align_scale, align_width, align_height);
+		AlignFaceMask(aligned_face, frame, clnf_model, triangulation, true, align_scale, align_width, align_height);
 	}
 	else
 	{
@@ -268,7 +242,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 	// Store the descriptor
 	hog_desc_frame = hog_descriptor;
 
-	Vec3d curr_orient(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]);
+	Vec3d curr_orient(clnf_model.params_global[1], clnf_model.params_global[2], clnf_model.params_global[3]);
 	int orientation_to_use = GetViewId(this->head_orientations, curr_orient);
 
 	// Only update the running median if predictions are not high
@@ -288,7 +262,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 	//	}
 	//}
 
-	update_median = update_median & clm_model.detection_success;
+	update_median = update_median & clnf_model.detection_success;
 
 	// A small speedup
 	if(frames_tracking % 2 == 1)
@@ -296,15 +270,15 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 		UpdateRunningMedian(this->hog_desc_hist[orientation_to_use], this->hog_hist_sum[orientation_to_use], this->hog_desc_median, hog_descriptor, update_median, this->num_bins_hog, this->min_val_hog, this->max_val_hog);
 	}	
 	// Geom descriptor and its median
-	geom_descriptor_frame = clm_model.params_local.t();
+	geom_descriptor_frame = clnf_model.params_local.t();
 	
-	if(!clm_model.detection_success)
+	if(!clnf_model.detection_success)
 	{
 		geom_descriptor_frame.setTo(0);
 	}
 
 	// Stack with the actual feature point locations (without mean)
-	Mat_<double> locs = clm_model.pdm.princ_comp * geom_descriptor_frame.t();
+	Mat_<double> locs = clnf_model.pdm.princ_comp * geom_descriptor_frame.t();
 	
 	cv::hconcat(locs.t(), geom_descriptor_frame.clone(), geom_descriptor_frame);
 	
@@ -334,11 +308,11 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 	std::vector<std::pair<std::string, double>> AU_predictions_reg_corrected;
 	if(online)
 	{
-		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clm_model.detection_success);
+		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clnf_model.detection_success);
 	}
 
 	// Keep only closer to in-plane faces
-	double angle_norm = cv::sqrt(clm_model.params_global[2] * clm_model.params_global[2] + clm_model.params_global[3] * clm_model.params_global[3]);
+	double angle_norm = cv::sqrt(clnf_model.params_global[2] * clnf_model.params_global[2] + clnf_model.params_global[3] * clnf_model.params_global[3]);
 
 	// Add the reg predictions to the historic data
 	for (size_t au = 0; au < AU_predictions_reg.size(); ++au)
@@ -346,7 +320,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clnf_model.detection_success && angle_norm < 0.4)
 		{
 			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
 		}
@@ -363,7 +337,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clnf_model.detection_success && angle_norm < 0.4)
 		{
 			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
 		}
@@ -383,9 +357,9 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 
 	view_used = orientation_to_use;
 			
-	bool success = clm_model.detection_success && angle_norm < 0.4;
+	bool success = clnf_model.detection_success && angle_norm < 0.4;
 
-	confidences.push_back(clm_model.detection_certainty);
+	confidences.push_back(clnf_model.detection_certainty);
 	valid_preds.push_back(success);
 	timestamps.push_back(timestamp_seconds);
 }
@@ -395,13 +369,13 @@ void FaceAnalyser::GetGeomDescriptor(Mat_<double>& geom_desc)
 	geom_desc = this->geom_descriptor_frame.clone();
 }
 
-void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLNF& clm_model, bool online)
+void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLNF& clnf_model, bool online)
 {
 	// Store the descriptor
 	hog_desc_frame = hog_features.clone();
 	this->geom_descriptor_frame = geom_features.clone();
 
-	Vec3d curr_orient(clm_model.params_global[1], clm_model.params_global[2], clm_model.params_global[3]);
+	Vec3d curr_orient(clnf_model.params_global[1], clnf_model.params_global[2], clnf_model.params_global[3]);
 	int orientation_to_use = GetViewId(this->head_orientations, curr_orient);
 
 	// Perform AU prediction	
@@ -410,11 +384,11 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 	std::vector<std::pair<std::string, double>> AU_predictions_reg_corrected;
 	if(online)
 	{
-		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clm_model.detection_success);
+		AU_predictions_reg_corrected = CorrectOnlineAUs(AU_predictions_reg, orientation_to_use, true, false, clnf_model.detection_success);
 	}
 
 	// Keep only closer to in-plane faces
-	double angle_norm = cv::sqrt(clm_model.params_global[2] * clm_model.params_global[2] + clm_model.params_global[3] * clm_model.params_global[3]);
+	double angle_norm = cv::sqrt(clnf_model.params_global[2] * clnf_model.params_global[2] + clnf_model.params_global[3] * clnf_model.params_global[3]);
 
 	// Add the reg predictions to the historic data
 	for (size_t au = 0; au < AU_predictions_reg.size(); ++au)
@@ -422,7 +396,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clnf_model.detection_success && angle_norm < 0.4)
 		{
 			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
 		}
@@ -439,7 +413,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clnf_model.detection_success && angle_norm < 0.4)
 		{
 			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
 		}
@@ -465,9 +439,9 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 	view_used = orientation_to_use;
 
-	bool success = clm_model.detection_success && angle_norm < 0.4;
+	bool success = clnf_model.detection_success && angle_norm < 0.4;
 
-	confidences.push_back(clm_model.detection_certainty);
+	confidences.push_back(clnf_model.detection_certainty);
 	valid_preds.push_back(success);
 }
 
