@@ -204,7 +204,7 @@ For more examples of how to run the code, please refer to the Matlab runner code
 Parameters for input
 
 Flags:
-	-clmwild - specify when the images are more difficult, this makes the landmark detector use a different face detector, and also makes it consider different hypotheses for landmark detection together with an extended search region
+	-wild - specify when the images are more difficult, this makes the landmark detector use a different face detector, and also makes it consider different hypotheses for landmark detection together with an extended search region
 
 Single image analysis:
 	-f <filename> - the image file being input
@@ -238,7 +238,7 @@ Just running FaceTrackingVid.exe or FaceTrackingVidMulti.exe will track either a
 
 Basic landmark detection in images. From Matlab run "matlab_runners/Demos/run_demo_images.m", alternatively go to Release folder and from command line execute:
 
-FaceLandmarkImg.exe -clmwild -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
+FaceLandmarkImg.exe -wild -fdir "../videos/" -ofdir "../matlab_runners/demo_img/" -oidir "../matlab_runners/demo_img/"
 
 or
 

@@ -228,7 +228,7 @@ struct FaceModelParameters
 
 				valid[i] = false;
 			}
-			else if (arguments[i].compare("-clmwild") == 0) 
+			else if (arguments[i].compare("-wild") == 0) 
 			{                    
 				// For in the wild fitting these parameters are suitable
 				window_sizes_init = vector<int>(4);

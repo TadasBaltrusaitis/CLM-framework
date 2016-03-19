@@ -93,7 +93,7 @@ for i=1:numel(dataset_dirs)
         command_c = cat(2, command_c, out_im_loc);
     end
     
-    command_c = cat(2, command_c, ' -clmwild ');
+    command_c = cat(2, command_c, ' -wild ');
     
     dos(command_c);
 

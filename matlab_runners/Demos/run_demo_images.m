@@ -40,6 +40,6 @@ command = cat(2, command, [' -mloc "', model, '"']);
 % Demonstrates the multi-hypothesis slow landmark detection (more accurate
 % when dealing with non-frontal faces and less accurate face detections)
 % Comment to skip this functionality
-command = cat(2, command, ' -clmwild ');
+command = cat(2, command, ' -wild ');
 
 dos(command);
