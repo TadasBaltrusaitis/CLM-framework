@@ -21,35 +21,10 @@ if(any(strcmp(varargin, 'use_helen')))
     dataset_dirs = cat(1, dataset_dirs, helen_loc); 
 end
 
-if(any(strcmp(varargin, 'reg_factors')))
-    regFactors = varargin{find(strcmp(varargin, 'reg_factors')) + 1};
-else
-    % the default reg factor to use
-    regFactors = [25];
-end               
-    
-if(any(strcmp(varargin, 'mean_shift_band')))
-    meanShiftBand = varargin{find(strcmp(varargin, 'mean_shift_band')) + 1};
-else
-    % the default mean shift band factor to use
-    meanShiftBand = [1.5];
-end
-
 if(any(strcmp(varargin, 'verbose')))
     verbose = true;
 else
     verbose = false;
-end
-
-if(any(strcmp(varargin, 'tikhonov_factors')))
-    tikhonov_factors = varargin{find(strcmp(varargin, 'tikhonov_factors')) + 1};
-else
-    % the default mean shift band factor to use
-    if(any(strcmp(varargin, 'use_depth')))
-        tikhonov_factors = 0;
-    else
-        tikhonov_factors = 5;
-    end
 end
       
 command = '"../../x64/Release/FaceLandmarkImg.exe" ';
@@ -69,15 +44,6 @@ end
 
 command = cat(2, command, [' -mloc ' model ' ']);
 command = cat(2, command, [' -multi_view ' num2str(multi_view) ' ']);
-
-sigma = ['-clm_sigma ', num2str(meanShiftBand), ' '];
-command = cat(2, command, sigma);
-
-reg_f = ['-reg ', num2str(regFactors), ' '];
-command = cat(2, command, reg_f);
-
-tikh_w = ['-w_reg ', num2str(tikhonov_factors), ' '];
-command = cat(2, command, tikh_w);
    
 tic
 for i=1:numel(dataset_dirs)

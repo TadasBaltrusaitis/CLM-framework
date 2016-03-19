@@ -57,19 +57,6 @@ for i=3:numTogether:numel(dbSeqDir)
     if(any(strcmp('model', varargin)))
         command = cat(2, command, [' -mloc "', varargin{find(strcmp('model', varargin))+1}, '"']);
     end    
-    
-    if(any(strcmp('clm_sigma', varargin)))
-        command = cat(2, command, [' -clm_sigma ' num2str(varargin{find(strcmp('clm_sigma', varargin))+1})]);        
-    end
-    
-    if(any(strcmp('w_reg', varargin)))
-        command = cat(2, command, [' -w_reg ' num2str(varargin{find(strcmp('w_reg', varargin))+1})]);
-        
-    end
-    
-    if(any(strcmp('reg', varargin)))
-        command = cat(2, command, [' -reg ' num2str(varargin{find(strcmp('reg', varargin))+1})]);        
-    end    
         
     dos(command);
 end

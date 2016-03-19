@@ -122,16 +122,10 @@ Parameters for output
     -world_coord <1/0, should rotation be measured with respect to the world coordinates or camera, see Head pose section for more details>
 
 Model parameters (apply to images and videos)
-	-mloc <the location of CLM model>
+	-mloc <the location of landmark detection models>
 		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
 		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
-		"model/main_svr_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_svr_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
-		"model/main_svr_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 		"model/main_clm-z.txt" - trained on Multi-PIE and BU-4DFE datasets, works with both intensity and depth signals (CLM-Z)
-	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
-	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
 	
 All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
 	
@@ -187,13 +181,7 @@ Parameters for output
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
 		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
 		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
-		"model/main_svr_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_svr_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
-		"model/main_svr_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
-	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
-	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
 	
 All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
 	
@@ -220,14 +208,8 @@ Batch image analysis:
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
 		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
 		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
-		"model/main_svr_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_svr_mpie.txt" - trained on Multi-PIE of varying pose and illumination, works well in clear and easy conditions
-		"model/main_svr_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 		"model/main_clm-z.txt" - trained on Multi-PIE and BU-4DFE datasets, works with both intensity and depth signals (CLM-Z)
-	-clm_sigma <sigma value from the RLMS and NU-RLMS algorithms, best range 1-2, will affect the fitting>
-	-reg <regularisation value from the RLMS and NU-RLMS algorithms, best range 5-40, will affect the fitting, higher values will be more robust but have issues with extreme expressions>
 	-multi-view <0/1>, should multi-view initialisation be used (more robust, but slower)
 
 --------------------- Basic demos -----------------------------------------

@@ -6,10 +6,10 @@
 tic
 %% Head pose
 cd('Head Pose Experiments');
-run_clm_head_pose_tests_clnf;
-assert(median(all_errors_biwi_ccnf_general(:)) < 2.7);
-assert(median(all_errors_bu_ccnf_general(:)) < 2.2);
-assert(median(all_errors_ict_ccnf_general(:)) < 2.1);
+run_head_pose_tests_OpenFace;
+assert(median(all_errors_biwi_OF(:)) < 2.7);
+assert(median(all_errors_bu_OF(:)) < 2.2);
+assert(median(all_errors_ict_OF(:)) < 2.1);
 cd('../');
 
 %% Features

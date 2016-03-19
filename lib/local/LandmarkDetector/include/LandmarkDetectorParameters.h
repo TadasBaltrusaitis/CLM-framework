@@ -158,7 +158,7 @@ struct FaceModelParameters
 				i++;
 
 			}
-			if (arguments[i].compare("-clm_sigma") == 0) 
+			if (arguments[i].compare("-sigma") == 0) 
 			{                    
 				stringstream data(arguments[i + 1]);
 				data >> sigma;
@@ -247,7 +247,7 @@ struct FaceModelParameters
 			}
 			else if (arguments[i].compare("-help") == 0)
 			{
-				cout << "CLNF parameters are defined as follows: -mloc <location of model file> -pdm_loc <override pdm location> -w_reg <weight term for patch rel.> -reg <prior regularisation> -clm_sigma <float sigma term> -fcheck <should face checking be done 0/1> -n_iter <num EM iterations> -clwild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
+				cout << "CLNF parameters are defined as follows: -mloc <location of model file> -pdm_loc <override pdm location> -w_reg <weight term for patch rel.> -reg <prior regularisation> -sigma <float sigma term> -fcheck <should face checking be done 0/1> -n_iter <num EM iterations> -clwild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
 			}
 		}
 
