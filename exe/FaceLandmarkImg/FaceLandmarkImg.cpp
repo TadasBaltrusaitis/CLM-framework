@@ -1,14 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2015, University of Cambridge,
+// Copyright (C) 2016, Carnegie Mellon University and University of Cambridge,
 // all rights reserved.
 //
-// THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY. OR CONSEQUENTIAL DAMAGES
-// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+// THIS SOFTWARE IS PROVIDED “AS IS” FOR ACADEMIC USE ONLY AND ANY EXPRESS
+// OR IMPLIED WARRANTIES WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY.
+// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
 // HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -35,17 +35,28 @@
 
 //     * Any publications arising from the use of this software, including but
 //       not limited to academic journal and conference publications, technical
-//       reports and manuals, must cite one of the following works:
+//       reports and manuals, must cite at least one of the following works:
 //
-//       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 3D
-//       Constrained Local Model for Rigid and Non-Rigid Facial Tracking.
-//       IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2012.    
+//       OpenFace: an open source facial behavior analysis toolkit
+//       Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency
+//       in IEEE Winter Conference on Applications of Computer Vision, 2016  
 //
-//       Tadas Baltrusaitis, Peter Robinson, and Louis-Philippe Morency. 
+//       Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+//       Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling 
+//       in IEEE International. Conference on Computer Vision (ICCV),  2015 
+//
+//       Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection
+//       Tadas Baltrušaitis, Marwa Mahmoud, and Peter Robinson 
+//       in Facial Expression Recognition and Analysis Challenge, 
+//       IEEE International Conference on Automatic Face and Gesture Recognition, 2015 
+//
 //       Constrained Local Neural Fields for robust facial landmark detection in the wild.
+//       Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency. 
 //       in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.    
 //
 ///////////////////////////////////////////////////////////////////////////////
+// FaceLandmarkImg.cpp : Defines the entry point for the console application for detecting landmarks in images.
+
 #include "LandmarkCoreIncludes.h"
 
 #include <fstream>
