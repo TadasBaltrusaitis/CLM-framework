@@ -174,7 +174,7 @@ void write_out_pose_landmarks(const string& outfeatures, const Mat_<double>& sha
 	}
 }
 
-void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLM& clm_model)
+void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF& clm_model)
 {
 	create_directory_from_file(outfeatures);
 	std::ofstream featuresFile;
@@ -197,7 +197,7 @@ void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLM&
 	}
 }
 
-void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLM& clm_model)
+void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLNF& clm_model)
 {
 	
 	// Draw head pose if present and draw eye gaze as well
@@ -295,7 +295,7 @@ int main (int argc, char **argv)
 
 	// The modules that are being used for tracking
 	cout << "Loading the model" << endl;
-	LandmarkDetector::CLM clm_model(clm_parameters.model_location);
+	LandmarkDetector::CLNF clm_model(clm_parameters.model_location);
 	cout << "Model loaded" << endl;
 	
 	CascadeClassifier classifier(clm_parameters.face_detector_location);	

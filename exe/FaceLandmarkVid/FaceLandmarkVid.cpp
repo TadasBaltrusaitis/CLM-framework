@@ -94,7 +94,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLM& face_model, const LandmarkDetector::FaceModelParameters& clm_parameters, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& clm_parameters, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -175,7 +175,7 @@ int main (int argc, char **argv)
 	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
 	
 	// The modules that are being used for tracking
-	LandmarkDetector::CLM clm_model(clm_parameters.model_location);	
+	LandmarkDetector::CLNF clm_model(clm_parameters.model_location);	
 
 	// Grab camera parameters, if they are not defined (approximate values will be used)
 	float fx = 0, fy = 0, cx = 0, cy = 0;

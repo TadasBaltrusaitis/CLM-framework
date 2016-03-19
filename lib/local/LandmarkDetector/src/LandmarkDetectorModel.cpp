@@ -58,20 +58,20 @@ using namespace LandmarkDetector;
 
 // Constructors
 // A default constructor
-CLM::CLM()
+CLNF::CLNF()
 {
 	FaceModelParameters parameters;
 	this->Read(parameters.model_location);
 }
 
 // Constructor from a model file
-CLM::CLM(string fname)
+CLNF::CLNF(string fname)
 {
 	this->Read(fname);
 }
 
-// Copy constructor (makes a deep copy of CLM)
-CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
+// Copy constructor (makes a deep copy of CLNF)
+CLNF::CLNF(const CLNF& other): pdm(other.pdm), params_local(other.params_local.clone()), params_global(other.params_global), detected_landmarks(other.detected_landmarks.clone()),
 	landmark_likelihoods(other.landmark_likelihoods.clone()), patch_experts(other.patch_experts), landmark_validator(other.landmark_validator), face_detector_location(other.face_detector_location),
 	hierarchical_mapping(other.hierarchical_mapping), hierarchical_models(other.hierarchical_models), hierarchical_model_names(other.hierarchical_model_names),
 	hierarchical_params(other.hierarchical_params)
@@ -106,8 +106,8 @@ CLM::CLM(const CLM& other): pdm(other.pdm), params_local(other.params_local.clon
 
 }
 
-// Assignment operator for lvalues (makes a deep copy of CLM)
-CLM & CLM::operator= (const CLM& other)
+// Assignment operator for lvalues (makes a deep copy of CLNF)
+CLNF & CLNF::operator= (const CLNF& other)
 {
 	if (this != &other) // protect against invalid self-assignment
 	{
@@ -154,7 +154,7 @@ CLM & CLM::operator= (const CLM& other)
 }
 
 // Move constructor
-CLM::CLM(const CLM&& other)
+CLNF::CLNF(const CLNF&& other)
 {
 	this->detection_success = other.detection_success;
 	this->tracking_initialised = other.tracking_initialised;
@@ -181,7 +181,7 @@ CLM::CLM(const CLM&& other)
 }
 
 // Assignment operator for rvalues
-CLM & CLM::operator= (const CLM&& other)
+CLNF & CLNF::operator= (const CLNF&& other)
 {
 	this->detection_success = other.detection_success;
 	this->tracking_initialised = other.tracking_initialised;
@@ -209,14 +209,14 @@ CLM & CLM::operator= (const CLM&& other)
 }
 
 
-void CLM::Read_CLM(string clm_location)
+void CLNF::Read_CLNF(string clnf_location)
 {
 	// Location of modules
-	ifstream locations(clm_location.c_str(), ios_base::in);
+	ifstream locations(clnf_location.c_str(), ios_base::in);
 
 	if(!locations.is_open())
 	{
-		cout << "Couldn't open the CLM model file aborting" << endl;
+		cout << "Couldn't open the CLNF model file aborting" << endl;
 		cout.flush();
 		return;
 	}
@@ -228,7 +228,7 @@ void CLM::Read_CLM(string clm_location)
 	vector<string> ccnf_expert_locations;
 
 	// The other module locations should be defined as relative paths from the main model
-	boost::filesystem::path root = boost::filesystem::path(clm_location).parent_path();		
+	boost::filesystem::path root = boost::filesystem::path(clnf_location).parent_path();
 
 	// The main file contains the references to other files
 	while (!locations.eof())
@@ -307,10 +307,10 @@ void CLM::Read_CLM(string clm_location)
 
 }
 
-void CLM::Read(string main_location)
+void CLNF::Read(string main_location)
 {
 
-	cout << "Reading the CLM landmark detector/tracker from: " << main_location << endl;
+	cout << "Reading the CLNF landmark detector/tracker from: " << main_location << endl;
 	
 	ifstream locations(main_location.c_str(), ios_base::in);
 	if(!locations.is_open())
@@ -348,10 +348,10 @@ void CLM::Read(string main_location)
 		location = (root / location).string();
 		if (module.compare("CLM") == 0) 
 		{ 
-			cout << "Reading the CLM module from: " << location << endl;
+			cout << "Reading the CLNF module from: " << location << endl;
 
-			// The CLM module includes the PDM and the patch experts
-			Read_CLM(location);
+			// The CLNF module includes the PDM and the patch experts
+			Read_CLNF(location);
 		}
 		else if(module.compare("CLM_part") == 0)
 		{
@@ -372,7 +372,7 @@ void CLM::Read(string main_location)
 		
 			this->hierarchical_mapping.push_back(mappings);
 
-			CLM part_model(location);
+			CLNF part_model(location);
 
 			this->hierarchical_models.push_back(part_model);
 
@@ -505,7 +505,7 @@ void CLM::Read(string main_location)
 }
 
 // Resetting the model (for a new video, or complet reinitialisation
-void CLM::Reset()
+void CLNF::Reset()
 {
 	detected_landmarks.setTo(0);
 
@@ -525,7 +525,7 @@ void CLM::Reset()
 }
 
 // Resetting the model, choosing the face nearest (x,y)
-void CLM::Reset(double x, double y)
+void CLNF::Reset(double x, double y)
 {
 
 	// First reset the model overall
@@ -538,10 +538,10 @@ void CLM::Reset(double x, double y)
 }
 
 // The main internal landmark detection call (should not be used externally?)
-bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params)
+bool CLNF::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params)
 {
 
-	// Fits from the current estimate of local and global parameters in clm_model
+	// Fits from the current estimate of local and global parameters in the model
 	bool fit_success = Fit(image, depth, params.window_sizes_current, params);
 
 	// Store the landmarks converged on in detected_landmarks
@@ -636,7 +636,7 @@ bool CLM::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, Fa
 }
 
 //=============================================================================
-bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vector<int>& window_sizes, const FaceModelParameters& clm_parameters)
+bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vector<int>& window_sizes, const FaceModelParameters& parameters)
 {
 	// Making sure it is a single channel image
 	assert(im.channels() == 1);	
@@ -669,7 +669,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	Matx22f sim_ref_to_img;
 	Matx22d sim_img_to_ref;
 
-	FaceModelParameters tmp_parameters = clm_parameters;
+	FaceModelParameters tmp_parameters = parameters;
 
 	// Optimise the model across a number of areas of interest (usually in descending window size and ascending scale size)
 	for(int scale = 0; scale < num_scales; scale++)
@@ -691,16 +691,16 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
-		if(clm_parameters.refine_parameters == true)
+		if(parameters.refine_parameters == true)
 		{
 			// Adapt the parameters based on scale (wan't to reduce regularisation as scale increases, but increa sigma and tikhonov)
-			tmp_parameters.reg_factor = clm_parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.reg_factor = parameters.reg_factor - 15 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
 			
 			if(tmp_parameters.reg_factor <= 0)
 				tmp_parameters.reg_factor = 0.001;
 
-			tmp_parameters.sigma = clm_parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
-			tmp_parameters.weight_factor = clm_parameters.weight_factor + 2 * clm_parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.sigma = parameters.sigma + 0.25 * log(patch_experts.patch_scaling[scale]/0.25)/log(2);
+			tmp_parameters.weight_factor = parameters.weight_factor + 2 * parameters.weight_factor *  log(patch_experts.patch_scaling[scale]/0.25)/log(2);
 		}
 
 		// Get the current landmark locations
@@ -718,7 +718,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
 		{
-			cout << "Detection too small for CLM" << endl;
+			cout << "Face too small for landmark detection" << endl;
 			return false;
 		}
 	}
@@ -726,7 +726,7 @@ bool CLM::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vec
 	return true;
 }
 
-void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& kde_resp_precalc)
+void CLNF::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& kde_resp_precalc)
 {
 	
 	int n = dxs.rows;
@@ -840,7 +840,7 @@ void CLM::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const
 
 }
 
-void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters)
+void CLNF::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters)
 {
 	int n = pdm.NumberOfPoints();  
 
@@ -883,7 +883,7 @@ void CLM::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, con
 }
 
 //=============================================================================
-double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
+double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
 		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
 				  const FaceModelParameters& parameters)
 {		
@@ -1075,7 +1075,7 @@ double CLM::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector
 }
 
 
-bool CLM::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& depth_image)
+bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& depth_image)
 {
 	// use the current estimate of the face location to determine what is foreground and background
 	double tx = this->params_global[4];
@@ -1164,7 +1164,7 @@ bool CLM::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dept
 }
 
 // Getting a 3D shape model from the current detected landmarks (in camera space)
-Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy) const
+Mat_<double> CLNF::GetShape(double fx, double fy, double cx, double cy) const
 {
 	int n = this->detected_landmarks.rows/2;
 
@@ -1206,7 +1206,7 @@ Mat_<double> CLM::GetShape(double fx, double fy, double cx, double cy) const
 }
 
 // A utility bounding box function
-Rect_<double> CLM::GetBoundingBox() const
+Rect_<double> CLNF::GetBoundingBox() const
 {
 	Mat_<double> xs = this->detected_landmarks(Rect(0,0,1,this->detected_landmarks.rows/2));
 	Mat_<double> ys = this->detected_landmarks(Rect(0,this->detected_landmarks.rows/2, 1, this->detected_landmarks.rows/2));
@@ -1222,7 +1222,7 @@ Rect_<double> CLM::GetBoundingBox() const
 }
 
 // Legacy function not used at the moment
-void CLM::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
+void CLNF::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
 {
 	
 	int n = dxs.rows;

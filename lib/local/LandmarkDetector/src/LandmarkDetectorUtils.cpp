@@ -1016,7 +1016,7 @@ vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<cv::Point2d> CalculateLandmarks(CLM& clm_model)
+vector<cv::Point2d> CalculateLandmarks(CLNF& clm_model)
 {
 
 	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);
@@ -1140,7 +1140,7 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D)
 }
 
 // Drawing detected landmarks on a face image
-void Draw(cv::Mat img, const CLM& clm_model)
+void Draw(cv::Mat img, const CLNF& clm_model)
 {
 
 	int idx = clm_model.patch_experts.GetViewIdx(clm_model.params_global, 0);

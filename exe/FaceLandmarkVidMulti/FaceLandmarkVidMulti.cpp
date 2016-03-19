@@ -93,15 +93,15 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-void NonOverlapingDetections(const vector<LandmarkDetector::CLM>& clm_models, vector<Rect_<double> >& face_detections)
+void NonOverlapingDetections(const vector<LandmarkDetector::CLNF>& clnf_models, vector<Rect_<double> >& face_detections)
 {
 
 	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
-	for(size_t model = 0; model < clm_models.size(); ++model)
+	for(size_t model = 0; model < clnf_models.size(); ++model)
 	{
 
 		// See if the detections intersect
-		Rect_<double> model_rect = clm_models[model].GetBoundingBox();
+		Rect_<double> model_rect = clnf_models[model].GetBoundingBox();
 		
 		for(int detection = face_detections.size()-1; detection >=0; --detection)
 		{
@@ -131,15 +131,15 @@ int main (int argc, char **argv)
 	// cx and cy aren't necessarilly in the image center, so need to be able to override it (start with unit vals and init them if none specified)
     float fx = 600, fy = 600, cx = 0, cy = 0;
 			
-	LandmarkDetector::FaceModelParameters clm_params(arguments);
-	clm_params.use_face_template = true;	
+	LandmarkDetector::FaceModelParameters det_params(arguments);
+	det_params.use_face_template = true;
 	// This is so that the model would not try re-initialising itself
-	clm_params.reinit_video_every = -1;
+	det_params.reinit_video_every = -1;
 
-	clm_params.curr_face_detector = LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR;
+	det_params.curr_face_detector = LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR;
 
-	vector<LandmarkDetector::FaceModelParameters> clm_parameters;
-	clm_parameters.push_back(clm_params);	
+	vector<LandmarkDetector::FaceModelParameters> det_parameters;
+	det_parameters.push_back(det_params);
 
 	// Get the input output file parameters
 	bool use_world_coords;
@@ -148,25 +148,25 @@ int main (int argc, char **argv)
 	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 	
 	// The modules that are being used for tracking
-	vector<LandmarkDetector::CLM> clm_models;
+	vector<LandmarkDetector::CLNF> clnf_models;
 	vector<bool> active_models;
 
 	int num_faces_max = 4;
 
-	LandmarkDetector::CLM clm_model(clm_parameters[0].model_location);
-	clm_model.face_detector_HAAR.load(clm_parameters[0].face_detector_location);
-	clm_model.face_detector_location = clm_parameters[0].face_detector_location;
+	LandmarkDetector::CLNF clnf_model(det_parameters[0].model_location);
+	clnf_model.face_detector_HAAR.load(det_parameters[0].face_detector_location);
+	clnf_model.face_detector_location = det_parameters[0].face_detector_location;
 	
-	clm_models.reserve(num_faces_max);
+	clnf_models.reserve(num_faces_max);
 
-	clm_models.push_back(clm_model);
+	clnf_models.push_back(clnf_model);
 	active_models.push_back(false);
 
 	for (int i = 1; i < num_faces_max; ++i)
 	{
-		clm_models.push_back(clm_model);
+		clnf_models.push_back(clnf_model);
 		active_models.push_back(false);
-		clm_parameters.push_back(clm_params);
+		det_parameters.push_back(det_params);
 	}
 	
 	// If multiple video files are tracked, use this to indicate if we are done
@@ -296,7 +296,7 @@ int main (int argc, char **argv)
 			vector<Rect_<double> > face_detections;
 
 			bool all_models_active = true;
-			for(unsigned int model = 0; model < clm_models.size(); ++model)
+			for(unsigned int model = 0; model < clnf_models.size(); ++model)
 			{
 				if(!active_models[model])
 				{
@@ -307,35 +307,35 @@ int main (int argc, char **argv)
 			// Get the detections (every 8th frame and when there are free models available for tracking)
 			if(frame_count % 8 == 0 && !all_models_active)
 			{				
-				if(clm_parameters[0].curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
+				if(det_parameters[0].curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
 				{
 					vector<double> confidences;
-					LandmarkDetector::DetectFacesHOG(face_detections, grayscale_image, clm_models[0].face_detector_HOG, confidences);
+					LandmarkDetector::DetectFacesHOG(face_detections, grayscale_image, clnf_models[0].face_detector_HOG, confidences);
 				}
 				else
 				{
-					LandmarkDetector::DetectFaces(face_detections, grayscale_image, clm_models[0].face_detector_HAAR);
+					LandmarkDetector::DetectFaces(face_detections, grayscale_image, clnf_models[0].face_detector_HAAR);
 				}
 
 			}
 
 			// Keep only non overlapping detections (also convert to a concurrent vector
-			NonOverlapingDetections(clm_models, face_detections);
+			NonOverlapingDetections(clnf_models, face_detections);
 
 			vector<tbb::atomic<bool> > face_detections_used(face_detections.size());
 
 			// Go through every model and update the tracking TODO pull out as a separate parallel/non-parallel method
-			tbb::parallel_for(0, (int)clm_models.size(), [&](int model){
+			tbb::parallel_for(0, (int)clnf_models.size(), [&](int model){
 			//for(unsigned int model = 0; model < clm_models.size(); ++model)
 			//{
 
 				bool detection_success = false;
 
 				// If the current model has failed more than 4 times in a row, remove it
-				if(clm_models[model].failures_in_a_row > 4)
+				if(clnf_models[model].failures_in_a_row > 4)
 				{				
 					active_models[model] = false;
-					clm_models[model].Reset();
+					clnf_models[model].Reset();
 
 				}
 
@@ -350,11 +350,11 @@ int main (int argc, char **argv)
 						{
 					
 							// Reinitialise the model
-							clm_models[model].Reset();
+							clnf_models[model].Reset();
 
 							// This ensures that a wider window is used for the initial landmark localisation
-							clm_models[model].detection_success = false;
-							detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clm_models[model], clm_parameters[model]);
+							clnf_models[model].detection_success = false;
+							detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, face_detections[detection_ind], clnf_models[model], det_parameters[model]);
 													
 							// This activates the model
 							active_models[model] = true;
@@ -368,23 +368,23 @@ int main (int argc, char **argv)
 				else
 				{
 					// The actual facial landmark detection / tracking
-					detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clm_models[model], clm_parameters[model]);
+					detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clnf_models[model], det_parameters[model]);
 				}
 			});
 								
 			// Go through every model and visualise the results
-			for(size_t model = 0; model < clm_models.size(); ++model)
-			{						
+			for(size_t model = 0; model < clnf_models.size(); ++model)
+			{
 				// Visualising the results
 				// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
-				double detection_certainty = clm_models[model].detection_certainty;
+				double detection_certainty = clnf_models[model].detection_certainty;
 
 				double visualisation_boundary = -0.1;
 			
 				// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 				if(detection_certainty < visualisation_boundary)
 				{
-					LandmarkDetector::Draw(disp_image, clm_models[model]);
+					LandmarkDetector::Draw(disp_image, clnf_models[model]);
 
 					if(detection_certainty > 1)
 						detection_certainty = 1;
@@ -397,7 +397,7 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseWorld(clm_models[model], fx, fy, cx, cy);
+					Vec6d pose_estimate_CLM = LandmarkDetector::GetCorrectedPoseWorld(clnf_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
 					LandmarkDetector::DrawBox(disp_image, pose_estimate_CLM, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
@@ -435,7 +435,7 @@ int main (int argc, char **argv)
 			active_models_st += active_m_C;
 			cv::putText(disp_image, active_models_st, cv::Point(10,60), CV_FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(255,0,0));		
 			
-			if(!clm_parameters[0].quiet_mode)
+			if(!det_parameters[0].quiet_mode)
 			{
 				namedWindow("tracking_result",1);		
 				imshow("tracking_result", disp_image);
@@ -461,9 +461,9 @@ int main (int argc, char **argv)
 			// restart the trackers
 			if(character_press == 'r')
 			{
-				for(size_t i=0; i < clm_models.size(); ++i)
+				for(size_t i=0; i < clnf_models.size(); ++i)
 				{
-					clm_models[i].Reset();
+					clnf_models[i].Reset();
 					active_models[i] = false;
 				}
 			}
@@ -480,9 +480,9 @@ int main (int argc, char **argv)
 		frame_count = 0;
 
 		// Reset the model, for the next video
-		for(size_t model=0; model < clm_models.size(); ++model)
+		for(size_t model=0; model < clnf_models.size(); ++model)
 		{
-			clm_models[model].Reset();
+			clnf_models[model].Reset();
 			active_models[model] = false;
 		}
 		pose_output_file.close();

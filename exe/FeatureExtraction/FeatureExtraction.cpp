@@ -390,7 +390,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLM& clm_model, const LandmarkDetector::FaceModelParameters& clm_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLNF& clm_model, const LandmarkDetector::FaceModelParameters& clm_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -510,7 +510,7 @@ int main (int argc, char **argv)
 	}
 
 	// The modules that are being used for tracking
-	LandmarkDetector::CLM clm_model(clm_parameters.model_location);	
+	LandmarkDetector::CLNF clm_model(clm_parameters.model_location);	
 
 	vector<string> output_similarity_align;
 	vector<string> output_au_files;
@@ -564,8 +564,6 @@ int main (int argc, char **argv)
 	bool done = false;	
 	int f_n = -1;
 	int curr_img = -1;
-
-
 
 	string au_loc;
 	if(boost::filesystem::exists(path("AU_predictors/AU_all_best.txt")))

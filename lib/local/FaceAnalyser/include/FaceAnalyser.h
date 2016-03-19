@@ -72,10 +72,10 @@ public:
 	// TODO scale width and height should be read in as part of the model as opposed to being here?
 	FaceAnalyser(vector<Vec3d> orientation_bins = vector<Vec3d>(), double scale = 0.7, int width = 112, int height = 112, std::string au_location = "AU_predictors/AU_all_best.txt", std::string tri_location = "model/tris_68_full.txt");
 
-	void AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLM& clm, double timestamp_seconds, bool online = false, bool visualise = true);
+	void AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLNF& clm, double timestamp_seconds, bool online = false, bool visualise = true);
 
 	// If the features are extracted manually (shouldn't really be used)
-	void PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLM& clm_model, bool online);
+	void PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLNF& clm_model, bool online);
 
 	Mat GetLatestHOGDescriptorVisualisation();
 

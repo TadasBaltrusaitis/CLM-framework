@@ -215,7 +215,7 @@ void FaceAnalyser::ExtractCurrentMedians(vector<Mat>& hog_medians, vector<Mat>& 
 	}
 }
 
-void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLM& clm_model, double timestamp_seconds, bool online, bool visualise)
+void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, double timestamp_seconds, bool online, bool visualise)
 {
 	// Check if a reset is needed first (TODO same person no reset)
 	//if(face_bounding_box.area() > 0)
@@ -395,7 +395,7 @@ void FaceAnalyser::GetGeomDescriptor(Mat_<double>& geom_desc)
 	geom_desc = this->geom_descriptor_frame.clone();
 }
 
-void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLM& clm_model, bool online)
+void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Mat_<double>& geom_features, const LandmarkDetector::CLNF& clm_model, bool online)
 {
 	// Store the descriptor
 	hog_desc_frame = hog_features.clone();

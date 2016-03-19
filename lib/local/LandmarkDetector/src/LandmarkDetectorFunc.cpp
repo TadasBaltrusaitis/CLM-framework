@@ -55,7 +55,7 @@ using namespace cv;
 
 // Getting a head pose estimate from the currently detected landmarks (rotation with respect to point camera)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d LandmarkDetector::GetPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetPoseCamera(const CLNF& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -74,7 +74,7 @@ Vec6d LandmarkDetector::GetPoseCamera(const CLM& clm_model, double fx, double fy
 
 // Getting a head pose estimate from the currently detected landmarks (rotation in world coordinates)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d LandmarkDetector::GetPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetPoseWorld(const CLNF& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -109,7 +109,7 @@ Vec6d LandmarkDetector::GetPoseWorld(const CLM& clm_model, double fx, double fy,
 // This is because rotation estimate under orthographic assumption is only correct close to the centre of the image
 // This method returns a corrected pose estimate with respect to world coordinates (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d LandmarkDetector::GetCorrectedPoseWorld(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetCorrectedPoseWorld(const CLNF& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -155,7 +155,7 @@ Vec6d LandmarkDetector::GetCorrectedPoseWorld(const CLM& clm_model, double fx, d
 // Getting a head pose estimate from the currently detected landmarks, with appropriate correction due to perspective projection
 // This method returns a corrected pose estimate with respect to a point camera (NOTE not the world coordinates) (Experimental)
 // The format returned is [Tx, Ty, Tz, Eul_x, Eul_y, Eul_z]
-Vec6d LandmarkDetector::GetCorrectedPoseCamera(const CLM& clm_model, double fx, double fy, double cx, double cy)
+Vec6d LandmarkDetector::GetCorrectedPoseCamera(const CLNF& clm_model, double fx, double fy, double cx, double cy)
 {
 	if(!clm_model.detected_landmarks.empty() && clm_model.params_global[0] != 0)
 	{
@@ -211,7 +211,7 @@ Vec6d LandmarkDetector::GetCorrectedPoseCamera(const CLM& clm_model, double fx, 
 }
 
 // If landmark detection in video succeeded create a template for use in simple tracking
-void UpdateTemplate(const Mat_<uchar> &grayscale_image, CLM& clm_model)
+void UpdateTemplate(const Mat_<uchar> &grayscale_image, CLNF& clm_model)
 {
 	Rect bounding_box;
 	clm_model.pdm.CalcBoundingBox(bounding_box, clm_model.params_global, clm_model.params_local);
@@ -222,7 +222,7 @@ void UpdateTemplate(const Mat_<uchar> &grayscale_image, CLM& clm_model)
 }
 
 // This method uses basic template matching in order to allow for better tracking of fast moving faces
-void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, const FaceModelParameters& params)
+void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLNF& clm_model, const FaceModelParameters& params)
 {
 	Rect init_box;
 	clm_model.pdm.CalcBoundingBox(init_box, clm_model.params_global, clm_model.params_local);
@@ -266,7 +266,7 @@ void CorrectGlobalParametersVideo(const Mat_<uchar> &grayscale_image, CLM& clm_m
 	
 }
 
-bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, CLNF& clm_model, FaceModelParameters& params)
 {
 	// First need to decide if the landmarks should be "detected" or "tracked"
 	// Detected means running face detection and a larger search area, tracked means initialising from previous step
@@ -407,7 +407,7 @@ bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image
 	
 }
 
-bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Mat_<float> &depth_image, const Rect_<double> bounding_box, CLNF& clm_model, FaceModelParameters& params)
 {
 	if(bounding_box.width > 0)
 	{
@@ -423,12 +423,12 @@ bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image
 
 }
 
-bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, CLNF& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInVideo(grayscale_image, Mat_<float>(), clm_model, params);
 }
 
-bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLNF& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInVideo(grayscale_image, Mat_<float>(), clm_model, params);
 }
@@ -439,7 +439,7 @@ bool LandmarkDetector::DetectLandmarksInVideo(const Mat_<uchar> &grayscale_image
 //================================================================================================================
 
 // This is the one where the actual work gets done, other DetectLandmarksInImage calls lead to this one
-bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, const Rect_<double> bounding_box, CLNF& clm_model, FaceModelParameters& params)
 {
 
 	// Can have multiple hypotheses
@@ -537,7 +537,7 @@ bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image
 	return best_success;
 }
 
-bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Mat_<float> depth_image, CLNF& clm_model, FaceModelParameters& params)
 {
 
 	Rect_<double> bounding_box;
@@ -571,12 +571,12 @@ bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image
 }
 
 // Versions not using depth images
-bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, const Rect_<double> bounding_box, CLNF& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInImage(grayscale_image, Mat_<float>(), bounding_box, clm_model, params);
 }
 
-bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLM& clm_model, FaceModelParameters& params)
+bool LandmarkDetector::DetectLandmarksInImage(const Mat_<uchar> &grayscale_image, CLNF& clm_model, FaceModelParameters& params)
 {
 	return DetectLandmarksInImage(grayscale_image, Mat_<float>(), clm_model, params);
 }

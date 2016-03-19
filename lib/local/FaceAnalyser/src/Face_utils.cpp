@@ -120,7 +120,7 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLM& clm_model, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
 		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;
@@ -159,7 +159,7 @@ namespace FaceAnalysis
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLM& clm_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clm_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
 		Mat_<double> similarity_normalised_shape = clm_model.pdm.mean_shape * sim_scale;

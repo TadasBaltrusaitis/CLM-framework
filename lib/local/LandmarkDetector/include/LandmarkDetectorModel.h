@@ -60,7 +60,11 @@ using namespace cv;
 namespace LandmarkDetector
 {
 
-class CLM{
+// A main class containing all the modules required for landmark detection
+// Face shape model
+// Patch experts
+// Optimization techniques
+class CLNF{
 
 public:
 
@@ -80,11 +84,11 @@ public:
 	// Global parameters describing the rigid shape [scale, euler_x, euler_y, euler_z, tx, ty]
     Vec6d           params_global;
 
-	// A collection of hierarchical CLM models that can be used for refinement
-	vector<CLM>						hierarchical_models;
+	// A collection of hierarchical CLNF models that can be used for refinement
+	vector<CLNF>					hierarchical_models;
 	vector<string>					hierarchical_model_names;
 	vector<vector<pair<int,int>>>	hierarchical_mapping;
-	vector<FaceModelParameters>			hierarchical_params;
+	vector<FaceModelParameters>		hierarchical_params;
 
 	//==================== Helpers for face detection and landmark detection validation =========================================
 
@@ -102,7 +106,7 @@ public:
 	// Indicating if landmark detection succeeded (based on SVR validator)
 	bool				detection_success; 
 
-	// Indicating if the tracking has been initialised (for video based CLM)
+	// Indicating if the tracking has been initialised (for video based tracking)
 	bool				tracking_initialised;
 
 	// The actual output of the regressor (-1 is perfect detection 1 is worst detection)
@@ -132,25 +136,25 @@ public:
 	cv::Point_<double> preference_det;
 
 	// A default constructor
-	CLM();
+	CLNF();
 
 	// Constructor from a model file
-	CLM(string fname);
+	CLNF(string fname);
 	
-	// Copy constructor (makes a deep copy of CLM)
-	CLM(const CLM& other);
+	// Copy constructor (makes a deep copy of the detector)
+	CLNF(const CLNF& other);
 
-	// Assignment operator for lvalues (makes a deep copy of CLM)
-	CLM & operator= (const CLM& other);
+	// Assignment operator for lvalues (makes a deep copy of the detector)
+	CLNF & operator= (const CLNF& other);
 
 	// Empty Destructor	as the memory of every object will be managed by the corresponding libraries (no pointers)
-	~CLM(){}
+	~CLNF(){}
 
 	// Move constructor
-	CLM(const CLM&& other);
+	CLNF(const CLNF&& other);
 
 	// Assignment operator for rvalues
-	CLM & operator= (const CLM&& other);
+	CLNF & operator= (const CLNF&& other);
 
 	// Does the actual work - landmark detection
 	bool DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params);
@@ -172,7 +176,7 @@ public:
 	void Read(string name);
 
 	// Helper reading function
-	void Read_CLM(string clm_location);
+	void Read_CLNF(string clnf_location);
 	
 private:
 
