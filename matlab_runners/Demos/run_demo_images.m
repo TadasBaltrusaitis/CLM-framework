@@ -12,19 +12,15 @@ end
 % some parameters
 verbose = true;
 
-% Trained on in the wild and multi-pie data (less accurate SVR model)
-%model = 'model/main_svr_general.txt';
-% Trained on multi-pie
-%model = 'model/main_svr_mpie.txt';
+% Trained on in the wild and multi-pie data (less accurate CLM model)
+%model = 'model/main_clm_general.txt';
 % Trained on in-the-wild
-%model = 'model/main_svr_wild.txt';
+%model = 'model/main_clm_wild.txt';
 
-% Trained on in the wild and multi-pie data (more accurate CCNF model)
-model = 'model/main_ccnf_general.txt';
-% Trained on multi-pie
-%model = 'model/main_ccnf_mpie.txt';
+% Trained on in the wild and multi-pie data (more accurate CLNF model)
+model = 'model/main_clnf_general.txt';
 % Trained on in-the-wild
-%model = 'model/main_ccnf_wild.txt';
+%model = 'model/main_clnf_wild.txt';
 
 command = clm_exe;
 

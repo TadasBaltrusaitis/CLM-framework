@@ -356,14 +356,14 @@ void CLNF::Read(string main_location)
 
 		// append to root
 		location = (root / location).string();
-		if (module.compare("CLM") == 0) 
+		if (module.compare("LandmarkDetector") == 0) 
 		{ 
-			cout << "Reading the CLNF module from: " << location << endl;
+			cout << "Reading the landmark detector module from: " << location << endl;
 
 			// The CLNF module includes the PDM and the patch experts
 			Read_CLNF(location);
 		}
-		else if(module.compare("CLM_part") == 0)
+		else if(module.compare("LandmarkDetector_part") == 0)
 		{
 			string part_name;
 			lineStream >> part_name;

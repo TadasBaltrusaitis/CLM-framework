@@ -309,7 +309,7 @@ struct FaceModelParameters
 			// For first frame use the initialisation
 			window_sizes_current = window_sizes_init;
 
-			model_location = "model/main_ccnf_general.txt";
+			model_location = "model/main_clnf_general.txt";
 
 			sigma = 1.5;
 			reg_factor = 25;

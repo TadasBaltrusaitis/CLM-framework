@@ -13,7 +13,7 @@ buDir = [database_root, '/bu/uniform-light/'];
 % The fast and accurate single light models
 %%
 v = 1;
-[fps_bu_general, resFolderBUCLM_general] = run_bu_experiment(buDir, false, v, 'model', 'model/main_svr_general.txt');
+[fps_bu_general, resFolderBUCLM_general] = run_bu_experiment(buDir, false, v, 'model', 'model/main_clm_general.txt');
 [bu_error_clm_svr_general, ~, ~, all_errors_bu_svr_general] = calcBUerror(resFolderBUCLM_general, buDir);
 
 %%

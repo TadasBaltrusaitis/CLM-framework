@@ -17,7 +17,7 @@ buDir = [database_root, '/bu/uniform-light/'];
 % The fast and accurate ccnf
 %%
 v = 3;
-[fps_bu_OF, resFolderBU_OF] = run_bu_experiment(buDir, false, v, 'model', 'model/main_ccnf_general.txt');
+[fps_bu_OF, resFolderBU_OF] = run_bu_experiment(buDir, false, v, 'model', 'model/main_clnf_general.txt');
 [bu_error_OF, pred_hp_bu, gt_hp_bu, all_errors_bu_OF, rels_bu] = calcBUerror(resFolderBU_OF, buDir);
 
 %%
@@ -27,7 +27,7 @@ biwi_results_root = '/biwi pose results/';
 
 % Intensity
 v = 4;
-[fps_biwi_OF, res_folder_OF] = run_biwi_experiment(database_root, biwi_dir, biwi_results_root, false, false, v, 'model', 'model/main_ccnf_general.txt');
+[fps_biwi_OF, res_folder_OF] = run_biwi_experiment(database_root, biwi_dir, biwi_results_root, false, false, v, 'model', 'model/main_clnf_general.txt');
 % Calculate the resulting errors
 [biwi_error_OF, pred_hp_biwi, gt_hp_biwi, ~, all_errors_biwi_OF, rels_biwi] = calcBiwiError([database_root res_folder_OF], [database_root biwi_dir]);
 
@@ -37,7 +37,7 @@ ict_results_root = ['ict results/'];
 
 v = 4;
 % Intensity
-[fps_ict_OF, res_folder_ict_OF] = run_ict_experiment(database_root, ict_dir, ict_results_root, false, false, v, 'model', 'model/main_ccnf_general.txt');
+[fps_ict_OF, res_folder_ict_OF] = run_ict_experiment(database_root, ict_dir, ict_results_root, false, false, v, 'model', 'model/main_clnf_general.txt');
 % Calculate the resulting errors
 [ict_error_OF, pred_hp_ict, gt_hp_ict, ~, all_errors_ict_OF, rel_ict] = calcIctError([database_root res_folder_ict_OF], [database_root ict_dir]);
 

@@ -8,7 +8,6 @@ if(~exist(output, 'file'))
     mkdir(output)
 end
     
-% Run the BU test with CLM
 if(exist([getenv('USERPROFILE') '/Dropbox/AAM/test data/'], 'file'))
     database_root = [getenv('USERPROFILE') '/Dropbox/AAM/test data/'];    
 else
@@ -44,7 +43,7 @@ if(~exist(output, 'file'))
 end
     
 command = clm_exe;
-command = cat(2, command, ' -mloc model/main_svr_general.txt ');
+command = cat(2, command, ' -mloc model/main_clm_general.txt ');
 
 % add all videos to single argument list (so as not to load the model anew
 % for every video)

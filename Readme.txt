@@ -123,8 +123,9 @@ Parameters for output
 
 Model parameters (apply to images and videos)
 	-mloc <the location of landmark detection models>
-		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
+		"model/main_clnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
+		"model/main_clnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
+		"model/main_clm_general.txt" - a less accurate but slightly faster CLM model trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
 		"model/main_clm-z.txt" - trained on Multi-PIE and BU-4DFE datasets, works with both intensity and depth signals (CLM-Z)
 	
 All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
@@ -180,8 +181,8 @@ Parameters for output
 	
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
-		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
+		"model/main_clnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
+		"model/main_clnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 	
 All of the models (except CLM-Z) use a 68 point convention for tracking (see http://ibug.doc.ic.ac.uk/resources/300-W/)
 	
@@ -207,9 +208,10 @@ Batch image analysis:
 
 Model parameters (apply to images and videos)
 	-mloc <the location of CLM model>
-		"model/main_ccnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
-		"model/main_ccnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
+		"model/main_clnf_general.txt" (default) - trained on Multi-PIE of varying pose and illumination and In-the-wild data, works well for head pose tracking
+		"model/main_clnf_wild.txt" - trained on In-the-wild data, works better in noisy environments (not very well suited for head pose tracking)
 		"model/main_clm-z.txt" - trained on Multi-PIE and BU-4DFE datasets, works with both intensity and depth signals (CLM-Z)
+		
 	-multi-view <0/1>, should multi-view initialisation be used (more robust, but slower)
 
 --------------------- Basic demos -----------------------------------------
