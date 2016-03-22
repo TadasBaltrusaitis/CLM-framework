@@ -346,7 +346,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clm_model.detection_success && angle_norm < 0.5)
 		{
 			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
 		}
@@ -363,7 +363,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clm_model.detection_success && angle_norm < 0.5)
 		{
 			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
 		}
@@ -383,7 +383,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const CLMTracker::CLM& clm
 
 	view_used = orientation_to_use;
 			
-	bool success = clm_model.detection_success && angle_norm < 0.4;
+	bool success = clm_model.detection_success && angle_norm < 0.5;
 
 	confidences.push_back(clm_model.detection_certainty);
 	valid_preds.push_back(success);
@@ -422,7 +422,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clm_model.detection_success && angle_norm < 0.5)
 		{
 			AU_predictions_reg_all_hist[AU_predictions_reg[au].first].push_back(AU_predictions_reg[au].second);
 		}
@@ -439,7 +439,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 		// Find the appropriate AU (if not found add it)		
 		// Only add if the detection was successful and not too out of plane
-		if(clm_model.detection_success && angle_norm < 0.4)
+		if(clm_model.detection_success && angle_norm < 0.5)
 		{
 			AU_predictions_class_all_hist[AU_predictions_class[au].first].push_back(AU_predictions_class[au].second);
 		}
@@ -465,7 +465,7 @@ void FaceAnalyser::PredictAUs(const cv::Mat_<double>& hog_features, const cv::Ma
 
 	view_used = orientation_to_use;
 
-	bool success = clm_model.detection_success && angle_norm < 0.4;
+	bool success = clm_model.detection_success && angle_norm < 0.5;
 
 	confidences.push_back(clm_model.detection_certainty);
 	valid_preds.push_back(success);
