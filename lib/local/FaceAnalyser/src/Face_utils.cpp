@@ -61,19 +61,18 @@
 // For FHOG visualisation
 #include <dlib/opencv.h>
 
-using namespace cv;
 using namespace std;
 
 namespace FaceAnalysis
 {
 
 	// Pick only the more stable/rigid points under changes of expression
-	void extract_rigid_points(Mat_<double>& source_points, Mat_<double>& destination_points)
+	void extract_rigid_points(cv::Mat_<double>& source_points, cv::Mat_<double>& destination_points)
 	{
 		if(source_points.rows == 68)
 		{
-			Mat_<double> tmp_source = source_points.clone();
-			source_points = Mat_<double>();
+			cv::Mat_<double> tmp_source = source_points.clone();
+			source_points = cv::Mat_<double>();
 
 			// Push back the rigid points (some face outline, eyes, and nose)
 			source_points.push_back(tmp_source.row(1));
@@ -101,8 +100,8 @@ namespace FaceAnalysis
 			source_points.push_back(tmp_source.row(46));
 			source_points.push_back(tmp_source.row(47));
 
-			Mat_<double> tmp_dest = destination_points.clone();
-			destination_points = Mat_<double>();
+			cv::Mat_<double> tmp_dest = destination_points.clone();
+			destination_points = cv::Mat_<double>();
 
 			// Push back the rigid points
 			destination_points.push_back(tmp_dest.row(1));
@@ -136,13 +135,13 @@ namespace FaceAnalysis
 	void AlignFace(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
-		Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
+		cv::Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
 	
 		// Discard the z component
-		similarity_normalised_shape = similarity_normalised_shape(Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
+		similarity_normalised_shape = similarity_normalised_shape(cv::Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
-		Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
-		Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
+		cv::Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
+		cv::Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
 		// Aligning only the more rigid points
 		if(rigid)
@@ -150,8 +149,8 @@ namespace FaceAnalysis
 			extract_rigid_points(source_landmarks, destination_landmarks);
 		}
 
-		Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
-		Matx23d warp_matrix;
+		cv::Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
+		cv::Matx23d warp_matrix;
 
 		warp_matrix(0,0) = scale_rot_matrix(0,0);
 		warp_matrix(0,1) = scale_rot_matrix(0,1);
@@ -161,27 +160,27 @@ namespace FaceAnalysis
 		double tx = clnf_model.params_global[4];
 		double ty = clnf_model.params_global[5];
 
-		Vec2d T(tx, ty);
+		cv::Vec2d T(tx, ty);
 		T = scale_rot_matrix * T;
 
 		// Make sure centering is correct
 		warp_matrix(0,2) = -T(0) + out_width/2;
 		warp_matrix(1,2) = -T(1) + out_height/2;
 
-		cv::warpAffine(frame, aligned_face, warp_matrix, Size(out_width, out_height), INTER_LINEAR);
+		cv::warpAffine(frame, aligned_face, warp_matrix, cv::Size(out_width, out_height), cv::INTER_LINEAR);
 	}
 
 	// Aligning a face to a common reference frame
-	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, const Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
+	void AlignFaceMask(cv::Mat& aligned_face, const cv::Mat& frame, const LandmarkDetector::CLNF& clnf_model, const cv::Mat_<int>& triangulation, bool rigid, double sim_scale, int out_width, int out_height)
 	{
 		// Will warp to scaled mean shape
-		Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
+		cv::Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
 	
 		// Discard the z component
-		similarity_normalised_shape = similarity_normalised_shape(Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
+		similarity_normalised_shape = similarity_normalised_shape(cv::Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
-		Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
-		Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
+		cv::Mat_<double> source_landmarks = clnf_model.detected_landmarks.reshape(1, 2).t();
+		cv::Mat_<double> destination_landmarks = similarity_normalised_shape.reshape(1, 2).t();
 
 		// Aligning only the more rigid points
 		if(rigid)
@@ -189,8 +188,8 @@ namespace FaceAnalysis
 			extract_rigid_points(source_landmarks, destination_landmarks);
 		}
 
-		Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
-		Matx23d warp_matrix;
+		cv::Matx22d scale_rot_matrix = LandmarkDetector::AlignShapesWithScale(source_landmarks, destination_landmarks);
+		cv::Matx23d warp_matrix;
 
 		warp_matrix(0,0) = scale_rot_matrix(0,0);
 		warp_matrix(0,1) = scale_rot_matrix(0,1);
@@ -200,19 +199,19 @@ namespace FaceAnalysis
 		double tx = clnf_model.params_global[4];
 		double ty = clnf_model.params_global[5];
 
-		Vec2d T(tx, ty);
+		cv::Vec2d T(tx, ty);
 		T = scale_rot_matrix * T;
 
 		// Make sure centering is correct
 		warp_matrix(0,2) = -T(0) + out_width/2;
 		warp_matrix(1,2) = -T(1) + out_height/2;
 
-		cv::warpAffine(frame, aligned_face, warp_matrix, Size(out_width, out_height), INTER_LINEAR);
+		cv::warpAffine(frame, aligned_face, warp_matrix, cv::Size(out_width, out_height), cv::INTER_LINEAR);
 
 		// Move the destination landmarks there as well
-		Matx22d warp_matrix_2d(warp_matrix(0,0), warp_matrix(0,1), warp_matrix(1,0), warp_matrix(1,1));
+		cv::Matx22d warp_matrix_2d(warp_matrix(0,0), warp_matrix(0,1), warp_matrix(1,0), warp_matrix(1,1));
 		
-		destination_landmarks = Mat(clnf_model.detected_landmarks.reshape(1, 2).t()) * Mat(warp_matrix_2d).t();
+		destination_landmarks = cv::Mat(clnf_model.detected_landmarks.reshape(1, 2).t()) * cv::Mat(warp_matrix_2d).t();
 
 		destination_landmarks.col(0) = destination_landmarks.col(0) + warp_matrix(0,2);
 		destination_landmarks.col(1) = destination_landmarks.col(1) + warp_matrix(1,2);
@@ -232,11 +231,11 @@ namespace FaceAnalysis
 		destination_landmarks.at<double>(25,1) -= 7; 
 		destination_landmarks.at<double>(26,1) -= 7; 
 
-		destination_landmarks = Mat(destination_landmarks.t()).reshape(1, 1).t();		
+		destination_landmarks = cv::Mat(destination_landmarks.t()).reshape(1, 1).t();
 
 		LandmarkDetector::PAW paw(destination_landmarks, triangulation, 0, 0, aligned_face.cols-1, aligned_face.rows-1);
 		
-		vector<Mat> aligned_face_channels(aligned_face.channels());
+		vector<cv::Mat> aligned_face_channels(aligned_face.channels());
 		
 		cv::split(aligned_face, aligned_face_channels);
 
@@ -293,7 +292,7 @@ namespace FaceAnalysis
 		num_cols = hog.nc();
 		num_rows = hog.nr();
 
-		descriptor = Mat_<double>(1, num_cols * num_rows * 31);
+		descriptor = cv::Mat_<double>(1, num_cols * num_rows * 31);
 		cv::MatIterator_<double> descriptor_it = descriptor.begin();
 		for(int y = 0; y < num_cols; ++y)
 		{
@@ -323,10 +322,10 @@ namespace FaceAnalysis
 		if(use_max_min)
 			num_stats++;
 
-		sum_stats = Mat_<double>(1, descriptors.cols * num_stats, 0.0);
+		sum_stats = cv::Mat_<double>(1, descriptors.cols * num_stats, 0.0);
 		for(int i = 0; i < descriptors.cols; ++i)
 		{
-			Scalar mean, stdev;
+			cv::Scalar mean, stdev;
 			cv::meanStdDev(descriptors.col(i), mean, stdev);
 
 			int add = 0;
@@ -357,7 +356,7 @@ namespace FaceAnalysis
 	{
 		if(descriptors.empty())
 		{
-			descriptors = Mat_<double>(num_frames_to_keep, new_descriptor.cols, 0.0);
+			descriptors = cv::Mat_<double>(num_frames_to_keep, new_descriptor.cols, 0.0);
 		}
 
 		int row_to_change = curr_frame % num_frames_to_keep;

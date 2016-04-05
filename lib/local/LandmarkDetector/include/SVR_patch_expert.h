@@ -60,8 +60,6 @@
 #ifndef __SVR_PATCH_EXPERT_h_
 #define __SVR_PATCH_EXPERT_h_
 
-using namespace cv;
-
 namespace LandmarkDetector
 {
   //===========================================================================
@@ -82,10 +80,10 @@ class SVR_patch_expert{
 		double  bias;
 
 		// Support vector regression weights
-		Mat_<float> weights;
+		cv::Mat_<float> weights;
 
 		// Discrete Fourier Transform of SVR weights, precalculated for speed (at different window sizes)
-		std::map<int, Mat_<double> > weights_dfts;
+		std::map<int, cv::Mat_<double> > weights_dfts;
 
 		// Confidence of the current patch expert (used for NU_RLMS optimisation)
 		double  confidence;
@@ -100,10 +98,10 @@ class SVR_patch_expert{
 			this->bias = other.bias;
 			this->confidence = other.confidence;
 
-			for(std::map<int, Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it!= other.weights_dfts.end(); it++)
+			for(std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it!= other.weights_dfts.end(); it++)
 			{
 				// Make sure the matrix is copied.
-				this->weights_dfts.insert(std::pair<int, Mat>(it->first, it->second.clone()));
+				this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
 			}
 		}
 
@@ -111,8 +109,8 @@ class SVR_patch_expert{
 		void Read(std::ifstream &stream);
 
 		// The actual response computation from intensity or depth (for CLM-Z)
-		void Response(const Mat_<float> &area_of_interest, Mat_<float> &response);    
-		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<float> &response);
+		void Response(const cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response);
+		void ResponseDepth(const cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response);
 
 };
 //===========================================================================
@@ -142,8 +140,8 @@ class Multi_SVR_patch_expert{
 		void Read(std::ifstream &stream);
 
 		// actual response computation from intensity of depth (for CLM-Z)
-		void Response(const Mat_<float> &area_of_interest, Mat_<float> &response);
-		void ResponseDepth(const Mat_<float> &area_of_interest, Mat_<float> &response);
+		void Response(const cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response);
+		void ResponseDepth(const cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response);
 
 };
 }

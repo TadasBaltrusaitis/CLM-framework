@@ -62,7 +62,6 @@
 
 using namespace boost::filesystem;
 
-using namespace cv;
 using namespace std;
 
 namespace LandmarkDetector
@@ -263,7 +262,7 @@ void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, 
 }
 
 void get_image_input_output_params(vector<string> &input_image_files, vector<string> &input_depth_files, vector<string> &output_feature_files, vector<string> &output_pose_files, vector<string> &output_image_files,
-		vector<Rect_<double>> &input_bounding_boxes, vector<string> &arguments)
+		vector<cv::Rect_<double>> &input_bounding_boxes, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 	
@@ -330,7 +329,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 
 								in_bbox.close();
 
-								input_bounding_boxes.push_back(Rect_<double>(min_x, min_y, max_x - min_x, max_y - min_y));
+								input_bounding_boxes.push_back(cv::Rect_<double>(min_x, min_y, max_x - min_x, max_y - min_y));
 							}
 						}
 					}
@@ -461,7 +460,7 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 // Fast patch expert response computation (linear model across a ROI) using normalised cross-correlation
 //===========================================================================
 
-void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, Mat_<float>& corr)
+void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const cv::Mat_<float>& _templ, map<int, cv::Mat_<double> >& _templ_dfts, cv::Mat_<float>& corr)
 {
 	// Our model will always be under min block size so can ignore this
     //const double blockScale = 4.5;
@@ -469,13 +468,13 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 
 	int maxDepth = CV_64F;
 
-	Size dftsize;
+	cv::Size dftsize;
 	
-    dftsize.width = getOptimalDFTSize(corr.cols + _templ.cols - 1);
-    dftsize.height = getOptimalDFTSize(corr.rows + _templ.rows - 1);
+    dftsize.width = cv::getOptimalDFTSize(corr.cols + _templ.cols - 1);
+    dftsize.height = cv::getOptimalDFTSize(corr.rows + _templ.rows - 1);
 
     // Compute block size
-    Size blocksize;
+	cv::Size blocksize;
     blocksize.width = dftsize.width - _templ.cols + 1;
     blocksize.width = MIN( blocksize.width, corr.cols );
     blocksize.height = dftsize.height - _templ.rows + 1;
@@ -516,10 +515,10 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 		dftTempl = _templ_dfts.find(dftsize.width)->second;
 	}
 
-	Size bsz(std::min(blocksize.width, corr.cols), std::min(blocksize.height, corr.rows));
-	Mat src;
+	cv::Size bsz(std::min(blocksize.width, corr.cols), std::min(blocksize.height, corr.rows));
+	cv::Mat src;
 
-	Mat cdst(corr, Rect(0, 0, bsz.width, bsz.height));
+	cv::Mat cdst(corr, cv::Rect(0, 0, bsz.width, bsz.height));
 	
 	cv::Mat_<double> dftImg;
 
@@ -528,14 +527,14 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 		dftImg.create(dftsize);
 		dftImg.setTo(0.0);
 
-		Size dsz(bsz.width + _templ.cols - 1, bsz.height + _templ.rows - 1);
+		cv::Size dsz(bsz.width + _templ.cols - 1, bsz.height + _templ.rows - 1);
 
 		int x2 = std::min(img.cols, dsz.width);
 		int y2 = std::min(img.rows, dsz.height);
 
-		Mat src0(img, Range(0, y2), Range(0, x2));
-		Mat dst(dftImg, Rect(0, 0, dsz.width, dsz.height));
-		Mat dst1(dftImg, Rect(0, 0, x2, y2));
+		cv::Mat src0(img, cv::Range(0, y2), cv::Range(0, x2));
+		cv::Mat dst(dftImg, cv::Rect(0, 0, dsz.width, dsz.height));
+		cv::Mat dst1(dftImg, cv::Rect(0, 0, x2, y2));
 
 		src = src0;
 		
@@ -546,11 +545,11 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 		img_dft = dftImg.clone();
 	}
 
-	Mat dftTempl1(dftTempl, Rect(0, 0, dftsize.width, dftsize.height));
-	mulSpectrums(img_dft, dftTempl1, dftImg, 0, true);
-	dft( dftImg, dftImg, DFT_INVERSE + DFT_SCALE, bsz.height );
+	cv::Mat dftTempl1(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
+	cv::mulSpectrums(img_dft, dftTempl1, dftImg, 0, true);
+	cv::dft( dftImg, dftImg, cv::DFT_INVERSE + cv::DFT_SCALE, bsz.height );
 
-	src = dftImg(Rect(0, 0, bsz.width, bsz.height));
+	src = dftImg(cv::Rect(0, 0, bsz.width, bsz.height));
 
 	src.convertTo(cdst, CV_32F);
 
@@ -558,7 +557,7 @@ void crossCorr_m( const Mat_<float>& img, Mat_<double>& img_dft, const Mat_<floa
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const Mat_<float>&  templ, map<int, Mat_<double> >& templ_dfts, Mat_<float>& result, int method )
+void matchTemplate_m(  const cv::Mat_<float>& input_img, cv::Mat_<double>& img_dft, cv::Mat& _integral_img, cv::Mat& _integral_img_sq, const cv::Mat_<float>&  templ, map<int, cv::Mat_<double> >& templ_dfts, cv::Mat_<float>& result, int method )
 {
 
         int numType = method == CV_TM_CCORR || method == CV_TM_CCORR_NORMED ? 0 :
@@ -570,7 +569,7 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 	// Assume result is defined properly
 	if(result.empty())
 	{
-		Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
+		cv::Size corrSize(input_img.cols - templ.cols + 1, input_img.rows - templ.rows + 1);
 		result.create(corrSize);
 	}
     LandmarkDetector::crossCorr_m( input_img, img_dft, templ, templ_dfts, result);
@@ -580,8 +579,8 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 
     double invArea = 1./((double)templ.rows * templ.cols);
 
-    Mat sum, sqsum;
-    Scalar templMean, templSdv;
+	cv::Mat sum, sqsum;
+	cv::Scalar templMean, templSdv;
     double *q0 = 0, *q1 = 0, *q2 = 0, *q3 = 0;
     double templNorm = 0, templSum2 = 0;
 
@@ -594,7 +593,7 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 		}
 		sum = _integral_img;
 
-        templMean = mean(templ);
+        templMean = cv::mean(templ);
     }
     else
     {
@@ -621,7 +620,7 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 
         if( numType != 1 )
         {
-            templMean = Scalar::all(0);
+            templMean = cv::Scalar::all(0);
             templNorm = templSum2;
         }
 
@@ -701,7 +700,7 @@ void matchTemplate_m(  const Mat_<float>& input_img, Mat_<double>& img_dft, cv::
 //===========================================================================
 // Using Kabsch's algorithm for aligning shapes
 //This assumes that align_from and align_to are already mean normalised
-Matx22d AlignShapesKabsch2D(const Mat_<double>& align_from, const Mat_<double>& align_to )
+cv::Matx22d AlignShapesKabsch2D(const cv::Mat_<double>& align_from, const cv::Mat_<double>& align_to )
 {
 
 	cv::SVD svd(align_from.t() * align_to);
@@ -720,15 +719,15 @@ Matx22d AlignShapesKabsch2D(const Mat_<double>& align_from, const Mat_<double>& 
 		corr(1,1) = -1;
 	}
 
-    Matx22d R;
-	Mat(svd.vt.t()*cv::Mat(corr)*svd.u.t()).copyTo(R);
+	cv::Matx22d R;
+	cv::Mat(svd.vt.t()*cv::Mat(corr)*svd.u.t()).copyTo(R);
 
 	return R;
 }
 
 //=============================================================================
 // Basically Kabsch's algorithm but also allows the collection of points to be different in scale from each other
-Matx22d AlignShapesWithScale(cv::Mat_<double>& src, cv::Mat_<double> dst)
+cv::Matx22d AlignShapesWithScale(cv::Mat_<double>& src, cv::Mat_<double> dst)
 {
 	int n = src.rows;
 
@@ -739,19 +738,19 @@ Matx22d AlignShapesWithScale(cv::Mat_<double>& src, cv::Mat_<double> dst)
 	double mean_dst_x = cv::mean(dst.col(0))[0];
 	double mean_dst_y = cv::mean(dst.col(1))[0];
 
-	Mat_<double> src_mean_normed = src.clone();
+	cv::Mat_<double> src_mean_normed = src.clone();
 	src_mean_normed.col(0) = src_mean_normed.col(0) - mean_src_x;
 	src_mean_normed.col(1) = src_mean_normed.col(1) - mean_src_y;
 
-	Mat_<double> dst_mean_normed = dst.clone();
+	cv::Mat_<double> dst_mean_normed = dst.clone();
 	dst_mean_normed.col(0) = dst_mean_normed.col(0) - mean_dst_x;
 	dst_mean_normed.col(1) = dst_mean_normed.col(1) - mean_dst_y;
 
 	// Find the scaling factor of each
-	Mat src_sq;
+	cv::Mat src_sq;
 	cv::pow(src_mean_normed, 2, src_sq);
 
-	Mat dst_sq;
+	cv::Mat dst_sq;
 	cv::pow(dst_mean_normed, 2, dst_sq);
 
 	double s_src = sqrt(cv::sum(src_sq)[0]/n);
@@ -763,13 +762,13 @@ Matx22d AlignShapesWithScale(cv::Mat_<double>& src, cv::Mat_<double> dst)
 	double s = s_dst / s_src;
 
 	// Get the rotation
-	Matx22d R = AlignShapesKabsch2D(src_mean_normed, dst_mean_normed);
+	cv::Matx22d R = AlignShapesKabsch2D(src_mean_normed, dst_mean_normed);
 		
-	Matx22d	A;
-	Mat(s * R).copyTo(A);
+	cv::Matx22d	A;
+	cv::Mat(s * R).copyTo(A);
 
-	Mat_<double> aligned = (Mat(Mat(A) * src.t())).t();
-    Mat_<double> offset = dst - aligned;
+	cv::Mat_<double> aligned = (cv::Mat(cv::Mat(A) * src.t())).t();
+	cv::Mat_<double> offset = dst - aligned;
 
 	double t_x =  cv::mean(offset.col(0))[0];
 	double t_y =  cv::mean(offset.col(1))[0];
@@ -782,17 +781,17 @@ Matx22d AlignShapesWithScale(cv::Mat_<double>& src, cv::Mat_<double> dst)
 //===========================================================================
 // Visualisation functions
 //===========================================================================
-void Project(Mat_<double>& dest, const Mat_<double>& mesh, double fx, double fy, double cx, double cy)
+void Project(cv::Mat_<double>& dest, const cv::Mat_<double>& mesh, double fx, double fy, double cx, double cy)
 {
-	dest = Mat_<double>(mesh.rows,2, 0.0);
+	dest = cv::Mat_<double>(mesh.rows,2, 0.0);
 
 	int num_points = mesh.rows;
 
 	double X, Y, Z;
 
 
-	Mat_<double>::const_iterator mData = mesh.begin();
-	Mat_<double>::iterator projected = dest.begin();
+	cv::Mat_<double>::const_iterator mData = mesh.begin();
+	cv::Mat_<double>::iterator projected = dest.begin();
 
 	for(int i = 0;i < num_points; i++)
 	{
@@ -823,7 +822,7 @@ void Project(Mat_<double>& dest, const Mat_<double>& mesh, double fx, double fy,
 
 }
 
-void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float fy, float cx, float cy)
+void DrawBox(cv::Mat image, cv::Vec6d pose, cv::Scalar color, int thickness, float fx, float fy, float cx, float cy)
 {
 	double boxVerts[] = {-1, 1, -1,
 						1, 1, -1,
@@ -849,13 +848,13 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 	edges.push_back(pair<int,int>(7,6));
 
 	// The size of the head is roughly 200mm x 200mm x 200mm
-	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
+	cv::Mat_<double> box = cv::Mat(8, 3, CV_64F, boxVerts).clone() * 100;
 
-	Matx33d rot = LandmarkDetector::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
-	Mat_<double> rotBox;
+	cv::Matx33d rot = LandmarkDetector::Euler2RotationMatrix(cv::Vec3d(pose[3], pose[4], pose[5]));
+	cv::Mat_<double> rotBox;
 	
 	// Rotate the box
-	rotBox = Mat(rot) * box.t();
+	rotBox = cv::Mat(rot) * box.t();
 	rotBox = rotBox.t();
 
 	// Move the bounding box to head position
@@ -864,21 +863,21 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 	rotBox.col(2) = rotBox.col(2) + pose[2];
 
 	// draw the lines
-	Mat_<double> rotBoxProj;
+	cv::Mat_<double> rotBoxProj;
 	Project(rotBoxProj, rotBox, fx, fy, cx, cy);
 
-	Rect image_rect(0,0,image.cols, image.rows);
+	cv::Rect image_rect(0,0,image.cols, image.rows);
 	
 	for (size_t i = 0; i < edges.size(); ++i)
 	{
-		Mat_<double> begin;
-		Mat_<double> end;
+		cv::Mat_<double> begin;
+		cv::Mat_<double> end;
 	
 		rotBoxProj.row(edges[i].first).copyTo(begin);
 		rotBoxProj.row(edges[i].second).copyTo(end);
 
-		Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
-		Point p2((int)end.at<double>(0), (int)end.at<double>(1));
+		cv::Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
+		cv::Point p2((int)end.at<double>(0), (int)end.at<double>(1));
 		
 		// Only draw the line if one of the points is inside the image
 		if(p1.inside(image_rect) || p2.inside(image_rect))
@@ -890,7 +889,7 @@ void DrawBox(Mat image, Vec6d pose, Scalar color, int thickness, float fx, float
 
 }
 
-vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, float cx, float cy)
+vector<std::pair<cv::Point, cv::Point>> CalculateBox(cv::Vec6d pose, float fx, float fy, float cx, float cy)
 {
 	double boxVerts[] = {-1, 1, -1,
 						1, 1, -1,
@@ -916,13 +915,13 @@ vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, floa
 	edges.push_back(pair<int,int>(7,6));
 
 	// The size of the head is roughly 200mm x 200mm x 200mm
-	Mat_<double> box = Mat(8, 3, CV_64F, boxVerts).clone() * 100;
+	cv::Mat_<double> box = cv::Mat(8, 3, CV_64F, boxVerts).clone() * 100;
 
-	Matx33d rot = LandmarkDetector::Euler2RotationMatrix(Vec3d(pose[3], pose[4], pose[5]));
-	Mat_<double> rotBox;
+	cv::Matx33d rot = LandmarkDetector::Euler2RotationMatrix(cv::Vec3d(pose[3], pose[4], pose[5]));
+	cv::Mat_<double> rotBox;
 	
 	// Rotate the box
-	rotBox = Mat(rot) * box.t();
+	rotBox = cv::Mat(rot) * box.t();
 	rotBox = rotBox.t();
 
 	// Move the bounding box to head position
@@ -931,37 +930,37 @@ vector<std::pair<Point,Point>> CalculateBox(Vec6d pose, float fx, float fy, floa
 	rotBox.col(2) = rotBox.col(2) + pose[2];
 
 	// draw the lines
-	Mat_<double> rotBoxProj;
+	cv::Mat_<double> rotBoxProj;
 	Project(rotBoxProj, rotBox, fx, fy, cx, cy);
 
-	vector<std::pair<Point,Point>> lines;
+	vector<std::pair<cv::Point, cv::Point>> lines;
 	
 	for (size_t i = 0; i < edges.size(); ++i)
 	{
-		Mat_<double> begin;
-		Mat_<double> end;
+		cv::Mat_<double> begin;
+		cv::Mat_<double> end;
 	
 		rotBoxProj.row(edges[i].first).copyTo(begin);
 		rotBoxProj.row(edges[i].second).copyTo(end);
 
-		Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
-		Point p2((int)end.at<double>(0), (int)end.at<double>(1));
+		cv::Point p1((int)begin.at<double>(0), (int)begin.at<double>(1));
+		cv::Point p2((int)end.at<double>(0), (int)end.at<double>(1));
 		
-		lines.push_back(pair<Point, Point>(p1,p2));
+		lines.push_back(pair<cv::Point, cv::Point>(p1,p2));
 		
 	}
 
 	return lines;
 }
 
-void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thickness)
+void DrawBox(vector<pair<cv::Point, cv::Point>> lines, cv::Mat image, cv::Scalar color, int thickness)
 {
-	Rect image_rect(0,0,image.cols, image.rows);
+	cv::Rect image_rect(0,0,image.cols, image.rows);
 	
 	for (size_t i = 0; i < lines.size(); ++i)
 	{
-		Point p1 = lines.at(i).first;
-		Point p2 = lines.at(i).second;
+		cv::Point p1 = lines.at(i).first;
+		cv::Point p2 = lines.at(i).second;
 		// Only draw the line if one of the points is inside the image
 		if(p1.inside(image_rect) || p2.inside(image_rect))
 		{
@@ -973,16 +972,16 @@ void DrawBox(vector<pair<Point, Point>> lines, Mat image, Scalar color, int thic
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visibilities)
+vector<cv::Point2d> CalculateLandmarks(const cv::Mat_<double>& shape2D, cv::Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
-	vector<Point2d> landmarks;
+	vector<cv::Point2d> landmarks;
 
 	for( int i = 0; i < n; ++i)
 	{		
 		if(visibilities.at<int>(i))
 		{
-			Point2d featurePoint(shape2D.at<double>(i), shape2D.at<double>(i +n));
+			cv::Point2d featurePoint(shape2D.at<double>(i), shape2D.at<double>(i +n));
 
 			landmarks.push_back(featurePoint);
 		}
@@ -992,11 +991,11 @@ vector<Point2d> CalculateLandmarks(const Mat_<double>& shape2D, Mat_<int>& visib
 }
 
 // Computing landmarks (to be drawn later possibly)
-vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
+vector<cv::Point2d> CalculateLandmarks(cv::Mat img, const cv::Mat_<double>& shape2D)
 {
 	
 	int n;
-	vector<Point2d> landmarks;
+	vector<cv::Point2d> landmarks;
 	
 	if(shape2D.cols == 2)
 	{
@@ -1009,14 +1008,14 @@ vector<Point2d> CalculateLandmarks(cv::Mat img, const Mat_<double>& shape2D)
 
 	for( int i = 0; i < n; ++i)
 	{		
-		Point2d featurePoint;
+		cv::Point2d featurePoint;
 		if(shape2D.cols == 1)
 		{
-			featurePoint = Point2d(shape2D.at<double>(i), shape2D.at<double>(i +n));
+			featurePoint = cv::Point2d(shape2D.at<double>(i), shape2D.at<double>(i +n));
 		}
 		else
 		{
-			featurePoint = Point2d(shape2D.at<double>(i, 0), shape2D.at<double>(i, 1));
+			featurePoint = cv::Point2d(shape2D.at<double>(i, 0), shape2D.at<double>(i, 1));
 		}
 
 		landmarks.push_back(featurePoint);
@@ -1037,7 +1036,7 @@ vector<cv::Point2d> CalculateLandmarks(CLNF& clnf_model)
 }
 
 // Drawing landmarks on a face image
-void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilities)
+void Draw(cv::Mat img, const cv::Mat_<double>& shape2D, const cv::Mat_<int>& visibilities)
 {
 	int n = shape2D.rows/2;
 
@@ -1048,14 +1047,14 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilitie
 		{		
 			if(visibilities.at<int>(i))
 			{
-				Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+				cv::Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 				// A rough heuristic for drawn point size
 				int thickness = (int)std::ceil(3.0* ((double)img.cols) / 640.0);
 				int thickness_2 = (int)std::ceil(1.0* ((double)img.cols) / 640.0);
 
-				cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-				cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+				cv::circle(img, featurePoint, 1, cv::Scalar(0,0,255), thickness);
+				cv::circle(img, featurePoint, 1, cv::Scalar(255,0,0), thickness_2);
 			}
 		}
 	}
@@ -1063,7 +1062,7 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilitie
 	{
 		for( int i = 0; i < n; ++i)
 		{		
-			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+			cv::Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
 			int thickness = 1.0;
@@ -1077,11 +1076,11 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilitie
 			if(i == 27)
 				next_point = 20;
 
-			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
 			if( i < 8 || i > 19)
-				cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+				cv::line(img, featurePoint, nextFeaturePoint, cv::Scalar(255, 0, 0), thickness_2);
 			else
-				cv::line(img, featurePoint, nextFeaturePoint, Scalar(0, 0, 255), thickness_2);
+				cv::line(img, featurePoint, nextFeaturePoint, cv::Scalar(0, 0, 255), thickness_2);
 
 			//cv::circle(img, featurePoint, 1, Scalar(0,255,0), thickness);
 			//cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness_2);
@@ -1093,7 +1092,7 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilitie
 	{
 		for( int i = 0; i < n; ++i)
 		{		
-			Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+			cv::Point featurePoint((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 
 			// A rough heuristic for drawn point size
 			int thickness = 1.0;
@@ -1106,14 +1105,14 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D, const Mat_<int>& visibilitie
 			if(i == 5)
 				next_point = 0;
 
-			Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
-			cv::line(img, featurePoint, nextFeaturePoint, Scalar(255, 0, 0), thickness_2);
+			cv::Point nextFeaturePoint((int)shape2D.at<double>(next_point), (int)shape2D.at<double>(next_point+n));
+			cv::line(img, featurePoint, nextFeaturePoint, cv::Scalar(255, 0, 0), thickness_2);
 		}
 	}
 }
 
 // Drawing landmarks on a face image
-void Draw(cv::Mat img, const Mat_<double>& shape2D)
+void Draw(cv::Mat img, const cv::Mat_<double>& shape2D)
 {
 	
 	int n;
@@ -1129,21 +1128,21 @@ void Draw(cv::Mat img, const Mat_<double>& shape2D)
 
 	for( int i = 0; i < n; ++i)
 	{		
-		Point featurePoint;
+		cv::Point featurePoint;
 		if(shape2D.cols == 1)
 		{
-			featurePoint = Point((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
+			featurePoint = cv::Point((int)shape2D.at<double>(i), (int)shape2D.at<double>(i +n));
 		}
 		else
 		{
-			featurePoint = Point((int)shape2D.at<double>(i, 0), (int)shape2D.at<double>(i, 1));
+			featurePoint = cv::Point((int)shape2D.at<double>(i, 0), (int)shape2D.at<double>(i, 1));
 		}
 		// A rough heuristic for drawn point size
 		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
 		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
 
-		cv::circle(img, featurePoint, 1, Scalar(0,0,255), thickness);
-		cv::circle(img, featurePoint, 1, Scalar(255,0,0), thickness_2);
+		cv::circle(img, featurePoint, 1, cv::Scalar(0,0,255), thickness);
+		cv::circle(img, featurePoint, 1, cv::Scalar(255,0,0), thickness_2);
 
 	}
 	
@@ -1168,16 +1167,16 @@ void Draw(cv::Mat img, const CLNF& clnf_model)
 	}
 }
 
-void DrawLandmarks(cv::Mat img, vector<Point> landmarks)
+void DrawLandmarks(cv::Mat img, vector<cv::Point> landmarks)
 {
-	for(Point p : landmarks)
+	for(cv::Point p : landmarks)
 	{		
 		// A rough heuristic for drawn point size
 		int thickness = (int)std::ceil(5.0* ((double)img.cols) / 640.0);
 		int thickness_2 = (int)std::ceil(1.5* ((double)img.cols) / 640.0);
 
-		cv::circle(img, p, 1, Scalar(0,0,255), thickness);
-		cv::circle(img, p, 1, Scalar(255,0,0), thickness_2);
+		cv::circle(img, p, 1, cv::Scalar(0,0,255), thickness);
+		cv::circle(img, p, 1, cv::Scalar(255,0,0), thickness_2);
 	}
 	
 }
@@ -1187,9 +1186,9 @@ void DrawLandmarks(cv::Mat img, vector<Point> landmarks)
 //===========================================================================
 
 // Using the XYZ convention R = Rx * Ry * Rz, left-handed positive sign
-Matx33d Euler2RotationMatrix(const Vec3d& eulerAngles)
+cv::Matx33d Euler2RotationMatrix(const cv::Vec3d& eulerAngles)
 {
-	Matx33d rotation_matrix;
+	cv::Matx33d rotation_matrix;
 
 	double s1 = sin(eulerAngles[0]);
 	double s2 = sin(eulerAngles[1]);
@@ -1213,7 +1212,7 @@ Matx33d Euler2RotationMatrix(const Vec3d& eulerAngles)
 }
 
 // Using the XYZ convention R = Rx * Ry * Rz, left-handed positive sign
-Vec3d RotationMatrix2Euler(const Matx33d& rotation_matrix)
+cv::Vec3d RotationMatrix2Euler(const cv::Matx33d& rotation_matrix)
 {
 	double q0 = sqrt( 1 + rotation_matrix(0,0) + rotation_matrix(1,1) + rotation_matrix(2,2) ) / 2.0;
 	double q1 = (rotation_matrix(2,1) - rotation_matrix(1,2)) / (4.0*q0) ;
@@ -1226,34 +1225,34 @@ Vec3d RotationMatrix2Euler(const Matx33d& rotation_matrix)
 	double pitch= atan2(2.0 * (q0*q1-q2*q3), q0*q0-q1*q1-q2*q2+q3*q3); 
 	double roll = atan2(2.0 * (q0*q3-q1*q2), q0*q0+q1*q1-q2*q2-q3*q3);
     
-	return Vec3d(pitch, yaw, roll);
+	return cv::Vec3d(pitch, yaw, roll);
 }
 
-Vec3d Euler2AxisAngle(const Vec3d& euler)
+cv::Vec3d Euler2AxisAngle(const cv::Vec3d& euler)
 {
-	Matx33d rotMatrix = LandmarkDetector::Euler2RotationMatrix(euler);
-	Vec3d axis_angle;
+	cv::Matx33d rotMatrix = LandmarkDetector::Euler2RotationMatrix(euler);
+	cv::Vec3d axis_angle;
 	cv::Rodrigues(rotMatrix, axis_angle);
 	return axis_angle;
 }
 
-Vec3d AxisAngle2Euler(const Vec3d& axis_angle)
+cv::Vec3d AxisAngle2Euler(const cv::Vec3d& axis_angle)
 {
-	Matx33d rotation_matrix;
+	cv::Matx33d rotation_matrix;
 	cv::Rodrigues(axis_angle, rotation_matrix);
 	return RotationMatrix2Euler(rotation_matrix);
 }
 
-Matx33d AxisAngle2RotationMatrix(const Vec3d& axis_angle)
+cv::Matx33d AxisAngle2RotationMatrix(const cv::Vec3d& axis_angle)
 {
-	Matx33d rotation_matrix;
+	cv::Matx33d rotation_matrix;
 	cv::Rodrigues(axis_angle, rotation_matrix);
 	return rotation_matrix;
 }
 
-Vec3d RotationMatrix2AxisAngle(const Matx33d& rotation_matrix)
+cv::Vec3d RotationMatrix2AxisAngle(const cv::Matx33d& rotation_matrix)
 {
-	Vec3d axis_angle;
+	cv::Vec3d axis_angle;
 	cv::Rodrigues(rotation_matrix, axis_angle);
 	return axis_angle;
 }
@@ -1263,9 +1262,9 @@ Vec3d RotationMatrix2AxisAngle(const Matx33d& rotation_matrix)
 //============================================================================
 // Face detection helpers
 //============================================================================
-bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity)
+bool DetectFaces(vector<cv::Rect_<double> >& o_regions, const cv::Mat_<uchar>& intensity)
 {
-	CascadeClassifier classifier("./classifiers/haarcascade_frontalface_alt.xml");
+	cv::CascadeClassifier classifier("./classifiers/haarcascade_frontalface_alt.xml");
 	if(classifier.empty())
 	{
 		cout << "Couldn't load the Haar cascade classifier" << endl;
@@ -1278,11 +1277,11 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 
 }
 
-bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, CascadeClassifier& classifier)
+bool DetectFaces(vector<cv::Rect_<double> >& o_regions, const cv::Mat_<uchar>& intensity, cv::CascadeClassifier& classifier)
 {
 		
-	vector<Rect> face_detections;
-	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, 0, Size(50, 50)); 		
+	vector<cv::Rect> face_detections;
+	classifier.detectMultiScale(intensity, face_detections, 1.2, 2, 0, cv::Size(50, 50));
 
 	// Convert from int bounding box do a double one with corrections
 	o_regions.resize(face_detections.size());
@@ -1308,10 +1307,10 @@ bool DetectFaces(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_image, CascadeClassifier& classifier, cv::Point preference)
+bool DetectSingleFace(cv::Rect_<double>& o_region, const cv::Mat_<uchar>& intensity_image, cv::CascadeClassifier& classifier, cv::Point preference)
 {
 	// The tracker can return multiple faces
-	vector<Rect_<double> > face_detections;
+	vector<cv::Rect_<double> > face_detections;
 				
 	bool detect_success = LandmarkDetector::DetectFaces(face_detections, intensity_image, classifier);
 					
@@ -1362,12 +1361,12 @@ bool DetectSingleFace(Rect_<double>& o_region, const Mat_<uchar>& intensity_imag
 	else
 	{
 		// if not detected
-		o_region = Rect_<double>(0,0,0,0);
+		o_region = cv::Rect_<double>(0,0,0,0);
 	}
 	return detect_success;
 }
 
-bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, std::vector<double>& confidences)
+bool DetectFacesHOG(vector<cv::Rect_<double> >& o_regions, const cv::Mat_<uchar>& intensity, std::vector<double>& confidences)
 {
 	dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
 
@@ -1375,10 +1374,10 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 
 }
 
-bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intensity, dlib::frontal_face_detector& detector, std::vector<double>& o_confidences)
+bool DetectFacesHOG(vector<cv::Rect_<double> >& o_regions, const cv::Mat_<uchar>& intensity, dlib::frontal_face_detector& detector, std::vector<double>& o_confidences)
 {
 		
-	Mat_<uchar> upsampled_intensity;
+	cv::Mat_<uchar> upsampled_intensity;
 
 	double scaling = 1.3;
 
@@ -1415,10 +1414,10 @@ bool DetectFacesHOG(vector<Rect_<double> >& o_regions, const Mat_<uchar>& intens
 	return o_regions.size() > 0;
 }
 
-bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence, cv::Point preference)
+bool DetectSingleFaceHOG(cv::Rect_<double>& o_region, const cv::Mat_<uchar>& intensity_img, dlib::frontal_face_detector& detector, double& confidence, cv::Point preference)
 {
 	// The tracker can return multiple faces
-	vector<Rect_<double> > face_detections;
+	vector<cv::Rect_<double> > face_detections;
 	vector<double> confidences;
 
 	bool detect_success = LandmarkDetector::DetectFacesHOG(face_detections, intensity_img, detector, confidences);
@@ -1473,7 +1472,7 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 	else
 	{
 		// if not detected
-		o_region = Rect_<double>(0,0,0,0);
+		o_region = cv::Rect_<double>(0,0,0,0);
 		// A completely unreliable detection (shouldn't really matter what is returned here)
 		confidence = -2;		
 	}
@@ -1485,7 +1484,7 @@ bool DetectSingleFaceHOG(Rect_<double>& o_region, const Mat_<uchar>& intensity_i
 //============================================================================
 
 // Reading in a matrix from a stream
-void ReadMat(std::ifstream& stream, Mat &output_mat)
+void ReadMat(std::ifstream& stream, cv::Mat &output_mat)
 {
 	// Read in the number of rows, columns and the data type
 	int row,col,type;
@@ -1545,7 +1544,7 @@ void ReadMat(std::ifstream& stream, Mat &output_mat)
 	}
 }
 
-void ReadMatBin(std::ifstream& stream, Mat &output_mat)
+void ReadMatBin(std::ifstream& stream, cv::Mat &output_mat)
 {
 	// Read in the number of rows, columns and the data type
 	int row, col, type;

@@ -86,7 +86,6 @@ static void printErrorAndAbort( const std::string & error )
 printErrorAndAbort( std::string( "Fatal error: " ) + stream )
 
 using namespace std;
-using namespace cv;
 
 vector<string> get_arguments(int argc, char **argv)
 {
@@ -105,7 +104,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(cv::Mat& captured_image, cv::Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -130,10 +129,10 @@ void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const Lan
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(face_model, fx, fy, cx, cy);
+		cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(face_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
-		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
+		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, cv::Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
 	}
 
@@ -154,8 +153,8 @@ void visualise_tracking(Mat& captured_image, Mat_<float>& depth_image, const Lan
 
 	if (!det_parameters.quiet_mode)
 	{
-		namedWindow("tracking_result", 1);
-		imshow("tracking_result", captured_image);
+		cv::namedWindow("tracking_result", 1);
+		cv::imshow("tracking_result", captured_image);
 
 		if (!depth_image.empty())
 		{
@@ -231,7 +230,7 @@ int main (int argc, char **argv)
 		bool use_depth = !depth_directories.empty();	
 
 		// Do some grabbing
-		VideoCapture video_capture;
+		cv::VideoCapture video_capture;
 		if( current_file.size() > 0 )
 		{
 			if (!boost::filesystem::exists(current_file))
@@ -242,7 +241,7 @@ int main (int argc, char **argv)
 			current_file = boost::filesystem::path(current_file).generic_string();
 
 			INFO_STREAM( "Attempting to read from file: " << current_file );
-			video_capture = VideoCapture( current_file );
+			video_capture = cv::VideoCapture( current_file );
 			fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
 			
 			// Check if fps is nan or less than 0
@@ -256,17 +255,17 @@ int main (int argc, char **argv)
 		else
 		{
 			INFO_STREAM( "Attempting to capture from device: " << device );
-			video_capture = VideoCapture( device );
+			video_capture = cv::VideoCapture( device );
 
 			// Read a first frame often empty in camera
-			Mat captured_image;
+			cv::Mat captured_image;
 			video_capture >> captured_image;
 		}
 
 		if( !video_capture.isOpened() ) FATAL_STREAM( "Failed to open video source" );
 		else INFO_STREAM( "Device or file opened");
 
-		Mat captured_image;
+		cv::Mat captured_image;
 		video_capture >> captured_image;		
 
 		// If optical centers are not defined just use center of image
@@ -329,11 +328,11 @@ int main (int argc, char **argv)
 		int frame_count = 0;
 		
 		// saving the videos
-		VideoWriter writerFace;
+		cv::VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
 		{
 			double fps = fps_vid_in == -1 ? 30 : fps_vid_in;
-			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
+			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
 		}
 
 		// Use for timestamping if using a webcam
@@ -358,8 +357,8 @@ int main (int argc, char **argv)
 			}
 
 			// Reading the images
-			Mat_<float> depth_image;
-			Mat_<uchar> grayscale_image;
+			cv::Mat_<float> depth_image;
+			cv::Mat_<uchar> grayscale_image;
 
 			if(captured_image.channels() == 3)
 			{
@@ -379,7 +378,7 @@ int main (int argc, char **argv)
 				sstream << depth_directories[f_n] << "\\depth%05d.png";
 				sprintf(dst, sstream.str().c_str(), frame_count + 1);
 				// Reading in 16-bit png image representing depth
-				Mat_<short> depth_image_16_bit = imread(string(dst), -1);
+				cv::Mat_<short> depth_image_16_bit = cv::imread(string(dst), -1);
 
 				// Convert to a floating point depth image
 				if(!depth_image_16_bit.empty())
@@ -396,7 +395,7 @@ int main (int argc, char **argv)
 			bool detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clnf_model, det_parameters);
 
 			// Work out the pose of the head from the tracked model
-			Vec6d head_pose_estimate;
+			cv::Vec6d head_pose_estimate;
 			if(use_world_coordinates)
 			{
 				head_pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
@@ -429,7 +428,7 @@ int main (int argc, char **argv)
 			{
 				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
 				landmarks_3D_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
+				cv::Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
 				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 3; ++i)
 				{
 					landmarks_3D_output_file << ", " << shape_3D.at<double>(i);

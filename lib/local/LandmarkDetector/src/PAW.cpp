@@ -63,10 +63,8 @@
 
 using namespace LandmarkDetector;
 
-using namespace cv;
-
 // A constructor from destination shape and triangulation
-PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
+PAW::PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation)
 {
 	// Initialise some variables directly
 	this->destination_landmarks = destination_shape;
@@ -77,11 +75,11 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 	int num_tris = triangulation.rows;
 	
 	// Pre-compute the rest
-    alpha = Mat_<double>(num_tris, 3);
-    beta = Mat_<double>(num_tris, 3);
+    alpha = cv::Mat_<double>(num_tris, 3);
+    beta = cv::Mat_<double>(num_tris, 3);
     
-    Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
-    Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
+	cv::Mat_<double> xs = destination_shape(cv::Rect(0, 0, 1, num_points));
+	cv::Mat_<double> ys = destination_shape(cv::Rect(0, num_points, 1, num_points));
     
 	// Create a vector representation of the control points
 	vector<vector<double>> destination_points;
@@ -117,8 +115,8 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 		triangle_points[4] = xs.at<double>(l);
 		triangle_points[5] = ys.at<double>(l);
 		
-		Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
-		Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
+		cv::Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
+		cv::Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
 
 		double min_x, max_x, min_y, max_y;
 		cv::minMaxIdx(xs_three, &min_x, &max_x);
@@ -145,8 +143,8 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
     
 	// Round the min_x and min_y for simplicity?
 
-    pixel_mask = Mat_<uchar>(h, w, (uchar)0);
-    triangle_id = Mat_<int>(h, w, -1);
+    pixel_mask = cv::Mat_<uchar>(h, w, (uchar)0);
+    triangle_id = cv::Mat_<int>(h, w, -1);
         
 	int curr_tri = -1;
 
@@ -154,7 +152,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
+			curr_tri = findTriangle(cv::Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -173,7 +171,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation)
 }
 
 // Manually define min and max values
-PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y)
+PAW::PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y)
 {
 	// Initialise some variables directly
 	this->destination_landmarks = destination_shape;
@@ -184,11 +182,11 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	int num_tris = triangulation.rows;
 	
 	// Pre-compute the rest
-    alpha = Mat_<double>(num_tris, 3);
-    beta = Mat_<double>(num_tris, 3);
+    alpha = cv::Mat_<double>(num_tris, 3);
+    beta = cv::Mat_<double>(num_tris, 3);
     
-    Mat_<double> xs = destination_shape(Rect(0, 0, 1, num_points));
-    Mat_<double> ys = destination_shape(Rect(0, num_points, 1, num_points));
+	cv::Mat_<double> xs = destination_shape(cv::Rect(0, 0, 1, num_points));
+	cv::Mat_<double> ys = destination_shape(cv::Rect(0, num_points, 1, num_points));
 
 	// Create a vector representation of the control points
 	vector<vector<double>> destination_points;
@@ -224,8 +222,8 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 		triangle_points[4] = xs.at<double>(l);
 		triangle_points[5] = ys.at<double>(l);
 		
-		Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
-		Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
+		cv::Vec3d xs_three(triangle_points[0], triangle_points[2], triangle_points[4]);
+		cv::Vec3d ys_three(triangle_points[1], triangle_points[3], triangle_points[5]);
 
 		double min_x, max_x, min_y, max_y;
 		cv::minMaxIdx(xs_three, &min_x, &max_x);
@@ -255,8 +253,8 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
     
 	// Round the min_x and min_y for simplicity?
 
-    pixel_mask = Mat_<uchar>(h, w, (uchar)0);
-    triangle_id = Mat_<int>(h, w, -1);
+    pixel_mask = cv::Mat_<uchar>(h, w, (uchar)0);
+    triangle_id = cv::Mat_<int>(h, w, -1);
         
 	int curr_tri = -1;
 
@@ -264,7 +262,7 @@ PAW::PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, 
 	{
 		for(int x = 0; x < pixel_mask.cols; x++)
 		{
-			curr_tri = findTriangle(Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
+			curr_tri = findTriangle(cv::Point_<double>(x + min_x, y + min_y), destination_points, curr_tri);
 			// If there is a triangle at this location
             if(curr_tri != -1)
 			{
@@ -313,7 +311,7 @@ void PAW::Read(std::ifstream& stream)
 
 //=============================================================================
 // cropping from the source image to the destination image using the shape in s, used to determine if shape fitting converged successfully
-void PAW::Warp(const Mat& image_to_warp, Mat& destination_image, const Mat_<double>& landmarks_to_warp)
+void PAW::Warp(const cv::Mat& image_to_warp, cv::Mat& destination_image, const cv::Mat_<double>& landmarks_to_warp)
 {
   
 	// set the current shape
@@ -369,7 +367,7 @@ void PAW::CalcCoeff()
 
 //======================================================================
 // Compute the mapping coefficients
-void PAW::WarpRegion(Mat_<float>& mapx, Mat_<float>& mapy)
+void PAW::WarpRegion(cv::Mat_<float>& mapx, cv::Mat_<float>& mapy)
 {
 	
 	cv::MatIterator_<float> xp = mapx.begin();

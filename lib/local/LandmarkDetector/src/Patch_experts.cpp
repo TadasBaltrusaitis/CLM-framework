@@ -61,8 +61,6 @@
 #include "Patch_experts.h"
 #include "LandmarkDetectorUtils.h"
 
-using namespace cv;
-
 using namespace LandmarkDetector;
 
 
@@ -70,8 +68,8 @@ using namespace LandmarkDetector;
 // Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 // The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 // Also need to provide the size of the area of interest and the desired scale of analysis
-void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22f& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
-							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale)
+void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, cv::Matx22f& sim_ref_to_img, cv::Matx22d& sim_img_to_ref, const cv::Mat_<uchar>& grayscale_image, const cv::Mat_<float>& depth_image,
+							 const PDM& pdm, const cv::Vec6d& params_global, const cv::Mat_<double>& params_local, int window_size, int scale)
 {
 
 	int view_id = GetViewIdx(params_global, scale);		
@@ -79,24 +77,24 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 	int n = pdm.NumberOfPoints();
 		
 	// Compute the current landmark locations (around which responses will be computed)
-	Mat_<double> landmark_locations;
+	cv::Mat_<double> landmark_locations;
 
 	pdm.CalcShape2D(landmark_locations, params_local, params_global);
 
-	Mat_<double> reference_shape;
+	cv::Mat_<double> reference_shape;
 		
 	// Initialise the reference shape on which we'll be warping
-	Vec6d global_ref(patch_scaling[scale], 0, 0, 0, 0, 0);
+	cv::Vec6d global_ref(patch_scaling[scale], 0, 0, 0, 0, 0);
 
 	// Compute the reference shape
 	pdm.CalcShape2D(reference_shape, params_local, global_ref);
 		
 	// similarity and inverse similarity transform to and from image and reference shape
-	Mat_<double> reference_shape_2D = (reference_shape.reshape(1, 2).t());
-	Mat_<double> image_shape_2D = landmark_locations.reshape(1, 2).t();
+	cv::Mat_<double> reference_shape_2D = (reference_shape.reshape(1, 2).t());
+	cv::Mat_<double> image_shape_2D = landmark_locations.reshape(1, 2).t();
 
 	sim_img_to_ref = AlignShapesWithScale(image_shape_2D, reference_shape_2D);
-	Matx22d sim_ref_to_img_d = sim_img_to_ref.inv(DECOMP_LU);
+	cv::Matx22d sim_ref_to_img_d = sim_img_to_ref.inv(cv::DECOMP_LU);
 
 	double a1 = sim_ref_to_img_d(0,0);
 	double b1 = -sim_ref_to_img_d(0,1);
@@ -107,7 +105,7 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 	sim_ref_to_img(1,1) = (float)sim_ref_to_img_d(1,1);
 
 	// Indicates the legal pixels in a depth image, if available (used for CLM-Z area of interest (window) interpolation)
-	Mat_<uchar> mask;
+	cv::Mat_<uchar> mask;
 	if(!depth_image.empty())
 	{
 		mask = depth_image > 0;			
@@ -120,7 +118,7 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 	// If using CCNF patch experts might need to precalculate Sigmas
 	if(use_ccnf)
 	{
-		vector<Mat_<float> > sigma_components;
+		vector<cv::Mat_<float> > sigma_components;
 
 		// Retrieve the correct sigma component size
 		for( size_t w_size = 0; w_size < this->sigma_components.size(); ++w_size)
@@ -177,10 +175,10 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 				}
 			
 				// scale and rotate to mean shape to reference frame
-				Mat sim = (Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
+				cv::Mat sim = (cv::Mat_<float>(2,3) << a1, -b1, landmark_locations.at<double>(i,0), b1, a1, landmark_locations.at<double>(i+n,0));
 
 				// Extract the region of interest around the current landmark location
-				Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
+				cv::Mat_<float> area_of_interest(area_of_interest_height, area_of_interest_width);
 
 				// Using C style openCV as it does what we need
 				CvMat area_of_interest_o = area_of_interest;
@@ -189,7 +187,7 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 				cvGetQuadrangleSubPix(&im_o, &area_of_interest_o, &sim_o);
 			
 				// get the correct size response window			
-				patch_expert_responses[i] = Mat_<float>(window_size, window_size);
+				patch_expert_responses[i] = cv::Mat_<float>(window_size, window_size);
 
 				// Get intensity response either from the SVR or CCNF patch experts (prefer CCNF)
 				if(!ccnf_expert_intensity.empty())
@@ -206,12 +204,12 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 				if(!svr_expert_depth.empty() && !depth_image.empty() && visibilities[scale][view_id].at<int>(i,0))
 				{
 
-					Mat_<float> dProb = patch_expert_responses[i].clone();
-					Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
+					cv::Mat_<float> dProb = patch_expert_responses[i].clone();
+					cv::Mat_<float> depthWindow(area_of_interest_height, area_of_interest_width);
 			
 
 					CvMat dimg_o = depthWindow;
-					Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
+					cv::Mat maskWindow(area_of_interest_height, area_of_interest_width, CV_32F);
 					CvMat mimg_o = maskWindow;
 
 					IplImage d_o = depth_image;
@@ -258,7 +256,7 @@ void Patch_experts::Response(vector<cv::Mat_<float> >& patch_expert_responses, M
 
 //=============================================================================
 // Getting the closest view center based on orientation
-int Patch_experts::GetViewIdx(const Vec6d& params_global, int scale) const
+int Patch_experts::GetViewIdx(const cv::Vec6d& params_global, int scale) const
 {	
 	int idx = 0;
 	

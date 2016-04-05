@@ -60,7 +60,6 @@
 #ifndef __LANDMARK_DETECTOR_PARAM_H
 #define __LANDMARK_DETECTOR_PARAM_H
 
-using namespace cv;
 using namespace std;
 
 namespace LandmarkDetector

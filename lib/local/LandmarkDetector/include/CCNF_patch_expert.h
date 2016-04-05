@@ -59,8 +59,6 @@
 #ifndef __CCNF_PATCH_EXPERT_h_
 #define __CCNF_PATCH_EXPERT_h_
 
-using namespace cv;
-
 namespace LandmarkDetector
 {
 
@@ -102,16 +100,16 @@ public:
 		this->bias = other.bias;
 		this->alpha = other.alpha;
 
-		for(std::map<int, Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it!= other.weights_dfts.end(); it++)
+		for(std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it!= other.weights_dfts.end(); it++)
 		{
 			// Make sure the matrix is copied.
-			this->weights_dfts.insert(std::pair<int, Mat>(it->first, it->second.clone()));
+			this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
 		}
 	}
 
 	void Read(std::ifstream &stream);
 	// The im_dft, integral_img, and integral_img_sq are precomputed images for convolution speedups (they get set if passed in empty values)
-	void Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_img, Mat &integral_img_sq, Mat_<float> &resp);
+	void Response(cv::Mat_<float> &im, cv::Mat_<double> &im_dft, cv::Mat &integral_img, cv::Mat &integral_img_sq, cv::Mat_<float> &resp);
 
 };
 
@@ -148,7 +146,7 @@ public:
 		this->patch_confidence = other.patch_confidence;
 
 		// Copy the Sigmas in a deep way
-		for(std::vector<Mat_<float> >::const_iterator it = other.Sigmas.begin(); it!= other.Sigmas.end(); it++)
+		for(std::vector<cv::Mat_<float> >::const_iterator it = other.Sigmas.begin(); it!= other.Sigmas.end(); it++)
 		{
 			// Make sure the matrix is copied.
 			this->Sigmas.push_back(it->clone());
@@ -157,13 +155,13 @@ public:
 	}
 
 
-	void Read(std::ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<Mat_<float> > > sigma_components);
+	void Read(std::ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<cv::Mat_<float> > > sigma_components);
 
 	// actual work (can pass in an image and a potential depth image, if the CCNF is trained with depth)
-	void Response(Mat_<float> &area_of_interest, Mat_<float> &response);    
+	void Response(cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response);
 
 	// Helper function to compute relevant sigmas
-	void ComputeSigmas(std::vector<Mat_<float> > sigma_components, int window_size);
+	void ComputeSigmas(std::vector<cv::Mat_<float> > sigma_components, int window_size);
 	
 };
   //===========================================================================

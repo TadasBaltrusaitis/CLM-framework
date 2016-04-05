@@ -92,7 +92,6 @@ static void printErrorAndAbort( const std::string & error )
 printErrorAndAbort( std::string( "Fatal error: " ) + stream )
 
 using namespace std;
-using namespace cv;
 
 using namespace boost::filesystem;
 
@@ -350,7 +349,7 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 
 }
 
-void output_HOG_frame(std::ofstream* hog_file, bool good_frame, const Mat_<double>& hog_descriptor, int num_rows, int num_cols)
+void output_HOG_frame(std::ofstream* hog_file, bool good_frame, const cv::Mat_<double>& hog_descriptor, int num_rows, int num_cols)
 {
 
 	// Using FHOGs, hence 31 channels
@@ -390,7 +389,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLNF& clnf_model, const LandmarkDetector::FaceModelParameters& det_parameters, Point3f gazeDirection0, Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(cv::Mat& captured_image, const LandmarkDetector::CLNF& clnf_model, const LandmarkDetector::FaceModelParameters& det_parameters, cv::Point3f gazeDirection0, cv::Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -415,10 +414,10 @@ void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLNF& clnf_
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+		cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
-		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
+		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, cv::Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
 		if (det_parameters.track_gaze && detection_success)
 		{
@@ -443,8 +442,8 @@ void visualise_tracking(Mat& captured_image, const LandmarkDetector::CLNF& clnf_
 
 	if (!det_parameters.quiet_mode)
 	{
-		namedWindow("tracking_result", 1);
-		imshow("tracking_result", captured_image);
+		cv::namedWindow("tracking_result", 1);
+		cv::imshow("tracking_result", captured_image);
 	}
 }
 
@@ -482,7 +481,7 @@ int main (int argc, char **argv)
 	{
 		vector<string> d_files;
 		vector<string> o_img;
-		vector<Rect_<double>> bboxes;
+		vector<cv::Rect_<double>> bboxes;
 		get_image_input_output_params_feats(input_image_files, images_as_video, arguments);	
 
 		if(!input_image_files.empty())
@@ -530,7 +529,7 @@ int main (int argc, char **argv)
 	
 	// Used for image masking
 
-	Mat_<int> triangulation;
+	cv::Mat_<int> triangulation;
 	string tri_loc;
 	if(boost::filesystem::exists(path("model/tris_68_full.txt")))
 	{
@@ -556,9 +555,9 @@ int main (int argc, char **argv)
 	}	
 
 	// Will warp to scaled mean shape
-	Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
+	cv::Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
 	// Discard the z component
-	similarity_normalised_shape = similarity_normalised_shape(Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
+	similarity_normalised_shape = similarity_normalised_shape(cv::Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
 	// If multiple video files are tracked, use this to indicate if we are done
 	bool done = false;	
@@ -586,16 +585,16 @@ int main (int argc, char **argv)
 	}	
 
 	// Creating a  face analyser that will be used for AU extraction
-	FaceAnalysis::FaceAnalyser face_analyser(vector<Vec3d>(), 0.7, 112, 112, au_loc, tri_loc);
+	FaceAnalysis::FaceAnalyser face_analyser(vector<cv::Vec3d>(), 0.7, 112, 112, au_loc, tri_loc);
 		
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
 		
 		string current_file;
 		
-		VideoCapture video_capture;
+		cv::VideoCapture video_capture;
 		
-		Mat captured_image;
+		cv::Mat captured_image;
 		int total_frames = -1;
 		int reported_completion = 0;
 
@@ -618,7 +617,7 @@ int main (int argc, char **argv)
 			if( current_file.size() > 0 )
 			{
 				INFO_STREAM( "Attempting to read from file: " << current_file );
-				video_capture = VideoCapture( current_file );
+				video_capture = cv::VideoCapture( current_file );
 				total_frames = (int)video_capture.get(CV_CAP_PROP_FRAME_COUNT);
 				fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
 
@@ -632,11 +631,11 @@ int main (int argc, char **argv)
 			else
 			{
 				INFO_STREAM( "Attempting to capture from device: " << device );
-				video_capture = VideoCapture( device );
+				video_capture = cv::VideoCapture( device );
 				webcam = true;
 
 				// Read a first frame often empty in camera
-				Mat captured_image;
+				cv::Mat captured_image;
 				video_capture >> captured_image;
 			}
 
@@ -659,7 +658,7 @@ int main (int argc, char **argv)
 			if(!input_image_files[f_n].empty())
 			{
 				string curr_img_file = input_image_files[f_n][curr_img];
-				captured_image = imread(curr_img_file, -1);
+				captured_image = cv::imread(curr_img_file, -1);
 			}
 			else
 			{
@@ -786,13 +785,13 @@ int main (int argc, char **argv)
 		}
 
 		// saving the videos
-		VideoWriter output_similarity_aligned_video;
+		cv::VideoWriter output_similarity_aligned_video;
 		if(!output_similarity_align.empty())
 		{
 			if(video_output)
 			{
 				double fps = webcam ? 30 : fps_vid_in;
-				output_similarity_aligned_video = VideoWriter(output_similarity_align[f_n], CV_FOURCC('H', 'F', 'Y', 'U'), fps, Size(sim_size, sim_size), true);
+				output_similarity_aligned_video = cv::VideoWriter(output_similarity_align[f_n], CV_FOURCC('H', 'F', 'Y', 'U'), fps, cv::Size(sim_size, sim_size), true);
 			}
 		}
 		
@@ -804,20 +803,20 @@ int main (int argc, char **argv)
 		}
 
 		// saving the videos
-		VideoWriter writerFace;
+		cv::VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
 		{
 			double fps = webcam ? 30 : fps_vid_in;
-			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
+			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
 		}
 
 		int frame_count = 0;
 		
 		// This is useful for a second pass run (if want AU predictions)
-		vector<Vec6d> params_global_video;
+		vector<cv::Vec6d> params_global_video;
 		vector<bool> successes_video;
-		vector<Mat_<double>> params_local_video;
-		vector<Mat_<double>> detected_landmarks_video;
+		vector<cv::Mat_<double>> params_local_video;
+		vector<cv::Mat_<double>> detected_landmarks_video;
 				
 		// Use for timestamping if using a webcam
 		int64 t_initial = cv::getTickCount();
@@ -847,7 +846,7 @@ int main (int argc, char **argv)
 			}
 
 			// Reading the images
-			Mat_<uchar> grayscale_image;
+			cv::Mat_<uchar> grayscale_image;
 
 			if(captured_image.channels() == 3)
 			{
@@ -871,12 +870,12 @@ int main (int argc, char **argv)
 			}
 			
 			// Gaze tracking, absolute gaze direction
-			Point3f gazeDirection0(0, 0, -1);
-			Point3f gazeDirection1(0, 0, -1);
+			cv::Point3f gazeDirection0(0, 0, -1);
+			cv::Point3f gazeDirection1(0, 0, -1);
 
 			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-			Point3f gazeDirection0_head(0, 0, -1);
-			Point3f gazeDirection1_head(0, 0, -1);
+			cv::Point3f gazeDirection0_head(0, 0, -1);
+			cv::Point3f gazeDirection1_head(0, 0, -1);
 
 			if (det_parameters.track_gaze && detection_success)
 			{
@@ -885,8 +884,8 @@ int main (int argc, char **argv)
 			}
 
 			// Do face alignment
-			Mat sim_warped_img;			
-			Mat_<double> hog_descriptor;
+			cv::Mat sim_warped_img;
+			cv::Mat_<double> hog_descriptor;
 
 			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open() || !output_au_files.empty())
@@ -904,7 +903,7 @@ int main (int argc, char **argv)
 
 					if(visualise_hog && !det_parameters.quiet_mode)
 					{
-						Mat_<double> hog_descriptor_vis;
+						cv::Mat_<double> hog_descriptor_vis;
 						FaceAnalysis::Visualise_FHOG(hog_descriptor, num_hog_rows, num_hog_cols, hog_descriptor_vis);
 						cv::imshow("hog", hog_descriptor_vis);	
 					}
@@ -912,7 +911,7 @@ int main (int argc, char **argv)
 			}
 
 			// Work out the pose of the head from the tracked model
-			Vec6d pose_estimate;
+			cv::Vec6d pose_estimate;
 			if(use_world_coordinates)
 			{
 				pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
@@ -980,7 +979,7 @@ int main (int argc, char **argv)
 			{
 				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
 				landmarks_3D_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
+				cv::Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
 				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 3; ++i)
 				{
 					landmarks_3D_output_file << ", " << shape_3D.at<double>(i);
@@ -1077,11 +1076,11 @@ int main (int argc, char **argv)
 				if(curr_img < (int)input_image_files[f_n].size())
 				{
 					string curr_img_file = input_image_files[f_n][curr_img];
-					captured_image = imread(curr_img_file, -1);
+					captured_image = cv::imread(curr_img_file, -1);
 				}
 				else
 				{
-					captured_image = Mat();
+					captured_image = cv::Mat();
 				}
 			}
 			// detect key presses

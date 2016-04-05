@@ -62,7 +62,6 @@
 #include "PAW.h"
 
 using namespace std;
-using namespace cv;
 
 namespace LandmarkDetector
 {
@@ -93,13 +92,13 @@ public:
 	vector<double>  bs;
 
 	// SVR weights
-	vector<Mat_<double> > ws;
+	vector<cv::Mat_<double> > ws;
 	
 	//==========================================
 	// Neural Network
 
 	// Neural net weights
-	vector<vector<Mat_<double> > > ws_nn;
+	vector<vector<cv::Mat_<double> > > ws_nn;
 
 	// What type of activation or output functions are used
 	// 0 - sigmoid, 1 - tanh_opt, 2 - ReLU
@@ -111,12 +110,12 @@ public:
 
 	// CNN layers for each view
 	// view -> layer -> input maps -> kernels
-	vector<vector<vector<vector<Mat_<float> > > > > cnn_convolutional_layers;
+	vector<vector<vector<vector<cv::Mat_<float> > > > > cnn_convolutional_layers;
 	// Bit ugly with so much nesting, but oh well
-	vector<vector<vector<vector<pair<int, Mat_<double> > > > > > cnn_convolutional_layers_dft;
+	vector<vector<vector<vector<pair<int, cv::Mat_<double> > > > > > cnn_convolutional_layers_dft;
 	vector<vector<vector<float > > > cnn_convolutional_layers_bias;
 	vector< vector<int> > cnn_subsampling_layers;
-	vector< vector<Mat_<float> > > cnn_fully_connected_layers;
+	vector< vector<cv::Mat_<float> > > cnn_fully_connected_layers;
 	vector< vector<float > > cnn_fully_connected_layers_bias;
 	// 0 - convolutional, 1 - subsampling, 2 - fully connected
 	vector<vector<int> > cnn_layer_types;
@@ -124,8 +123,8 @@ public:
 	//==========================================
 
 	// Normalisation for face validation
-	vector<Mat_<double> > mean_images;
-	vector<Mat_<double> > standard_deviations;
+	vector<cv::Mat_<double> > mean_images;
+	vector<cv::Mat_<double> > standard_deviations;
 
 	// Default constructor
 	DetectionValidator(){;}
@@ -212,7 +211,7 @@ public:
 	}
 
 	// Given an image, orientation and detected landmarks output the result of the appropriate regressor
-	double Check(const Vec3d& orientation, const Mat_<uchar>& intensity_img, Mat_<double>& detected_landmarks);
+	double Check(const cv::Vec3d& orientation, const cv::Mat_<uchar>& intensity_img, cv::Mat_<double>& detected_landmarks);
 
 	// Reading in the model
 	void Read(string location);
@@ -225,16 +224,16 @@ private:
 	// The actual regressor application on the image
 
 	// Support Vector Regression (linear kernel)
-	double CheckSVR(const Mat_<double>& warped_img, int view_id);
+	double CheckSVR(const cv::Mat_<double>& warped_img, int view_id);
 
 	// Feed-forward Neural Network
-	double CheckNN(const Mat_<double>& warped_img, int view_id);
+	double CheckNN(const cv::Mat_<double>& warped_img, int view_id);
 
 	// Convolutional Neural Network
-	double CheckCNN(const Mat_<double>& warped_img, int view_id);
+	double CheckCNN(const cv::Mat_<double>& warped_img, int view_id);
 
 	// A normalisation helper
-	void NormaliseWarpedToVector(const Mat_<double>& warped_img, Mat_<double>& feature_vec, int view_id);
+	void NormaliseWarpedToVector(const cv::Mat_<double>& warped_img, cv::Mat_<double>& feature_vec, int view_id);
 
 };
 

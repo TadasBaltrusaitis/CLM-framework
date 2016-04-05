@@ -88,7 +88,6 @@ static void printErrorAndAbort( const std::string & error )
 printErrorAndAbort( std::string( "Fatal error: " ) + stream )
 
 using namespace std;
-using namespace cv;
 
 vector<string> get_arguments(int argc, char **argv)
 {
@@ -102,7 +101,7 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-void NonOverlapingDetections(const vector<LandmarkDetector::CLNF>& clnf_models, vector<Rect_<double> >& face_detections)
+void NonOverlapingDetections(const vector<LandmarkDetector::CLNF>& clnf_models, vector<cv::Rect_<double> >& face_detections)
 {
 
 	// Go over the model and eliminate detections that are not informative (there already is a tracker there)
@@ -110,7 +109,7 @@ void NonOverlapingDetections(const vector<LandmarkDetector::CLNF>& clnf_models, 
 	{
 
 		// See if the detections intersect
-		Rect_<double> model_rect = clnf_models[model].GetBoundingBox();
+		cv::Rect_<double> model_rect = clnf_models[model].GetBoundingBox();
 		
 		for(int detection = face_detections.size()-1; detection >=0; --detection)
 		{
@@ -204,26 +203,26 @@ int main (int argc, char **argv)
 		bool use_depth = !depth_directories.empty();	
 
 		// Do some grabbing
-		VideoCapture video_capture;
+		cv::VideoCapture video_capture;
 		if( current_file.size() > 0 )
 		{
 			INFO_STREAM( "Attempting to read from file: " << current_file );
-			video_capture = VideoCapture( current_file );
+			video_capture = cv::VideoCapture( current_file );
 		}
 		else
 		{
 			INFO_STREAM( "Attempting to capture from device: " << device );
-			video_capture = VideoCapture( device );
+			video_capture = cv::VideoCapture( device );
 
 			// Read a first frame often empty in camera
-			Mat captured_image;
+			cv::Mat captured_image;
 			video_capture >> captured_image;
 		}
 
 		if( !video_capture.isOpened() ) FATAL_STREAM( "Failed to open video source" );
 		else INFO_STREAM( "Device or file opened");
 
-		Mat captured_image;
+		cv::Mat captured_image;
 		video_capture >> captured_image;		
 		
 
@@ -250,10 +249,10 @@ int main (int argc, char **argv)
 		int frame_count = 0;
 		
 		// saving the videos
-		VideoWriter writerFace;
+		cv::VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
 		{
-			writerFace = VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D','I','V','X'), 30, captured_image.size(), true);		
+			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D','I','V','X'), 30, captured_image.size(), true);
 		}
 		
 		// For measuring the timings
@@ -266,10 +265,10 @@ int main (int argc, char **argv)
 		{		
 
 			// Reading the images
-			Mat_<float> depth_image;
-			Mat_<uchar> grayscale_image;
+			cv::Mat_<float> depth_image;
+			cv::Mat_<uchar> grayscale_image;
 
-			Mat disp_image = captured_image.clone();
+			cv::Mat disp_image = captured_image.clone();
 
 			if(captured_image.channels() == 3)
 			{
@@ -289,7 +288,7 @@ int main (int argc, char **argv)
 				sstream << depth_directories[f_n] << "\\depth%05d.png";
 				sprintf(dst, sstream.str().c_str(), frame_count + 1);
 				// Reading in 16-bit png image representing depth
-				Mat_<short> depth_image_16_bit = imread(string(dst), -1);
+				cv::Mat_<short> depth_image_16_bit = cv::imread(string(dst), -1);
 
 				// Convert to a floating point depth image
 				if(!depth_image_16_bit.empty())
@@ -302,7 +301,7 @@ int main (int argc, char **argv)
 				}
 			}
 
-			vector<Rect_<double> > face_detections;
+			vector<cv::Rect_<double> > face_detections;
 
 			bool all_models_active = true;
 			for(unsigned int model = 0; model < clnf_models.size(); ++model)
@@ -406,10 +405,10 @@ int main (int argc, char **argv)
 					int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 					
 					// Work out the pose of the head from the tracked model
-					Vec6d pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_models[model], fx, fy, cx, cy);
+					cv::Vec6d pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_models[model], fx, fy, cx, cy);
 					
 					// Draw it in reddish if uncertain, blueish if certain
-					LandmarkDetector::DrawBox(disp_image, pose_estimate, Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
+					LandmarkDetector::DrawBox(disp_image, pose_estimate, cv::Scalar((1-detection_certainty)*255.0,0, detection_certainty*255), thickness, fx, fy, cx, cy);
 				}
 			}
 
@@ -446,8 +445,8 @@ int main (int argc, char **argv)
 			
 			if(!det_parameters[0].quiet_mode)
 			{
-				namedWindow("tracking_result",1);		
-				imshow("tracking_result", disp_image);
+				cv::namedWindow("tracking_result",1);
+				cv::imshow("tracking_result", disp_image);
 
 				if(!depth_image.empty())
 				{

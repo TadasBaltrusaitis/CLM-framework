@@ -84,10 +84,10 @@ void DetectionValidator::Read(string location)
 
 		for(int i = 0; i < n; i++)
 		{
-			Mat_<double> orientation_tmp;
+			cv::Mat_<double> orientation_tmp;
 			LandmarkDetector::ReadMatBin(detection_validator_stream, orientation_tmp);		
 		
-			orientations[i] = Vec3d(orientation_tmp.at<double>(0), orientation_tmp.at<double>(1), orientation_tmp.at<double>(2));
+			orientations[i] = cv::Vec3d(orientation_tmp.at<double>(0), orientation_tmp.at<double>(1), orientation_tmp.at<double>(2));
 
 			// Convert from degrees to radians
 			orientations[i] = orientations[i] * M_PI / 180.0;
@@ -192,8 +192,8 @@ void DetectionValidator::Read(string location)
 						int num_kernels;
 						detection_validator_stream.read ((char*)&num_kernels, 4);
 
-						vector<vector<Mat_<float> > > kernels;
-						vector<vector<pair<int, Mat_<double> > > > kernel_dfts;
+						vector<vector<cv::Mat_<float> > > kernels;
+						vector<vector<pair<int, cv::Mat_<double> > > > kernel_dfts;
 
 						kernels.resize(num_in_maps);
 						kernel_dfts.resize(num_in_maps);
@@ -243,7 +243,7 @@ void DetectionValidator::Read(string location)
 						cnn_fully_connected_layers_bias[i].push_back(bias);
 
 						// Fully connected layer
-						Mat_<float> weights;
+						cv::Mat_<float> weights;
 						ReadMatBin(detection_validator_stream, weights);
 						cnn_fully_connected_layers[i].push_back(weights);
 					}
@@ -263,16 +263,16 @@ void DetectionValidator::Read(string location)
 
 //===========================================================================
 // Check if the fitting actually succeeded
-double DetectionValidator::Check(const Vec3d& orientation, const Mat_<uchar>& intensity_img, Mat_<double>& detected_landmarks)
+double DetectionValidator::Check(const cv::Vec3d& orientation, const cv::Mat_<uchar>& intensity_img, cv::Mat_<double>& detected_landmarks)
 {
 
 	int id = GetViewId(orientation);
 	
 	// The warped (cropped) image, corresponding to a face lying withing the detected lanmarks
-	Mat_<double> warped;
+	cv::Mat_<double> warped;
 	
 	// the piece-wise affine image
-	Mat_<double> intensity_img_double;
+	cv::Mat_<double> intensity_img_double;
 	intensity_img.convertTo(intensity_img_double, CV_64F);
 
 	paws[id].Warp(intensity_img_double, warped, detected_landmarks);	
@@ -293,16 +293,16 @@ double DetectionValidator::Check(const Vec3d& orientation, const Mat_<uchar>& in
 	return dec;
 }
 
-double DetectionValidator::CheckNN(const Mat_<double>& warped_img, int view_id)
+double DetectionValidator::CheckNN(const cv::Mat_<double>& warped_img, int view_id)
 {
-	Mat_<double> feature_vec;
+	cv::Mat_<double> feature_vec;
 	NormaliseWarpedToVector(warped_img, feature_vec, view_id);
 	feature_vec = feature_vec.t();
 			
 	for(size_t layer = 0; layer < ws_nn[view_id].size(); ++layer)
 	{
 		// Add a bias term
-		cv::hconcat(Mat_<double>(1,1, 1.0), feature_vec, feature_vec);
+		cv::hconcat(cv::Mat_<double>(1,1, 1.0), feature_vec, feature_vec);
 		
 		// Apply the weights
 		feature_vec = feature_vec * ws_nn[view_id][layer];
@@ -325,8 +325,8 @@ double DetectionValidator::CheckNN(const Mat_<double>& warped_img, int view_id)
 		}
 		else if(fun_type == 1)
 		{
-			MatIterator_<double> q1 = feature_vec.begin(); // respone for each pixel
-			MatIterator_<double> q2 = feature_vec.end();
+			cv::MatIterator_<double> q1 = feature_vec.begin(); // respone for each pixel
+			cv::MatIterator_<double> q2 = feature_vec.end();
 
 			// the logistic function (sigmoid) applied to the response
 			while(q1 != q2)
@@ -346,10 +346,10 @@ double DetectionValidator::CheckNN(const Mat_<double>& warped_img, int view_id)
 
 }
 
-double DetectionValidator::CheckSVR(const Mat_<double>& warped_img, int view_id)
+double DetectionValidator::CheckSVR(const cv::Mat_<double>& warped_img, int view_id)
 {
 
-	Mat_<double> feature_vec;
+	cv::Mat_<double> feature_vec;
 	NormaliseWarpedToVector(warped_img, feature_vec, view_id);
 		
 
@@ -360,14 +360,14 @@ double DetectionValidator::CheckSVR(const Mat_<double>& warped_img, int view_id)
 }
 
 // Convolutional Neural Network
-double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
+double DetectionValidator::CheckCNN(const cv::Mat_<double>& warped_img, int view_id)
 {
 
-	Mat_<double> feature_vec;
+	cv::Mat_<double> feature_vec;
 	NormaliseWarpedToVector(warped_img, feature_vec, view_id);
 	
 	// Create a normalised image from the crop vector
-	Mat_<float> img(warped_img.size(), 0.0);
+	cv::Mat_<float> img(warped_img.size(), 0.0);
 	img = img.t();
 
 	cv::Mat mask = paws[view_id].pixel_mask.t();
@@ -397,10 +397,10 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 	int subsample_layer = 0;
 	int fully_connected_layer = 0;
 
-	vector<Mat_<float> > input_maps;
+	vector<cv::Mat_<float> > input_maps;
 	input_maps.push_back(img);
 	
-	vector<Mat_<float> > outputs;
+	vector<cv::Mat_<float> > outputs;
 
 	for(size_t layer = 0; layer < cnn_layer_types[view_id].size(); ++layer)
 	{
@@ -411,25 +411,25 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		// Convolutional layer
 		if(layer_type == 0)
 		{
-			vector<Mat_<float> > outputs_kern;
+			vector<cv::Mat_<float> > outputs_kern;
 			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
-				Mat_<float> input_image = input_maps[in];
+				cv::Mat_<float> input_image = input_maps[in];
 
 				// Useful precomputed data placeholders for quick correlation (convolution)
-				Mat_<double> input_image_dft;
-				Mat integral_image;
-				Mat integral_image_sq;
+				cv::Mat_<double> input_image_dft;
+				cv::Mat integral_image;
+				cv::Mat integral_image_sq;
 
 				for(size_t k = 0; k < cnn_convolutional_layers[view_id][cnn_layer][in].size(); ++k)
 				{
-					Mat_<float> kernel = cnn_convolutional_layers[view_id][cnn_layer][in][k];					
+					cv::Mat_<float> kernel = cnn_convolutional_layers[view_id][cnn_layer][in][k];
 										
 					// The convolution (with precomputation)
-					Mat_<float> output;
+					cv::Mat_<float> output;
 					if(cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second.empty())
 					{
-						std::map<int, Mat_<double> > precomputed_dft;
+						std::map<int, cv::Mat_<double> > precomputed_dft;
 						
 						LandmarkDetector::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel, precomputed_dft, output, CV_TM_CCORR);
 						
@@ -438,7 +438,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					}
 					else
 					{
-						std::map<int, Mat_<double> > precomputed_dft;
+						std::map<int, cv::Mat_<double> > precomputed_dft;
 						precomputed_dft[cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].first] = cnn_convolutional_layers_dft[view_id][cnn_layer][in][k].second;
 						LandmarkDetector::matchTemplate_m(input_image, input_image_dft, integral_image, integral_image_sq, kernel,  precomputed_dft, output, CV_TM_CCORR);						
 					}
@@ -475,17 +475,17 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 			// Subsampling layer
 			int scale = cnn_subsampling_layers[view_id][subsample_layer];
 			
-			Mat kx = Mat::ones(2, 1, CV_32F)*1.0f/scale;
-			Mat ky = Mat::ones(1, 2, CV_32F)*1.0f/scale;
+			cv::Mat kx = cv::Mat::ones(2, 1, CV_32F)*1.0f/scale;
+			cv::Mat ky = cv::Mat::ones(1, 2, CV_32F)*1.0f/scale;
 
-			vector<Mat_<float>> outputs_sub;
+			vector<cv::Mat_<float>> outputs_sub;
 			for(size_t in = 0; in < input_maps.size(); ++in)
 			{
 
-				Mat_<float> conv_out;
+				cv::Mat_<float> conv_out;
 
 				sepFilter2D(input_maps[in], conv_out, CV_32F, kx, ky);
-				conv_out = conv_out(Rect(1, 1, conv_out.cols - 1, conv_out.rows - 1));
+				conv_out = conv_out(cv::Rect(1, 1, conv_out.cols - 1, conv_out.rows - 1));
 
 				int res_rows = conv_out.rows / scale;
 				int res_cols = conv_out.cols / scale;
@@ -499,7 +499,7 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 					res_cols++;
 				}
 
-				Mat_<float> sub_out(res_rows, res_cols);
+				cv::Mat_<float> sub_out(res_rows, res_cols);
 				for(int w = 0; w < conv_out.cols; w+=scale)
 				{
 					for(int h=0; h < conv_out.rows; h+=scale)
@@ -516,12 +516,12 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 		if(layer_type == 2)
 		{
 			// Concatenate all the maps
-			Mat_<float> input_concat = input_maps[0].t();
+			cv::Mat_<float> input_concat = input_maps[0].t();
 			input_concat = input_concat.reshape(0, 1);
 
 			for(size_t in = 1; in < input_maps.size(); ++in)
 			{
-				Mat_<float> add = input_maps[in].t();
+				cv::Mat_<float> add = input_maps[in].t();
 				add = add.reshape(0,1);
 				cv::hconcat(input_concat, add, input_concat);
 			}
@@ -547,9 +547,9 @@ double DetectionValidator::CheckCNN(const Mat_<double>& warped_img, int view_id)
 	return dec;
 }
 
-void DetectionValidator::NormaliseWarpedToVector(const Mat_<double>& warped_img, Mat_<double>& feature_vec, int view_id)
+void DetectionValidator::NormaliseWarpedToVector(const cv::Mat_<double>& warped_img, cv::Mat_<double>& feature_vec, int view_id)
 {
-	Mat_<double> warped_t = warped_img.t();
+	cv::Mat_<double> warped_t = warped_img.t();
 	
 	// the vector to be filled with paw values
 	cv::MatIterator_<double> vp;	

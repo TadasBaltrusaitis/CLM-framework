@@ -59,8 +59,6 @@
 #ifndef __PAW_h_
 #define __PAW_h_
 
-using namespace cv;
-
 namespace LandmarkDetector
 {
   //===========================================================================
@@ -85,47 +83,47 @@ public:
     double  min_y;
 
 	// Destination points (landmarks to be warped to)
-    Mat_<double> destination_landmarks;
+	cv::Mat_<double> destination_landmarks;
 
 	// Destination points (landmarks to be warped from)
-    Mat_<double> source_landmarks;
+	cv::Mat_<double> source_landmarks;
 
 	// Triangulation, each triangle is warped using an affine transform
-    Mat_<int> triangulation;    
+	cv::Mat_<int> triangulation;
 
 	// Triangle index, indicating which triangle each of destination pixels lies in
-    Mat_<int> triangle_id;  
+	cv::Mat_<int> triangle_id;
 
 	// Indicating if the destination warped pixels is valid (lies within a face)
-	Mat_<uchar> pixel_mask;
+	cv::Mat_<uchar> pixel_mask;
 
 	// A number of precomputed coefficients that are helpful for quick warping
 	
 	// affine coefficients for all triangles (see Matthews and Baker 2004)
 	// 6 coefficients for each triangle (are computed from alpha and beta)
 	// This is computed during each warp based on source landmarks
-    Mat_<double> coefficients;
+	cv::Mat_<double> coefficients;
 
 	// matrix of (c,x,y) coeffs for alpha
-    Mat_<double> alpha;  
+	cv::Mat_<double> alpha;
 
 	// matrix of (c,x,y) coeffs for alpha
-    Mat_<double> beta;   
+	cv::Mat_<double> beta;
 
 	// x-source of warped points
-    Mat_<float> map_x;   
+	cv::Mat_<float> map_x;
 
 	// y-source of warped points
-    Mat_<float> map_y;   
+	cv::Mat_<float> map_y;
 
 	// Default constructor
     PAW(){;}
 
 	// Construct a warp from a destination shape and triangulation
-	PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation);
+	PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation);
 
 	// The final optional argument allows for optimisation if the triangle indices from previous frame are known (for tracking in video)
-	PAW(const Mat_<double>& destination_shape, const Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y);
+	PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y);
 
 	// Copy constructor
 	PAW(const PAW& other): destination_landmarks(other.destination_landmarks.clone()), source_landmarks(other.source_landmarks.clone()), triangulation(other.triangulation.clone()),
@@ -139,13 +137,13 @@ public:
 	void Read(std::ifstream &s);
 
 	// The actual warping
-    void Warp(const Mat& image_to_warp, Mat& destination_image, const Mat_<double>& landmarks_to_warp);
+    void Warp(const cv::Mat& image_to_warp, cv::Mat& destination_image, const cv::Mat_<double>& landmarks_to_warp);
 	
 	// Compute coefficients needed for warping
     void CalcCoeff();
 
 	// Perform the actual warping
-    void WarpRegion(Mat_<float>& map_x, Mat_<float>& map_y);
+    void WarpRegion(cv::Mat_<float>& map_x, cv::Mat_<float>& map_y);
 
     inline int NumberOfLandmarks() const {return destination_landmarks.rows/2;} ;
     inline int NumberOfTriangles() const {return triangulation.rows;} ;

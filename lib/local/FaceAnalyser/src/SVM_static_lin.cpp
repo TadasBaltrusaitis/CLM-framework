@@ -71,7 +71,7 @@ void SVM_static_lin::Read(std::ifstream& stream, const std::vector<std::string>&
 	}
 	else
 	{
-		Mat_<double> m_tmp;
+		cv::Mat_<double> m_tmp;
 		LandmarkDetector::ReadMatBin(stream, m_tmp);
 		if(cv::norm(m_tmp - this->means > 0.00001))
 		{
@@ -79,7 +79,7 @@ void SVM_static_lin::Read(std::ifstream& stream, const std::vector<std::string>&
 		}
 	}
 
-	Mat_<double> support_vectors_curr;
+	cv::Mat_<double> support_vectors_curr;
 	LandmarkDetector::ReadMatBin(stream, support_vectors_curr);
 
 	double bias;
@@ -126,14 +126,14 @@ void SVM_static_lin::Predict(std::vector<double>& predictions, std::vector<std::
 {
 	if(AU_names.size() > 0)
 	{
-		Mat_<double> preds;
+		cv::Mat_<double> preds;
 		if(fhog_descriptor.cols ==  this->means.cols)
 		{
 			preds = (fhog_descriptor - this->means) * this->support_vectors + this->biases;
 		}
 		else
 		{
-			Mat_<double> input;
+			cv::Mat_<double> input;
 			cv::hconcat(fhog_descriptor, geom_params, input);
 
 			preds = (input - this->means) * this->support_vectors + this->biases;

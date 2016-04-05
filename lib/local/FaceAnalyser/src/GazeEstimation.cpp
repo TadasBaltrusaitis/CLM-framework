@@ -64,12 +64,11 @@
 
 #include "GazeEstimation.h"
 
-using namespace cv;
 using namespace std;
 
 using namespace FaceAnalysis;
 
-Point3f RaySphereIntersect(Point3f rayOrigin, Point3f rayDir, Point3f sphereOrigin, float sphereRadius){
+cv::Point3f RaySphereIntersect(cv::Point3f rayOrigin, cv::Point3f rayDir, cv::Point3f sphereOrigin, float sphereRadius){
 
 	float dx = rayDir.x;
 	float dy = rayDir.y;
@@ -92,26 +91,26 @@ Point3f RaySphereIntersect(Point3f rayOrigin, Point3f rayDir, Point3f sphereOrig
 
 	// This implies that the lines did not intersect, point straight ahead
 	if (b*b - 4 * a*c < 0)
-		return Point3f(0, 0, -1);
+		return cv::Point3f(0, 0, -1);
 
 	return rayOrigin + rayDir * t;
 }
 
-Point3f GetPupilPosition(Mat_<double> eyeLdmks3d){
+cv::Point3f GetPupilPosition(cv::Mat_<double> eyeLdmks3d){
 	
 	eyeLdmks3d = eyeLdmks3d.t();
 
-	Mat_<double> irisLdmks3d = eyeLdmks3d.rowRange(0,8);
+	cv::Mat_<double> irisLdmks3d = eyeLdmks3d.rowRange(0,8);
 
-	Point3f p (mean(irisLdmks3d.col(0))[0], mean(irisLdmks3d.col(1))[0], mean(irisLdmks3d.col(2))[0]);
+	cv::Point3f p (mean(irisLdmks3d.col(0))[0], mean(irisLdmks3d.col(1))[0], mean(irisLdmks3d.col(2))[0]);
 	return p;
 }
 
-void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
+void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, cv::Point3f& gaze_absolute, cv::Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
 {
-	Vec6d headPose = LandmarkDetector::GetPoseCamera(clnf_model, fx, fy, cx, cy);
-	Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
-	Matx33d rotMat = LandmarkDetector::Euler2RotationMatrix(eulerAngles);
+	cv::Vec6d headPose = LandmarkDetector::GetPoseCamera(clnf_model, fx, fy, cx, cy);
+	cv::Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
+	cv::Matx33d rotMat = LandmarkDetector::Euler2RotationMatrix(eulerAngles);
 
 	int part = -1;
 	for (size_t i = 0; i < clnf_model.hierarchical_models.size(); ++i)
@@ -131,36 +130,36 @@ void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, Point3
 		std::cout << "Couldn't find the eye model, something wrong" << std::endl;
 	}
 
-	Mat eyeLdmks3d = clnf_model.hierarchical_models[part].GetShape(fx, fy, cx, cy);
+	cv::Mat eyeLdmks3d = clnf_model.hierarchical_models[part].GetShape(fx, fy, cx, cy);
 
-	Point3f pupil = GetPupilPosition(eyeLdmks3d);
-	Point3f rayDir = pupil / norm(pupil);
+	cv::Point3f pupil = GetPupilPosition(eyeLdmks3d);
+	cv::Point3f rayDir = pupil / norm(pupil);
 
-	Mat faceLdmks3d = clnf_model.GetShape(fx, fy, cx, cy);
+	cv::Mat faceLdmks3d = clnf_model.GetShape(fx, fy, cx, cy);
 	faceLdmks3d = faceLdmks3d.t();
-	Mat offset = (Mat_<double>(3, 1) << 0, -3.50, 0);
+	cv::Mat offset = (cv::Mat_<double>(3, 1) << 0, -3.50, 0);
 	int eyeIdx = 1;
 	if (left_eye)
 	{
 		eyeIdx = 0;
 	}
 
-	Mat eyeballCentreMat = (faceLdmks3d.row(36+eyeIdx*6) + faceLdmks3d.row(39+eyeIdx*6))/2.0f + (Mat(rotMat)*offset).t();
+	cv::Mat eyeballCentreMat = (faceLdmks3d.row(36+eyeIdx*6) + faceLdmks3d.row(39+eyeIdx*6))/2.0f + (cv::Mat(rotMat)*offset).t();
 
-	Point3f eyeballCentre = Point3f(eyeballCentreMat);
+	cv::Point3f eyeballCentre = cv::Point3f(eyeballCentreMat);
 
-	Point3f gazeVecAxis = RaySphereIntersect(Point3f(0,0,0), rayDir, eyeballCentre, 12) - eyeballCentre;
+	cv::Point3f gazeVecAxis = RaySphereIntersect(cv::Point3f(0,0,0), rayDir, eyeballCentre, 12) - eyeballCentre;
 	
 	gaze_absolute = gazeVecAxis / norm(gazeVecAxis);
 
-	gaze_head = Point3f(rotMat * Vec3d(gaze_absolute.x, gaze_absolute.y, gaze_absolute.z));
+	gaze_head = cv::Point3f(rotMat * cv::Vec3d(gaze_absolute.x, gaze_absolute.y, gaze_absolute.z));
 }
 
 
-void FaceAnalysis::DrawGaze(Mat img, const LandmarkDetector::CLNF& clnf_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
+void FaceAnalysis::DrawGaze(cv::Mat img, const LandmarkDetector::CLNF& clnf_model, cv::Point3f gazeVecAxisLeft, cv::Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy)
 {
 
-	Mat cameraMat = (Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);
+	cv::Mat cameraMat = (cv::Mat_<double>(3, 3) << fx, 0, cx, 0, fy, cy, 0, 0, 0);
 
 	int part_left = -1;
 	int part_right = -1;
@@ -176,25 +175,25 @@ void FaceAnalysis::DrawGaze(Mat img, const LandmarkDetector::CLNF& clnf_model, P
 		}
 	}
 
-	Mat eyeLdmks3d_left = clnf_model.hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
-	Point3f pupil_left = GetPupilPosition(eyeLdmks3d_left);
+	cv::Mat eyeLdmks3d_left = clnf_model.hierarchical_models[part_left].GetShape(fx, fy, cx, cy);
+	cv::Point3f pupil_left = GetPupilPosition(eyeLdmks3d_left);
 
-	Mat eyeLdmks3d_right = clnf_model.hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
-	Point3f pupil_right = GetPupilPosition(eyeLdmks3d_right);
+	cv::Mat eyeLdmks3d_right = clnf_model.hierarchical_models[part_right].GetShape(fx, fy, cx, cy);
+	cv::Point3f pupil_right = GetPupilPosition(eyeLdmks3d_right);
 
-	vector<Point3d> points_left;
-	points_left.push_back(Point3d(pupil_left));
-	points_left.push_back(Point3d(pupil_left + gazeVecAxisLeft*50.0));
+	vector<cv::Point3d> points_left;
+	points_left.push_back(cv::Point3d(pupil_left));
+	points_left.push_back(cv::Point3d(pupil_left + gazeVecAxisLeft*50.0));
 
-	vector<Point3d> points_right;
-	points_right.push_back(Point3d(pupil_right));
-	points_right.push_back(Point3d(pupil_right + gazeVecAxisRight*50.0));
+	vector<cv::Point3d> points_right;
+	points_right.push_back(cv::Point3d(pupil_right));
+	points_right.push_back(cv::Point3d(pupil_right + gazeVecAxisRight*50.0));
 
-	vector<Point2d> imagePoints_left;
-	projectPoints(points_left, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_left);
-	line(img, imagePoints_left[0], imagePoints_left[1], Scalar(110, 220, 0), 2, 8);
+	vector<cv::Point2d> imagePoints_left;
+	projectPoints(points_left, cv::Mat::eye(3, 3, cv::DataType<double>::type), cv::Mat::zeros(1, 3, cv::DataType<double>::type), cameraMat, cv::Mat::zeros(4, 1, cv::DataType<double>::type), imagePoints_left);
+	line(img, imagePoints_left[0], imagePoints_left[1], cv::Scalar(110, 220, 0), 2, 8);
 
-	vector<Point2d> imagePoints_right;
-	projectPoints(points_right, Mat::eye(3, 3, DataType<double>::type), Mat::zeros(1, 3, DataType<double>::type), cameraMat, Mat::zeros(4, 1, DataType<double>::type), imagePoints_right);
-	line(img, imagePoints_right[0], imagePoints_right[1], Scalar(110, 220, 0), 2, 8);
+	vector<cv::Point2d> imagePoints_right;
+	projectPoints(points_right, cv::Mat::eye(3, 3, cv::DataType<double>::type), cv::Mat::zeros(1, 3, cv::DataType<double>::type), cameraMat, cv::Mat::zeros(4, 1, cv::DataType<double>::type), imagePoints_right);
+	line(img, imagePoints_right[0], imagePoints_right[1], cv::Scalar(110, 220, 0), 2, 8);
 }
