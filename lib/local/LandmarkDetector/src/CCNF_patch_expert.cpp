@@ -59,9 +59,46 @@
 #include "stdafx.h"
 
 #include "CCNF_patch_expert.h"
+
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+// Local includes
 #include "LandmarkDetectorUtils.h"
 
 using namespace LandmarkDetector;
+
+// Copy constructors of neuron and patch expert
+CCNF_neuron::CCNF_neuron(const CCNF_neuron& other) : weights(other.weights.clone())
+{
+	this->neuron_type = other.neuron_type;
+	this->norm_weights = other.norm_weights;
+	this->bias = other.bias;
+	this->alpha = other.alpha;
+
+	for (std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it != other.weights_dfts.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
+	}
+}
+
+// Copy constructor		
+CCNF_patch_expert::CCNF_patch_expert(const CCNF_patch_expert& other) : neurons(other.neurons), window_sizes(other.window_sizes), betas(other.betas)
+{
+	this->width = other.width;
+	this->height = other.height;
+	this->patch_confidence = other.patch_confidence;
+
+	// Copy the Sigmas in a deep way
+	for (std::vector<cv::Mat_<float> >::const_iterator it = other.Sigmas.begin(); it != other.Sigmas.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->Sigmas.push_back(it->clone());
+	}
+
+}
 
 // Compute sigmas for all landmarks for a particular view and window size
 void CCNF_patch_expert::ComputeSigmas(std::vector<cv::Mat_<float> > sigma_components, int window_size)

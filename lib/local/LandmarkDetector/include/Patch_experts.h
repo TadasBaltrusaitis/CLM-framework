@@ -59,6 +59,10 @@
 #ifndef __Patch_experts_h_
 #define __Patch_experts_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
+
 #include "SVR_patch_expert.h"
 #include "CCNF_patch_expert.h"
 #include "PDM.h"
@@ -99,35 +103,7 @@ public:
 	Patch_experts(){;}
 
 	// A copy constructor
-	Patch_experts(const Patch_experts& other): patch_scaling(other.patch_scaling), centers(other.centers), svr_expert_intensity(other.svr_expert_intensity), svr_expert_depth(other.svr_expert_depth), ccnf_expert_intensity(other.ccnf_expert_intensity)
-	{
-
-		// Make sure the matrices are allocated properly
-		this->sigma_components.resize(other.sigma_components.size());
-		for(size_t i = 0; i < other.sigma_components.size(); ++i)
-		{
-			this->sigma_components[i].resize(other.sigma_components[i].size());
-
-			for(size_t j = 0; j < other.sigma_components[i].size(); ++j)
-			{
-				// Make sure the matrix is copied.
-				this->sigma_components[i][j] = other.sigma_components[i][j].clone();
-			}
-		}
-
-		// Make sure the matrices are allocated properly
-		this->visibilities.resize(other.visibilities.size());
-		for(size_t i = 0; i < other.visibilities.size(); ++i)
-		{
-			this->visibilities[i].resize(other.visibilities[i].size());
-
-			for(size_t j = 0; j < other.visibilities[i].size(); ++j)
-			{
-				// Make sure the matrix is copied.
-				this->visibilities[i][j] = other.visibilities[i][j].clone();
-			}
-		}
-	}
+	Patch_experts(const Patch_experts& other);
 
 	// Returns the patch expert responses given a grayscale and an optional depth image.
 	// Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).

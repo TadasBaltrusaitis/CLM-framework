@@ -59,6 +59,12 @@
 #include "stdafx.h"
 
 #include <LandmarkDetectorModel.h>
+
+// Boost includes
+#include <filesystem.hpp>
+#include <filesystem/fstream.hpp>
+
+// Local includes
 #include <LandmarkDetectorUtils.h>
 
 using namespace LandmarkDetector;

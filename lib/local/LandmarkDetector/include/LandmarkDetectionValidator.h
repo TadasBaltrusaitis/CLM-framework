@@ -59,6 +59,13 @@
 #ifndef __LANDMARK_DETECTION_VALIDATOR_h_
 #define __LANDMARK_DETECTION_VALIDATOR_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
+// System includes
+#include <vector>
+
+// Local includes
 #include "PAW.h"
 
 using namespace std;
@@ -130,85 +137,7 @@ public:
 	DetectionValidator(){;}
 
 	// Copy constructor
-	DetectionValidator(const DetectionValidator& other): orientations(other.orientations), bs(other.bs), paws(other.paws),
-		cnn_subsampling_layers(other.cnn_subsampling_layers),cnn_layer_types(other.cnn_layer_types), cnn_fully_connected_layers_bias(other.cnn_fully_connected_layers_bias),
-		cnn_convolutional_layers_bias(other.cnn_convolutional_layers_bias), cnn_convolutional_layers_dft(other.cnn_convolutional_layers_dft)
-	{
-	
-		this->validator_type = other.validator_type;
-
-		this->activation_fun = other.activation_fun;
-		this->output_fun = other.output_fun;
-
-		this->ws.resize(other.ws.size());
-		for(size_t i = 0; i < other.ws.size(); ++i)
-		{
-			// Make sure the matrix is copied.
-			this->ws[i] = other.ws[i].clone();
-		}
-
-		this->ws_nn.resize(other.ws_nn.size());
-		for(size_t i = 0; i < other.ws_nn.size(); ++i)
-		{
-			this->ws_nn[i].resize(other.ws_nn[i].size());
-
-			for(size_t k = 0; k < other.ws_nn[i].size(); ++k)
-			{
-				// Make sure the matrix is copied.
-				this->ws_nn[i][k] = other.ws_nn[i][k].clone();
-			}
-		}
-
-		this->cnn_convolutional_layers.resize(other.cnn_convolutional_layers.size());
-		for(size_t v = 0; v < other.cnn_convolutional_layers.size(); ++v)
-		{
-			this->cnn_convolutional_layers[v].resize(other.cnn_convolutional_layers[v].size());
-
-			for(size_t l = 0; l < other.cnn_convolutional_layers[v].size(); ++l)
-			{
-				this->cnn_convolutional_layers[v][l].resize(other.cnn_convolutional_layers[v][l].size());
-
-				for(size_t i = 0; i < other.cnn_convolutional_layers[v][l].size(); ++i)
-				{
-					this->cnn_convolutional_layers[v][l][i].resize(other.cnn_convolutional_layers[v][l][i].size());
-
-					for(size_t k = 0; k < other.cnn_convolutional_layers[v][l][i].size(); ++k)
-					{
-						// Make sure the matrix is copied.
-						this->cnn_convolutional_layers[v][l][i][k] = other.cnn_convolutional_layers[v][l][i][k].clone();
-					}
-					
-				}
-			}
-		}
-
-		this->cnn_fully_connected_layers.resize(other.cnn_fully_connected_layers.size());
-		for(size_t v = 0; v < other.cnn_fully_connected_layers.size(); ++v)
-		{
-			this->cnn_fully_connected_layers[v].resize(other.cnn_fully_connected_layers[v].size());
-
-			for(size_t l = 0; l < other.cnn_fully_connected_layers[v].size(); ++l)
-			{
-				// Make sure the matrix is copied.
-				this->cnn_fully_connected_layers[v][l] = other.cnn_fully_connected_layers[v][l].clone();
-			}
-		}
-
-		this->mean_images.resize(other.mean_images.size());
-		for(size_t i = 0; i < other.mean_images.size(); ++i)
-		{
-			// Make sure the matrix is copied.
-			this->mean_images[i] = other.mean_images[i].clone();
-		}
-
-		this->standard_deviations.resize(other.standard_deviations.size());
-		for(size_t i = 0; i < other.standard_deviations.size(); ++i)
-		{
-			// Make sure the matrix is copied.
-			this->standard_deviations[i] = other.standard_deviations[i].clone();
-		}
-	
-	}
+	DetectionValidator(const DetectionValidator& other);
 
 	// Given an image, orientation and detected landmarks output the result of the appropriate regressor
 	double Check(const cv::Vec3d& orientation, const cv::Mat_<uchar>& intensity_img, cv::Mat_<double>& detected_landmarks);

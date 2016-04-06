@@ -3,12 +3,12 @@
 #ifndef __STDAFX_h_
 #define __STDAFX_h_
 
-// OpenCV stuff
+// OpenCV includes
 #include <opencv2/core/core.hpp>
-#include "opencv2/objdetect.hpp"
-#include "opencv2/calib3d.hpp"
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 // IplImage stuff (get rid of it? TODO)
@@ -27,11 +27,6 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
-
-// dlib stuff
-// Used for face detection
-#include <dlib/image_processing/frontal_face_detector.h>
-#include <dlib/opencv.h>
 
 // Boost stuff
 #include <filesystem.hpp>

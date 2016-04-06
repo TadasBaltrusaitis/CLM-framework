@@ -59,6 +59,9 @@
 #ifndef __PAW_h_
 #define __PAW_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
 namespace LandmarkDetector
 {
   //===========================================================================
@@ -126,13 +129,7 @@ public:
 	PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation, double in_min_x, double in_min_y, double in_max_x, double in_max_y);
 
 	// Copy constructor
-	PAW(const PAW& other): destination_landmarks(other.destination_landmarks.clone()), source_landmarks(other.source_landmarks.clone()), triangulation(other.triangulation.clone()),
-		triangle_id(other.triangle_id.clone()), pixel_mask(other.pixel_mask.clone()), coefficients(other.coefficients.clone()), alpha(other.alpha.clone()), beta(other.beta.clone()), map_x(other.map_x.clone()), map_y(other.map_y.clone())
-	{
-		this->number_of_pixels = other.number_of_pixels; 
-		this->min_x = other.min_x;
-		this->min_y = other.min_y;
-	}
+	PAW(const PAW& other);
 
 	void Read(std::ifstream &s);
 

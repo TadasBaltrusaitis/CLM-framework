@@ -59,6 +59,11 @@
 #ifndef __CCNF_PATCH_EXPERT_h_
 #define __CCNF_PATCH_EXPERT_h_
 
+#include <opencv2/core/core.hpp>
+
+#include <map>
+#include <vector>
+
 namespace LandmarkDetector
 {
 
@@ -93,19 +98,7 @@ public:
 	CCNF_neuron(){;}
 
 	// Copy constructor
-	CCNF_neuron(const CCNF_neuron& other): weights(other.weights.clone())
-	{
-		this->neuron_type = other.neuron_type;
-		this->norm_weights = other.norm_weights;
-		this->bias = other.bias;
-		this->alpha = other.alpha;
-
-		for(std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it!= other.weights_dfts.end(); it++)
-		{
-			// Make sure the matrix is copied.
-			this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
-		}
-	}
+	CCNF_neuron(const CCNF_neuron& other);
 
 	void Read(std::ifstream &stream);
 	// The im_dft, integral_img, and integral_img_sq are precomputed images for convolution speedups (they get set if passed in empty values)
@@ -139,21 +132,7 @@ public:
 	CCNF_patch_expert(){;}
 
 	// Copy constructor		
-	CCNF_patch_expert(const CCNF_patch_expert& other): neurons(other.neurons), window_sizes(other.window_sizes), betas(other.betas)
-	{
-		this->width = other.width;
-		this->height = other.height;
-		this->patch_confidence = other.patch_confidence;
-
-		// Copy the Sigmas in a deep way
-		for(std::vector<cv::Mat_<float> >::const_iterator it = other.Sigmas.begin(); it!= other.Sigmas.end(); it++)
-		{
-			// Make sure the matrix is copied.
-			this->Sigmas.push_back(it->clone());
-		}
-
-	}
-
+	CCNF_patch_expert(const CCNF_patch_expert& other);
 
 	void Read(std::ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<cv::Mat_<float> > > sigma_components);
 

@@ -58,6 +58,10 @@
 
 #include <Face_utils.h>
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
 // For FHOG visualisation
 #include <dlib/opencv.h>
 

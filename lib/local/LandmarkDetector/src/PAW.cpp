@@ -59,9 +59,23 @@
 #include "stdafx.h"
 
 #include "PAW.h"
+
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
 #include "LandmarkDetectorUtils.h"
 
 using namespace LandmarkDetector;
+
+// Copy constructor
+PAW::PAW(const PAW& other) : destination_landmarks(other.destination_landmarks.clone()), source_landmarks(other.source_landmarks.clone()), triangulation(other.triangulation.clone()),
+triangle_id(other.triangle_id.clone()), pixel_mask(other.pixel_mask.clone()), coefficients(other.coefficients.clone()), alpha(other.alpha.clone()), beta(other.beta.clone()), map_x(other.map_x.clone()), map_y(other.map_y.clone())
+{
+	this->number_of_pixels = other.number_of_pixels;
+	this->min_x = other.min_x;
+	this->min_y = other.min_y;
+}
 
 // A constructor from destination shape and triangulation
 PAW::PAW(const cv::Mat_<double>& destination_shape, const cv::Mat_<int>& triangulation)

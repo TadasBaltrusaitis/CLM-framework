@@ -31,6 +31,9 @@
     <ClCompile Include="src\LandmarkDetectorFunc.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="src\LandmarkDetectorParameters.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CCNF_patch_expert.h">

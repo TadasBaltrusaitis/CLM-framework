@@ -58,15 +58,22 @@
 
 
 // FeatureExtraction.cpp : Defines the entry point for the feature extraction console application.
+
+// System includes
 #include <fstream>
 #include <sstream>
 
+// OpenCV includes
 #include <opencv2/videoio/videoio.hpp>  // Video write
 #include <opencv2/videoio/videoio_c.h>  // Video write
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
+// Boost includes
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
+// Local includes
 #include "LandmarkCoreIncludes.h"
 
 #include <Face_utils.h>

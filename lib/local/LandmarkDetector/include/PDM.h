@@ -59,6 +59,9 @@
 #ifndef __PDM_h_
 #define __PDM_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
 #include "LandmarkDetectorParameters.h"
 
 namespace LandmarkDetector
@@ -83,13 +86,7 @@ class PDM{
 		PDM(){;}
 		
 		// A copy constructor
-		PDM(const PDM& other){
-			
-			// Make sure the matrices are allocated properly
-			this->mean_shape = other.mean_shape.clone();
-			this->princ_comp = other.princ_comp.clone();
-			this->eigen_values = other.eigen_values.clone();
-		}
+		PDM(const PDM& other);
 			
 		void Read(string location);
 

@@ -60,6 +60,9 @@
 #ifndef __LANDMARK_DETECTOR_UTILS_h_
 #define __LANDMARK_DETECTOR_UTILS_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
 #include "LandmarkDetectorModel.h"
 
 using namespace std;

@@ -58,17 +58,23 @@
 
 #include "FaceAnalyser.h"
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
 
+// System includes
 #include <stdio.h>
 #include <iostream>
 
 #include <string>
 
+// Boost includes
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 
+// Local includes
 #include "LandmarkCoreIncludes.h"
 #include "Face_utils.h"
 
@@ -122,6 +128,44 @@ FaceAnalyser::FaceAnalyser(vector<cv::Vec3d> orientation_bins, double scale, int
 	std::ifstream triangulation_file(tri_location);	
 	LandmarkDetector::ReadMat(triangulation_file, triangulation);
 
+}
+
+// Utility for getting the names of returned AUs (presence)
+std::vector<std::string> FaceAnalyser::GetAUClassNames()
+{
+	std::vector<std::string> au_class_names_all;
+	std::vector<std::string> au_class_names_stat = AU_SVM_static_appearance_lin.GetAUNames();
+	std::vector<std::string> au_class_names_dyn = AU_SVM_dynamic_appearance_lin.GetAUNames();
+
+	for (size_t i = 0; i < au_class_names_stat.size(); ++i)
+	{
+		au_class_names_all.push_back(au_class_names_stat[i]);
+	}
+	for (size_t i = 0; i < au_class_names_dyn.size(); ++i)
+	{
+		au_class_names_all.push_back(au_class_names_dyn[i]);
+	}
+
+	return au_class_names_all;
+}
+
+// Utility for getting the names of returned AUs (intensity)
+std::vector<std::string> FaceAnalyser::GetAURegNames()
+{
+	std::vector<std::string> au_reg_names_all;
+	std::vector<std::string> au_reg_names_stat = AU_SVR_static_appearance_lin_regressors.GetAUNames();
+	std::vector<std::string> au_reg_names_dyn = AU_SVR_dynamic_appearance_lin_regressors.GetAUNames();
+
+	for (size_t i = 0; i < au_reg_names_stat.size(); ++i)
+	{
+		au_reg_names_all.push_back(au_reg_names_stat[i]);
+	}
+	for (size_t i = 0; i < au_reg_names_dyn.size(); ++i)
+	{
+		au_reg_names_all.push_back(au_reg_names_dyn[i]);
+	}
+
+	return au_reg_names_all;
 }
 
 cv::Mat_<int> FaceAnalyser::GetTriangulation()
@@ -241,7 +285,7 @@ void FaceAnalyser::AddNextFrame(const cv::Mat& frame, const LandmarkDetector::CL
 
 	if(aligned_face.channels() == 3)
 	{
-		cvtColor(aligned_face, aligned_face_grayscale, CV_BGR2GRAY);
+		cv::cvtColor(aligned_face, aligned_face_grayscale, CV_BGR2GRAY);
 	}
 	else
 	{

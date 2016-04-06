@@ -59,10 +59,49 @@
 #include "stdafx.h"
 
 #include "Patch_experts.h"
+
+// OpenCV includes
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+
+// Math includes
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "LandmarkDetectorUtils.h"
 
 using namespace LandmarkDetector;
 
+// A copy constructor
+Patch_experts::Patch_experts(const Patch_experts& other) : patch_scaling(other.patch_scaling), centers(other.centers), svr_expert_intensity(other.svr_expert_intensity), svr_expert_depth(other.svr_expert_depth), ccnf_expert_intensity(other.ccnf_expert_intensity)
+{
+
+	// Make sure the matrices are allocated properly
+	this->sigma_components.resize(other.sigma_components.size());
+	for (size_t i = 0; i < other.sigma_components.size(); ++i)
+	{
+		this->sigma_components[i].resize(other.sigma_components[i].size());
+
+		for (size_t j = 0; j < other.sigma_components[i].size(); ++j)
+		{
+			// Make sure the matrix is copied.
+			this->sigma_components[i][j] = other.sigma_components[i][j].clone();
+		}
+	}
+
+	// Make sure the matrices are allocated properly
+	this->visibilities.resize(other.visibilities.size());
+	for (size_t i = 0; i < other.visibilities.size(); ++i)
+	{
+		this->visibilities[i].resize(other.visibilities[i].size());
+
+		for (size_t j = 0; j < other.visibilities[i].size(); ++j)
+		{
+			// Make sure the matrix is copied.
+			this->visibilities[i][j] = other.visibilities[i][j].clone();
+		}
+	}
+}
 
 // Returns the patch expert responses given a grayscale and an optional depth image.
 // Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).

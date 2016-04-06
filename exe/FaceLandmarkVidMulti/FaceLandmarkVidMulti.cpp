@@ -63,11 +63,11 @@
 #include <fstream>
 #include <sstream>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+// OpenCV includes
 #include <opencv2/videoio/videoio.hpp>  // Video write
 #include <opencv2/videoio/videoio_c.h>  // Video write
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #define INFO_STREAM( stream ) \
 std::cout << stream << std::endl
@@ -272,7 +272,7 @@ int main (int argc, char **argv)
 
 			if(captured_image.channels() == 3)
 			{
-				cvtColor(captured_image, grayscale_image, CV_BGR2GRAY);				
+				cv::cvtColor(captured_image, grayscale_image, CV_BGR2GRAY);				
 			}
 			else
 			{

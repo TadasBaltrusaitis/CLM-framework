@@ -60,6 +60,14 @@
 
 #include <LandmarkDetectorFunc.h>
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
+
+// System includes
+#include <vector>
+
 using namespace LandmarkDetector;
 
 // Getting a head pose estimate from the currently detected landmarks (rotation with respect to point camera)

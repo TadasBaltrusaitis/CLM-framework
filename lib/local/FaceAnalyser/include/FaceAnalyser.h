@@ -114,41 +114,9 @@ public:
 
 	void ExtractCurrentMedians(vector<cv::Mat>& hog_medians, vector<cv::Mat>& face_image_medians, vector<cv::Vec3d>& orientations);
 
-	std::vector<std::string> GetAUClassNames()
-	{
-		std::vector<std::string> au_class_names_all;
-		std::vector<std::string> au_class_names_stat = AU_SVM_static_appearance_lin.GetAUNames();
-		std::vector<std::string> au_class_names_dyn = AU_SVM_dynamic_appearance_lin.GetAUNames();
-		
-		for(size_t i = 0; i < au_class_names_stat.size(); ++i)
-		{
-			au_class_names_all.push_back(au_class_names_stat[i]);
-		}
-		for(size_t i = 0; i < au_class_names_dyn.size(); ++i)
-		{
-			au_class_names_all.push_back(au_class_names_dyn[i]);
-		}
+	std::vector<std::string> GetAUClassNames();
 
-		return au_class_names_all;
-	}
-
-	std::vector<std::string> GetAURegNames()
-	{
-		std::vector<std::string> au_reg_names_all;
-		std::vector<std::string> au_reg_names_stat = AU_SVR_static_appearance_lin_regressors.GetAUNames();
-		std::vector<std::string> au_reg_names_dyn = AU_SVR_dynamic_appearance_lin_regressors.GetAUNames();
-		
-		for(size_t i = 0; i < au_reg_names_stat.size(); ++i)
-		{
-			au_reg_names_all.push_back(au_reg_names_stat[i]);
-		}
-		for(size_t i = 0; i < au_reg_names_dyn.size(); ++i)
-		{
-			au_reg_names_all.push_back(au_reg_names_dyn[i]);
-		}
-
-		return au_reg_names_all;
-	}
+	std::vector<std::string> GetAURegNames();
 
 	void ExtractAllPredictionsOfflineReg(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);
 	void ExtractAllPredictionsOfflineClass(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);

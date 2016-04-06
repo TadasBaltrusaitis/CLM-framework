@@ -59,6 +59,15 @@
 #include "stdafx.h"
 
 #include <PDM.h>
+
+// OpenCV include
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+// Math includes
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <LandmarkDetectorUtils.h>
 
 using namespace LandmarkDetector;
@@ -83,6 +92,15 @@ void Orthonormalise(cv::Matx33d &R)
 
 	Rt.copyTo(R);
 
+}
+
+// A copy constructor
+PDM::PDM(const PDM& other) {
+
+	// Make sure the matrices are allocated properly
+	this->mean_shape = other.mean_shape.clone();
+	this->princ_comp = other.princ_comp.clone();
+	this->eigen_values = other.eigen_values.clone();
 }
 
 //===========================================================================

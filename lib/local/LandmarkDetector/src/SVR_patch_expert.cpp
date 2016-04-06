@@ -59,6 +59,11 @@
 #include "stdafx.h"
 
 #include "SVR_patch_expert.h"
+
+// OpenCV include
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
 #include "LandmarkDetectorUtils.h"
 
 using namespace LandmarkDetector;
@@ -115,6 +120,21 @@ void Grad(const cv::Mat& im, cv::Mat& grad)
 		gp += 2;
 	}
 
+}
+
+// A copy constructor
+SVR_patch_expert::SVR_patch_expert(const SVR_patch_expert& other) : weights(other.weights.clone())
+{
+	this->type = other.type;
+	this->scaling = other.scaling;
+	this->bias = other.bias;
+	this->confidence = other.confidence;
+
+	for (std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it != other.weights_dfts.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
+	}
 }
 
 //===========================================================================
@@ -263,6 +283,13 @@ void SVR_patch_expert::ResponseDepth(const cv::Mat_<float>& area_of_interest, cv
 		// the SVR response passed through a logistic regressor
 		*p++ = 1.0/(1.0 + exp( -(*q1++ * scaling + bias )));
 	}	
+}
+
+// Copy constructor				
+Multi_SVR_patch_expert::Multi_SVR_patch_expert(const Multi_SVR_patch_expert& other) : svr_patch_experts(other.svr_patch_experts)
+{
+	this->width = other.width;
+	this->height = other.height;
 }
 
 //===========================================================================
