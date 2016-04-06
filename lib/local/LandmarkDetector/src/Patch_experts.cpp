@@ -64,9 +64,16 @@
 #include <opencv2/core/core_c.h>
 #include <opencv2/imgproc/imgproc_c.h>
 
+// TBB includes
+#include <tbb/tbb.h>
+
 // Math includes
 #define _USE_MATH_DEFINES
 #include <cmath>
+
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
 
 #include "LandmarkDetectorUtils.h"
 
