@@ -165,6 +165,12 @@ CLNF & CLNF::operator= (const CLNF& other)
 			// Make sure the matrix is copied.
 			this->kde_resp_precalc.insert(std::pair<int, cv::Mat_<float>>(it->first, it->second.clone()));
 		}
+
+		// Copy over the hierarchical models
+		this->hierarchical_mapping = other.hierarchical_mapping;
+		this->hierarchical_models = other.hierarchical_models;
+		this->hierarchical_model_names = other.hierarchical_model_names;
+		this->hierarchical_params = other.hierarchical_params;
 	}
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
@@ -197,6 +203,12 @@ CLNF::CLNF(const CLNF&& other)
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
 
+	// Copy over the hierarchical models
+	this->hierarchical_mapping = other.hierarchical_mapping;
+	this->hierarchical_models = other.hierarchical_models;
+	this->hierarchical_model_names = other.hierarchical_model_names;
+	this->hierarchical_params = other.hierarchical_params;
+
 }
 
 // Assignment operator for rvalues
@@ -223,6 +235,12 @@ CLNF & CLNF::operator= (const CLNF&& other)
 	kde_resp_precalc = other.kde_resp_precalc;
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	// Copy over the hierarchical models
+	this->hierarchical_mapping = other.hierarchical_mapping;
+	this->hierarchical_models = other.hierarchical_models;
+	this->hierarchical_model_names = other.hierarchical_model_names;
+	this->hierarchical_params = other.hierarchical_params;
 
 	return *this;
 }
