@@ -94,10 +94,10 @@ public:
 
 	double GetCurrentTimeSeconds();
 	
-	std::vector<std::pair<std::string, double>> GetCurrentAUsClass();
-	std::vector<std::pair<std::string, double>> GetCurrentAUsReg();
-
-	std::vector<std::pair<std::string, double>> GetCurrentAUsCombined();
+	// Grab the current predictions about AUs from the face analyser
+	std::vector<std::pair<std::string, double>> GetCurrentAUsClass() const; // AU presence
+	std::vector<std::pair<std::string, double>> GetCurrentAUsReg() const;   // AU intensity
+	std::vector<std::pair<std::string, double>> GetCurrentAUsCombined() const; // Both presense and intensity
 
 	void Reset();
 
@@ -114,9 +114,9 @@ public:
 
 	void ExtractCurrentMedians(vector<cv::Mat>& hog_medians, vector<cv::Mat>& face_image_medians, vector<cv::Vec3d>& orientations);
 
-	std::vector<std::string> GetAUClassNames();
-
-	std::vector<std::string> GetAURegNames();
+	// Grab the names of AUs being predicted
+	std::vector<std::string> GetAUClassNames() const; // Presence
+	std::vector<std::string> GetAURegNames() const; // Intensity
 
 	void ExtractAllPredictionsOfflineReg(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);
 	void ExtractAllPredictionsOfflineClass(vector<std::pair<std::string, vector<double>>>& au_predictions, vector<double>& confidences, vector<bool>& successes, vector<double>& timestamps);

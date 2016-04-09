@@ -131,7 +131,7 @@ FaceAnalyser::FaceAnalyser(vector<cv::Vec3d> orientation_bins, double scale, int
 }
 
 // Utility for getting the names of returned AUs (presence)
-std::vector<std::string> FaceAnalyser::GetAUClassNames()
+std::vector<std::string> FaceAnalyser::GetAUClassNames() const
 {
 	std::vector<std::string> au_class_names_all;
 	std::vector<std::string> au_class_names_stat = AU_SVM_static_appearance_lin.GetAUNames();
@@ -150,7 +150,7 @@ std::vector<std::string> FaceAnalyser::GetAUClassNames()
 }
 
 // Utility for getting the names of returned AUs (intensity)
-std::vector<std::string> FaceAnalyser::GetAURegNames()
+std::vector<std::string> FaceAnalyser::GetAURegNames() const
 {
 	std::vector<std::string> au_reg_names_all;
 	std::vector<std::string> au_reg_names_stat = AU_SVR_static_appearance_lin_regressors.GetAUNames();
@@ -872,17 +872,17 @@ cv::Mat FaceAnalyser::GetLatestHOGDescriptorVisualisation()
 	return hog_descriptor_visualisation;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsClass()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsClass() const
 {
 	return AU_predictions_class;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsReg()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsReg() const
 {
 	return AU_predictions_reg;
 }
 
-vector<pair<string, double>> FaceAnalyser::GetCurrentAUsCombined()
+vector<pair<string, double>> FaceAnalyser::GetCurrentAUsCombined() const
 {
 	return AU_predictions_combined;
 }

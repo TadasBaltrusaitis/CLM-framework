@@ -106,7 +106,7 @@ cv::Point3f GetPupilPosition(cv::Mat_<double> eyeLdmks3d){
 	return p;
 }
 
-void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, cv::Point3f& gaze_absolute, cv::Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye)
+void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, cv::Point3f& gaze_absolute, float fx, float fy, float cx, float cy, bool left_eye)
 {
 	cv::Vec6d headPose = LandmarkDetector::GetPoseCamera(clnf_model, fx, fy, cx, cy);
 	cv::Vec3d eulerAngles(headPose(3), headPose(4), headPose(5));
@@ -151,8 +151,6 @@ void FaceAnalysis::EstimateGaze(const LandmarkDetector::CLNF& clnf_model, cv::Po
 	cv::Point3f gazeVecAxis = RaySphereIntersect(cv::Point3f(0,0,0), rayDir, eyeballCentre, 12) - eyeballCentre;
 	
 	gaze_absolute = gazeVecAxis / norm(gazeVecAxis);
-
-	gaze_head = cv::Point3f(rotMat * cv::Vec3d(gaze_absolute.x, gaze_absolute.y, gaze_absolute.z));
 }
 
 

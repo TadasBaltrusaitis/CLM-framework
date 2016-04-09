@@ -389,14 +389,10 @@ int main (int argc, char **argv)
 				cv::Point3f gazeDirection0(0, 0, -1);
 				cv::Point3f gazeDirection1(0, 0, -1);
 
-				// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-				cv::Point3f gazeDirection0_head(0, 0, -1);
-				cv::Point3f gazeDirection1_head(0, 0, -1);
-
 				if (success && det_parameters.track_gaze)
 				{
-					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
 
 				}
 
@@ -500,15 +496,11 @@ int main (int argc, char **argv)
 			// Gaze tracking, absolute gaze direction
 			cv::Point3f gazeDirection0(0, 0, -1);
 			cv::Point3f gazeDirection1(0, 0, -1);
-
-			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-			cv::Point3f gazeDirection0_head(0,0, -1);
-			cv::Point3f gazeDirection1_head(0, 0, -1);
-
+			
 			if (det_parameters.track_gaze)
 			{
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
 			}
 
 			// Writing out the detected landmarks

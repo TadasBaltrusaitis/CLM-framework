@@ -131,7 +131,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
+	vector<string> files, depth_directories, tracked_videos_output;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -150,8 +150,8 @@ int main (int argc, char **argv)
 	det_parameters.push_back(det_params);
 
 	// Get the input output file parameters
-	bool use_world_coords;
-	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coords, arguments);
+	bool u;
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, vector<string>(), tracked_videos_output, u, arguments);
 	// Get camera parameters
 	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 	
@@ -232,20 +232,7 @@ int main (int argc, char **argv)
 			cx = captured_image.cols / 2.0f;
 			cy = captured_image.rows / 2.0f;
 		}
-	
-		// Creating output files
-		std::ofstream pose_output_file;
-		if(!pose_output_files.empty())
-		{
-			pose_output_file.open (pose_output_files[f_n]);
-		}
-	
-		std::ofstream landmarks_output_file;		
-		if(!landmark_output_files.empty())
-		{
-			landmarks_output_file.open(landmark_output_files[f_n]);
-		}
-	
+		
 		int frame_count = 0;
 		
 		// saving the videos
@@ -493,8 +480,6 @@ int main (int argc, char **argv)
 			clnf_models[model].Reset();
 			active_models[model] = false;
 		}
-		pose_output_file.close();
-		landmarks_output_file.close();
 
 		// break out of the loop if done with all the files
 		if(f_n == files.size() -1)

@@ -116,7 +116,7 @@ void create_directories(string output_path)
 
 // Extracting the following command line arguments -f, -fd, -op, -of, -ov (and possible ordered repetitions)
 void get_video_input_output_params(vector<string> &input_video_files, vector<string> &depth_dirs,
-	vector<string> &output_pose_files, vector<string> &output_video_files, vector<string> &output_2d_landmark_files, vector<string> &output_3D_landmark_files, bool& world_coordinates, vector<string> &arguments)
+	vector<string> &output_files, vector<string> &output_video_files, bool& world_coordinates_pose, vector<string> &arguments)
 {
 	bool* valid = new bool[arguments.size()];
 
@@ -126,7 +126,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 	}
 
 	// By default use rotation with respect to camera (not world coordinates)
-	world_coordinates = false;
+	world_coordinates_pose = false;
 
 	string root = "";
 	// First check if there is a root argument (so that videos and outputs could be defined more easilly)
@@ -155,31 +155,15 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 			valid[i] = false;
 			valid[i+1] = false;		
 			i++;
-		} 
-		else if (arguments[i].compare("-op") == 0)
-		{
-			output_pose_files.push_back(root + arguments[i + 1]);
-			create_directory_from_file(root + arguments[i + 1]);
-			valid[i] = false;
-			valid[i+1] = false;
-			i++;
-		} 
+		}
 		else if (arguments[i].compare("-of") == 0)
 		{
-			output_2d_landmark_files.push_back(root + arguments[i + 1]);
+			output_files.push_back(root + arguments[i + 1]);
 			create_directory_from_file(root + arguments[i + 1]);
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
-		} 
-		else if (arguments[i].compare("-of3D") == 0)
-		{
-			output_3D_landmark_files.push_back(root + arguments[i + 1]);
-			create_directory_from_file(root + arguments[i + 1]);
-			valid[i] = false;
-			valid[i+1] = false;
-			i++;
-		} 
+		}
 		else if (arguments[i].compare("-ov") == 0)
 		{
 			output_video_files.push_back(root + arguments[i + 1]);
@@ -190,7 +174,7 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		}		
 		else if (arguments[i].compare("-world_coord") == 0)
 		{
-			world_coordinates = true;
+			world_coordinates_pose = true;
 		}
 		else if (arguments[i].compare("-help") == 0)
 		{

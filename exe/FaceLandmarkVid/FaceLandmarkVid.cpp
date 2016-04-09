@@ -177,7 +177,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files;
+	vector<string> files, depth_directories, output_video_files;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -187,8 +187,8 @@ int main (int argc, char **argv)
 	// Get the input output file parameters
 	
 	// Indicates that rotation should be with respect to world or camera coordinates
-	bool use_world_coordinates;
-	LandmarkDetector::get_video_input_output_params(files, depth_directories, pose_output_files, tracked_videos_output, landmark_output_files, landmark_3D_output_files, use_world_coordinates, arguments);
+	bool u;
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, vector<string>(), output_video_files, u, arguments);
 	
 	// The modules that are being used for tracking
 	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	
@@ -214,6 +214,8 @@ int main (int argc, char **argv)
 	bool done = false;	
 	int f_n = -1;
 
+	// TODO only thing to output is the video (same for multi-view case)
+
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
 		
@@ -230,9 +232,7 @@ int main (int argc, char **argv)
 			// If we want to write out from webcam
 			f_n = 0;
 		}
-
-		double fps_vid_in = -1.0;
-
+		
 		bool use_depth = !depth_directories.empty();	
 
 		// Do some grabbing
@@ -248,15 +248,6 @@ int main (int argc, char **argv)
 
 			INFO_STREAM( "Attempting to read from file: " << current_file );
 			video_capture = cv::VideoCapture( current_file );
-			fps_vid_in = video_capture.get(CV_CAP_PROP_FPS);
-			
-			// Check if fps is nan or less than 0
-			if (fps_vid_in != fps_vid_in || fps_vid_in <= 0)
-			{
-				INFO_STREAM("FPS of the video file cannot be determined, assuming 30");
-				fps_vid_in = 30;
-			}
-
 		}
 		else
 		{
@@ -288,79 +279,23 @@ int main (int argc, char **argv)
 
 			fx = (fx + fy) / 2.0;
 			fy = fx;
-		}
-
-		// Creating output files
-		std::ofstream pose_output_file;
-		if(!pose_output_files.empty())
-		{
-			pose_output_file.open (pose_output_files[f_n], ios_base::out);
-			pose_output_file << "frame, timestamp, confidence, success, Tx, Ty, Tz, Rx, Ry, Rz";
-			pose_output_file << endl;
-		}
-	
-		std::ofstream landmarks_output_file;		
-		if(!landmark_output_files.empty())
-		{
-			landmarks_output_file.open(landmark_output_files[f_n], ios_base::out);
-			landmarks_output_file << "frame, timestamp, confidence, success";
-			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
-				landmarks_output_file << ", x" << i;
-
-			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
-				landmarks_output_file << ", y" << i;
-
-			landmarks_output_file << endl;
-		}
-
-		std::ofstream landmarks_3D_output_file;
-		if(!landmark_3D_output_files.empty())
-		{
-			landmarks_3D_output_file.open(landmark_3D_output_files[f_n], ios_base::out);
-
-			landmarks_3D_output_file << "frame, timestamp, confidence, success";
-			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
-				landmarks_3D_output_file << ", X" << i;
-
-			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
-				landmarks_3D_output_file << ", Y" << i;
-
-			for (int i = 0; i < clnf_model.pdm.NumberOfPoints(); ++i)
-				landmarks_3D_output_file << ", Z" << i;
-
-			landmarks_3D_output_file << endl;
-		}
+		}		
 	
 		int frame_count = 0;
 		
 		// saving the videos
 		cv::VideoWriter writerFace;
-		if(!tracked_videos_output.empty())
+		if (!output_video_files.empty())
 		{
-			double fps = fps_vid_in == -1 ? 30 : fps_vid_in;
-			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
+			writerFace = cv::VideoWriter(output_video_files[f_n], CV_FOURCC('D', 'I', 'V', 'X'), 30, captured_image.size(), true);
 		}
 
 		// Use for timestamping if using a webcam
 		int64 t_initial = cv::getTickCount();
 
-		// Timestamp in seconds of current processing
-		double time_stamp = 0;
-		
 		INFO_STREAM( "Starting tracking");
 		while(!captured_image.empty())
 		{		
-
-			// Grab the timestamp first
-			if (fps_vid_in == -1)
-			{
-				int64 curr_time = cv::getTickCount();
-				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency());
-			}
-			else 
-			{
-				time_stamp = (double)frame_count * (1.0 / fps_vid_in);
-			}
 
 			// Reading the images
 			cv::Mat_<float> depth_image;
@@ -399,63 +334,19 @@ int main (int argc, char **argv)
 			
 			// The actual facial landmark detection / tracking
 			bool detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, depth_image, clnf_model, det_parameters);
-
-			// Work out the pose of the head from the tracked model
-			cv::Vec6d head_pose_estimate;
-			if(use_world_coordinates)
-			{
-				head_pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
-			}
-			else
-			{
-				head_pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(clnf_model, fx, fy, cx, cy);
-			}
-
+			
 			// Visualising the results
 			// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
 			double detection_certainty = clnf_model.detection_certainty;
 
 			visualise_tracking(captured_image, depth_image, clnf_model, det_parameters, frame_count, fx, fy, cx, cy);
-
-			// Output the detected facial landmarks
-			if(!landmark_output_files.empty())
-			{
-				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
-				landmarks_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 2; ++ i)
-				{
-					landmarks_output_file << ", " << clnf_model.detected_landmarks.at<double>(i);
-				}
-				landmarks_output_file << endl;
-			}
-
-			// Output the detected facial landmarks
-			if(!landmark_3D_output_files.empty())
-			{
-				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
-				landmarks_3D_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
-				cv::Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
-				for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 3; ++i)
-				{
-					landmarks_3D_output_file << ", " << shape_3D.at<double>(i);
-				}
-				landmarks_3D_output_file << endl;
-			}
-
-			// Output the estimated head pose
-			if(!pose_output_files.empty())
-			{
-				double confidence = 0.5 * (1 - clnf_model.detection_certainty);
-				pose_output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success
-					<< ", " << head_pose_estimate[0] << ", " << head_pose_estimate[1] << ", " << head_pose_estimate[2]
-					<< ", " << head_pose_estimate[3] << ", " << head_pose_estimate[4] << ", " << head_pose_estimate[5] << endl;
-			}
-
+			
 			// output the tracked video
-			if(!tracked_videos_output.empty())
-			{		
+			if (!output_video_files.empty())
+			{
 				writerFace << captured_image;
 			}
+
 
 			video_capture >> captured_image;
 		
@@ -482,10 +373,7 @@ int main (int argc, char **argv)
 
 		// Reset the model, for the next video
 		clnf_model.Reset();
-
-		pose_output_file.close();
-		landmarks_output_file.close();
-
+		
 		// break out of the loop if done with all the files (or using a webcam)
 		if(f_n == files.size() -1 || files.empty())
 		{

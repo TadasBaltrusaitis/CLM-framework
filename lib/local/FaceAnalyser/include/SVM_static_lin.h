@@ -84,7 +84,7 @@ public:
 	// Reading in the model (or adding to it)
 	void Read(std::ifstream& stream, const std::vector<std::string>& au_names);
 
-	std::vector<std::string> GetAUNames()
+	std::vector<std::string> GetAUNames() const
 	{
 		return AU_names;
 	}
