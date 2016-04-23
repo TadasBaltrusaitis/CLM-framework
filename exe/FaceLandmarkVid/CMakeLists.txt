@@ -1,19 +1,14 @@
-add_executable(SimpleCLM SimpleCLM.cpp)
+add_executable(FaceLandmarkVid FaceLandmarkVid.cpp)
 
 # Local libraries
-include_directories(${CLM_SOURCE_DIR}/include)
+include_directories(${LandmarkDetector_SOURCE_DIR}/include)
 
-include_directories(../../lib/local/CLM/include)
+include_directories(../../lib/local/LandmarkDetector/include)
 			
-target_link_libraries(SimpleCLM CLM)
+target_link_libraries(FaceLandmarkVid LandmarkDetector)
 
-target_link_libraries(SimpleCLM dlib)
+target_link_libraries(FaceLandmarkVid dlib)
 
-if(WIN32)
-	target_link_libraries(SimpleCLM ${OpenCVLibraries})
-endif(WIN32)
-if(UNIX)
-    target_link_libraries(SimpleCLM ${OpenCV_LIBS} ${Boost_LIBRARIES} ${TBB_LIBRARIES})
-endif(UNIX)
+target_link_libraries(FaceLandmarkVid ${OpenCV_LIBS} ${Boost_LIBRARIES} ${TBB_LIBRARIES})
 
-install (TARGETS SimpleCLM DESTINATION ${CMAKE_BINARY_DIR}/bin)
+install (TARGETS FaceLandmarkVid DESTINATION ${CMAKE_BINARY_DIR}/bin)

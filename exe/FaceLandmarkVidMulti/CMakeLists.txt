@@ -1,17 +1,12 @@
 # Local libraries
-include_directories(${CLM_SOURCE_DIR}/include)
+include_directories(${LandmarkDetector_SOURCE_DIR}/include)
 	
-include_directories(../../lib/local/CLM/include)
+include_directories(../../lib/local/LandmarkDetector/include)
 			
-add_executable(MultiTrackCLM MultiTrackCLM.cpp)
-target_link_libraries(MultiTrackCLM CLM)
-target_link_libraries(MultiTrackCLM dlib)
+add_executable(FaceLandmarkVidMulti FaceLandmarkVidMulti.cpp)
+target_link_libraries(FaceLandmarkVidMulti LandmarkDetector)
+target_link_libraries(FaceLandmarkVidMulti dlib)
 
-if(WIN32)
-	target_link_libraries(MultiTrackCLM ${OpenCVLibraries})
-endif(WIN32)
-if(UNIX)
-    target_link_libraries(MultiTrackCLM ${OpenCV_LIBS} ${Boost_LIBRARIES} ${TBB_LIBRARIES})
-endif(UNIX)
+target_link_libraries(FaceLandmarkVidMulti ${OpenCV_LIBS} ${Boost_LIBRARIES} ${TBB_LIBRARIES})
 
-install (TARGETS MultiTrackCLM DESTINATION ${CMAKE_BINARY_DIR}/bin)
+install (TARGETS FaceLandmarkVidMulti DESTINATION ${CMAKE_BINARY_DIR}/bin)

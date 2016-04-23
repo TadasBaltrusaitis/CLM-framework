@@ -1,66 +1,25 @@
 cmake_minimum_required (VERSION 2.6)
-project (CLM_framework)
+project (OpenFace)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
-# OpenCV
-if(WIN32)
-	include_directories(lib/3rdParty/OpenCV3.0/include)
-	include_directories(lib/3rdParty/OpenCV3.0/include/opencv)
-	
-	if(MSVC_VERSION == 1600)
-		link_directories( ${PROJECT_SOURCE_DIR}/lib/3rdParty/OpenCV3.0/x86/v100/lib )
-	endif(MSVC_VERSION)
-	
-	if(MSVC_VERSION == 1700)
-		link_directories( ${PROJECT_SOURCE_DIR}/lib/3rdParty/OpenCV3.0/x86/v110/lib )
-	endif(MSVC_VERSION)
-	
-	set(OpenCVLibraries 
-			debug opencv_world300d 
-			
-			optimized opencv_world300
-			)
+find_package( OpenCV 3.1 REQUIRED )
+find_package( Boost 1.5.9 REQUIRED COMPONENTS filesystem system)
+MESSAGE("Boost information:") 
+MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
+MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
+MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
 
-	if (MSVC)		
-		
-		if(MSVC_VERSION == 1600)
-			file(GLOB files "lib/3rdParty/OpenCV3.0/x86/v100/bin/*.dll")
-		endif(MSVC_VERSION)
-		
-		if(MSVC_VERSION == 1700)
-			file(GLOB files "lib/3rdParty/OpenCV3.0/x86/v110/bin/*.dll")
-		endif(MSVC_VERSION)
-		
-		foreach(file ${files})
-		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Release)
-		endforeach()
-
-		foreach(file ${files})
-		  file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug)
-		endforeach()
-	endif(MSVC)
-endif(WIN32)
-
-if(UNIX)
-	find_package( OpenCV 3.0 REQUIRED )
-	find_package( Boost 1.5.9 REQUIRED COMPONENTS filesystem system)
-	MESSAGE("Boost information:") 
-	MESSAGE("  Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}") 
-	MESSAGE("  Boost_LIBRARIES: ${Boost_LIBRARIES}") 
-	MESSAGE("  Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}") 
-
-	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-	INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS}/boost)
-	LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})	
-endif(UNIX)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS}/boost)
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})	
 
 find_package(TBB REQUIRED)
 
-# Move CLM model
-file(GLOB files "lib/local/CLM/model/*.txt")
+# Move LandmarkDetector model
+file(GLOB files "lib/local/LandmarkDetector/model/*.txt")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model)
@@ -70,8 +29,8 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
-# Move the hierarchical CLM models
-file(GLOB files "lib/local/CLM/model/model*")
+# Move the hierarchical LandmarkDetector models
+file(GLOB files "lib/local/LandmarkDetector/model/model*")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model)
@@ -81,7 +40,7 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
-file(GLOB files "lib/local/CLM/model/detection_validation/*.txt")
+file(GLOB files "lib/local/LandmarkDetector/model/detection_validation/*.txt")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model/detection_validation)
@@ -91,7 +50,7 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
-file(GLOB files "lib/local/CLM/model/patch_experts/*.txt")
+file(GLOB files "lib/local/LandmarkDetector/model/patch_experts/*.txt")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model/patch_experts)
@@ -101,7 +60,7 @@ foreach(file ${files})
 	endif(MSVC)
 endforeach()
 
-file(GLOB files "lib/local/CLM/model/pdms/*.txt")
+file(GLOB files "lib/local/LandmarkDetector/model/pdms/*.txt")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/model/pdms)
@@ -112,7 +71,7 @@ foreach(file ${files})
 endforeach()
 
 # Move OpenCV classifiers
-file(GLOB files "lib/3rdParty/OpenCV3.0/classifiers/*.xml")
+file(GLOB files "lib/3rdParty/OpenCV3.1/classifiers/*.xml")
 foreach(file ${files})
 	if (MSVC)
 		file(COPY ${file} DESTINATION ${CMAKE_BINARY_DIR}/bin/Debug/classifiers)
@@ -181,11 +140,12 @@ include_directories(lib/3rdParty/dlib/include)
 # dlib library
 add_subdirectory(lib/3rdParty/dlib)
 
-# CLM library (ordering matters)
-add_subdirectory(lib/local/CLM)
+# LandmarkDetector library
+add_subdirectory(lib/local/LandmarkDetector)
+# Facial Expression analysis library
 add_subdirectory(lib/local/FaceAnalyser)
 # executables
-add_subdirectory(exe/SimpleCLMImg)
-add_subdirectory(exe/SimpleCLM)
-add_subdirectory(exe/MultiTrackCLM)
+add_subdirectory(exe/FaceLandmarkImg)
+add_subdirectory(exe/FaceLandmarkVid)
+add_subdirectory(exe/FaceLandmarkVidMulti)
 add_subdirectory(exe/FeatureExtraction)
