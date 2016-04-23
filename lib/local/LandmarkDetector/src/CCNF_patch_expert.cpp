@@ -59,12 +59,49 @@
 #include "stdafx.h"
 
 #include "CCNF_patch_expert.h"
+
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+// Local includes
 #include "LandmarkDetectorUtils.h"
 
 using namespace LandmarkDetector;
 
+// Copy constructors of neuron and patch expert
+CCNF_neuron::CCNF_neuron(const CCNF_neuron& other) : weights(other.weights.clone())
+{
+	this->neuron_type = other.neuron_type;
+	this->norm_weights = other.norm_weights;
+	this->bias = other.bias;
+	this->alpha = other.alpha;
+
+	for (std::map<int, cv::Mat_<double> >::const_iterator it = other.weights_dfts.begin(); it != other.weights_dfts.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->weights_dfts.insert(std::pair<int, cv::Mat>(it->first, it->second.clone()));
+	}
+}
+
+// Copy constructor		
+CCNF_patch_expert::CCNF_patch_expert(const CCNF_patch_expert& other) : neurons(other.neurons), window_sizes(other.window_sizes), betas(other.betas)
+{
+	this->width = other.width;
+	this->height = other.height;
+	this->patch_confidence = other.patch_confidence;
+
+	// Copy the Sigmas in a deep way
+	for (std::vector<cv::Mat_<float> >::const_iterator it = other.Sigmas.begin(); it != other.Sigmas.end(); it++)
+	{
+		// Make sure the matrix is copied.
+		this->Sigmas.push_back(it->clone());
+	}
+
+}
+
 // Compute sigmas for all landmarks for a particular view and window size
-void CCNF_patch_expert::ComputeSigmas(std::vector<Mat_<float> > sigma_components, int window_size)
+void CCNF_patch_expert::ComputeSigmas(std::vector<cv::Mat_<float> > sigma_components, int window_size)
 {
 	for(size_t i=0; i < window_sizes.size(); ++i)
 	{
@@ -85,18 +122,18 @@ void CCNF_patch_expert::ComputeSigmas(std::vector<Mat_<float> > sigma_components
 		sum_alphas = sum_alphas + this->neurons[a].alpha;
 	}
 
-	Mat_<float> q1 = sum_alphas * Mat_<float>::eye(window_size*window_size, window_size*window_size);
+	cv::Mat_<float> q1 = sum_alphas * cv::Mat_<float>::eye(window_size*window_size, window_size*window_size);
 
-	Mat_<float> q2 = Mat_<float>::zeros(window_size*window_size, window_size*window_size);
+	cv::Mat_<float> q2 = cv::Mat_<float>::zeros(window_size*window_size, window_size*window_size);
 	for (int b=0; b < n_betas; ++b)
 	{			
 		q2 = q2 + ((float)this->betas[b]) * sigma_components[b];
 	}
 
-	Mat_<float> SigmaInv = 2 * (q1 + q2);
+	cv::Mat_<float> SigmaInv = 2 * (q1 + q2);
 	
-	Mat Sigma_f;
-	invert(SigmaInv, Sigma_f, DECOMP_CHOLESKY);
+	cv::Mat Sigma_f;
+	cv::invert(SigmaInv, Sigma_f, cv::DECOMP_CHOLESKY);
 
 	window_sizes.push_back(window_size);
 	Sigmas.push_back(Sigma_f);
@@ -121,25 +158,25 @@ void CCNF_neuron::Read(ifstream &stream)
 }
 
 //===========================================================================
-void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_img, Mat &integral_img_sq, Mat_<float> &resp)
+void CCNF_neuron::Response(cv::Mat_<float> &im, cv::Mat_<double> &im_dft, cv::Mat &integral_img, cv::Mat &integral_img_sq, cv::Mat_<float> &resp)
 {
 
 	int h = im.rows - weights.rows + 1;
 	int w = im.cols - weights.cols + 1;
 	
 	// the patch area on which we will calculate reponses
-	Mat_<float> I;    
+	cv::Mat_<float> I;
 
 	if(neuron_type == 3)
 	{
 		// Perform normalisation across whole patch (ignoring the invalid values indicated by <= 0
 
-		Scalar mean;
-		Scalar std;
+		cv::Scalar mean;
+		cv::Scalar std;
 		
 		// ignore missing values
-		Mat_<uchar> mask = im > 0;
-		meanStdDev(im, mean, std, mask);
+		cv::Mat_<uchar> mask = im > 0;
+		cv::meanStdDev(im, mean, std, mask);
 
 		// if all values the same don't divide by 0
 		if(std[0] != 0)
@@ -183,10 +220,10 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 	}
 
 	// TODO a single iterator?
-	MatIterator_<float> p = resp.begin();
+	cv::MatIterator_<float> p = resp.begin();
 
-	MatIterator_<float> q1 = resp.begin(); // respone for each pixel
-	MatIterator_<float> q2 = resp.end();
+	cv::MatIterator_<float> q1 = resp.begin(); // respone for each pixel
+	cv::MatIterator_<float> q2 = resp.end();
 
 	// the logistic function (sigmoid) applied to the response
 	while(q1 != q2)
@@ -197,7 +234,7 @@ void CCNF_neuron::Response(Mat_<float> &im, Mat_<double> &im_dft, Mat &integral_
 }
 
 //===========================================================================
-void CCNF_patch_expert::Read(ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<Mat_<float> > > sigma_components)
+void CCNF_patch_expert::Read(ifstream &stream, std::vector<int> window_sizes, std::vector<std::vector<cv::Mat_<float> > > sigma_components)
 {
 
 	// Sanity check
@@ -247,7 +284,7 @@ void CCNF_patch_expert::Read(ifstream &stream, std::vector<int> window_sizes, st
 }
 
 //===========================================================================
-void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<float> &response)
+void CCNF_patch_expert::Response(cv::Mat_<float> &area_of_interest, cv::Mat_<float> &response)
 {
 	
 	int response_height = area_of_interest.rows - height + 1;
@@ -261,10 +298,10 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<float> &res
 	response.setTo(0);
 	
 	// the placeholder for the DFT of the image, the integral image, and squared integral image so they don't get recalculated for every response
-	Mat_<double> area_of_interest_dft;
-	Mat integral_image, integral_image_sq;
+	cv::Mat_<double> area_of_interest_dft;
+	cv::Mat integral_image, integral_image_sq;
 	
-	Mat_<float> neuron_response;
+	cv::Mat_<float> neuron_response;
 
 	// responses from the neural layers
 	for(size_t i = 0; i < neurons.size(); i++)
@@ -290,9 +327,9 @@ void CCNF_patch_expert::Response(Mat_<float> &area_of_interest, Mat_<float> &res
 		}
 	}
 
-	Mat_<float> resp_vec_f = response.reshape(1, response_height * response_width);
+	cv::Mat_<float> resp_vec_f = response.reshape(1, response_height * response_width);
 
-	Mat out = Sigmas[s_to_use] * resp_vec_f;
+	cv::Mat out = Sigmas[s_to_use] * resp_vec_f;
 	
 	response = out.reshape(1, response_height);
 

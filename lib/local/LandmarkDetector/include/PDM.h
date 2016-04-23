@@ -59,9 +59,10 @@
 #ifndef __PDM_h_
 #define __PDM_h_
 
-#include "LandmarkDetectorParameters.h"
+// OpenCV includes
+#include <opencv2/core/core.hpp>
 
-using namespace cv;
+#include "LandmarkDetectorParameters.h"
 
 namespace LandmarkDetector
 {
@@ -85,13 +86,7 @@ class PDM{
 		PDM(){;}
 		
 		// A copy constructor
-		PDM(const PDM& other){
-			
-			// Make sure the matrices are allocated properly
-			this->mean_shape = other.mean_shape.clone();
-			this->princ_comp = other.princ_comp.clone();
-			this->eigen_values = other.eigen_values.clone();
-		}
+		PDM(const PDM& other);
 			
 		void Read(string location);
 
@@ -101,29 +96,29 @@ class PDM{
 		// Listing the number of modes of variation
 		inline int NumberOfModes() const {return princ_comp.cols;}
 
-		void Clamp(Mat_<float>& params_local, Vec6d& params_global, const FaceModelParameters& params);
+		void Clamp(cv::Mat_<float>& params_local, cv::Vec6d& params_global, const FaceModelParameters& params);
 
 		// Compute shape in object space (3D)
-		void CalcShape3D(Mat_<double>& out_shape, const Mat_<double>& params_local) const;
+		void CalcShape3D(cv::Mat_<double>& out_shape, const cv::Mat_<double>& params_local) const;
 
 		// Compute shape in image space (2D)
-		void CalcShape2D(Mat_<double>& out_shape, const Mat_<double>& params_local, const Vec6d& params_global) const;
+		void CalcShape2D(cv::Mat_<double>& out_shape, const cv::Mat_<double>& params_local, const cv::Vec6d& params_global) const;
     
 		// provided the bounding box of a face and the local parameters (with optional rotation), generates the global parameters that can generate the face with the provided bounding box
-		void CalcParams(Vec6d& out_params_global, const Rect_<double>& bounding_box, const Mat_<double>& params_local, const Vec3d rotation = Vec3d(0.0));
+		void CalcParams(cv::Vec6d& out_params_global, const cv::Rect_<double>& bounding_box, const cv::Mat_<double>& params_local, const cv::Vec3d rotation = cv::Vec3d(0.0));
 
 		// Provided the landmark location compute global and local parameters best fitting it (can provide optional rotation for potentially better results)
-		void CalcParams(Vec6d& out_params_global, const Mat_<double>& out_params_local, const Mat_<double>& landmark_locations, const Vec3d rotation = Vec3d(0.0));
+		void CalcParams(cv::Vec6d& out_params_global, const cv::Mat_<double>& out_params_local, const cv::Mat_<double>& landmark_locations, const cv::Vec3d rotation = cv::Vec3d(0.0));
 
 		// provided the model parameters, compute the bounding box of a face
-		void CalcBoundingBox(Rect& out_bounding_box, const Vec6d& params_global, const Mat_<double>& params_local);
+		void CalcBoundingBox(cv::Rect& out_bounding_box, const cv::Vec6d& params_global, const cv::Mat_<double>& params_local);
 
 		// Helpers for computing Jacobians, and Jacobians with the weight matrix
-		void ComputeRigidJacobian(const Mat_<float>& params_local, const Vec6d& params_global, Mat_<float> &Jacob, const Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
-		void ComputeJacobian(const Mat_<float>& params_local, const Vec6d& params_global, Mat_<float> &Jacobian, const Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
+		void ComputeRigidJacobian(const cv::Mat_<float>& params_local, const cv::Vec6d& params_global, cv::Mat_<float> &Jacob, const cv::Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
+		void ComputeJacobian(const cv::Mat_<float>& params_local, const cv::Vec6d& params_global, cv::Mat_<float> &Jacobian, const cv::Mat_<float> W, cv::Mat_<float> &Jacob_t_w);
 
 		// Given the current parameters, and the computed delta_p compute the updated parameters
-		void UpdateModelParameters(const Mat_<float>& delta_p, Mat_<float>& params_local, Vec6d& params_global);
+		void UpdateModelParameters(const cv::Mat_<float>& delta_p, cv::Mat_<float>& params_local, cv::Vec6d& params_global);
 
   };
   //===========================================================================

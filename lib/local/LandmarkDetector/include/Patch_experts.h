@@ -59,6 +59,10 @@
 #ifndef __Patch_experts_h_
 #define __Patch_experts_h_
 
+// OpenCV includes
+#include <opencv2/core/core.hpp>
+
+
 #include "SVR_patch_expert.h"
 #include "CCNF_patch_expert.h"
 #include "PDM.h"
@@ -99,45 +103,17 @@ public:
 	Patch_experts(){;}
 
 	// A copy constructor
-	Patch_experts(const Patch_experts& other): patch_scaling(other.patch_scaling), centers(other.centers), svr_expert_intensity(other.svr_expert_intensity), svr_expert_depth(other.svr_expert_depth), ccnf_expert_intensity(other.ccnf_expert_intensity)
-	{
-
-		// Make sure the matrices are allocated properly
-		this->sigma_components.resize(other.sigma_components.size());
-		for(size_t i = 0; i < other.sigma_components.size(); ++i)
-		{
-			this->sigma_components[i].resize(other.sigma_components[i].size());
-
-			for(size_t j = 0; j < other.sigma_components[i].size(); ++j)
-			{
-				// Make sure the matrix is copied.
-				this->sigma_components[i][j] = other.sigma_components[i][j].clone();
-			}
-		}
-
-		// Make sure the matrices are allocated properly
-		this->visibilities.resize(other.visibilities.size());
-		for(size_t i = 0; i < other.visibilities.size(); ++i)
-		{
-			this->visibilities[i].resize(other.visibilities[i].size());
-
-			for(size_t j = 0; j < other.visibilities[i].size(); ++j)
-			{
-				// Make sure the matrix is copied.
-				this->visibilities[i][j] = other.visibilities[i][j].clone();
-			}
-		}
-	}
+	Patch_experts(const Patch_experts& other);
 
 	// Returns the patch expert responses given a grayscale and an optional depth image.
 	// Additionally returns the transform from the image coordinates to the response coordinates (and vice versa).
 	// The computation also requires the current landmark locations to compute response around, the PDM corresponding to the desired model, and the parameters describing its instance
 	// Also need to provide the size of the area of interest and the desired scale of analysis
-	void Response(vector<cv::Mat_<float> >& patch_expert_responses, Matx22f& sim_ref_to_img, Matx22d& sim_img_to_ref, const Mat_<uchar>& grayscale_image, const Mat_<float>& depth_image,
-							 const PDM& pdm, const Vec6d& params_global, const Mat_<double>& params_local, int window_size, int scale);
+	void Response(vector<cv::Mat_<float> >& patch_expert_responses, cv::Matx22f& sim_ref_to_img, cv::Matx22d& sim_img_to_ref, const cv::Mat_<uchar>& grayscale_image, const cv::Mat_<float>& depth_image,
+							 const PDM& pdm, const cv::Vec6d& params_global, const cv::Mat_<double>& params_local, int window_size, int scale);
 
 	// Getting the best view associated with the current orientation
-	int GetViewIdx(const Vec6d& params_global, int scale) const;
+	int GetViewIdx(const cv::Vec6d& params_global, int scale) const;
 
 	// The number of views at a particular scale
 	inline int nViews(int scale = 0) const { return centers[scale].size(); };

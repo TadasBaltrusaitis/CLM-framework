@@ -62,13 +62,11 @@
 #include "opencv2/core/core.hpp"
 #include "LandmarkCoreIncludes.h"
 
-using namespace cv;
-
 namespace FaceAnalysis
 {
 
-	void EstimateGaze(const LandmarkDetector::CLNF& clnf_model, Point3f& gaze_absolute, Point3f& gaze_head, float fx, float fy, float cx, float cy, bool left_eye);
-	void DrawGaze(Mat img, const LandmarkDetector::CLNF& clnf_model, Point3f gazeVecAxisLeft, Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
+	void EstimateGaze(const LandmarkDetector::CLNF& clnf_model, cv::Point3f& gaze_absolute, float fx, float fy, float cx, float cy, bool left_eye);
+	void DrawGaze(cv::Mat img, const LandmarkDetector::CLNF& clnf_model, cv::Point3f gazeVecAxisLeft, cv::Point3f gazeVecAxisRight, float fx, float fy, float cx, float cy);
 
 }
 #endif

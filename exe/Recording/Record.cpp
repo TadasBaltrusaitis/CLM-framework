@@ -95,7 +95,6 @@ static void printErrorAndAbort( const std::string & error )
 printErrorAndAbort( std::string( "Fatal error: " ) + stream )
 
 using namespace std;
-using namespace cv;
 
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 const std::string currentDateTime() {
@@ -170,13 +169,13 @@ int main (int argc, char **argv)
     }    		
 
 	// Do some grabbing
-	VideoCapture vCap;
+	cv::VideoCapture vCap;
 	INFO_STREAM( "Attempting to capture from device: " << device );
-	vCap = VideoCapture( device );
+	vCap = cv::VideoCapture( device );
 
 	if( !vCap.isOpened() ) FATAL_STREAM( "Failed to open video source" );
 	
-	Mat img;
+	cv::Mat img;
 	vCap >> img;
 			
 	boost::filesystem::path dir(outroot);
@@ -198,7 +197,7 @@ int main (int argc, char **argv)
 	while(!img.empty())
 	{		
 		
-		namedWindow("rec",1);
+		cv::namedWindow("rec",1);
 		
 		vCap >> img;
 		double curr_time = (cv::getTickCount() - init_time) / freq;
@@ -210,7 +209,7 @@ int main (int argc, char **argv)
 		outlog << endl;
 						
 		
-		imshow("rec", img);
+		cv::imshow("rec", img);
 
 		frameProc++;
 		

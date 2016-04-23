@@ -59,6 +59,15 @@
 #include "stdafx.h"
 
 #include <LandmarkDetectorModel.h>
+
+// Boost includes
+#include <filesystem.hpp>
+#include <filesystem/fstream.hpp>
+
+// TBB includes
+#include <tbb/tbb.h>
+
+// Local includes
 #include <LandmarkDetectorUtils.h>
 
 using namespace LandmarkDetector;
@@ -106,10 +115,10 @@ CLNF::CLNF(const CLNF& other): pdm(other.pdm), params_local(other.params_local.c
 	}
 
 	// Make sure the matrices are allocated properly
-	for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+	for(std::map<int, cv::Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
 	{
 		// Make sure the matrix is copied.
-		this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
+		this->kde_resp_precalc.insert(std::pair<int, cv::Mat_<float>>(it->first, it->second.clone()));
 	}
 
 	this->face_detector_HOG = dlib::get_frontal_face_detector();
@@ -151,11 +160,17 @@ CLNF & CLNF::operator= (const CLNF& other)
 		}
 
 		// Make sure the matrices are allocated properly
-		for(std::map<int, Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
+		for(std::map<int, cv::Mat_<float>>::const_iterator it = other.kde_resp_precalc.begin(); it!= other.kde_resp_precalc.end(); it++)
 		{
 			// Make sure the matrix is copied.
-			this->kde_resp_precalc.insert(std::pair<int, Mat_<float>>(it->first, it->second.clone()));
+			this->kde_resp_precalc.insert(std::pair<int, cv::Mat_<float>>(it->first, it->second.clone()));
 		}
+
+		// Copy over the hierarchical models
+		this->hierarchical_mapping = other.hierarchical_mapping;
+		this->hierarchical_models = other.hierarchical_models;
+		this->hierarchical_model_names = other.hierarchical_model_names;
+		this->hierarchical_params = other.hierarchical_params;
 	}
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
@@ -188,6 +203,12 @@ CLNF::CLNF(const CLNF&& other)
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
 
+	// Copy over the hierarchical models
+	this->hierarchical_mapping = other.hierarchical_mapping;
+	this->hierarchical_models = other.hierarchical_models;
+	this->hierarchical_model_names = other.hierarchical_model_names;
+	this->hierarchical_params = other.hierarchical_params;
+
 }
 
 // Assignment operator for rvalues
@@ -214,6 +235,12 @@ CLNF & CLNF::operator= (const CLNF&& other)
 	kde_resp_precalc = other.kde_resp_precalc;
 
 	face_detector_HOG = dlib::get_frontal_face_detector();
+
+	// Copy over the hierarchical models
+	this->hierarchical_mapping = other.hierarchical_mapping;
+	this->hierarchical_models = other.hierarchical_models;
+	this->hierarchical_model_names = other.hierarchical_model_names;
+	this->hierarchical_params = other.hierarchical_params;
 
 	return *this;
 }
@@ -508,7 +535,7 @@ void CLNF::Read(string main_location)
 	params_local.setTo(0.0);
 
 	// global parameters (pose) [scale, euler_x, euler_y, euler_z, tx, ty]
-	params_global = Vec6d(1, 0, 0, 0, 0, 0);
+	params_global = cv::Vec6d(1, 0, 0, 0, 0, 0);
 
 	failures_in_a_row = -1;
 
@@ -528,10 +555,10 @@ void CLNF::Reset()
 	params_local.setTo(0.0);
 
 	// global parameters (pose) [scale, euler_x, euler_y, euler_z, tx, ty]
-	params_global = Vec6d(1, 0, 0, 0, 0, 0);
+	params_global = cv::Vec6d(1, 0, 0, 0, 0, 0);
 
 	failures_in_a_row = -1;
-	face_template = Mat_<uchar>();
+	face_template = cv::Mat_<uchar>();
 }
 
 // Resetting the model, choosing the face nearest (x,y)
@@ -548,7 +575,7 @@ void CLNF::Reset(double x, double y)
 }
 
 // The main internal landmark detection call (should not be used externally?)
-bool CLNF::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, FaceModelParameters& params)
+bool CLNF::DetectLandmarks(const cv::Mat_<uchar> &image, const cv::Mat_<float> &depth, FaceModelParameters& params)
 {
 
 	// Fits from the current estimate of local and global parameters in the model
@@ -574,7 +601,7 @@ bool CLNF::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, F
 
 				vector<pair<int, int>> mappings = this->hierarchical_mapping[part_model];
 
-				Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
+				cv::Mat_<double> part_model_locs(n_part_points * 2, 1, 0.0);
 
 				// Extract the corresponding landmarks
 				for (size_t mapping_ind = 0; mapping_ind < mappings.size(); ++mapping_ind)
@@ -622,7 +649,7 @@ bool CLNF::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, F
 	// Check detection correctness
 	if(params.validate_detections && fit_success)
 	{
-		Vec3d orientation(params_global[1], params_global[2], params_global[3]);
+		cv::Vec3d orientation(params_global[1], params_global[2], params_global[3]);
 
 		detection_certainty = landmark_validator.Check(orientation, image, detected_landmarks);
 
@@ -646,17 +673,17 @@ bool CLNF::DetectLandmarks(const Mat_<uchar> &image, const Mat_<float> &depth, F
 }
 
 //=============================================================================
-bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::vector<int>& window_sizes, const FaceModelParameters& parameters)
+bool CLNF::Fit(const cv::Mat_<uchar>& im, const cv::Mat_<float>& depthImg, const std::vector<int>& window_sizes, const FaceModelParameters& parameters)
 {
 	// Making sure it is a single channel image
 	assert(im.channels() == 1);	
 	
 	// Placeholder for the landmarks
-	Mat_<double> current_shape(2 * pdm.NumberOfPoints() , 1, 0.0);
+	cv::Mat_<double> current_shape(2 * pdm.NumberOfPoints() , 1, 0.0);
 
 	int n = pdm.NumberOfPoints(); 
 	
-	Mat_<float> depth_img_no_background;	
+	cv::Mat_<float> depth_img_no_background;
 	
 	// Background elimination from the depth image
 	if(!depthImg.empty())
@@ -673,11 +700,11 @@ bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::ve
 	int num_scales = patch_experts.patch_scaling.size();
 
 	// Storing the patch expert response maps
-	vector<Mat_<float> > patch_expert_responses(n);
+	vector<cv::Mat_<float> > patch_expert_responses(n);
 
 	// Converting from image space to patch expert space (normalised for rotation and scale)
-	Matx22f sim_ref_to_img;
-	Matx22d sim_img_to_ref;
+	cv::Matx22f sim_ref_to_img;
+	cv::Matx22d sim_img_to_ref;
 
 	FaceModelParameters tmp_parameters = parameters;
 
@@ -698,7 +725,7 @@ bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::ve
 		else
 		{
 			// Do not use depth for the final iteration as it is not as accurate
-			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, Mat(), pdm, params_global, params_local, window_size, scale);
+			patch_experts.Response(patch_expert_responses, sim_ref_to_img, sim_img_to_ref, im, cv::Mat(), pdm, params_global, params_local, window_size, scale);
 		}
 		
 		if(parameters.refine_parameters == true)
@@ -720,10 +747,10 @@ bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::ve
 		int view_id = patch_experts.GetViewIdx(params_global, scale);
 
 		// the actual optimisation step
-		this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, tmp_parameters);
+		this->NU_RLMS(params_global, params_local, patch_expert_responses, cv::Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, true, scale, this->landmark_likelihoods, tmp_parameters);
 
 		// non-rigid optimisation
-		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
+		this->model_likelihood = this->NU_RLMS(params_global, params_local, patch_expert_responses, cv::Vec6d(params_global), params_local.clone(), current_shape, sim_img_to_ref, sim_ref_to_img, window_size, view_id, false, scale, this->landmark_likelihoods, tmp_parameters);
 		
 		// Can't track very small images reliably (less than ~30px across)
 		if(params_global[0] < 0.25)
@@ -736,19 +763,19 @@ bool CLNF::Fit(const Mat_<uchar>& im, const Mat_<float>& depthImg, const std::ve
 	return true;
 }
 
-void CLNF::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<float> &dxs, const Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, Mat_<float> >& kde_resp_precalc)
+void CLNF::NonVectorisedMeanShift_precalc_kde(cv::Mat_<float>& out_mean_shifts, const vector<cv::Mat_<float> >& patch_expert_responses, const cv::Mat_<float> &dxs, const cv::Mat_<float> &dys, int resp_size, float a, int scale, int view_id, map<int, cv::Mat_<float> >& kde_resp_precalc)
 {
 	
 	int n = dxs.rows;
 	
-	Mat_<float> kde_resp;
+	cv::Mat_<float> kde_resp;
 	float step_size = 0.1;
 
 	// if this has not been precomputer, precompute it, otherwise use it
 	if(kde_resp_precalc.find(resp_size) == kde_resp_precalc.end())
 	{		
-		kde_resp = Mat_<float>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
-		MatIterator_<float> kde_it = kde_resp.begin();
+		kde_resp = cv::Mat_<float>((int)((resp_size / step_size)*(resp_size/step_size)), resp_size * resp_size);
+		cv::MatIterator_<float> kde_it = kde_resp.begin();
 
 		for(int x = 0; x < resp_size/step_size; x++)
 		{
@@ -814,14 +841,14 @@ void CLNF::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, cons
 		
 		int idx = closest_row * ((int)(resp_size/step_size + 0.5)) + closest_col; // Plus 0.5 is there, as C++ rounds down with int cast
 
-		MatIterator_<float> kde_it = kde_resp.begin() + kde_resp.cols*idx;
+		cv::MatIterator_<float> kde_it = kde_resp.begin() + kde_resp.cols*idx;
 		
 		float mx=0.0;
 		float my=0.0;
 		float sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<float> p = patch_expert_responses[i].begin();
+		cv::MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(int ii = 0; ii < resp_size; ii++)
 		{
@@ -850,14 +877,14 @@ void CLNF::NonVectorisedMeanShift_precalc_kde(Mat_<float>& out_mean_shifts, cons
 
 }
 
-void CLNF::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters)
+void CLNF::GetWeightMatrix(cv::Mat_<float>& WeightMatrix, int scale, int view_id, const FaceModelParameters& parameters)
 {
 	int n = pdm.NumberOfPoints();  
 
 	// Is the weight matrix needed at all
 	if(parameters.weight_factor > 0)
 	{
-		WeightMatrix = Mat_<float>::zeros(n*2, n*2);
+		WeightMatrix = cv::Mat_<float>::zeros(n*2, n*2);
 
 		for (int p=0; p < n; p++)
 		{
@@ -887,58 +914,58 @@ void CLNF::GetWeightMatrix(Mat_<float>& WeightMatrix, int scale, int view_id, co
 	}
 	else
 	{
-		WeightMatrix = Mat_<float>::eye(n*2, n*2);
+		WeightMatrix = cv::Mat_<float>::eye(n*2, n*2);
 	}
 
 }
 
 //=============================================================================
-double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vector<Mat_<float> >& patch_expert_responses, const Vec6d& initial_global, const Mat_<double>& initial_local,
-		          const Mat_<double>& base_shape, const Matx22d& sim_img_to_ref, const Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, Mat_<double>& landmark_lhoods,
+double CLNF::NU_RLMS(cv::Vec6d& final_global, cv::Mat_<double>& final_local, const vector<cv::Mat_<float> >& patch_expert_responses, const cv::Vec6d& initial_global, const cv::Mat_<double>& initial_local,
+		          const cv::Mat_<double>& base_shape, const cv::Matx22d& sim_img_to_ref, const cv::Matx22f& sim_ref_to_img, int resp_size, int view_id, bool rigid, int scale, cv::Mat_<double>& landmark_lhoods,
 				  const FaceModelParameters& parameters)
 {		
 
 	int n = pdm.NumberOfPoints();  
 	
 	// Mean, eigenvalues, eigenvectors
-	Mat_<double> M = this->pdm.mean_shape;
-	Mat_<double> E = this->pdm.eigen_values;
+	cv::Mat_<double> M = this->pdm.mean_shape;
+	cv::Mat_<double> E = this->pdm.eigen_values;
 	//Mat_<double> V = this->pdm.princ_comp;
 
 	int m = pdm.NumberOfModes();
 	
-	Vec6d current_global(initial_global);
+	cv::Vec6d current_global(initial_global);
 
-	Mat_<float> current_local;
+	cv::Mat_<float> current_local;
 	initial_local.convertTo(current_local, CV_32F);
 
-	Mat_<double> current_shape;
-	Mat_<double> previous_shape;
+	cv::Mat_<double> current_shape;
+	cv::Mat_<double> previous_shape;
 
 	// Pre-calculate the regularisation term
-	Mat_<float> regTerm;
+	cv::Mat_<float> regTerm;
 
 	if(rigid)
 	{
-		regTerm = Mat_<float>::zeros(6,6);
+		regTerm = cv::Mat_<float>::zeros(6,6);
 	}
 	else
 	{
-		Mat_<double> regularisations = Mat_<double>::zeros(1, 6 + m);
+		cv::Mat_<double> regularisations = cv::Mat_<double>::zeros(1, 6 + m);
 
 		// Setting the regularisation to the inverse of eigenvalues
-		Mat(parameters.reg_factor / E).copyTo(regularisations(Rect(6, 0, m, 1)));			
-		Mat_<double> regTerm_d = Mat::diag(regularisations.t());
+		cv::Mat(parameters.reg_factor / E).copyTo(regularisations(cv::Rect(6, 0, m, 1)));
+		cv::Mat_<double> regTerm_d = cv::Mat::diag(regularisations.t());
 		regTerm_d.convertTo(regTerm, CV_32F);
 	}	
 
-	Mat_<float> WeightMatrix;
+	cv::Mat_<float> WeightMatrix;
 	GetWeightMatrix(WeightMatrix, scale, view_id, parameters);
 
-	Mat_<float> dxs, dys;
+	cv::Mat_<float> dxs, dys;
 	
 	// The preallocated memory for the mean shifts
-	Mat_<float> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
+	cv::Mat_<float> mean_shifts(2 * pdm.NumberOfPoints(), 1, 0.0);
 
 	// Number of iterations
 	for(int iter = 0; iter < parameters.num_optimisation_iteration; iter++)
@@ -958,7 +985,7 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 		current_shape.copyTo(previous_shape);
 		
 		// Jacobian, and transposed weighted jacobian
-		Mat_<float> J, J_w_t;
+		cv::Mat_<float> J, J_w_t;
 
 		// calculate the appropriate Jacobians in 2D, even though the actual behaviour is in 3D, using small angle approximation and oriented shape
 		if(rigid)
@@ -973,11 +1000,11 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 		// useful for mean shift calculation
 		float a = -0.5/(parameters.sigma * parameters.sigma);
 
-		Mat_<double> current_shape_2D = current_shape.reshape(1, 2).t();
-		Mat_<double> base_shape_2D = base_shape.reshape(1, 2).t();
+		cv::Mat_<double> current_shape_2D = current_shape.reshape(1, 2).t();
+		cv::Mat_<double> base_shape_2D = base_shape.reshape(1, 2).t();
 
-		Mat_<float> offsets;
-		Mat((current_shape_2D - base_shape_2D) * Mat(sim_img_to_ref).t()).convertTo(offsets, CV_32F);
+		cv::Mat_<float> offsets;
+		cv::Mat((current_shape_2D - base_shape_2D) * cv::Mat(sim_img_to_ref).t()).convertTo(offsets, CV_32F);
 		
 		dxs = offsets.col(0) + (resp_size-1)/2;
 		dys = offsets.col(1) + (resp_size-1)/2;
@@ -985,10 +1012,10 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 		NonVectorisedMeanShift_precalc_kde(mean_shifts, patch_expert_responses, dxs, dys, resp_size, a, scale, view_id, kde_resp_precalc);
 
 		// Now transform the mean shifts to the the image reference frame, as opposed to one of ref shape (object space)
-		Mat_<float> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
+		cv::Mat_<float> mean_shifts_2D = (mean_shifts.reshape(1, 2)).t();
 		
-		mean_shifts_2D = mean_shifts_2D * Mat(sim_ref_to_img).t();
-		mean_shifts = Mat(mean_shifts_2D.t()).reshape(1, n*2);		
+		mean_shifts_2D = mean_shifts_2D * cv::Mat(sim_ref_to_img).t();
+		mean_shifts = cv::Mat(mean_shifts_2D.t()).reshape(1, n*2);
 
 		// remove non-visible observations
 		for(int i = 0; i < n; ++i)
@@ -996,9 +1023,9 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 			// if patch unavailable for current index
 			if(patch_experts.visibilities[scale][view_id].at<int>(i,0) == 0)
 			{				
-				Mat Jx = J.row(i);
+				cv::Mat Jx = J.row(i);
 				Jx = cvScalar(0);
-				Mat Jy = J.row(i+n);
+				cv::Mat Jy = J.row(i+n);
 				Jy = cvScalar(0);
 				mean_shifts.at<float>(i,0) = 0.0f;
 				mean_shifts.at<float>(i+n,0) = 0.0f;
@@ -1006,23 +1033,23 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 		}
 
 		// projection of the meanshifts onto the jacobians (using the weighted Jacobian, see Baltrusaitis 2013)
-		Mat_<float> J_w_t_m = J_w_t * mean_shifts;
+		cv::Mat_<float> J_w_t_m = J_w_t * mean_shifts;
 
 		// Add the regularisation term
 		if(!rigid)
 		{
-			J_w_t_m(Rect(0,6,1, m)) = J_w_t_m(Rect(0,6,1, m)) - regTerm(Rect(6,6, m, m)) * current_local;
+			J_w_t_m(cv::Rect(0,6,1, m)) = J_w_t_m(cv::Rect(0,6,1, m)) - regTerm(cv::Rect(6,6, m, m)) * current_local;
 		}
 
 		// Calculating the Hessian approximation
-		Mat_<float> Hessian = J_w_t * J;
+		cv::Mat_<float> Hessian = J_w_t * J;
 
 		// Add the Tikhonov regularisation
 		Hessian = Hessian + regTerm;
 
 		// Solve for the parameter update (from Baltrusaitis 2013 based on eq (36) Saragih 2011)
-		Mat_<float> param_update;
-		solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
+		cv::Mat_<float> param_update;
+		cv::solve(Hessian, J_w_t_m, param_update, CV_CHOLESKY);
 		
 		// update the reference
 		pdm.UpdateModelParameters(param_update, current_local, current_global);		
@@ -1035,7 +1062,7 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 	// compute the log likelihood
 	double loglhood = 0;
 	
-	landmark_lhoods = Mat_<double>(n, 1, -1e8);
+	landmark_lhoods = cv::Mat_<double>(n, 1, -1e8);
 	
 	for(int i = 0; i < n; i++)
 	{
@@ -1051,7 +1078,7 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 		float v,vx,vy,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<float> p = patch_expert_responses[i].begin();
+		cv::MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{
@@ -1085,7 +1112,7 @@ double CLNF::NU_RLMS(Vec6d& final_global, Mat_<double>& final_local, const vecto
 }
 
 
-bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& depth_image)
+bool CLNF::RemoveBackground(cv::Mat_<float>& out_depth_image, const cv::Mat_<float>& depth_image)
 {
 	// use the current estimate of the face location to determine what is foreground and background
 	double tx = this->params_global[4];
@@ -1098,7 +1125,7 @@ bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dep
 		return false;
 	}
 
-	Mat_<double> current_shape;
+	cv::Mat_<double> current_shape;
 
 	pdm.CalcShape2D(current_shape, params_local, params_global);
 
@@ -1106,8 +1133,8 @@ bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dep
 
 	int n = this->pdm.NumberOfPoints();
 
-	minMaxLoc(current_shape(Range(0, n),Range(0,1)), &min_x, &max_x);
-	minMaxLoc(current_shape(Range(n, n*2),Range(0,1)), &min_y, &max_y);
+	cv::minMaxLoc(current_shape(cv::Range(0, n), cv::Range(0,1)), &min_x, &max_x);
+	cv::minMaxLoc(current_shape(cv::Range(n, n*2), cv::Range(0,1)), &min_y, &max_y);
 
 	// the area of interest: size of face with some scaling ( these scalings are fairly ad-hoc)
 	double width = 3 * (max_x - min_x); 
@@ -1115,7 +1142,7 @@ bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dep
 
 	// getting the region of interest from the depth image,
 	// so we don't get other objects lying at same depth as head in the image but away from it
-	Rect_<int> roi((int)(tx-width/2), (int)(ty - height/2), (int)width, (int)height);
+	cv::Rect_<int> roi((int)(tx-width/2), (int)(ty - height/2), (int)width, (int)height);
 
 	// clamp it if it does not lie fully in the image
 	if(roi.x < 0) roi.x = 0;
@@ -1139,27 +1166,27 @@ bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dep
 	if(roi.y >= depth_image.rows) roi.y = 0;
 
 	// Initialise the mask
-	Mat_<uchar> mask(depth_image.rows, depth_image.cols, (uchar)0);
+	cv::Mat_<uchar> mask(depth_image.rows, depth_image.cols, (uchar)0);
 
-	Mat_<uchar> valid_pixels = depth_image > 0;
+	cv::Mat_<uchar> valid_pixels = depth_image > 0;
 
 	// check if there is any depth near the estimate
-	if(sum(valid_pixels(Rect((int)tx - 8, (int)ty - 8, 16, 16))/255)[0] > 0)
+	if(cv::sum(valid_pixels(cv::Rect((int)tx - 8, (int)ty - 8, 16, 16))/255)[0] > 0)
 	{
-		double Z = mean(depth_image(Rect((int)tx - 8, (int)ty - 8, 16, 16)), valid_pixels(Rect((int)tx - 8, (int)ty - 8, 16, 16)))[0]; // Z offset from the surface of the face
+		double Z = cv::mean(depth_image(cv::Rect((int)tx - 8, (int)ty - 8, 16, 16)), valid_pixels(cv::Rect((int)tx - 8, (int)ty - 8, 16, 16)))[0]; // Z offset from the surface of the face
 				
 		// Only operate within region of interest of the depth image
-		Mat dRoi = depth_image(roi);
+		cv::Mat dRoi = depth_image(roi);
 
-		Mat mRoi = mask(roi);
+		cv::Mat mRoi = mask(roi);
 
 		// Filter all pixels further than 20cm away from the current pose depth estimate
-		inRange(dRoi, Z - 200, Z + 200, mRoi);
+		cv::inRange(dRoi, Z - 200, Z + 200, mRoi);
 		
 		// Convert to be either 0 or 1
 		mask = mask / 255;
 		
-		Mat_<float> maskF;
+		cv::Mat_<float> maskF;
 		mask.convertTo(maskF, CV_32F);
 
 		//Filter the depth image
@@ -1174,27 +1201,27 @@ bool CLNF::RemoveBackground(Mat_<float>& out_depth_image, const Mat_<float>& dep
 }
 
 // Getting a 3D shape model from the current detected landmarks (in camera space)
-Mat_<double> CLNF::GetShape(double fx, double fy, double cx, double cy) const
+cv::Mat_<double> CLNF::GetShape(double fx, double fy, double cx, double cy) const
 {
 	int n = this->detected_landmarks.rows/2;
 
-	Mat_<double> shape3d(n*3, 1);
+	cv::Mat_<double> shape3d(n*3, 1);
 
 	this->pdm.CalcShape3D(shape3d, this->params_local);
 	
 	// Need to rotate the shape to get the actual 3D representation
 	
 	// get the rotation matrix from the euler angles
-	Matx33d R = LandmarkDetector::Euler2RotationMatrix(Vec3d(params_global[1], params_global[2], params_global[3]));
+	cv::Matx33d R = LandmarkDetector::Euler2RotationMatrix(cv::Vec3d(params_global[1], params_global[2], params_global[3]));
 
 	shape3d = shape3d.reshape(1, 3);
 
-	shape3d = shape3d.t() * Mat(R).t();
+	shape3d = shape3d.t() * cv::Mat(R).t();
 	
 	// from the weak perspective model can determine the average depth of the object
 	double Zavg = fx / params_global[0];	
 
-	Mat_<double> outShape(n,3,0.0);
+	cv::Mat_<double> outShape(n,3,0.0);
 
 	// this is described in the paper in section 3.4 (equation 10) (of the CLM-Z paper)
 	for(int i = 0; i < n; i++)
@@ -1216,10 +1243,10 @@ Mat_<double> CLNF::GetShape(double fx, double fy, double cx, double cy) const
 }
 
 // A utility bounding box function
-Rect_<double> CLNF::GetBoundingBox() const
+cv::Rect_<double> CLNF::GetBoundingBox() const
 {
-	Mat_<double> xs = this->detected_landmarks(Rect(0,0,1,this->detected_landmarks.rows/2));
-	Mat_<double> ys = this->detected_landmarks(Rect(0,this->detected_landmarks.rows/2, 1, this->detected_landmarks.rows/2));
+	cv::Mat_<double> xs = this->detected_landmarks(cv::Rect(0,0,1,this->detected_landmarks.rows/2));
+	cv::Mat_<double> ys = this->detected_landmarks(cv::Rect(0,this->detected_landmarks.rows/2, 1, this->detected_landmarks.rows/2));
 
 	double min_x, max_x;
 	double min_y, max_y;
@@ -1227,12 +1254,12 @@ Rect_<double> CLNF::GetBoundingBox() const
 	cv::minMaxLoc(ys, &min_y, &max_y);
 
 	// See if the detections intersect
-	Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
+	cv::Rect_<double> model_rect(min_x, min_y, max_x - min_x, max_y - min_y);
 	return model_rect;
 }
 
 // Legacy function not used at the moment
-void CLNF::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Mat_<float> >& patch_expert_responses, const Mat_<double> &dxs, const Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
+void CLNF::NonVectorisedMeanShift(cv::Mat_<double>& out_mean_shifts, const vector<cv::Mat_<float> >& patch_expert_responses, const cv::Mat_<double> &dxs, const cv::Mat_<double> &dys, int resp_size, double a, int scale, int view_id)
 {
 	
 	int n = dxs.rows;
@@ -1255,7 +1282,7 @@ void CLNF::NonVectorisedMeanShift(Mat_<double>& out_mean_shifts, const vector<Ma
 		double v,vx,vy,mx=0.0,my=0.0,sum=0.0;
 
 		// Iterate over the patch responses here
-		MatConstIterator_<float> p = patch_expert_responses[i].begin();
+		cv::MatConstIterator_<float> p = patch_expert_responses[i].begin();
 			
 		for(ii = 0; ii < resp_size; ii++)
 		{

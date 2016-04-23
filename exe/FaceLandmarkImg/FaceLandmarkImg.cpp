@@ -59,11 +59,15 @@
 
 #include "LandmarkCoreIncludes.h"
 
+// System includes
 #include <fstream>
 
+// OpenCV includes
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
+// Boost includes
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
 
@@ -75,7 +79,6 @@
 #include <GazeEstimation.h>
 
 using namespace std;
-using namespace cv;
 
 vector<string> get_arguments(int argc, char **argv)
 {
@@ -89,7 +92,7 @@ vector<string> get_arguments(int argc, char **argv)
 	return arguments;
 }
 
-void convert_to_grayscale(const Mat& in, Mat& out)
+void convert_to_grayscale(const cv::Mat& in, cv::Mat& out)
 {
 	if(in.channels() == 3)
 	{
@@ -98,25 +101,25 @@ void convert_to_grayscale(const Mat& in, Mat& out)
 		{
 			if(in.depth() == CV_16U)
 			{
-				Mat tmp = in / 256;
+				cv::Mat tmp = in / 256;
 				tmp.convertTo(tmp, CV_8U);
-				cvtColor(tmp, out, CV_BGR2GRAY);
+				cv::cvtColor(tmp, out, CV_BGR2GRAY);
 			}
 		}
 		else
 		{
-			cvtColor(in, out, CV_BGR2GRAY);
+			cv::cvtColor(in, out, CV_BGR2GRAY);
 		}
 	}
 	else if(in.channels() == 4)
 	{
-		cvtColor(in, out, CV_BGRA2GRAY);
+		cv::cvtColor(in, out, CV_BGRA2GRAY);
 	}
 	else
 	{
 		if(in.depth() == CV_16U)
 		{
-			Mat tmp = in / 256;
+			cv::Mat tmp = in / 256;
 			out = tmp.clone();
 		}
 		else if(in.depth() != CV_8U)
@@ -150,7 +153,7 @@ void create_directory_from_file(string output_path)
 }
 
 // This will only be accurate when camera parameters are accurate, useful for work on 3D data
-void write_out_pose_landmarks(const string& outfeatures, const Mat_<double>& shape3D, const Vec6d& pose, const Point3f& gaze0, const Point3f& gaze1)
+void write_out_pose_landmarks(const string& outfeatures, const cv::Mat_<double>& shape3D, const cv::Vec6d& pose, const cv::Point3f& gaze0, const cv::Point3f& gaze1)
 {
 	create_directory_from_file(outfeatures);
 	std::ofstream featuresFile;
@@ -208,7 +211,7 @@ void write_out_landmarks(const string& outfeatures, const LandmarkDetector::CLNF
 	}
 }
 
-void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector::CLNF& clnf_model)
+void create_display_image(const cv::Mat& orig, cv::Mat& display_image, LandmarkDetector::CLNF& clnf_model)
 {
 	
 	// Draw head pose if present and draw eye gaze as well
@@ -217,8 +220,8 @@ void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector:
 	display_image = orig.clone();		
 
 	// Creating a display image			
-	Mat xs = clnf_model.detected_landmarks(Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2));
-	Mat ys = clnf_model.detected_landmarks(Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2));
+	cv::Mat xs = clnf_model.detected_landmarks(cv::Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2));
+	cv::Mat ys = clnf_model.detected_landmarks(cv::Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2));
 	double min_x, max_x, min_y, max_y;
 
 	cv::minMaxLoc(xs, &min_x, &max_x);
@@ -236,33 +239,33 @@ void create_display_image(const Mat& orig, Mat& display_image, LandmarkDetector:
 	double scaling = 350.0/widthCrop;
 	
 	// first crop the image
-	display_image = display_image(Rect((int)(minCropX), (int)(minCropY), (int)(widthCrop), (int)(heightCrop)));
+	display_image = display_image(cv::Rect((int)(minCropX), (int)(minCropY), (int)(widthCrop), (int)(heightCrop)));
 		
 	// now scale it
-	cv::resize(display_image.clone(), display_image, Size(), scaling, scaling);
+	cv::resize(display_image.clone(), display_image, cv::Size(), scaling, scaling);
 
 	// Make the adjustments to points
 	xs = (xs - minCropX)*scaling;
 	ys = (ys - minCropY)*scaling;
 
-	Mat shape = clnf_model.detected_landmarks.clone();
+	cv::Mat shape = clnf_model.detected_landmarks.clone();
 
-	xs.copyTo(shape(Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2)));
-	ys.copyTo(shape(Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2)));
+	xs.copyTo(shape(cv::Rect(0, 0, 1, clnf_model.detected_landmarks.rows/2)));
+	ys.copyTo(shape(cv::Rect(0, clnf_model.detected_landmarks.rows/2, 1, clnf_model.detected_landmarks.rows/2)));
 
 	// Do the shifting for the hierarchical models as well
 	for (size_t part = 0; part < clnf_model.hierarchical_models.size(); ++part)
 	{
-		Mat xs = clnf_model.hierarchical_models[part].detected_landmarks(Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
-		Mat ys = clnf_model.hierarchical_models[part].detected_landmarks(Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
+		cv::Mat xs = clnf_model.hierarchical_models[part].detected_landmarks(cv::Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
+		cv::Mat ys = clnf_model.hierarchical_models[part].detected_landmarks(cv::Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2));
 
 		xs = (xs - minCropX)*scaling;
 		ys = (ys - minCropY)*scaling;
 
-		Mat shape = clnf_model.hierarchical_models[part].detected_landmarks.clone();
+		cv::Mat shape = clnf_model.hierarchical_models[part].detected_landmarks.clone();
 
-		xs.copyTo(shape(Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
-		ys.copyTo(shape(Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
+		xs.copyTo(shape(cv::Rect(0, 0, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
+		ys.copyTo(shape(cv::Rect(0, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2, 1, clnf_model.hierarchical_models[part].detected_landmarks.rows / 2)));
 
 	}
 
@@ -280,7 +283,7 @@ int main (int argc, char **argv)
 	vector<string> files, depth_files, output_images, output_landmark_locations, output_pose_locations;
 
 	// Bounding boxes for a face in each image (optional)
-	vector<Rect_<double> > bounding_boxes;
+	vector<cv::Rect_<double> > bounding_boxes;
 	
 	LandmarkDetector::get_image_input_output_params(files, depth_files, output_landmark_locations, output_pose_locations, output_images, bounding_boxes, arguments);
 	LandmarkDetector::FaceModelParameters det_parameters(arguments);	
@@ -309,7 +312,7 @@ int main (int argc, char **argv)
 	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);
 	cout << "Model loaded" << endl;
 	
-	CascadeClassifier classifier(det_parameters.face_detector_location);	
+	cv::CascadeClassifier classifier(det_parameters.face_detector_location);
 	dlib::frontal_face_detector face_detector_hog = dlib::get_frontal_face_detector();
 
 	bool visualise = !det_parameters.quiet_mode;
@@ -320,20 +323,20 @@ int main (int argc, char **argv)
 		string file = files.at(i);
 
 		// Loading image
-		Mat read_image = imread(file, -1);
+		cv::Mat read_image = cv::imread(file, -1);
 
 		// Loading depth file if exists (optional)
-		Mat_<float> depth_image;
+		cv::Mat_<float> depth_image;
 
 		if(depth_files.size() > 0)
 		{
 			string dFile = depth_files.at(i);
-			Mat dTemp = imread(dFile, -1);
+			cv::Mat dTemp = cv::imread(dFile, -1);
 			dTemp.convertTo(depth_image, CV_32F);
 		}
 
 		// Making sure the image is in uchar grayscale
-		Mat_<uchar> grayscale_image;		
+		cv::Mat_<uchar> grayscale_image;
 		convert_to_grayscale(read_image, grayscale_image);
 		
 
@@ -359,7 +362,7 @@ int main (int argc, char **argv)
 		{
 			
 			// Detect faces in an image
-			vector<Rect_<double> > face_detections;
+			vector<cv::Rect_<double> > face_detections;
 
 			if(det_parameters.curr_face_detector == LandmarkDetector::FaceModelParameters::HOG_SVM_DETECTOR)
 			{
@@ -380,20 +383,16 @@ int main (int argc, char **argv)
 				bool success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, depth_image, face_detections[face], clnf_model, det_parameters);
 
 				// Estimate head pose and eye gaze				
-				Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+				cv::Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 				// Gaze tracking, absolute gaze direction
-				Point3f gazeDirection0(0, 0, -1);
-				Point3f gazeDirection1(0, 0, -1);
-
-				// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-				Point3f gazeDirection0_head(0, 0, -1);
-				Point3f gazeDirection1_head(0, 0, -1);
+				cv::Point3f gazeDirection0(0, 0, -1);
+				cv::Point3f gazeDirection1(0, 0, -1);
 
 				if (success && det_parameters.track_gaze)
 				{
-					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
+					FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
 
 				}
 
@@ -437,15 +436,15 @@ int main (int argc, char **argv)
 
 				if (det_parameters.track_gaze)
 				{
-					Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+					cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 					// Draw it in reddish if uncertain, blueish if certain
-					LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
+					LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, cv::Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
 					FaceAnalysis::DrawGaze(read_image, clnf_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 				}
 
 				// displaying detected landmarks
-				Mat display_image;
+				cv::Mat display_image;
 				create_display_image(read_image, display_image, clnf_model);
 
 				if(visualise && success)
@@ -492,20 +491,16 @@ int main (int argc, char **argv)
 			LandmarkDetector::DetectLandmarksInImage(grayscale_image, bounding_boxes[i], clnf_model, det_parameters);
 
 			// Estimate head pose and eye gaze				
-			Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+			cv::Vec6d headPose = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 			// Gaze tracking, absolute gaze direction
-			Point3f gazeDirection0(0, 0, -1);
-			Point3f gazeDirection1(0, 0, -1);
-
-			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-			Point3f gazeDirection0_head(0,0, -1);
-			Point3f gazeDirection1_head(0, 0, -1);
-
+			cv::Point3f gazeDirection0(0, 0, -1);
+			cv::Point3f gazeDirection1(0, 0, -1);
+			
 			if (det_parameters.track_gaze)
 			{
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, gazeDirection0_head, fx, fy, cx, cy, true);
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, gazeDirection1_head, fx, fy, cx, cy, false);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
 			}
 
 			// Writing out the detected landmarks
@@ -523,14 +518,14 @@ int main (int argc, char **argv)
 			}
 
 			// displaying detected stuff
-			Mat display_image;
+			cv::Mat display_image;
 
 			if (det_parameters.track_gaze)
 			{
-				Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+				cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
 
 				// Draw it in reddish if uncertain, blueish if certain
-				LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
+				LandmarkDetector::DrawBox(read_image, pose_estimate_to_draw, cv::Scalar(255.0, 0, 0), 3, fx, fy, cx, cy);
 				FaceAnalysis::DrawGaze(read_image, clnf_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 			}
 
