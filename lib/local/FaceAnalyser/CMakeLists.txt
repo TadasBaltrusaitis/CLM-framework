@@ -22,7 +22,7 @@ SET(HEADERS
 
 include_directories(./include)
 include_directories(${FACEANALYSER_SOURCE_DIR}/include)
-include_directories(${LandmarkDetector_SOURCE_DIR}/include)
+include_directories(../LandmarkDetector/include)
 
 add_library( FaceAnalyser ${SOURCE} ${HEADERS})
 
