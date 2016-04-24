@@ -177,7 +177,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, output_video_files;
+	vector<string> files, depth_directories, output_video_files, out_dummy;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -188,7 +188,7 @@ int main (int argc, char **argv)
 	
 	// Indicates that rotation should be with respect to world or camera coordinates
 	bool u;
-	LandmarkDetector::get_video_input_output_params(files, depth_directories, vector<string>(), output_video_files, u, arguments);
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, out_dummy, output_video_files, u, arguments);
 	
 	// The modules that are being used for tracking
 	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	

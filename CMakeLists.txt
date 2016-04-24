@@ -6,6 +6,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 find_package( OpenCV REQUIRED )
+MESSAGE("OpenCV information:") 
+MESSAGE("  OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}") 
+MESSAGE("  OpenCV_LIBRARIES: ${OpenCV_LIBRARIES}") 
+MESSAGE("  OpenCV_LIBRARY_DIRS: ${OpenCV_LIBRARY_DIRS}") 
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 find_package( Boost 1.5.9 REQUIRED COMPONENTS filesystem system)
