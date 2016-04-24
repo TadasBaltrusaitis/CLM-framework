@@ -187,11 +187,12 @@ void FaceAnalysis::DrawGaze(cv::Mat img, const LandmarkDetector::CLNF& clnf_mode
 	points_right.push_back(cv::Point3d(pupil_right));
 	points_right.push_back(cv::Point3d(pupil_right + gazeVecAxisRight*50.0));
 
-	vector<cv::Point2d> imagePoints_left;
-	projectPoints(points_left, cv::Mat::eye(3, 3, cv::DataType<double>::type), cv::Mat::zeros(1, 3, cv::DataType<double>::type), cameraMat, cv::Mat::zeros(4, 1, cv::DataType<double>::type), imagePoints_left);
-	line(img, imagePoints_left[0], imagePoints_left[1], cv::Scalar(110, 220, 0), 2, 8);
+	cv::Mat_<double> proj_points;
+	cv::Mat_<double> mesh_0 = (cv::Mat_<double>(2, 3) << points_left[0].x, points_left[0].y, points_left[0].z, points_left[1].x, points_left[1].y, points_left[1].z);
+	LandmarkDetector::Project(proj_points, mesh_0, fx, fy, cx, cy);
+	line(img, cv::Point(proj_points.at<double>(0,0), proj_points.at<double>(0, 1)), cv::Point(proj_points.at<double>(1, 0), proj_points.at<double>(1, 1)), cv::Scalar(110, 220, 0), 2, 8);
 
-	vector<cv::Point2d> imagePoints_right;
-	projectPoints(points_right, cv::Mat::eye(3, 3, cv::DataType<double>::type), cv::Mat::zeros(1, 3, cv::DataType<double>::type), cameraMat, cv::Mat::zeros(4, 1, cv::DataType<double>::type), imagePoints_right);
-	line(img, imagePoints_right[0], imagePoints_right[1], cv::Scalar(110, 220, 0), 2, 8);
+	cv::Mat_<double> mesh_1 = (cv::Mat_<double>(2, 3) << points_right[0].x, points_right[0].y, points_right[0].z, points_right[1].x, points_right[1].y, points_right[1].z);
+	LandmarkDetector::Project(proj_points, mesh_1, fx, fy, cx, cy);
+	line(img, cv::Point(proj_points.at<double>(0, 0), proj_points.at<double>(0, 1)), cv::Point(proj_points.at<double>(1, 0), proj_points.at<double>(1, 1)), cv::Scalar(110, 220, 0), 2, 8);
 }

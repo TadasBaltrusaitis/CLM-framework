@@ -239,17 +239,28 @@ namespace FaceAnalysis
 
 		LandmarkDetector::PAW paw(destination_landmarks, triangulation, 0, 0, aligned_face.cols-1, aligned_face.rows-1);
 		
+		// Mask each of the channels (a bit of a roundabout way, but OpenCV 3.1 in debug mode doesn't seem to be able to handle a more direct way using split and merge)
 		vector<cv::Mat> aligned_face_channels(aligned_face.channels());
 		
-		cv::split(aligned_face, aligned_face_channels);
+		for (int c = 0; c < aligned_face.channels(); ++c)
+		{
+			cv::extractChannel(aligned_face, aligned_face_channels[c], c);
+		}
 
 		for(size_t i = 0; i < aligned_face_channels.size(); ++i)
 		{
 			aligned_face_channels[i] = aligned_face_channels[i].mul(paw.pixel_mask);
 		}
 
-		cv::merge(aligned_face_channels, aligned_face);
-
+		if(aligned_face.channels() == 3)
+		{
+			cv::Mat planes[] = { aligned_face_channels[0], aligned_face_channels[1], aligned_face_channels[2] };
+			cv::merge(planes, 3, aligned_face);
+		}
+		else
+		{
+			aligned_face = aligned_face_channels[0];
+		}
 	}
 
 

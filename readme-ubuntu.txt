@@ -41,13 +41,13 @@ Need to do the following:
 7. Test it with 
 
 for videos:	
-	./bin/SimpleCLM -f "./videos/changeLighting.wmv" -f "./videos/0188_03_021_al_pacino.avi" -f "./videos/0217_03_006_alanis_morissette.avi" -f "./videos/0244_03_004_anderson_cooper.avi" -f "./videos/0294_02_004_angelina_jolie.avi" -f "./videos/0417_02_003_bill_clinton.avi" -f "./videos/0490_03_007_bill_gates.avi" -f "./videos/0686_02_003_gloria_estefan.avi" -f "./videos/1034_03_006_jet_li.avi" -f "./videos/1192_01_006_julia_roberts.avi" -f "./videos/1461_01_021_noam_chomsky.avi" -f "./videos/1804_03_006_sylvester_stallone.avi" -f "./videos/1815_01_008_tony_blair.avi" -f "./videos/1869_03_009_victoria_beckham.avi" -f "./videos/1878_01_002_vladimir_putin.avi"
+	./bin/FaceLandmarkVid -f "./videos/changeLighting.wmv" -f "./videos/0188_03_021_al_pacino.avi" -f "./videos/0217_03_006_alanis_morissette.avi" -f "./videos/0244_03_004_anderson_cooper.avi" -f "./videos/0294_02_004_angelina_jolie.avi" -f "./videos/0417_02_003_bill_clinton.avi" -f "./videos/0490_03_007_bill_gates.avi" -f "./videos/0686_02_003_gloria_estefan.avi" -f "./videos/1034_03_006_jet_li.avi" -f "./videos/1192_01_006_julia_roberts.avi" -f "./videos/1461_01_021_noam_chomsky.avi" -f "./videos/1804_03_006_sylvester_stallone.avi" -f "./videos/1815_01_008_tony_blair.avi" -f "./videos/1869_03_009_victoria_beckham.avi" -f "./videos/1878_01_002_vladimir_putin.avi"
 	
 for images:
-	./bin/SimpleCLMImg -fdir "./videos/" -ofdir "./demo_img/" -oidir "./demo_img/" -wild
+	./bin/FaceLandmarkImg -fdir "./videos/" -ofdir "./demo_img/" -oidir "./demo_img/" -wild
 
 for multiple faces:
-	./bin/MultiTrackCLM -f ./videos/multi_face.avi
+	./bin/FaceLandmarkVidMulti -f ./videos/multi_face.avi
 
 for feature extraction (i.e. HOG and similarity aligned faces amongst landmark locations and pose files):
 	./bin/FeatureExtraction -rigid  -verbose -f "./videos/default.wmv" -op "output_features/default_pose.txt" -of "output_features/default_fp.txt" -of3D "output_features/default_fp3D.txt" -simaligndir "output_features/aligned" -hogalign "output_features/default.hog" -oparams "output_features/default.params.txt"

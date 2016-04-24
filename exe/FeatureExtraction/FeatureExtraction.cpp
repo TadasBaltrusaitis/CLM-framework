@@ -72,6 +72,7 @@
 // Boost includes
 #include <filesystem.hpp>
 #include <filesystem/fstream.hpp>
+#include <boost/algorithm/string.hpp>
 
 // Local includes
 #include "LandmarkCoreIncludes.h"
@@ -151,7 +152,10 @@ void create_directory(string output_path)
 	}
 }
 
-void get_output_feature_params(vector<string> &output_similarity_aligned, vector<string> &output_hog_aligned_files, double &similarity_scale, int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, vector<string> &arguments)
+void get_output_feature_params(vector<string> &output_similarity_aligned, vector<string> &output_hog_aligned_files, double &similarity_scale, 
+	int &similarity_size, bool &grayscale, bool &rigid, bool& verbose, 
+	bool &output_2D_landmarks, bool &output_3D_landmarks, bool &output_model_params, bool &output_pose, bool &output_AUs, bool &output_gaze,
+	vector<string> &arguments)
 {
 	output_similarity_aligned.clear();
 	output_hog_aligned_files.clear();
@@ -231,6 +235,36 @@ void get_output_feature_params(vector<string> &output_similarity_aligned, vector
 			valid[i] = false;
 			valid[i + 1] = false;
 			i++;
+		} 
+		else if (arguments[i].compare("-no2Dfp") == 0)
+		{
+			output_2D_landmarks = false;
+			valid[i] = false;
+		}
+		else if (arguments[i].compare("-no3Dfp") == 0)
+		{
+			output_3D_landmarks = false;
+			valid[i] = false;
+		}
+		else if (arguments[i].compare("-noMparams") == 0)
+		{
+			output_model_params = false;
+			valid[i] = false;
+		}
+		else if (arguments[i].compare("-noPose") == 0)
+		{
+			output_pose = false;
+			valid[i] = false;
+		}
+		else if (arguments[i].compare("-noAUs") == 0)
+		{
+			output_AUs = false;
+			valid[i] = false;
+		}
+		else if (arguments[i].compare("-noGaze") == 0)
+		{
+			output_gaze = false;
+			valid[i] = false;
 		}
 	}
 
@@ -576,6 +610,8 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 	*output_file << endl;
 }
 
+void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string output_file);
+
 
 int main (int argc, char **argv)
 {
@@ -585,10 +621,6 @@ int main (int argc, char **argv)
 	// Some initial parameters that can be overriden from command line	
 	vector<string> input_files, depth_directories, output_files, tracked_videos_output;
 	
-	// By default try webcam 0
-	int device = 0;
-
-
 	LandmarkDetector::FaceModelParameters det_parameters(arguments);
 	// Always track gaze in feature extraction
 	det_parameters.track_gaze = true;
@@ -602,7 +634,6 @@ int main (int argc, char **argv)
 	bool video_input = true;
 	bool verbose = true;
 	bool images_as_video = false;
-	bool webcam = false;
 
 	vector<vector<string> > input_image_files;
 
@@ -623,8 +654,9 @@ int main (int argc, char **argv)
 
 	// Grab camera parameters, if they are not defined (approximate values will be used)
 	float fx = 0, fy = 0, cx = 0, cy = 0;
+	int d = 0;
 	// Get camera parameters
-	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);    
+	LandmarkDetector::get_camera_params(d, fx, fy, cx, cy, arguments);    
 	
 	// If cx (optical axis centre) is undefined will use the image size/2 as an estimate
 	bool cx_undefined = false;
@@ -642,7 +674,6 @@ int main (int argc, char **argv)
 	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	
 
 	vector<string> output_similarity_align;
-	vector<string> output_files;
 	vector<string> output_hog_align_files;
 
 	double sim_scale = 0.7;
@@ -653,7 +684,17 @@ int main (int argc, char **argv)
 	int num_hog_rows;
 	int num_hog_cols;
 
-	get_output_feature_params(output_similarity_align, output_hog_align_files, sim_scale, sim_size, grayscale, rigid, verbose, arguments);
+	// By default output all parameters, but these can be turned off to get smaller files or slightly faster processing times
+	// use -no2Dfp, -no3Dfp, -noMparams, -noPose, -noAUs, -noGaze to turn them off
+	bool output_2D_landmarks = true;
+	bool output_3D_landmarks = true;
+	bool output_model_params = true;
+	bool output_pose = true; 
+	bool output_AUs = true;
+	bool output_gaze = true;
+
+	get_output_feature_params(output_similarity_align, output_hog_align_files, sim_scale, sim_size, grayscale, rigid, verbose, 
+		output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze, arguments);
 	
 	// Used for image masking
 
@@ -756,16 +797,6 @@ int main (int argc, char **argv)
 					fps_vid_in = 30;
 				}
 			}
-			else
-			{
-				INFO_STREAM( "Attempting to capture from device: " << device );
-				video_capture = cv::VideoCapture( device );
-				webcam = true;
-
-				// Read a first frame often empty in camera
-				cv::Mat captured_image;
-				video_capture >> captured_image;
-			}
 
 			if (!video_capture.isOpened())
 			{
@@ -818,8 +849,7 @@ int main (int argc, char **argv)
 		if (!output_files.empty())
 		{
 			output_file.open(output_files[f_n], ios_base::out);
-			// TODO these should be controlled in parameters
-			prepareOutputFile(&output_file, true, true, true, true, true, true);
+			prepareOutputFile(&output_file, output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze, clnf_model.pdm.NumberOfPoints(), clnf_model.pdm.NumberOfModes(), face_analyser.GetAUClassNames(), face_analyser.GetAURegNames());
 		}
 
 		// Saving the HOG features
@@ -833,8 +863,7 @@ int main (int argc, char **argv)
 		cv::VideoWriter writerFace;
 		if(!tracked_videos_output.empty())
 		{
-			double fps = webcam ? 30 : fps_vid_in;
-			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps, captured_image.size(), true);
+			writerFace = cv::VideoWriter(tracked_videos_output[f_n], CV_FOURCC('D', 'I', 'V', 'X'), fps_vid_in, captured_image.size(), true);
 		}
 
 		int frame_count = 0;
@@ -858,12 +887,7 @@ int main (int argc, char **argv)
 		{		
 
 			// Grab the timestamp first
-			if (webcam)
-			{
-				int64 curr_time = cv::getTickCount();
-				time_stamp = (double(curr_time - t_initial) / cv::getTickFrequency());
-			}
-			else if (video_input)
+			if (video_input)
 			{
 				time_stamp = (double)frame_count * (1.0 / fps_vid_in);				
 			}
@@ -915,9 +939,9 @@ int main (int argc, char **argv)
 			cv::Mat_<double> hog_descriptor;
 
 			// But only if needed in output, TODO if AU is being output
-			if(!output_similarity_align.empty() || hog_output_file.is_open())
+			if(!output_similarity_align.empty() || hog_output_file.is_open() || output_AUs)
 			{
-				face_analyser.AddNextFrame(captured_image, clnf_model, time_stamp, webcam, !det_parameters.quiet_mode);
+				face_analyser.AddNextFrame(captured_image, clnf_model, time_stamp, false, !det_parameters.quiet_mode);
 				face_analyser.GetLatestAlignedFace(sim_warped_img);
 
 				if(!det_parameters.quiet_mode)
@@ -980,8 +1004,8 @@ int main (int argc, char **argv)
 			// Visualising the tracker
 			visualise_tracking(captured_image, clnf_model, det_parameters, gazeDirection0, gazeDirection1, frame_count, fx, fy, cx, cy);
 
-			// Output the landmarks, pose, gaze, parameters and AUs, TODO 
-			outputAllFeatures(&output_file, true, true, true, true, true, true,
+			// Output the landmarks, pose, gaze, parameters and AUs
+			outputAllFeatures(&output_file, output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze,
 				clnf_model, frame_count, time_stamp, detection_success, gazeDirection0, gazeDirection1,
 				pose_estimate, fx, fy, cx, cy, face_analyser);
 
@@ -1048,77 +1072,14 @@ int main (int argc, char **argv)
 		clnf_model.Reset();
 		
 		output_file.close();
-
-		vector<double> certainties;
-		vector<bool> successes;
-		vector<double> timestamps;
-		vector<std::pair<std::string, vector<double>>> predictions_reg;
-		vector<std::pair<std::string, vector<double>>> predictions_class;
-
-		face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes, timestamps);
-		face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes, timestamps);
-
-		// Output all of the AU stuff with offline correction and cleanup
-		if(!output_au_files.empty())
-		{			
-
-			au_output_file.close();
-
-			au_output_file.open (output_au_files[f_n], ios_base::out);
-
-			au_output_file << "frame, timestamp, confidence, success";
-			for(auto reg_name : predictions_reg)
-			{
-				au_output_file << ", " << reg_name.first << "_r";
-			}
-			
-			for(auto class_name : predictions_class)
-			{
-				au_output_file << ", " << class_name.first << "_c";
-			}
-			au_output_file << endl;
-
-			for(size_t frame = 0; frame < certainties.size(); ++frame)
-			{
-				double detection_certainty = certainties[frame];
-				bool detection_success = successes[frame];
-
-				double confidence = 0.5 * (1 - detection_certainty);
-
-				au_output_file << frame + 1 << ", " << timestamps[frame] << ", " << confidence << ", " << detection_success;
-				auto aus_reg = face_analyser.GetCurrentAUsReg();
-				
-				for(auto au_reg : predictions_reg)
-				{
-					au_output_file << ", " << au_reg.second[frame];
-				}
-
-				if(aus_reg.size() == 0)
-				{
-					for(size_t p = 0; p < face_analyser.GetAURegNames().size(); ++p)
-					{
-						au_output_file << ", 0";
-					}
-				}
-
-				auto aus_class = face_analyser.GetCurrentAUsClass();
-				
-				for(auto au_class : predictions_class)
-				{
-					au_output_file << ", " << au_class.second[frame];
-				}
-
-				if(aus_class.size() == 0)
-				{
-					for(size_t p = 0; p < face_analyser.GetAUClassNames().size(); ++p)
-					{
-						au_output_file << ", 0";
-					}
-				}
-				au_output_file << endl;
-			}
-			face_analyser.Reset();
+		
+		// If the video is long enough post-process it for AUs
+		if (output_AUs && frame_count > 100)
+		{
+			post_process_output_file(face_analyser, output_files[f_n]);
 		}
+		
+		face_analyser.Reset();
 
 		// break out of the loop if done with all the files (or using a webcam)
 		if(f_n == input_files.size() -1 || input_files.empty())
@@ -1128,4 +1089,84 @@ int main (int argc, char **argv)
 	}
 
 	return 0;
+}
+
+
+void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string output_file)
+{
+
+	vector<double> certainties;
+	vector<bool> successes;
+	vector<double> timestamps;
+	vector<std::pair<std::string, vector<double>>> predictions_reg;
+	vector<std::pair<std::string, vector<double>>> predictions_class;
+
+	// Construct the new values to overwrite the output file with
+	face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes, timestamps);
+	face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes, timestamps);
+
+	int num_class = predictions_class[0].first.size();
+	int num_reg = predictions_reg[0].first.size();
+
+	// Read all of the output file in
+	vector<string> output_file_contents;
+
+	std::ifstream infile(output_file);
+	string line;
+
+	while (std::getline(infile, line))
+		output_file_contents.push_back(line);
+
+	infile.close();
+
+	// Read the header and find all _r and _c parts in a file and use their indices
+	std::vector<std::string> tokens;
+	boost::split(tokens, output_file_contents[0], boost::is_any_of(","));
+
+	int begin_ind = -1;
+	
+	for (int i = 0; i < tokens.size(); ++i)
+	{
+		if (tokens[i].find("_r") && begin_ind == -1)
+		{
+			begin_ind = i;
+			break;
+		}
+	}
+	int end_ind = begin_ind + num_class + num_reg;
+
+	// Now overwrite the whole file
+	std::ofstream outfile(output_file, ios_base::out);
+	// Write the header
+	outfile << output_file_contents[0].c_str() << endl;
+	
+	// Write the contents
+	for (int i = 1; i < output_file_contents.size(); ++i)
+	{
+		std::vector<std::string> tokens;
+		boost::split(tokens, output_file_contents[i], boost::is_any_of(","));
+
+		outfile << tokens[0];
+
+		for (int t = 1; t < tokens.size(); ++t)
+		{
+			if (t >= begin_ind && t < end_ind)
+			{
+				if(t - begin_ind < num_reg)
+				{
+					outfile << ", " << predictions_reg[i - 1].second[t - begin_ind];
+				}
+				else
+				{
+					outfile << ", " << predictions_class[i - 1].second[t - begin_ind - num_reg];
+				}
+			}
+			else
+			{
+				outfile << ", " << tokens[t];
+			}
+		}
+	}
+		
+
 }
