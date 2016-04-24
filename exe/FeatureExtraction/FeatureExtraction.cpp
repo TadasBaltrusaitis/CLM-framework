@@ -1155,11 +1155,11 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 			{
 				if(t - begin_ind < num_reg)
 				{
-					outfile << "," << predictions_reg[i - 1].second[t - begin_ind];
+					outfile << "," << predictions_reg[t - begin_ind].second[i - 1];
 				}
 				else
 				{
-					outfile << "," << predictions_class[i - 1].second[t - begin_ind - num_reg];
+					outfile << "," << predictions_class[t - begin_ind - num_reg].second[i - 1];
 				}
 			}
 			else
