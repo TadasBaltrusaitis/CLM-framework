@@ -131,7 +131,7 @@ int main (int argc, char **argv)
 	vector<string> arguments = get_arguments(argc, argv);
 
 	// Some initial parameters that can be overriden from command line	
-	vector<string> files, depth_directories, tracked_videos_output;
+	vector<string> files, depth_directories, tracked_videos_output, dummy_out;
 	
 	// By default try webcam 0
 	int device = 0;
@@ -151,7 +151,7 @@ int main (int argc, char **argv)
 
 	// Get the input output file parameters
 	bool u;
-	LandmarkDetector::get_video_input_output_params(files, depth_directories, vector<string>(), tracked_videos_output, u, arguments);
+	LandmarkDetector::get_video_input_output_params(files, depth_directories, dummy_out, tracked_videos_output, u, arguments);
 	// Get camera parameters
 	LandmarkDetector::get_camera_params(device, fx, fy, cx, cy, arguments);
 	
