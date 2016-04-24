@@ -1059,27 +1059,28 @@ int main (int argc, char **argv)
 			}
 
 		}
-		
-		if(total_frames != -1)
+
+		if(output_files.size() > 0)
 		{
-			cout << endl;
+			output_file.close();
+		
+			// If the video is long enough post-process it for AUs
+			if (output_AUs && frame_count > 100)
+			{
+				post_process_output_file(face_analyser, output_files[f_n]);
+			}
 		}
+		// Reset the models for the next video
+		face_analyser.Reset();
+		clnf_model.Reset();
 
 		frame_count = 0;
 		curr_img = -1;
 
-		// Reset the model, for the next video
-		clnf_model.Reset();
-		
-		output_file.close();
-		
-		// If the video is long enough post-process it for AUs
-		if (output_AUs && frame_count > 100)
+		if (total_frames != -1)
 		{
-			post_process_output_file(face_analyser, output_files[f_n]);
+			cout << endl;
 		}
-		
-		face_analyser.Reset();
 
 		// break out of the loop if done with all the files (or using a webcam)
 		if(f_n == input_files.size() -1 || input_files.empty())
@@ -1105,8 +1106,8 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 	face_analyser.ExtractAllPredictionsOfflineReg(predictions_reg, certainties, successes, timestamps);
 	face_analyser.ExtractAllPredictionsOfflineClass(predictions_class, certainties, successes, timestamps);
 
-	int num_class = predictions_class[0].first.size();
-	int num_reg = predictions_reg[0].first.size();
+	int num_class = predictions_class.size();
+	int num_reg = predictions_reg.size();
 
 	// Read all of the output file in
 	vector<string> output_file_contents;
@@ -1127,7 +1128,7 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 	
 	for (int i = 0; i < tokens.size(); ++i)
 	{
-		if (tokens[i].find("_r") && begin_ind == -1)
+		if (tokens[i].find("_r") != string::npos && begin_ind == -1)
 		{
 			begin_ind = i;
 			break;
@@ -1154,18 +1155,19 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 			{
 				if(t - begin_ind < num_reg)
 				{
-					outfile << ", " << predictions_reg[i - 1].second[t - begin_ind];
+					outfile << "," << predictions_reg[i - 1].second[t - begin_ind];
 				}
 				else
 				{
-					outfile << ", " << predictions_class[i - 1].second[t - begin_ind - num_reg];
+					outfile << "," << predictions_class[i - 1].second[t - begin_ind - num_reg];
 				}
 			}
 			else
 			{
-				outfile << ", " << tokens[t];
+				outfile << "," << tokens[t];
 			}
 		}
+		outfile << endl;
 	}
 		
 
