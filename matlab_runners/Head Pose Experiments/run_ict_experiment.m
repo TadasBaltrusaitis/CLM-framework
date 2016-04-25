@@ -2,7 +2,7 @@ function [fps, resDir] = run_ict_experiment(rootDir, ictDir, outputRoot, verbose
 %EVALUATEICTDATABASE Summary of this function goes here
 %   Detailed explanation goes here
 
-executable = '"../../x64/Release/FaceTrackingVid.exe"';
+executable = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = 'Tracker_';
 
@@ -27,7 +27,7 @@ numTogether = 10;
 
 for i=3:numTogether:numel(dbSeqDir)
         
-    command = [executable  ' -fx 535 -fy 536 -cx 327 -cy 241'];
+    command = [executable  ' -fx 535 -fy 536 -cx 327 -cy 241 -no2Dfp -no3Dfp -noMparams -noAUs -noGaze '];
 
     command = cat(2, command, [' -root ' '"' rootDir '/"']);
 

@@ -1,6 +1,6 @@
 function [fps, resDir] = run_bu_experiment(bu_dir, verbose, version, varargin)
    
-    executable = '"../../x64/Release/FaceTrackingVid.exe"';
+    executable = '"../../x64/Release/FeatureExtraction.exe"';
 
     output = 'Tracker_';
     
@@ -39,7 +39,7 @@ function [fps, resDir] = run_bu_experiment(bu_dir, verbose, version, varargin)
             % where to output results
             outputFile = [output name '.txt'];
             
-            command = cat(2, command, [' -f "' inputFile '" -op "' outputFile '"']);
+            command = cat(2, command, [' -f "' inputFile '" -of "' outputFile '"']);
 
             if(verbose)
                 outputVideo = ['"' output name '.avi' '"'];
@@ -47,11 +47,11 @@ function [fps, resDir] = run_bu_experiment(bu_dir, verbose, version, varargin)
             end
         end
         
-        command = cat(2, command,  ' -fx 500 -fy 500 -cx 160 -cy 120');
-
-        if(any(strcmp('reg', varargin)))
-            command = cat(2, command, [' -reg ' num2str(varargin{find(strcmp('reg', varargin))+1})]);        
-        end                    
+        command = cat(2, command,  ' -fx 500 -fy 500 -cx 160 -cy 120 -no2Dfp -no3Dfp -noMparams -noAUs -noGaze ');        
+    
+        if(any(strcmp('model', varargin)))
+            command = cat(2, command, [' -mloc "', varargin{find(strcmp('model', varargin))+1}, '"']);
+        end  
         
         dos(command);
     end

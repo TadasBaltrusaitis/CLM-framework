@@ -1,7 +1,7 @@
 function [fps, resDir] = run_biwi_experiment(rootDir, biwiDir, outputDir, verbose, depth, version, varargin)
 % Biwi dataset experiment
 
-clm_exe = '"../../x64/Release/FaceTrackingVid.exe"';
+executable = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = 'Tracker_';
 
@@ -15,8 +15,6 @@ if(depth)
 end
 
 outputDir = cat(2, outputDir, ['/' output '/']);
-
-fx = [517,517,517,517,517,505,517,517,517,517,517,517,517,517,505,505,505,505,505,505,505,505,505,505];
 
 if(~exist([outputDir], 'dir'))
     mkdir([outputDir]);    
@@ -34,7 +32,7 @@ numTogether = 25;
 for i=3 + offset:numTogether:numel(dbSeqDir)
     
        
-    command = clm_exe;
+    command = executable;
            
     command = cat(2, command, [' -root ' '"' rootDir '"']);
      
@@ -48,7 +46,7 @@ for i=3 + offset:numTogether:numel(dbSeqDir)
         inputFile = [biwiDir dbSeqDir(i+n).name '/colour.avi'];
         outputFile = [outputDir dbSeqDir(i+n).name '.txt'];
 
-        command = cat(2, command, [' -f "' inputFile '" -op "' outputFile  '"']);
+        command = cat(2, command, [' -f "' inputFile '" -of "' outputFile  '"']);
 
         if(depth)
             dDir = [biwiDir dbSeqDir(i+n).name '/depthAligned/'];
@@ -60,7 +58,7 @@ for i=3 + offset:numTogether:numel(dbSeqDir)
             command = cat(2, command, [' -ov "' outputVideo '"']);    
         end
     end    
-    command = cat(2, command, [' -fx 505 -fy 505 -cx 320 -cy 240']);
+    command = cat(2, command, [' -fx 505 -fy 505 -cx 320 -cy 240 -no2Dfp -no3Dfp -noMparams -noAUs -noGaze']);
         
     if(any(strcmp('model', varargin)))
         command = cat(2, command, [' -mloc "', varargin{find(strcmp('model', varargin))+1}, '"']);
