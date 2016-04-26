@@ -503,11 +503,13 @@ void prepareOutputFile(std::ofstream* output_file, bool output_2D_landmarks, boo
 
 	if (output_AUs)
 	{
+		std::sort(au_names_reg.begin(), au_names_reg.end());
 		for (string reg_name : au_names_reg)
 		{
 			*output_file << ", " << reg_name << "_r";
 		}
 
+		std::sort(au_names_class.begin(), au_names_class.end());
 		for (string class_name : au_names_class)
 		{
 			*output_file << ", " << class_name << "_c";
@@ -579,9 +581,20 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 	{
 		auto aus_reg = face_analyser.GetCurrentAUsReg();
 
-		for (auto au_reg : aus_reg)
+		vector<string> au_reg_names = face_analyser.GetAURegNames();
+		std::sort(au_reg_names.begin(), au_reg_names.end());
+
+		// write out ar the correct index
+		for (string au_name : au_reg_names)
 		{
-			*output_file << ", " << au_reg.second;
+			for (auto au_reg : aus_reg)
+			{
+				if (au_name.compare(au_reg.first) == 0)
+				{
+					*output_file << ", " << au_reg.second;
+					break;
+				}
+			}
 		}
 
 		if (aus_reg.size() == 0)
@@ -594,9 +607,20 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 
 		auto aus_class = face_analyser.GetCurrentAUsClass();
 
-		for (auto au_class : aus_class)
+		vector<string> au_class_names = face_analyser.GetAUClassNames();
+		std::sort(au_class_names.begin(), au_class_names.end());
+
+		// write out ar the correct index
+		for (string au_name : au_class_names)
 		{
-			*output_file << ", " << au_class.second;
+			for (auto au_class: aus_class)
+			{
+				if (au_name.compare(au_class.first) == 0)
+				{
+					*output_file << ", " << au_class.second;
+					break;
+				}
+			}
 		}
 
 		if (aus_class.size() == 0)
@@ -1092,7 +1116,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-
+// TODO sort indices with AU predictions
 void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string output_file)
 {
 

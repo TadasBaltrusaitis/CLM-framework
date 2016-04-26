@@ -20,7 +20,7 @@ parfor v = 1:numel(videos)
     
     % where to output tracking results
     output_file = [output name '_au.txt'];
-    command = [clm_exe ' -f "' vid_file '" -oaus "' output_file '" -q'];
+    command = [clm_exe ' -f "' vid_file '" -of "' output_file '" -q -no2Dfp -no3Dfp -noMparams -noPose -noGaze'];
         
     dos(command);
     
@@ -65,8 +65,12 @@ for c=3:numel(column_names)
     end
 end
     
-[rel_preds,~,inds_au] = intersect(AUs_disfa, aus_pred_int);
-preds_all = zeros(size(labels_all,1), numel(rel_preds));
+inds_au = zeros(numel(AUs_disfa),1);
+
+for ind=1:numel(AUs_disfa)  
+    inds_au(ind) = find(aus_pred_int==AUs_disfa(ind));
+end
+preds_all = zeros(size(labels_all,1), numel(AUs_disfa));
 
 for i=1:numel(preds_files)
    
@@ -76,15 +80,14 @@ for i=1:numel(preds_files)
     user_id = str2num(preds_files(i).name(end - 14:end-12));
     rel_ids = label_ids == user_id;
     preds_all(rel_ids,:) = preds(:,inds_au);
-    
 end
 
 %% now do the actual evaluation that the collection has been done
 f = fopen('DISFA_valid_res.txt', 'w');
-au_res = zeros(1, numel(rel_preds));
-for au = 1:numel(rel_preds)
+au_res = zeros(1, numel(AUs_disfa));
+for au = 1:numel(AUs_disfa)
    [ accuracies, F1s, corrs, ccc, rms, classes ] = evaluate_au_prediction_results( preds_all(:,au), labels_all(:,au));
-   fprintf(f, 'AU%d results - corr %.3f, ccc - %.3f\n', rel_preds(au), corrs, ccc);
+   fprintf(f, 'AU%d results - corr %.3f, ccc - %.3f\n', AUs_disfa(au), corrs, ccc);
    au_res(au) = ccc;
 end
 fclose(f);
