@@ -1133,6 +1133,40 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 	int num_class = predictions_class.size();
 	int num_reg = predictions_reg.size();
 
+	// Extract the indices of writing out first
+	vector<string> au_reg_names = face_analyser.GetAURegNames();
+	std::sort(au_reg_names.begin(), au_reg_names.end());
+	vector<int> inds_reg;
+
+	// write out ar the correct index
+	for (string au_name : au_reg_names)
+	{
+		for (int i = 0; i < num_reg; ++i)
+		{
+			if (au_name.compare(predictions_reg[i].first) == 0)
+			{
+				inds_reg.push_back(i);
+				break;
+			}
+		}
+	}
+
+	vector<string> au_class_names = face_analyser.GetAUClassNames();
+	std::sort(au_class_names.begin(), au_class_names.end());
+	vector<int> inds_class;
+
+	// write out ar the correct index
+	for (string au_name : au_class_names)
+	{
+		for (int i = 0; i < num_class; ++i)
+		{
+			if (au_name.compare(predictions_class[i].first) == 0)
+			{
+				inds_class.push_back(i);
+				break;
+			}
+		}
+	}
 	// Read all of the output file in
 	vector<string> output_file_contents;
 
@@ -1179,11 +1213,11 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 			{
 				if(t - begin_ind < num_reg)
 				{
-					outfile << "," << predictions_reg[t - begin_ind].second[i - 1];
+					outfile << "," << predictions_reg[inds_reg[t - begin_ind]].second[i - 1];
 				}
 				else
 				{
-					outfile << "," << predictions_class[t - begin_ind - num_reg].second[i - 1];
+					outfile << "," << predictions_class[inds_class[t - begin_ind - num_reg]].second[i - 1];
 				}
 			}
 			else
