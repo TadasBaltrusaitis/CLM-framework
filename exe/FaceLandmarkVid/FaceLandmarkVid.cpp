@@ -59,6 +59,7 @@
 
 // Libraries for landmark detection (includes CLNF and CLM modules)
 #include "LandmarkCoreIncludes.h"
+#include "GazeEstimation.h"
 
 #include <fstream>
 #include <sstream>
@@ -110,7 +111,7 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(cv::Mat& captured_image, cv::Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(cv::Mat& captured_image, cv::Mat_<float>& depth_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, cv::Point3f gazeDirection0, cv::Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
@@ -139,7 +140,11 @@ void visualise_tracking(cv::Mat& captured_image, cv::Mat_<float>& depth_image, c
 
 		// Draw it in reddish if uncertain, blueish if certain
 		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, cv::Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
-
+		
+		if (det_parameters.track_gaze && detection_success && face_model.eye_model)
+		{
+			FaceAnalysis::DrawGaze(captured_image, face_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+		}
 	}
 
 	// Work out the framerate
@@ -213,8 +218,8 @@ int main (int argc, char **argv)
 	// If multiple video files are tracked, use this to indicate if we are done
 	bool done = false;	
 	int f_n = -1;
-
-	// TODO only thing to output is the video (same for multi-view case)
+	
+	det_parameters.track_gaze = true;
 
 	while(!done) // this is not a for loop as we might also be reading from a webcam
 	{
@@ -339,7 +344,17 @@ int main (int argc, char **argv)
 			// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
 			double detection_certainty = clnf_model.detection_certainty;
 
-			visualise_tracking(captured_image, depth_image, clnf_model, det_parameters, frame_count, fx, fy, cx, cy);
+			// Gaze tracking, absolute gaze direction
+			cv::Point3f gazeDirection0(0, 0, -1);
+			cv::Point3f gazeDirection1(0, 0, -1);
+
+			if (det_parameters.track_gaze && detection_success && clnf_model.eye_model)
+			{
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
+			}
+
+			visualise_tracking(captured_image, depth_image, clnf_model, det_parameters, gazeDirection0, gazeDirection1, frame_count, fx, fy, cx, cy);
 			
 			// output the tracked video
 			if (!output_video_files.empty())

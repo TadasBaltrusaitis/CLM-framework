@@ -482,7 +482,6 @@ void crossCorr_m( const cv::Mat_<float>& img, cv::Mat_<double>& img_dft, const c
 
 		cv::Mat_<float> src = _templ;
 
-		// TODO simplify no need for rect?
 		cv::Mat_<double> dst(dftTempl, cv::Rect(0, 0, dftsize.width, dftsize.height));
 		
 		cv::Mat_<double> dst1(dftTempl, cv::Rect(0, 0, _templ.cols, _templ.rows));

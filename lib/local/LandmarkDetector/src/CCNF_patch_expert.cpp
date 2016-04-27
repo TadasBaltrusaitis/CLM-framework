@@ -219,7 +219,6 @@ void CCNF_neuron::Response(cv::Mat_<float> &im, cv::Mat_<double> &im_dft, cv::Ma
 		matchTemplate_m(I, im_dft, integral_img, integral_img_sq, weights, weights_dfts, resp, CV_TM_CCOEFF_NORMED); // the linear multiplication, efficient calc of response
 	}
 
-	// TODO a single iterator?
 	cv::MatIterator_<float> p = resp.begin();
 
 	cv::MatIterator_<float> q1 = resp.begin(); // respone for each pixel

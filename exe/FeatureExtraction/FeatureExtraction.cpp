@@ -387,19 +387,19 @@ double fps_tracker = -1.0;
 int64 t0 = 0;
 
 // Visualising the results
-void visualise_tracking(cv::Mat& captured_image, const LandmarkDetector::CLNF& clnf_model, const LandmarkDetector::FaceModelParameters& det_parameters, cv::Point3f gazeDirection0, cv::Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
+void visualise_tracking(cv::Mat& captured_image, const LandmarkDetector::CLNF& face_model, const LandmarkDetector::FaceModelParameters& det_parameters, cv::Point3f gazeDirection0, cv::Point3f gazeDirection1, int frame_count, double fx, double fy, double cx, double cy)
 {
 
 	// Drawing the facial landmarks on the face and the bounding box around it if tracking is successful and initialised
-	double detection_certainty = clnf_model.detection_certainty;
-	bool detection_success = clnf_model.detection_success;
+	double detection_certainty = face_model.detection_certainty;
+	bool detection_success = face_model.detection_success;
 
 	double visualisation_boundary = 0.2;
 
 	// Only draw if the reliability is reasonable, the value is slightly ad-hoc
 	if (detection_certainty < visualisation_boundary)
 	{
-		LandmarkDetector::Draw(captured_image, clnf_model);
+		LandmarkDetector::Draw(captured_image, face_model);
 
 		double vis_certainty = detection_certainty;
 		if (vis_certainty > 1)
@@ -412,14 +412,14 @@ void visualise_tracking(cv::Mat& captured_image, const LandmarkDetector::CLNF& c
 		// A rough heuristic for box around the face width
 		int thickness = (int)std::ceil(2.0* ((double)captured_image.cols) / 640.0);
 
-		cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+		cv::Vec6d pose_estimate_to_draw = LandmarkDetector::GetCorrectedPoseWorld(face_model, fx, fy, cx, cy);
 
 		// Draw it in reddish if uncertain, blueish if certain
 		LandmarkDetector::DrawBox(captured_image, pose_estimate_to_draw, cv::Scalar((1 - vis_certainty)*255.0, 0, vis_certainty * 255), thickness, fx, fy, cx, cy);
 
-		if (det_parameters.track_gaze && detection_success && clnf_model.eye_model)
+		if (det_parameters.track_gaze && detection_success && face_model.eye_model)
 		{
-			FaceAnalysis::DrawGaze(captured_image, clnf_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
+			FaceAnalysis::DrawGaze(captured_image, face_model, gazeDirection0, gazeDirection1, fx, fy, cx, cy);
 		}
 	}
 
@@ -522,12 +522,12 @@ void prepareOutputFile(std::ofstream* output_file, bool output_2D_landmarks, boo
 // Output all of the information into one file in one go (quite a few parameters, but simplifies the flow)
 void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, bool output_3D_landmarks,
 	bool output_model_params, bool output_pose, bool output_AUs, bool output_gaze,
-	const LandmarkDetector::CLNF& clnf_model, int frame_count, double time_stamp, bool detection_success,
+	const LandmarkDetector::CLNF& face_model, int frame_count, double time_stamp, bool detection_success,
 	cv::Point3f gazeDirection0, cv::Point3f gazeDirection1, const cv::Vec6d& pose_estimate, double fx, double fy, double cx, double cy,
 	const FaceAnalysis::FaceAnalyser& face_analyser)
 {
 
-	double confidence = 0.5 * (1 - clnf_model.detection_certainty);
+	double confidence = 0.5 * (1 - face_model.detection_certainty);
 
 	*output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 
@@ -548,17 +548,17 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 	// Output the detected 2D facial landmarks
 	if (output_2D_landmarks)
 	{
-		for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 2; ++i)
+		for (int i = 0; i < face_model.pdm.NumberOfPoints() * 2; ++i)
 		{
-			*output_file << ", " << clnf_model.detected_landmarks.at<double>(i);
+			*output_file << ", " << face_model.detected_landmarks.at<double>(i);
 		}
 	}
 
 	// Output the detected 3D facial landmarks
 	if (output_3D_landmarks)
 	{
-		cv::Mat_<double> shape_3D = clnf_model.GetShape(fx, fy, cx, cy);
-		for (int i = 0; i < clnf_model.pdm.NumberOfPoints() * 3; ++i)
+		cv::Mat_<double> shape_3D = face_model.GetShape(fx, fy, cx, cy);
+		for (int i = 0; i < face_model.pdm.NumberOfPoints() * 3; ++i)
 		{
 			*output_file << ", " << shape_3D.at<double>(i);
 		}
@@ -568,11 +568,11 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 	{
 		for (int i = 0; i < 6; ++i)
 		{
-			*output_file << ", " << clnf_model.params_global[i];
+			*output_file << ", " << face_model.params_global[i];
 		}
-		for (int i = 0; i < clnf_model.pdm.NumberOfModes(); ++i)
+		for (int i = 0; i < face_model.pdm.NumberOfModes(); ++i)
 		{
-			*output_file << ", " << clnf_model.params_local.at<double>(i, 0);
+			*output_file << ", " << face_model.params_local.at<double>(i, 0);
 		}
 	}
 
@@ -696,7 +696,7 @@ int main (int argc, char **argv)
 	}
 
 	// The modules that are being used for tracking
-	LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	
+	LandmarkDetector::CLNF face_model(det_parameters.model_location);	
 
 	vector<string> output_similarity_align;
 	vector<string> output_hog_align_files;
@@ -749,7 +749,7 @@ int main (int argc, char **argv)
 	}	
 
 	// Will warp to scaled mean shape
-	cv::Mat_<double> similarity_normalised_shape = clnf_model.pdm.mean_shape * sim_scale;
+	cv::Mat_<double> similarity_normalised_shape = face_model.pdm.mean_shape * sim_scale;
 	// Discard the z component
 	similarity_normalised_shape = similarity_normalised_shape(cv::Rect(0, 0, 1, 2*similarity_normalised_shape.rows/3)).clone();
 
@@ -874,7 +874,7 @@ int main (int argc, char **argv)
 		if (!output_files.empty())
 		{
 			output_file.open(output_files[f_n], ios_base::out);
-			prepareOutputFile(&output_file, output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze, clnf_model.pdm.NumberOfPoints(), clnf_model.pdm.NumberOfModes(), face_analyser.GetAUClassNames(), face_analyser.GetAURegNames());
+			prepareOutputFile(&output_file, output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze, face_model.pdm.NumberOfPoints(), face_model.pdm.NumberOfModes(), face_analyser.GetAUClassNames(), face_analyser.GetAURegNames());
 		}
 
 		// Saving the HOG features
@@ -939,35 +939,31 @@ int main (int argc, char **argv)
 			
 			if(video_input || images_as_video)
 			{
-				detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, clnf_model, det_parameters);
+				detection_success = LandmarkDetector::DetectLandmarksInVideo(grayscale_image, face_model, det_parameters);
 			}
 			else
 			{
-				detection_success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, clnf_model, det_parameters);
+				detection_success = LandmarkDetector::DetectLandmarksInImage(grayscale_image, face_model, det_parameters);
 			}
 			
 			// Gaze tracking, absolute gaze direction
 			cv::Point3f gazeDirection0(0, 0, -1);
 			cv::Point3f gazeDirection1(0, 0, -1);
 
-			// Gaze with respect to head rather than camera (for example if eyes are rolled up and the head is tilted or turned this will be stable)
-			cv::Point3f gazeDirection0_head(0, 0, -1);
-			cv::Point3f gazeDirection1_head(0, 0, -1);
-
-			if (det_parameters.track_gaze && detection_success && clnf_model.eye_model)
+			if (det_parameters.track_gaze && detection_success && face_model.eye_model)
 			{
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection0, fx, fy, cx, cy, true);
-				FaceAnalysis::EstimateGaze(clnf_model, gazeDirection1, fx, fy, cx, cy, false);
+				FaceAnalysis::EstimateGaze(face_model, gazeDirection0, fx, fy, cx, cy, true);
+				FaceAnalysis::EstimateGaze(face_model, gazeDirection1, fx, fy, cx, cy, false);
 			}
 
 			// Do face alignment
 			cv::Mat sim_warped_img;
 			cv::Mat_<double> hog_descriptor;
 
-			// But only if needed in output, TODO if AU is being output
+			// But only if needed in output
 			if(!output_similarity_align.empty() || hog_output_file.is_open() || output_AUs)
 			{
-				face_analyser.AddNextFrame(captured_image, clnf_model, time_stamp, false, !det_parameters.quiet_mode);
+				face_analyser.AddNextFrame(captured_image, face_model, time_stamp, false, !det_parameters.quiet_mode);
 				face_analyser.GetLatestAlignedFace(sim_warped_img);
 
 				if(!det_parameters.quiet_mode)
@@ -991,11 +987,11 @@ int main (int argc, char **argv)
 			cv::Vec6d pose_estimate;
 			if(use_world_coordinates)
 			{
-				pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(clnf_model, fx, fy, cx, cy);
+				pose_estimate = LandmarkDetector::GetCorrectedPoseWorld(face_model, fx, fy, cx, cy);
 			}
 			else
 			{
-				pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(clnf_model, fx, fy, cx, cy);
+				pose_estimate = LandmarkDetector::GetCorrectedPoseCamera(face_model, fx, fy, cx, cy);
 			}
 
 			if(hog_output_file.is_open())
@@ -1028,11 +1024,11 @@ int main (int argc, char **argv)
 			}
 
 			// Visualising the tracker
-			visualise_tracking(captured_image, clnf_model, det_parameters, gazeDirection0, gazeDirection1, frame_count, fx, fy, cx, cy);
+			visualise_tracking(captured_image, face_model, det_parameters, gazeDirection0, gazeDirection1, frame_count, fx, fy, cx, cy);
 
 			// Output the landmarks, pose, gaze, parameters and AUs
 			outputAllFeatures(&output_file, output_2D_landmarks, output_3D_landmarks, output_model_params, output_pose, output_AUs, output_gaze,
-				clnf_model, frame_count, time_stamp, detection_success, gazeDirection0, gazeDirection1,
+				face_model, frame_count, time_stamp, detection_success, gazeDirection0, gazeDirection1,
 				pose_estimate, fx, fy, cx, cy, face_analyser);
 
 			// output the tracked video
@@ -1064,7 +1060,7 @@ int main (int argc, char **argv)
 			// restart the tracker
 			if(character_press == 'r')
 			{
-				clnf_model.Reset();
+				face_model.Reset();
 			}
 			// quit the application
 			else if(character_press=='q')
@@ -1099,7 +1095,7 @@ int main (int argc, char **argv)
 		}
 		// Reset the models for the next video
 		face_analyser.Reset();
-		clnf_model.Reset();
+		face_model.Reset();
 
 		frame_count = 0;
 		curr_img = -1;
@@ -1119,7 +1115,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-// TODO sort indices with AU predictions
+// Allows for post processing of the AU signal
 void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string output_file)
 {
 

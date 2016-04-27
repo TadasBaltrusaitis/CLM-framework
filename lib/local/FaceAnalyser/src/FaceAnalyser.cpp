@@ -97,7 +97,7 @@ FaceAnalyser::FaceAnalyser(vector<cv::Vec3d> orientation_bins, double scale, int
 	max_val_hog = 1;
 	min_val_hog = 0;
 
-	// The geometry histogram ranges from -3 to 3 TODO change this as we don't use scaling anymore?
+	// The geometry histogram ranges from -3 to 3
 	num_bins_geom = 10000;
 	max_val_geom = 60;
 	min_val_geom = -60;

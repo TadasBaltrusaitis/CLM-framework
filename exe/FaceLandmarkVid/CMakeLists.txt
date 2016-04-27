@@ -4,8 +4,10 @@ add_executable(FaceLandmarkVid FaceLandmarkVid.cpp)
 include_directories(${LandmarkDetector_SOURCE_DIR}/include)
 
 include_directories(../../lib/local/LandmarkDetector/include)
-			
-target_link_libraries(FaceLandmarkVid LandmarkDetector)
+include_directories(../../lib/local/FaceAnalyser/include)		
+
+target_link_libraries(FeatureExtraction LandmarkDetector)
+target_link_libraries(FeatureExtraction FaceAnalyser)
 
 target_link_libraries(FaceLandmarkVid dlib)
 

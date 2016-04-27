@@ -158,7 +158,6 @@ private:
 	vector<cv::Mat_<unsigned int> > hog_desc_hist;
 
 	// This is not being used at the moment as it is a bit slow
-	// TODO check if this would be more useful than keeping median of HoG
 	vector<cv::Mat_<unsigned int> > face_image_hist;
 	vector<int> face_image_hist_sum;
 

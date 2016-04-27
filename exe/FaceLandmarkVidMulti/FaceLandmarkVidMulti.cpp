@@ -319,7 +319,7 @@ int main (int argc, char **argv)
 
 			vector<tbb::atomic<bool> > face_detections_used(face_detections.size());
 
-			// Go through every model and update the tracking TODO pull out as a separate parallel/non-parallel method
+			// Go through every model and update the tracking
 			tbb::parallel_for(0, (int)clnf_models.size(), [&](int model){
 			//for(unsigned int model = 0; model < clnf_models.size(); ++model)
 			//{
