@@ -1,29 +1,19 @@
-For Windows this software comes prepackaged with all the necessary binaries and dll's for compilation of the project, you still need to compile it in order to run it. You don't need to download anything additional, just open "OpenFace.sln" using Visual Studio 2015 and compile the code. The project was built and tested on Visual Studio 2015 (can't guarantee compatibility with other versions). Code was tested on Windows Vista, Windows 7 and Windows 8, Windows Server 2008 can't guarantee compatibility with other Windows versions (but in theory it should work). NOTE be sure to run the project without debugger attached and in Release mode for speed (if running from Visual Studio). To run without debugger attach use CTRL + F5 instead of F5. To change from Debug mode to Release mode select Release from drop down menu in the toolbar. This can mean the difference between running at 5fps and 30fps on 320x240px videos. I also found that the x64 version seems to run faster on most machines.
-
-For Unix based systems and different compilers, I included Cmake files for cross-platform and cross-IDE support. For running the code on Ubuntu please see readme-ubuntu.txt.
-
-You have to respect boost, TBB, dlib, and OpenCV licenses.
-
----------------------- Copyright information ----------------------
-
-Copyright can be found in the Copyright.txt
-
 ---------------------- Code Layout --------------------------------
 	
 ./lib
 	local - the actual meat of the code where the relevant computer vision algorithms reside
-		CLM - The CLM, CLNF and CLM-Z algorithms
-		FaceAnalyser - Facial Action Unit detection and some useful code for extracting features for facial analysis
+		LandmarkDetector - The CLNF, CLM and CLM-Z algorithms together with face tracking code
+		FaceAnalyser - Facial Action Unit detection and some useful code for extracting features for facial analysis, also includes gaze tracking modules
 	3rdParty - place for 3rd party libraries
 		boost - prepackaged relevant parts of the boost library
 		OpenCV3.1 - prepackaged OpenCV 3.1 library that is used extensively internally to provide support for basic computer vision functionallity
 		dlib - a header only dlib library (includes the face detector used for in-the-wild images)
 		tbb - prepackaged tbb code, library files and dll's
 ./exe - the runner and executables that show how to use the libraries for facial expression and head pose tracking, these best demonstrate how to use the libraries
-	FaceTrackingVid/ - running clm, clnf or clm-z if depth is supplied, alternatively running CLNF and CLM from a connected webcam
-	FaceLandmarkImg/ - running clm or clm-z on a images, individual or in a folder
-	FaceTrackingVidMulti/ - tracking multiple faces using the CLM libraries
-	FeatureExtraction/ - a utility executable for extracting all supported features from faces (landmarks, AUs, head pose, gaze, similarity normalised faces and HOG features) for further facial expression analysis	
+	FaceTrackingVid/ - running single person landmark detection and gaze extraction on videos on disk or from a webcam
+	FaceLandmarkImg/ - running single or multi person landmark detection on images
+	FaceTrackingVidMulti/ - tracking multiple faces in videos (from a webcam or disk)
+	FeatureExtraction/ - main workhorse executable - extracting all supported features from faces: landmarks, AUs, head pose, gaze, similarity normalised faces and HOG features
 ./matlab_runners
 	helper scripts for running the experiments and demos, see ./matlab_runners/readme.txt for more info
 ./matlab_version
@@ -35,39 +25,39 @@ Copyright can be found in the Copyright.txt
 	
 --------------- Useful API calls for landmarks ---------------------------------
 
-CLM class is the main class you will interact with, it performs the main landmark detection algorithms and stores the results. The interaction with the class is declared mainly in the CLMTracker.h, and will require an initialised CLM object. 
+LandmarkDetector::CLNF class is the main class you will interact with, it performs the main landmark detection algorithms and stores the results. The interaction with the class is declared mainly in the LandmarkDetectorFunc.h, and will require an initialised LandmarkDetector::CLNF object. 
 
-The best way to understand how landmark detection is performed in videos or images is to just compile and run SimpleCLM and SimpleCLMImg projects, which perform landmark detection in videos/webcam and images respectively. See later in the readme for the command line arguments for these projects.
+The best way to understand how landmark detection is performed in videos or images is to just compile and run FaceLandmarkVid and FaceLandmarkImg projects, which perform landmark detection in videos/webcam and images respectively. See later in the readme for the command line arguments for these projects.
 
 A minimal code example for landmark detection is as follows:
 
-CLMTracker::CLMParameters clm_parameters;
-CLMTracker::CLM clm_model(clm_parameters.model_location);	
+LandmarkDetector::FaceModelParameters det_parameters
+LandmarkDetector::CLNF clnf_model(det_parameters.model_location);
 
-CLMTracker::DetectLandmarksInImage(grayscale_image, Mat_<float>(), clm_model, clm_parameters);
+LandmarkDetector::DetectLandmarksInImage(grayscale_image, clnf_model, det_parameters);
 
 A minimal code example for landmark tracking is as follows:
 
-CLMTracker::CLMParameters clm_parameters;
-CLMTracker::CLM clm_model(clm_parameters.model_location);	
+LandmarkDetector::FaceModelParameters det_parameters
+LandmarkDetector::CLNF clnf_model(det_parameters.model_location);	
 
 while(video)
 {
-	CLMTracker::DetectLandmarksInVideo(grayscale_image, clm_model, clm_parameters);
+	 LandmarkDetector::DetectLandmarksInVideo(grayscale_image, clnf_model, det_parameters);
 }
 
-After landmark detection is done clm_model stores the landmark locations and local and global Point Distribution Model parameters inferred from the image. To access them and more use:
+After landmark detection is done clnf_model stores the landmark locations and local and global Point Distribution Model parameters inferred from the image. To access them and more use:
 
 2D landmark location (in image):
-	clm_model.detected_landmarks contains a double matrix in following format [x1;x2;...xn;y1;y2...yn] describing the detected landmark locations in the image
+	clnf_model.detected_landmarks contains a double matrix in following format [x1;x2;...xn;y1;y2...yn] describing the detected landmark locations in the image
 	
 3D landmark location (with respect to camera):
-	clm_model.GetShape(fx, fy, cx, cy);
+	clnf_model.GetShape(fx, fy, cx, cy);
 	// fx,fy,cx,cy are camera callibration parameters needed to infer the 3D position of the head with respect to camera, a good assumption for webcams is 500, 500, img_width/2, img_height/2	
 	// This returns a column matrix with the following format [X1;X2;...Xn;Y1;Y2;...Yn;Z1;Z2;...Zn], here every element is in millimeters and represents the facial landmark locations with respect to camera
 	
 3D landmark location in object space:
-	clm_model.pdm.CalcShape3D(landmarks_3D, clm_model.params_local);
+	clnf_model.pdm.CalcShape3D(landmarks_3D, clnf_model.params_local);
 
 Head Pose:
 
@@ -79,26 +69,26 @@ Head Pose:
 	There are four methods in total that can return the head pose
 	
 	//Getting the head pose w.r.t. camera assuming orthographic projection
-	Vec6d GetPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetPoseCamera(CLM& clnf_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 	
 	//Getting the head pose w.r.t. world coordinates assuming orthographic projection
-	Vec6d GetPoseWorld(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetPoseWorld(CLM& clnf_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 	
 	//Getting the head pose w.r.t. camera with a perspective camera correction
-	Vec6d GetCorrectedPoseCamera(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetCorrectedPoseCamera(CLM& clnf_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 
 	//Getting the head pose w.r.t. world coordinates with a perspective camera correction
-	Vec6d GetCorrectedPoseWorld(CLM& clm_model, double fx, double fy, double cx, double cy, CLMParameters& params);
+	Vec6d GetCorrectedPoseWorld(CLM& clnf_model, double fx, double fy, double cx, double cy, CLMParameters& params);
 
 	// fx,fy,cx,cy are camera callibration parameters needed to infer the 3D position of the head with respect to camera, a good assumption for webcams providing 640x480 images is 500, 500, img_width/2, img_height/2	
 	
---------------------------- CLM Matlab runners ---------------------------------
+--------------------------- CLNF Matlab runners ---------------------------------
 
 These are provided for recreation of some of the experiments described in the papers and to demonstrate the command line interface for Windows.
 
 To run them you will need to change the dataset locations to those on your disc
 	
--------- Command line parameters for video (FaceTrackingVid) --------------------------
+-------- Command line parameters for video (FaceLandmarkVid) --------------------------
 
 Parameters for input (if nothing is specified attempts to read from a webcam with default values)
 
