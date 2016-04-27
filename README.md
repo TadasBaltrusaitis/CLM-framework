@@ -26,25 +26,25 @@ Coming Soon
 
 If you use any of the resources provided on this page in any of your publications we ask you to cite the following work and the work for a relevant submodule you used.
 
-### Overall system
+####Overall system
 
 **OpenFace: an open source facial behavior analysis toolkit**
 Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency,
 in *IEEE Winter Conference on Applications of Computer Vision*, 2016  
 
-### Facial landmark detection and tracking
+#### Facial landmark detection and tracking
 
 **Constrained Local Neural Fields for robust facial landmark detection in the wild**
 Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency. 
 in IEEE Int. *Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge*, 2013.  
 
-### Eye gaze tracking
+#### Eye gaze tracking
 
 **Rendering of Eyes for Eye-Shape Registration and Gaze Estimation**
 Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling 
 in *IEEE International. Conference on Computer Vision (ICCV)*,  2015 
 
-### Facial Action Unit detection
+#### Facial Action Unit detection
 
 **Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection**
 Tadas Baltrušaitis, Marwa Mahmoud, and Peter Robinson 
