@@ -46,7 +46,7 @@ in *IEEE International. Conference on Computer Vision (ICCV)*,  2015
 
 #### Facial Action Unit detection
 
-**Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection**
+**Cross-dataset learning and person-specific normalisation for automatic Action Unit detection**
 Tadas Baltrušaitis, Marwa Mahmoud, and Peter Robinson 
 in *Facial Expression Recognition and Analysis Challenge*, 
 *IEEE International Conference on Automatic Face and Gesture Recognition*, 2015 
