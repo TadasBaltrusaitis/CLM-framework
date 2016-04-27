@@ -1,29 +1,50 @@
-# Cambridge face tracker (CLM-framework)
+# OpenFace: an open source facial behavior analysis toolkit
 
-Framework for various Constrained Local Model based face tracking and landmark detection algorithms and their extensions/applications. Includes CLM, CLM-Z and CLNF algorithms. More details can be found in Readme.txt.
-
-The framework also includes a brand new Facial Action Unit detection in videos system (see Readme_action_units.txt).
-
-The framework also includes a brand new gaze estimation system as well (see Readme_gaze.txt).
+Over the past few years, there has been an increased interest in automatic facial behavior analysis and understanding. We present OpenFace – an open source tool intended for computer vision and machine learning researchers, affective computing community and people interested in building interactive applications based on facial behavior analysis. OpenFace is the ﬁrst open source tool capable of facial landmark detection, head pose estimation, facial action unit recognition, and eye-gaze estimation. The computer vision algorithms which represent the core of OpenFace demonstrate state-of-the-art results in all of the above mentioned tasks. Furthermore, our tool is capable of real-time performance and is able to run from a simple webcam without any specialist hardware.
 
 The code was written mainly by Tadas Baltrusaitis during his time at the Language Technologies Institute at the Carnegie Mellon University; Computer Laboratory, University of Cambridge; and Institute for Creative Technologies, University of Southern California.
 
 Special thanks goes to Louis-Philippe Morency and his MultiComp Lab at Institute for Creative Technologies for help in writing and testing the code, and Erroll Wood for the gaze estimation work.
 
-The stable versions of the framework have been tagged, the latest version of Cambridge Face Tracker is is 1.3.6 and I recommend you download it.
-
-Some examples of the system in action:
-http://youtu.be/V7rV0uy7heQ
-http://youtu.be/vYOa8Pif5lY
-http://youtu.be/LDBu0BLKVDw
+More details - http://www.cl.cam.ac.uk/research/rainbow/projects/openface/
 
 ## Instalation
 
-For Windows systems open and compile CLM_framework_vs2013.sln (requires VisualStudio 2012) or CLM_framework_vs2013.sln (requires VisualStudio 2013). All the required libraries are included with the code.
+For Windows systems open and compile OpenFace.sln (requires VisualStudio 2015). All the required libraries are included with the code.
 
-For Unix based systems follow readme-ubuntu.txt
+For Unix based systems follow readme-ubuntu.txt for detailed instructions.
 
-## Binaries
+## Use
 
-For Windows systems you can find the compiled binaries here:
-http://www.cl.cam.ac.uk/~tb346/software/Cambridge_Face_Tracker_1.3.6.zip
+Explanation of the code layout and the command line arguments can be found in Readme.txt
+
+## Windows Binaries
+
+Coming Soon
+
+## Citation
+
+If you use any of the resources provided on this page in any of your publications we ask you to cite the following work.
+
+OpenFace: an open source facial behavior analysis toolkit
+Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency
+in IEEE Winter Conference on Applications of Computer Vision, 2016  
+
+Citations for particular submodules (cite the appropriate ones):
+
+Facial landmark detection and tracking:
+
+Constrained Local Neural Fields for robust facial landmark detection in the wild.
+Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency. 
+in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.  
+
+Eye gaze tracking:
+Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling 
+in IEEE International. Conference on Computer Vision (ICCV),  2015 
+
+Facial Action Unit detection:
+Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection
+Tadas Baltrušaitis, Marwa Mahmoud, and Peter Robinson 
+in Facial Expression Recognition and Analysis Challenge, 
+IEEE International Conference on Automatic Face and Gesture Recognition, 2015 
