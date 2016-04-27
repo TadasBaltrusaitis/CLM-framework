@@ -11,8 +11,7 @@ in_files = dir('../../videos/2015-10-15-15-14.avi');
 verbose = true;
 
 command = exe;
-% Remove for a speedup
-command = cat(2, command, ' -verbose ');
+command = cat(2, command, ' -verbose  -no2Dfp -no3Dfp -noMparams -noPose -noAUs ');
 
 % add all videos to single argument list (so as not to load the model anew
 % for every video)
@@ -28,7 +27,7 @@ for i=1:numel(in_files)
         mkdir([output name]);
     end
     
-    command = cat(2, command, ['-fx 700 -fy 700 -f "' inputFile '" -ogaze "' outputFile_gaze '"']);
+    command = cat(2, command, ['-fx 700 -fy 700 -f "' inputFile '" -of "' outputFile_gaze '"']);
                
 end
 

@@ -24,12 +24,8 @@ for i=1:numel(in_files)
     [~, name, ~] = fileparts(inputFile);
     
     % where to output tracking results
-    outputFile_pose = [output name '_pose.txt'];
-    outputFile_fp = [output name '_fp.txt'];
-    outputFile_3Dfp = [output name '_fp3D.txt'];
-        
-    output_aus = [output name '_au.txt'];
-    
+    outputFile = [output name '.txt'];
+            
     if(~exist([output name], 'file'))
         mkdir([output name]);
     end
@@ -40,48 +36,109 @@ for i=1:numel(in_files)
     
     output_shape_params = [output name '.params.txt'];
     
-    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"' ' -of3D "' outputFile_3Dfp '"']);
-    
-    command = cat(2, command, [' -oaus "' output_aus '" ']);
-    
-    command = cat(2, command, [' -simaligndir "' outputDir_aligned '" -hogalign "' outputHOG_aligned '"' ' -oparams "' output_shape_params '"']);    
+    command = cat(2, command, [' -f "' inputFile '" -of "' outputFile '"']);        
+    command = cat(2, command, [' -simalign "' outputDir_aligned '" -hogalign "' outputHOG_aligned '"' ]);    
                  
 end
 
 dos(command);
 
 %% Demonstrating reading the output files
-filename = [output name];
 
-% Output shape parameters (6 rigid and rest non-rigid)
-shape_params  = dlmread([filename, '.params.txt'], ',', 1, 0);
+% First read in the column names
+tab = readtable(outputFile);
+column_names = tab.Properties.VariableNames;
+
+all_params  = dlmread(outputFile, ',', 1, 0);
 
 % This indicates which frames were succesfully tracked
-valid_frames = shape_params(:,4);
+valid_frames = logical(all_params(:,4));
+time = all_params(valid_frames, 2);
 
-shape_params = shape_params(:,5:end);
+%% Finding which header line starts with p_ (basically model params)
+shape_inds = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'p_'));
 
-% Output landmark points
-landmark_points  = dlmread([filename, '_fp.txt'], ',', 1, 0);
-landmark_points = landmark_points(:,5:end);
-plot(landmark_points(1,1:end/2), -landmark_points(1,end/2+1:end), '.');axis equal;
+% Output rigid (first 6) and non-rigid shape parameters
+shape_params  = all_params(valid_frames, shape_inds);
 
-% Output 3D landmark points
-landmark_3D_points  = dlmread([filename, '_fp3D.txt'], ',', 1, 0);
-landmark_3D_points = landmark_3D_points(:,5:end);
 figure
-plot3(landmark_3D_points(1,1:end/3), landmark_3D_points(1,end/3+1:2*end/3), landmark_3D_points(1,2*end/3+1:end), '.');axis equal;
+plot(time, shape_params);
+title('Shape parameters');
+xlabel('Time (s)');
 
-% Output pose
-head_pose  = dlmread([filename, '_pose.txt'], ',', 1, 0);
-head_pose = head_pose(:,5:end);
+%% Demonstrate 2D landmarks
+landmark_inds_x = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'x_'));
+landmark_inds_y = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'y_'));
 
-% Output HOG files
+xs = all_params(valid_frames, landmark_inds_x);
+ys = all_params(valid_frames, landmark_inds_y);
+
+figure
+
+for j = 1:size(xs,1)
+    plot(xs(j,:), -ys(j,:), '.');
+    xlim([min(xs(1,:)) * 0.5, max(xs(2,:))*1.4]);
+    ylim([min(-ys(1,:)) * 1.4, max(-ys(2,:))*0.5]);
+    xlabel('x (px)');
+    ylabel('y (px)');
+    drawnow
+end
+
+
+%% Demonstrate 3D landmarks
+landmark_inds_x = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'X_'));
+landmark_inds_y = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'Y_'));
+landmark_inds_z = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'Z_'));
+
+xs = all_params(valid_frames, landmark_inds_x);
+ys = all_params(valid_frames, landmark_inds_y);
+zs = all_params(valid_frames, landmark_inds_z);
+
+figure
+for j = 1:size(xs,1)
+    plot3(xs(j,:), ys(j,:), zs(j,:), '.');axis equal;
+    xlabel('X (mm)');
+    ylabel('Y (mm)');    
+    zlabel('Z (mm)');    
+    drawnow
+end
+
+%% Demonstrate AUs
+au_reg_inds = cellfun(@(x) ~isempty(x) && x==5, strfind(column_names, '_r'));
+
+aus = all_params(valid_frames, au_reg_inds);
+figure
+plot(time, aus);
+title('Facial Action Units (intensity)');
+xlabel('Time (s)');
+ylabel('Intensity');
+ylim([0,6]);
+
+au_class_inds = cellfun(@(x) ~isempty(x) && x==5, strfind(column_names, '_c'));
+
+aus = all_params(valid_frames, au_class_inds);
+figure
+plot(time, aus);
+title('Facial Action Units (presense)');
+xlabel('Time (s)');
+ylim([0,2]);
+%% Demo pose
+pose_inds = cellfun(@(x) ~isempty(x) && x==1, strfind(column_names, 'pose_'));
+
+pose = all_params(valid_frames, pose_inds);
+figure
+plot(pose);
+title('Pose (rotation and translation)');
+xlabel('Time (s)');
+
+%% Output HOG files
 [hog_data, valid_inds, vid_id] = Read_HOG_files({name}, output);
 
-% Output aligned images
-img_files = dir([filename, '/*.png']);
+%% Output aligned images
+img_files = dir([outputDir_aligned, '/*.png']);
 imgs = cell(numel(img_files, 1));
 for i=1:numel(img_files)
-   imgs{i} = imread([ filename, '/', img_files(i).name]);
+   imgs{i} = imread([ outputDir_aligned, '/', img_files(i).name]);
+   imshow(imgs{i})
+   drawnow
 end

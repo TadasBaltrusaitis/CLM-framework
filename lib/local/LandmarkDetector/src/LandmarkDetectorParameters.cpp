@@ -189,7 +189,7 @@ FaceModelParameters::FaceModelParameters(vector<string> &arguments)
 			curr_face_detector = HOG_SVM_DETECTOR;
 
 		}
-		else if (arguments[i].compare("-help") == 0)
+		else if (arguments[i].compare("-help") == 0) // TODO this need to be changed
 		{
 			cout << "CLNF parameters are defined as follows: -mloc <location of model file> -pdm_loc <override pdm location> -w_reg <weight term for patch rel.> -reg <prior regularisation> -sigma <float sigma term> -fcheck <should face checking be done 0/1> -n_iter <num EM iterations> -clwild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
 		}

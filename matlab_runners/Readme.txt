@@ -12,7 +12,7 @@ For extracting head pose, facial landmarks, HOG features and Facial Action Units
 	feature_extraction_demo_img_seq.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a sequence of images in a folder and how to read those features into Matlab.	
 	feature_extraction_demo_vid.m - Running the FeatureExtraction project, it demonstrates how to specify parameters for extracting a number of features from a video and how to read those features into Matlab.	
 	
-The demos are configured to use CCNF patch experts trained on in-the-wild and Multi-PIE datasets, it is possible to uncomment other model file definitions in the scripts to run them instead.
+The demos are configured to use CLNF patch experts trained on in-the-wild and Multi-PIE datasets, it is possible to uncomment other model file definitions in the scripts to run them instead.
 
 ======================== Head Pose Experiments ============================
 To run them you will need to have the appropriate datasets and to change the dataset locations.

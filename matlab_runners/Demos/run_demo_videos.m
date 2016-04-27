@@ -1,4 +1,4 @@
-clm_exe = '"../../x64/Release/FaceTrackingVid.exe"';
+clm_exe = '"../../x64/Release/FaceLandmarkVid.exe"';
 
 output = './demo_vid/';
 
@@ -11,12 +11,12 @@ in_files = cat(1, in_files, dir('../../videos/*.avi'));
 % some parameters
 verbose = true;
 
-% Trained on in the wild and multi-pie data (less accurate SVR model)
+% Trained on in the wild and multi-pie data (less accurate SVR/CLM model)
 %model = 'model/main_clm_general.txt';
 % Trained on in-the-wild
 %model = 'model/main_clm_wild.txt';
 
-% Trained on in the wild and multi-pie data (more accurate CCNF model)
+% Trained on in the wild and multi-pie data (more accurate CLNF model)
 model = 'model/main_clnf_general.txt';
 % Trained on in-the-wild
 %model = 'model/main_clnf_wild.txt';
@@ -29,12 +29,8 @@ for i=1:numel(in_files)
     
     inputFile = ['../../videos/', in_files(i).name];
     [~, name, ~] = fileparts(inputFile);
-    
-    % where to output tracking results
-    outputFile_pose = [output name '_pose.txt'];
-    outputFile_fp = [output name '_fp.txt'];
-    
-    command = cat(2, command, [' -f "' inputFile '" -op "' outputFile_pose '"' ' -of "' outputFile_fp '"']);
+        
+    command = cat(2, command, [' -f "' inputFile '" ']);
     
     if(verbose)
         outputVideo = ['"' output name '.avi' '"'];

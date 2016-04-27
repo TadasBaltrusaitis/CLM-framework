@@ -445,7 +445,6 @@ void visualise_tracking(cv::Mat& captured_image, const LandmarkDetector::CLNF& c
 	}
 }
 
-// TODO make sure the ordering is the same
 void prepareOutputFile(std::ofstream* output_file, bool output_2D_landmarks, bool output_3D_landmarks,
 	bool output_model_params, bool output_pose, bool output_AUs, bool output_gaze,
 	int num_landmarks, int num_model_modes, vector<string> au_names_class, vector<string> au_names_reg)
@@ -455,23 +454,23 @@ void prepareOutputFile(std::ofstream* output_file, bool output_2D_landmarks, boo
 
 	if (output_gaze)
 	{
-		*output_file << ", x_0, y_0, z_0, x_1, y_1, z_1";
+		*output_file << ", gaze_0_x, gaze_0_y, gaze_0_z, gaze_1_x, gaze_1_y, gaze_2_z";
 	}
 
 	if (output_pose)
 	{
-		*output_file << ", Tx, Ty, Tz, Rx, Ry, Rz";
+		*output_file << ", pose_Tx, pose_Ty, pose_Tz, pose_Rx, pose_Ry, pose_Rz";
 	}
 
 	if (output_2D_landmarks)
 	{
 		for (int i = 0; i < num_landmarks; ++i)
 		{
-			*output_file << ", x" << i;
+			*output_file << ", x_" << i;
 		}
 		for (int i = 0; i < num_landmarks; ++i)
 		{
-			*output_file << ", y" << i;
+			*output_file << ", y_" << i;
 		}
 	}
 
@@ -479,25 +478,25 @@ void prepareOutputFile(std::ofstream* output_file, bool output_2D_landmarks, boo
 	{
 		for (int i = 0; i < num_landmarks; ++i)
 		{
-			*output_file << ", X" << i;
+			*output_file << ", X_" << i;
 		}
 		for (int i = 0; i < num_landmarks; ++i)
 		{
-			*output_file << ", Y" << i;
+			*output_file << ", Y_" << i;
 		}
 		for (int i = 0; i < num_landmarks; ++i)
 		{
-			*output_file << ", Z" << i;
+			*output_file << ", Z_" << i;
 		}
 	}
 
 	// Outputting model parameters (rigid and non-rigid), the first parameters are the 6 rigid shape parameters, they are followed by the non rigid shape parameters
 	if (output_model_params)
 	{
-		*output_file << ", scale, rx, ry, rz, tx, ty";
+		*output_file << ", p_scale, p_rx, p_ry, p_rz, p_tx, p_ty";
 		for (int i = 0; i < num_model_modes; ++i)
 		{
-			*output_file << ", p" << i;
+			*output_file << ", p_" << i;
 		}
 	}
 
@@ -532,6 +531,20 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 
 	*output_file << frame_count + 1 << ", " << time_stamp << ", " << confidence << ", " << detection_success;
 
+	// Output the estimated gaze
+	if (output_gaze)
+	{
+		*output_file << ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
+			<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z;
+	}
+
+	// Output the estimated head pose
+	if (output_pose)
+	{
+		*output_file << ", " << pose_estimate[0] << ", " << pose_estimate[1] << ", " << pose_estimate[2]
+			<< ", " << pose_estimate[3] << ", " << pose_estimate[4] << ", " << pose_estimate[5];
+	}
+
 	// Output the detected 2D facial landmarks
 	if (output_2D_landmarks)
 	{
@@ -563,19 +576,7 @@ void outputAllFeatures(std::ofstream* output_file, bool output_2D_landmarks, boo
 		}
 	}
 
-	// Output the estimated head pose
-	if (output_pose)
-	{
-		*output_file << ", " << pose_estimate[0] << ", " << pose_estimate[1] << ", " << pose_estimate[2]
-			<< ", " << pose_estimate[3] << ", " << pose_estimate[4] << ", " << pose_estimate[5];
-	}
 
-	// Output the estimated gaze
-	if (output_gaze)
-	{
-		*output_file << ", " << gazeDirection0.x << ", " << gazeDirection0.y << ", " << gazeDirection0.z
-			<< ", " << gazeDirection1.x << ", " << gazeDirection1.y << ", " << gazeDirection1.z;
-	}
 
 	if (output_AUs)
 	{
@@ -917,7 +918,8 @@ int main (int argc, char **argv)
 			}
 			else
 			{
-				time_stamp = 0.0;
+				// if loading images assume 30fps
+				time_stamp = (double)frame_count * (1.0 / 30.0);
 			}
 
 			// Reading the images
@@ -1083,10 +1085,11 @@ int main (int argc, char **argv)
 			}
 
 		}
+		
+		output_file.close();
 
 		if(output_files.size() > 0)
 		{
-			output_file.close();
 		
 			// If the video is long enough post-process it for AUs
 			if (output_AUs && frame_count > 100)
@@ -1186,7 +1189,7 @@ void post_process_output_file(FaceAnalysis::FaceAnalyser& face_analyser, string 
 	
 	for (int i = 0; i < tokens.size(); ++i)
 	{
-		if (tokens[i].find("_r") != string::npos && begin_ind == -1)
+		if (tokens[i].find("AU") != string::npos && begin_ind == -1)
 		{
 			begin_ind = i;
 			break;

@@ -1,9 +1,9 @@
 clear;
 
-% fitting parameters more suitable for ccnf
+% fitting parameters more suitable for clnf
 
 %%
-% Run the BU test with ccnf
+% Run the BU test with clnf
 if exist('D:/Datasets/HeadPose', 'file')
     database_root = 'D:/Datasets/HeadPose/';    
 elseif(exist([getenv('USERPROFILE') '/Dropbox/AAM/test data/'], 'file'))
@@ -14,7 +14,7 @@ end
 
 buDir = [database_root, '/bu/uniform-light/'];
 
-% The fast and accurate ccnf
+% The fast and accurate clnf
 %%
 v = 3;
 [fps_bu_OF, resFolderBU_OF] = run_bu_experiment(buDir, false, v, 'model', 'model/main_clnf_general.txt');

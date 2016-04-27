@@ -1,2 +1,2 @@
 Mean error, median error
-9.955, 9.334
+9.944, 9.314

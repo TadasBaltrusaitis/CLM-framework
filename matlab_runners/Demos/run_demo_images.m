@@ -13,7 +13,7 @@ end
 verbose = true;
 
 % Trained on in the wild and multi-pie data (less accurate CLM model)
-%model = 'model/main_clm_general.txt';
+% model = 'model/main_clm_general.txt';
 % Trained on in-the-wild
 %model = 'model/main_clm_wild.txt';
 
