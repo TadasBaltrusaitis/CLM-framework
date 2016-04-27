@@ -1,6 +1,6 @@
 clear
 
-clm_exe = '"../../x64/Release/FaceTrackingVid.exe"';
+executable = '"../../x64/Release/FeatureExtraction.exe"';
 
 output = 'yt_features/';
 
@@ -18,8 +18,8 @@ database_root = [database_root, '/ytceleb_annotations_CVPR2014/'];
 
 in_vids = dir([database_root '/*.avi']);
 
-command = clm_exe;
-
+command = executable;
+command = cat(2, command, ' -no3Dfp -noMparams -noPose -noGaze -noAUs ');
 % add all videos to single argument list (so as not to load the model anew
 % for every video)
 for i=1:numel(in_vids)
@@ -42,8 +42,9 @@ if(~exist(output, 'file'))
     mkdir(output)
 end
     
-command = clm_exe;
+command = executable;
 command = cat(2, command, ' -mloc model/main_clm_general.txt ');
+command = cat(2, command, ' -no3Dfp -noMparams -noPose -noGaze -noAUs ');
 
 % add all videos to single argument list (so as not to load the model anew
 % for every video)

@@ -129,6 +129,9 @@ public:
 	// The actual output of the regressor (-1 is perfect detection 1 is worst detection)
 	double				detection_certainty; 
 
+	// Indicator if eye model is there for eye detection
+	bool				eye_model = false;
+
 	// the triangulation per each view (for drawing purposes only)
 	vector<cv::Mat_<int> >	triangulations;
 	
