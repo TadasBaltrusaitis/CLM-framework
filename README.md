@@ -24,27 +24,29 @@ Coming Soon
 
 ## Citation
 
-If you use any of the resources provided on this page in any of your publications we ask you to cite the following work.
+If you use any of the resources provided on this page in any of your publications we ask you to cite the following work and the work for a relevant submodule you used.
 
-OpenFace: an open source facial behavior analysis toolkit
-Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency
-in IEEE Winter Conference on Applications of Computer Vision, 2016  
+### Overall system
 
-Citations for particular submodules (cite the appropriate ones):
+**OpenFace: an open source facial behavior analysis toolkit**
+Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency,
+in *IEEE Winter Conference on Applications of Computer Vision*, 2016  
 
-Facial landmark detection and tracking:
+### Facial landmark detection and tracking
 
-Constrained Local Neural Fields for robust facial landmark detection in the wild.
+**Constrained Local Neural Fields for robust facial landmark detection in the wild**
 Tadas Baltrušaitis, Peter Robinson, and Louis-Philippe Morency. 
-in IEEE Int. Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge, 2013.  
+in IEEE Int. *Conference on Computer Vision Workshops, 300 Faces in-the-Wild Challenge*, 2013.  
 
-Eye gaze tracking:
-Rendering of Eyes for Eye-Shape Registration and Gaze Estimation
+### Eye gaze tracking
+
+**Rendering of Eyes for Eye-Shape Registration and Gaze Estimation**
 Erroll Wood, Tadas Baltrušaitis, Xucong Zhang, Yusuke Sugano, Peter Robinson, and Andreas Bulling 
-in IEEE International. Conference on Computer Vision (ICCV),  2015 
+in *IEEE International. Conference on Computer Vision (ICCV)*,  2015 
 
-Facial Action Unit detection:
-Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection
+### Facial Action Unit detection
+
+**Cross-dataset learning and person-speci?c normalisation for automatic Action Unit detection**
 Tadas Baltrušaitis, Marwa Mahmoud, and Peter Robinson 
-in Facial Expression Recognition and Analysis Challenge, 
-IEEE International Conference on Automatic Face and Gesture Recognition, 2015 
+in *Facial Expression Recognition and Analysis Challenge*, 
+*IEEE International Conference on Automatic Face and Gesture Recognition*, 2015 
