@@ -330,10 +330,6 @@ void get_image_input_output_params_feats(vector<vector<string> > &input_image_fi
 		{
 			as_video = true;
 		}
-		else if (arguments[i].compare("-help") == 0)
-		{
-			cout << "Input output files are defined as: -fdir <image directory (can have multiple ones)> -asvid <the images in a folder are assumed to come from a video (consecutive)>" << endl; // Inform the user of how to use the program				
-		}
 	}
 	
 	// Clear up the argument list

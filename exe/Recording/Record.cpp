@@ -142,12 +142,7 @@ int main (int argc, char **argv)
 
 	for (size_t i = 0; i < arguments.size(); i++)
     {
-		if( strcmp( arguments[i].c_str(), "--help" ) == 0 || strcmp( arguments[i].c_str(), "-h" ) == 0 )
-        {
-            INFO_STREAM( "Usage is [ -r <root dir> | -dev <dev num> ] -of <out file>\n" ); // Inform the user of how to use the program
-            exit( 0 );
-        }
-        else if( strcmp( arguments[i].c_str(), "-dev") == 0 )
+		if( strcmp( arguments[i].c_str(), "-dev") == 0 )
         {
 			std::stringstream ss;
             ss << arguments[i+1].c_str();

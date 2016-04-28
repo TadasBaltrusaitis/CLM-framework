@@ -189,10 +189,6 @@ FaceModelParameters::FaceModelParameters(vector<string> &arguments)
 			curr_face_detector = HOG_SVM_DETECTOR;
 
 		}
-		else if (arguments[i].compare("-help") == 0)
-		{
-			cout << "CLNF parameters are defined as follows: -mloc <location of model file> -wild (for in the wild images) -q (quiet mode)" << endl; // Inform the user of how to use the program				
-		}
 	}
 
 	for (int i = arguments.size() - 1; i >= 0; --i)

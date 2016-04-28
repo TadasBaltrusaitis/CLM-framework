@@ -176,10 +176,6 @@ void get_video_input_output_params(vector<string> &input_video_files, vector<str
 		{
 			world_coordinates_pose = true;
 		}
-		else if (arguments[i].compare("-help") == 0)
-		{
-			cout << "Input output files are defined as: -f <infile> -fd <indepthdir> -op <outpose> -of <outfeatures> -ov <outvideo>\n"; // Inform the user of how to use the program				
-		}
 	}
 
 	for(int i=arguments.size()-1; i >= 0; --i)
@@ -238,10 +234,6 @@ void get_camera_params(int &device, float &fx, float &fy, float &cx, float &cy, 
 			valid[i] = false;
 			valid[i+1] = false;
 			i++;
-		}
-		else if (arguments[i].compare("-help") == 0)
-		{
-			cout << "Camera parameters are defined as: -device <webcam number> -fx <float focal length x> -fy <float focal length y> -cx <float optical center x> -cy <float optical center y> "  << endl; // Inform the user of how to use the program				
 		}
 	}
 
@@ -382,10 +374,6 @@ void get_image_input_output_params(vector<string> &input_image_files, vector<str
 			valid[i+1] = false;
 			i++;
 		} 
-		else if (arguments[i].compare("-help") == 0)
-		{
-			cout << "Input output files are defined as: -f <infile (can have multiple ones)> -of <where detected landmarks should be stored(can have multiple ones)> -oi <where should images with detected landmarks should be written (can have multiple ones)> -fdir <the directory containing .png and .jpg files to be processed (with optional .txt files corresponding to EACH image containing the bounding boxes> " << endl; // Inform the user of how to use the program				
-		}
 	}
 
 	// If any output directories are defined populate them based on image names
