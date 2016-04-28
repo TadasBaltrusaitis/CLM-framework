@@ -4,87 +4,28 @@
 //  Contributed by Dave Abrahams
 //  See http://www.boost.org/libs/utility for documentation.
 
-#ifdef __linux__ 
+#ifndef DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
+#define DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
 
-	#ifndef DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
-	#define DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
 
-	#ifndef BOOST_NONCOPYABLE_HPP_INCLUDED
-	#define BOOST_NONCOPYABLE_HPP_INCLUDED
+namespace dlib
+{
+    class noncopyable
+    {
+        /*!
+            This class makes it easier to declare a class as non-copyable.
+            If you want to make an object that can't be copied just inherit
+            from this object.
+        !*/
 
-	namespace boost 
-	{
+    protected:
+        noncopyable() {}
+        ~noncopyable() {}
+    private:  // emphasize the following members are private
+        noncopyable(const noncopyable&);
+        const noncopyable& operator=(const noncopyable&);
 
-		namespace noncopyable_  // protection from unintended ADL
-		{
-			class noncopyable
-			{
-				/*!
-					This class makes it easier to declare a class as non-copyable. 
-					If you want to make an object that can't be copied just inherit
-					from this object.
-				!*/
+    };
+}
 
-			protected:
-				noncopyable() {}
-				~noncopyable() {}
-			private:  // emphasize the following members are private
-				noncopyable( const noncopyable& );
-				const noncopyable& operator=( const noncopyable& );
-			};
-		}
-
-		typedef noncopyable_::noncopyable noncopyable;
-
-	} // namespace boost
-
-	#endif // BOOST_NONCOPYABLE_HPP_INCLUDED
-
-	namespace dlib
-	{
-		using boost::noncopyable;
-	}
-
-	#endif  // DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
-#else
-	
-	#ifndef DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
-	#define DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
-
-	#ifndef BOOST_NONCOPYABLE_HPP_INCLUDED
-	#define BOOST_NONCOPYABLE_HPP_INCLUDED
-
-	namespace dlib 
-	{
-
-		namespace noncopyable_  // protection from unintended ADL
-		{
-			class noncopyable
-			{
-				/*!
-					This class makes it easier to declare a class as non-copyable. 
-					If you want to make an object that can't be copied just inherit
-					from this object.
-				!*/
-
-			protected:
-				noncopyable() {}
-				~noncopyable() {}
-			private:  // emphasize the following members are private
-				noncopyable( const noncopyable& );
-				const noncopyable& operator=( const noncopyable& );
-			};
-		}
-
-		typedef noncopyable_::noncopyable noncopyable;
-
-	} // namespace boost
-
-	#endif // BOOST_NONCOPYABLE_HPP_INCLUDED
-
-	namespace dlib
-	{
-		using dlib::noncopyable;
-	}
-	#endif  // DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
-#endif
+#endif  // DLIB_BOOST_NONCOPYABLE_HPP_INCLUDED
