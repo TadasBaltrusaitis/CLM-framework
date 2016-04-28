@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-f "../../videos/changeLighting.wmv"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -10,7 +11,11 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>-mloc "model/main_clnf_general.txt" -f "../../videos/changeLighting.wmv"  -ov "./demo_vid/changeLighting.avi" -f "../../videos/default.wmv"  -ov "./demo_vid/default.avi" -f "../../videos/0188_03_021_al_pacino.avi"  -ov "./demo_vid/0188_03_021_al_pacino.avi" -f "../../videos/0217_03_006_alanis_morissette.avi"  -ov "./demo_vid/0217_03_006_alanis_morissette.avi" -f "../../videos/0244_03_004_anderson_cooper.avi"  -ov "./demo_vid/0244_03_004_anderson_cooper.avi" -f "../../videos/0294_02_004_angelina_jolie.avi"  -ov "./demo_vid/0294_02_004_angelina_jolie.avi" -f "../../videos/0417_02_003_bill_clinton.avi"  -ov "./demo_vid/0417_02_003_bill_clinton.avi" -f "../../videos/0490_03_007_bill_gates.avi"  -ov "./demo_vid/0490_03_007_bill_gates.avi" -f "../../videos/0686_02_003_gloria_estefan.avi"  -ov "./demo_vid/0686_02_003_gloria_estefan.avi" -f "../../videos/1034_03_006_jet_li.avi"  -ov "./demo_vid/1034_03_006_jet_li.avi" -f "../../videos/1192_01_006_julia_roberts.avi"  -ov "./demo_vid/1192_01_006_julia_roberts.avi" -f "../../videos/1461_01_021_noam_chomsky.avi"  -ov "./demo_vid/1461_01_021_noam_chomsky.avi" -f "../../videos/1804_03_006_sylvester_stallone.avi"  -ov "./demo_vid/1804_03_006_sylvester_stallone.avi" -f "../../videos/1815_01_008_tony_blair.avi"  -ov "./demo_vid/1815_01_008_tony_blair.avi" -f "../../videos/1869_03_009_victoria_beckham.avi"  -ov "./demo_vid/1869_03_009_victoria_beckham.avi" -f "../../videos/1878_01_002_vladimir_putin.avi"  -ov "./demo_vid/1878_01_002_vladimir_putin.avi" -f "../../videos/2015-10-15-15-14.avi"  -ov "./demo_vid/2015-10-15-15-14.avi" -f "../../videos/multi_face.avi"  -ov "./demo_vid/multi_face.avi"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
