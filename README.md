@@ -1,3 +1,11 @@
+# Code has moved
+
+We are excited to announce a new facial behaviour analysis tool OpenFace! It is more accurate, more stable and better documented than CLM-framework and can be seen as the next step of the project. You can find the code for our new OpenFace tool here - [https://github.com/TadasBaltrusaitis/OpenFace](https://github.com/TadasBaltrusaitis/OpenFace)
+
+All the continuing developement will happen on OpenFace, but for backwards compatibility we are keeping CLM-framework available on github.
+
+# This version is becoming deprecated and will no longer be supported
+
 # Cambridge face tracker (CLM-framework)
 
 Framework for various Constrained Local Model based face tracking and landmark detection algorithms and their extensions/applications. Includes CLM, CLM-Z and CLNF algorithms. More details can be found in Readme.txt.
