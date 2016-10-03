@@ -172,10 +172,10 @@ namespace HeadPoseLive
 
             DateTime now = DateTime.Now;
 
-            if (now > new DateTime(2016, 6, 1, 0, 0, 0, 0))
+            if (now > new DateTime(2017, 6, 1, 0, 0, 0, 0))
             {
                 string messageBoxText = "The version of the software has expired. Please contact Tadas Baltrušaitis (Tadas.Baltrusaitis@cl.cam.ac.uk) for an updated version.";
-                string caption = "Version expired! (after 2016-June-01)";
+                string caption = "Version expired! (after 2017-June-01)";
                 MessageBoxButton button = MessageBoxButton.OK;
                 MessageBoxImage icon = MessageBoxImage.Error;
                 MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon); 
